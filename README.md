@@ -18,6 +18,39 @@ npm run dev
 
 Beenden: im Terminalfenster `Strg + C`.
 
+## Online-Version (GitHub Pages)
+
+Unterwegs lernen ohne eigenen Rechner: **https://alexseiff.github.io/ap2_learning_app/**
+
+Das ist dieselbe App als statische Seite – ohne Server:
+
+| | Lokale App (`npm run dev`) | Online-Version |
+|---|---|---|
+| Lernblätter | live aus dem Ordner `AP-2` | aus `lern-app/content/`, Stand des letzten Pushs |
+| Fortschritt | `lern-app/data/fortschritt.json` + Tagessicherung | im Browser (localStorage), nur auf diesem Gerät |
+| Lernen, Karteikarten, Klausur, Einzelaufgaben, Fehlerjournal, Material | ✓ | ✓ |
+| Sicherung herunterladen / einspielen | ✓ | ✓ |
+| KI-Aufgaben, KI-Bewertung | ✓ (mit API-Schlüssel) | – „Nur in der lokalen App verfügbar“ |
+
+Der API-Schlüssel und die KI-Aufgaben aus `data/` kommen nie in die Online-Version.
+Die Lernblätter (die Dateien in `content/`) sind damit öffentlich.
+
+**Fortschritt umziehen:** In der lokalen App *Daten & Import → ⬇ Sicherung herunterladen*, dann in der Online-Version
+*Daten & Import → ⬆ Sicherung einspielen* (andersherum genauso). Der eingespielte Stand ersetzt den dortigen komplett.
+Löschst du die Browserdaten, ist der Online-Fortschritt weg – also ab und zu eine Sicherung herunterladen.
+
+**Lernblätter aktualisieren:** Nach dem Bearbeiten der `.md`-Dateien oder der Lernkarten im Ordner `AP-2`:
+
+```bash
+npm run sync-content   # kopiert die Lernblätter aus AP-2 nach lern-app/content/ (AP-2 wird nur gelesen)
+git add content && git commit -m "Lernblätter aktualisiert" && git push
+```
+
+Jeder Push auf `main` baut und veröffentlicht die Seite automatisch (`.github/workflows/pages.yml`: Tests, `npm run build:pages`, Deployment).
+Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen mit `npx vite preview --mode pages`.
+
+**Einmalig einrichten:** Auf GitHub im Repository *Settings → Pages → Build and deployment → Source: „GitHub Actions“* wählen.
+
 ## Funktionen
 
 | Bereich | Was es tut |
@@ -81,6 +114,7 @@ Jede Datei `*Lernkarten*.json` im Ordner `AP-2` wird importiert (aktuell `AP2_FI
 ## Lernblätter ändern / neu importieren
 
 Die App liest die `.md`-Dateien bei jedem Laden direkt aus dem Ordner `AP-2`. Änderst du eine Datei, lädt die Seite automatisch neu.
+Für die Online-Version danach `npm run sync-content` ausführen und committen (siehe [Online-Version](#online-version-github-pages)).
 Unter **Daten & Import** siehst du den Importbericht (z. B. Aufgaben ohne Musterlösung).
 
 Erwartetes Format:
@@ -108,16 +142,23 @@ Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein an
 ## Entwicklung
 
 ```bash
-npm test          # Parser- und Logik-Tests (nutzen die echten Lernblätter)
+npm test             # Parser- und Logik-Tests (nutzen die echten Lernblätter aus content/)
 npm run typecheck
+npm run build:pages  # statische Version für GitHub Pages nach dist/
 ```
+
+Lokale App und Online-Version unterscheiden sich nur in der Datenquelle: `src/lib/api.ts` wählt über
+`import.meta.env.MODE === 'pages'` (gesetzt von `vite build --mode pages`) zwischen der lokalen API und `src/lib/staticApi.ts`
+(content.json + localStorage). Der Build liest die Lernblätter bewusst aus `content/` und nicht aus `AP-2` –
+so bauen GitHub Actions und dein Rechner dasselbe. Der Dev-Server liest weiter direkt aus `AP-2`.
 
 Aufbau:
 
 ```
 lern-app/
 ├─ shared/        Einstellungen wie Prüfungsdatum, Klausurdauer, Intervalle, Port (config.ts), Datenmodell (types.ts), Markdown-Parser (parser.ts), gespeicherter Fortschritt: Typen, zod-Schema, Migration (progress.ts), API-Vertrag: Request-Schemas und Antworttypen je Route (api.ts)
-├─ server/        Vite-Plugin mit lokaler API (/api/…, Routentabelle in apiPlugin.ts, Router in router.ts), Speicherung, Claude-Anbindung
+├─ server/        Vite-Plugin mit lokaler API (/api/…, Routentabelle in apiPlugin.ts, Router in router.ts), Speicherung, Claude-Anbindung, content.json für Pages (pagesPlugin.ts), npm run sync-content (syncContent.ts)
+├─ content/       Kopie der Lernblätter und Lernkarten aus AP-2 für GitHub Pages und Tests (npm run sync-content)
 ├─ src/           React-Oberfläche (pages/, components/, hooks/ mit dem Ablauf von Klausur und Karteikarten-Runde, lib/ mit reinen Funktionen)
 └─ tests/         Vitest-Tests; tests/fixtures/ enthält Beispieldateien (u. a. alte Fortschrittsformate für die Migrationstests)
 ```
