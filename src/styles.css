@@ -95,7 +95,7 @@ h3 { font-size: 1.1rem; margin: 1.2em 0 0.4em; }
 .nav-badge { background: var(--low); color: #fff; border-radius: 999px; font-size: 0.75rem; padding: 0 7px; font-weight: 600; }
 .sidebar-foot { margin-top: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 12px; font-size: 0.85rem; }
 .save-state { color: var(--muted); padding: 0 10px; }
-.save-state.fehler { color: var(--low); }
+.save-state.fehler, .save-state.konflikt { color: var(--low); }
 main { min-width: 0; }
 .page { padding: 28px 36px 60px; max-width: 1150px; }
 .page.narrow { max-width: 860px; }

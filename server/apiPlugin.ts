@@ -55,11 +55,12 @@ export function apiPlugin(): Plugin {
           if (route === 'GET /api/progress') return send(res, 200, readProgress());
           if (route === 'GET /api/progress/backups') return send(res, 200, backupInfo());
           if (route === 'PUT /api/progress') {
-            // Nie ungeprüft schreiben: leere/kaputte Daten oder ein versehentlich geleerter Stand würden echten Fortschritt überschreiben.
+            // Nie ungeprüft schreiben: leere/kaputte Daten, ein versehentlich geleerter Stand oder ein veralteter Tab (409)
+            // würden echten Fortschritt überschreiben. Lesen, Prüfen und Schreiben laufen synchron – also ohne Wettlauf zweier PUTs.
             const checked = checkProgressPut(await readBody(req), readProgress());
-            if (!checked.ok) throw new HttpError(400, checked.error);
+            if (!checked.ok) throw new HttpError(checked.status, checked.error);
             writeProgress(checked.progress);
-            return send(res, 200, { ok: true });
+            return send(res, 200, { ok: true, revision: checked.progress.revision });
           }
           if (route === 'GET /api/ai/status') return send(res, 200, { enabled: aiEnabled(), model: MODEL });
           if (route === 'POST /api/ai/generate') {

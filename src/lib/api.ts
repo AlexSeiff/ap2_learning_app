@@ -1,5 +1,14 @@
 import type { Content, Task, TaskType } from '../../shared/types';
 
+/** Fehler einer API-Anfrage mit HTTP-Status (z. B. 409, wenn ein anderer Tab neuer gespeichert hat). */
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
     method,
@@ -7,14 +16,14 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? `Fehler ${res.status}`);
+  if (!res.ok) throw new ApiError(res.status, data.error ?? `Fehler ${res.status}`);
   return data as T;
 }
 
 export const api = {
   content: () => request<Content>('GET', '/api/content'),
   progress: () => request<unknown>('GET', '/api/progress'),
-  saveProgress: (p: unknown) => request<{ ok: true }>('PUT', '/api/progress', p),
+  saveProgress: (p: unknown) => request<{ ok: true; revision: number }>('PUT', '/api/progress', p),
   backups: () => request<{ newest: string | null; count: number }>('GET', '/api/progress/backups'),
   aiStatus: () => request<{ enabled: boolean; model: string }>('GET', '/api/ai/status'),
   generate: (topicId: string, count: number, types: TaskType[]) =>

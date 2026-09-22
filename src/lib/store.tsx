@@ -53,11 +53,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .then(([c, p, s]) => {
         setContent(c);
         progressRef.current = migrateProgress(p);
+        saver.setBaseRevision(progressRef.current.revision);
         setProgress(progressRef.current);
         setAi(s);
       })
       .catch((e: Error) => setError(e.message));
-  }, []);
+  }, [saver]);
 
   // Beim Schließen des Tabs noch nicht bestätigte Änderungen senden (keepalive überlebt das Entladen der Seite).
   useEffect(() => {

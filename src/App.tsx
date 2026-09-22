@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { HashRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { CONFLICT_MESSAGE } from '../shared/progress';
 import { isDue } from './lib/progress';
 import { useStore } from './lib/store';
 import { Aufgabe } from './pages/Aufgabe';
@@ -63,7 +64,13 @@ function Nav() {
           {theme.icon} {theme.label}
         </button>
         <span className={`save-state ${saveState}`}>
-          {saveState === 'gespeichert' ? '✓ gespeichert' : saveState === 'speichert' ? '… speichert' : '⚠ Speichern fehlgeschlagen'}
+          {saveState === 'gespeichert'
+            ? '✓ gespeichert'
+            : saveState === 'speichert'
+              ? '… speichert'
+              : saveState === 'konflikt'
+                ? '⚠ nicht gespeichert – neu laden'
+                : '⚠ Speichern fehlgeschlagen'}
         </span>
       </div>
     </nav>
@@ -71,7 +78,16 @@ function Nav() {
 }
 
 function SaveErrorBanner() {
-  const { saveError } = useStore();
+  const { saveError, saveState } = useStore();
+  if (saveState === 'konflikt') {
+    // Dieser Tab speichert nicht mehr, sonst würde er den Fortschritt aus dem anderen Tab überschreiben.
+    return (
+      <div className="card warn" role="alert">
+        <p>⚠ {CONFLICT_MESSAGE}. Änderungen in diesem Tab werden nicht mehr gespeichert.</p>
+        <button type="button" onClick={() => window.location.reload()}>↻ Neu laden</button>
+      </div>
+    );
+  }
   return saveError ? <p className="card warn" role="alert">⚠ {saveError}</p> : null;
 }
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { emptyProgress, type Progress } from '../shared/progress';
+import { CONFLICT_MESSAGE, emptyProgress, type Progress } from '../shared/progress';
 import { recordAttempt } from '../src/lib/progress';
 import { createProgressSaver, type SaveState } from '../src/lib/progressSaver';
 
@@ -9,13 +9,19 @@ const withAttempts = (n: number): Progress => {
   return p;
 };
 
-/** Server-Attrappe: jede Anfrage bleibt offen, bis der Test sie beantwortet. */
-function fakeServer() {
-  const calls: { body: unknown; resolve: () => void; reject: (e: Error) => void }[] = [];
+/** Server-Attrappe: jede Anfrage bleibt offen, bis der Test sie beantwortet. Erfolg erhöht die Revision wie der echte Server. */
+function fakeServer(startRevision = 0) {
+  let revision = startRevision;
+  const calls: { body: unknown; resolve: () => void; reject: (e: Error) => void; conflict: () => void }[] = [];
   const send = vi.fn(
     (body: unknown) =>
-      new Promise<unknown>((resolve, reject) => {
-        calls.push({ body, resolve: () => resolve({ ok: true }), reject });
+      new Promise<{ revision: number }>((resolve, reject) => {
+        calls.push({
+          body,
+          resolve: () => resolve({ revision: ++revision }),
+          reject,
+          conflict: () => reject(Object.assign(new Error('Fortschritt nicht gespeichert: …'), { status: 409 })),
+        });
       }),
   );
   return { calls, send };
@@ -111,5 +117,36 @@ describe('createProgressSaver', () => {
     server.calls[0].resolve();
     await vi.advanceTimersByTimeAsync(400);
     expect(server.calls[1].body).toMatchObject({ reset: true, attempts: [] });
+  });
+
+  it('sendet die Basis-Revision und übernimmt die neue Revision aus der Antwort', async () => {
+    const server = fakeServer(7);
+    const saver = createProgressSaver({ send: server.send, onState });
+    saver.setBaseRevision(7);
+    saver.schedule(withAttempts(1));
+    await vi.advanceTimersByTimeAsync(400);
+    expect(server.calls[0].body).toMatchObject({ revision: 7 });
+    server.calls[0].resolve();
+    await vi.runAllTimersAsync();
+    // Eine eingespielte Sicherung bringt ihre alte Revision mit – gesendet wird trotzdem die aktuelle.
+    saver.schedule({ ...emptyProgress(), revision: 2 }, true);
+    await vi.advanceTimersByTimeAsync(400);
+    expect(server.calls[1].body).toMatchObject({ revision: 8, reset: true });
+  });
+
+  it('hört nach 409 (anderer Tab) ganz auf zu speichern – auch beim Schließen des Tabs', async () => {
+    const server = fakeServer();
+    const saver = createProgressSaver({ send: server.send, onState });
+    saver.schedule(withAttempts(1));
+    await vi.advanceTimersByTimeAsync(400);
+    saver.schedule(withAttempts(2));
+    server.calls[0].conflict();
+    await vi.runAllTimersAsync();
+    expect(states.at(-1)).toEqual(['konflikt', CONFLICT_MESSAGE]);
+    expect(saver.flushBody()).toBeUndefined();
+    saver.schedule(withAttempts(3));
+    await vi.runAllTimersAsync();
+    expect(server.send).toHaveBeenCalledTimes(1);
+    expect(states.at(-1)).toEqual(['konflikt', CONFLICT_MESSAGE]);
   });
 });

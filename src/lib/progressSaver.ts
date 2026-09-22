@@ -1,13 +1,15 @@
 // Speichert den Fortschritt verzögert (Debounce) per PUT /api/progress – ohne React, damit es testbar bleibt.
 // Es läuft immer höchstens ein Speichern gleichzeitig, sonst könnten Antworten in falscher Reihenfolge ankommen.
+// Jeder PUT trägt die Revision, auf der dieser Tab aufbaut. Antwortet der Server mit 409 (ein anderer Tab hat
+// inzwischen gespeichert), speichert dieser Tab bis zum Neuladen gar nicht mehr, statt fremden Fortschritt zu überschreiben.
 
-import type { Progress } from '../../shared/progress';
+import { CONFLICT_MESSAGE, type Progress } from '../../shared/progress';
 
-export type SaveState = 'gespeichert' | 'speichert' | 'fehler';
+export type SaveState = 'gespeichert' | 'speichert' | 'fehler' | 'konflikt';
 
 export interface SaverOptions {
-  /** Sendet den Body an den Server; lehnt mit einer Fehlermeldung ab, wenn das Speichern scheitert. */
-  send: (body: unknown) => Promise<unknown>;
+  /** Sendet den Body an den Server und liefert die neue Revision; lehnt mit einer Fehlermeldung (und ggf. `status`) ab. */
+  send: (body: unknown) => Promise<{ revision: number }>;
   /** `error` undefined = bisherige Fehlermeldung stehen lassen. */
   onState: (state: SaveState, error?: string | null) => void;
   delay?: number;
@@ -23,22 +25,36 @@ export function createProgressSaver({ send, onState, delay = 400 }: SaverOptions
   let changeSeq = 0;
   let savedSeq = 0;
   let resetSeq = 0;
+  /** Revision des zuletzt geladenen oder gespeicherten Stands auf dem Server. */
+  let baseRevision = 0;
+  let conflict = false;
 
-  /** Nach „Zurücksetzen“/„Sicherung einspielen“ darf der Server deutlich weniger Versuche annehmen. */
-  const body = () => (resetSeq ? { ...latest, reset: true } : latest);
+  // Nach „Zurücksetzen“/„Sicherung einspielen“ darf der Server deutlich weniger Versuche annehmen (reset: true).
+  // Die Revision kommt immer vom Saver, nicht aus `latest` – eine eingespielte Sicherung trägt ihre alte Revision.
+  const body = () => ({ ...latest, revision: baseRevision, ...(resetSeq ? { reset: true } : {}) });
 
   function save() {
+    if (conflict) return;
     inFlight = true;
     const seq = changeSeq;
     const sentReset = resetSeq;
     send(body())
       .then(
-        () => {
+        (res) => {
+          baseRevision = res.revision;
           savedSeq = Math.max(savedSeq, seq);
           if (resetSeq === sentReset) resetSeq = 0;
           onState(savedSeq === changeSeq ? 'gespeichert' : 'speichert', null);
         },
-        (e: Error) => onState('fehler', e.message),
+        (e: Error & { status?: number }) => {
+          if (e.status === 409) {
+            conflict = true;
+            again = false;
+            clearTimeout(timer);
+            timer = undefined;
+            onState('konflikt', CONFLICT_MESSAGE);
+          } else onState('fehler', e.message);
+        },
       )
       .finally(() => {
         inFlight = false;
@@ -56,8 +72,13 @@ export function createProgressSaver({ send, onState, delay = 400 }: SaverOptions
   }
 
   return {
+    /** Revision des vom Server geladenen Stands – Grundlage für das erste Speichern. */
+    setBaseRevision(revision: number) {
+      baseRevision = revision;
+    },
     /** Merkt einen neuen Stand vor und speichert ihn nach `delay` ms, falls keine weitere Änderung folgt. */
     schedule(p: Progress, reset = false) {
+      if (conflict) return;
       latest = p;
       changeSeq++;
       if (reset) resetSeq = changeSeq;
@@ -67,7 +88,7 @@ export function createProgressSaver({ send, onState, delay = 400 }: SaverOptions
     },
     /** Gibt es Änderungen, die der Server noch nicht bestätigt hat (geplant, unterwegs oder fehlgeschlagen)? */
     get pending() {
-      return latest !== null && changeSeq !== savedSeq;
+      return !conflict && latest !== null && changeSeq !== savedSeq;
     },
     /** Body für das letzte Senden beim Schließen des Tabs – oder undefined, wenn nichts aussteht. */
     flushBody(): unknown {

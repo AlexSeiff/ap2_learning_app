@@ -77,6 +77,31 @@ describe('checkProgressPut', () => {
     if (r.ok) expect(r.progress).not.toHaveProperty('reset');
   });
 
+  it('erstes Speichern auf eine Datei ohne revision (Kopie der echten Datei) klappt und vergibt Revision 1', () => {
+    const stored = JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures', 'fortschritt-v1-2026-09-22.json'), 'utf8'));
+    const r = checkProgressPut(migrateProgress(stored), stored);
+    expect(r).toMatchObject({ ok: true, progress: { version: 2, revision: 1 } });
+    if (r.ok) expect(r.progress.attempts).toEqual(stored.attempts);
+  });
+
+  it('zählt die Revision hoch und lehnt einen veralteten Tab mit 409 ab', () => {
+    const stored = { ...withAttempts(3), revision: 4 };
+    expect(checkProgressPut({ ...withAttempts(4), revision: 4 }, stored)).toMatchObject({ ok: true, progress: { revision: 5 } });
+    for (const body of [{ ...withAttempts(4), revision: 3 }, { ...withAttempts(4), revision: 5 }, { ...withAttempts(4), revision: undefined }]) {
+      expect(checkProgressPut(body, stored)).toEqual({
+        ok: false,
+        status: 409,
+        error: 'Fortschritt nicht gespeichert: Die App ist in einem anderen Tab geöffnet – bitte neu laden.',
+      });
+    }
+  });
+
+  it('auch reset: true braucht die aktuelle Revision', () => {
+    const stored = { ...withAttempts(16), revision: 2 };
+    expect(checkProgressPut({ ...emptyProgress(), revision: 1, reset: true }, stored)).toMatchObject({ ok: false, status: 409 });
+    expect(checkProgressPut({ ...emptyProgress(), revision: 2, reset: true }, stored)).toMatchObject({ ok: true, progress: { revision: 3 } });
+  });
+
   it('Schwelle: mehr als 5 weniger oder weniger als die Hälfte', () => {
     expect(isSuspiciousAttemptDrop(10, 10)).toBe(false);
     expect(isSuspiciousAttemptDrop(10, 12)).toBe(false);
@@ -93,7 +118,8 @@ describe('migrateProgress', () => {
   it('übernimmt den aktuellen Stand (Kopie von data/fortschritt.json vom 22.09.2026) ohne Verlust', () => {
     const raw = fixture('fortschritt-v1-2026-09-22.json');
     const migrated = migrateProgress(raw);
-    expect(migrated).toEqual(raw);
+    // Einzige Änderung: Version 1 → 2 mit Revisionszähler 0.
+    expect(migrated).toEqual({ ...raw, version: 2, revision: 0 });
     expect(migrated.attempts).toHaveLength(16);
     expect(migrated.exams).toHaveLength(1);
     expect(Object.keys(migrated.cards)).toHaveLength(8);
