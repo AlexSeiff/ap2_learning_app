@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { api } from '../lib/api';
 import { downloadText } from '../lib/sheets';
 import { emptyProgress, localDate, type Progress } from '../lib/progress';
 import { useStore } from '../lib/store';
@@ -7,6 +8,12 @@ export function Daten() {
   const { content, progress, reload, replaceProgress, aiEnabled, aiModel } = useStore();
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [backups, setBackups] = useState<{ newest: string | null; count: number } | null>(null);
+
+  useEffect(() => {
+    api.backups().then(setBackups, () => setBackups(null));
+  }, []);
+
   const tasks = Object.values(content.tasks);
 
   const reimport = async () => {
@@ -84,6 +91,13 @@ export function Daten() {
           Gespeichert in <code>lern-app/data/fortschritt.json</code> – nur auf diesem Rechner. {progress.attempts.length} Versuche,{' '}
           {progress.exams.length} Klausuren, {Object.keys(progress.cards).length} gelernte Karten.
         </p>
+        {backups && (
+          <p className="hint">
+            {backups.newest
+              ? <>🗄 Automatische Tagessicherung: zuletzt vom {new Date(`${backups.newest}T00:00:00`).toLocaleDateString('de-DE')} ({backups.count} in <code>lern-app/data/backups/</code>, die letzten 14 Tage werden aufbewahrt).</>
+              : <>🗄 Noch keine automatische Tagessicherung – sie entsteht beim ersten Speichern eines Tages in <code>lern-app/data/backups/</code>.</>}
+          </p>
+        )}
         <div className="actions">
           <button type="button" className="secondary" onClick={() => downloadText(`AP2_Fortschritt_${localDate()}.json`, JSON.stringify(progress, null, 2), 'application/json')}>
             ⬇ Sicherung herunterladen

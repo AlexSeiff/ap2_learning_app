@@ -7,7 +7,7 @@ import type { Plugin } from 'vite';
 import type { Content, TaskType } from '../shared/types';
 import { aiEnabled, generateTasks, gradeAnswer, HttpError, MODEL } from './ai';
 import { loadContent, SOURCE_DIR } from './loadContent';
-import { readGenerated, readProgress, writeGenerated, writeProgress } from './store';
+import { backupInfo, readGenerated, readProgress, writeGenerated, writeProgress } from './store';
 
 function contentWithGenerated(): Content {
   const content = loadContent();
@@ -52,6 +52,7 @@ export function apiPlugin(): Plugin {
         try {
           if (route === 'GET /api/content') return send(res, 200, contentWithGenerated());
           if (route === 'GET /api/progress') return send(res, 200, readProgress());
+          if (route === 'GET /api/progress/backups') return send(res, 200, backupInfo());
           if (route === 'PUT /api/progress') {
             writeProgress(await readBody(req));
             return send(res, 200, { ok: true });

@@ -15,6 +15,7 @@ export const api = {
   content: () => request<Content>('GET', '/api/content'),
   progress: () => request<unknown>('GET', '/api/progress'),
   saveProgress: (p: unknown) => request<{ ok: true }>('PUT', '/api/progress', p),
+  backups: () => request<{ newest: string | null; count: number }>('GET', '/api/progress/backups'),
   aiStatus: () => request<{ enabled: boolean; model: string }>('GET', '/api/ai/status'),
   generate: (topicId: string, count: number, types: TaskType[]) =>
     request<Task[]>('POST', '/api/ai/generate', { topicId, count, types }),
