@@ -1,11 +1,7 @@
 // Lernfortschritt: reine Update-Funktionen (Fehlerjournal, Karteikarten). Das gespeicherte Datenmodell liegt in shared/progress.ts.
 
+import { CARD_INTERVALS, JOURNAL_INTERVALS } from '../../shared/config';
 import type { Attempt, Progress, Rating } from '../../shared/progress';
-
-/** Wiederholungsabstände im Fehlerjournal (Tage) je Stufe. */
-export const JOURNAL_INTERVALS = [1, 3, 7];
-/** Abstände für Karteikarten-Fächer 1–5 (Tage bis zur nächsten Abfrage). */
-export const CARD_INTERVALS = [0, 1, 3, 7, 14, 30];
 
 export function localDate(d = new Date()): string {
   const pad = (n: number) => String(n).padStart(2, '0');

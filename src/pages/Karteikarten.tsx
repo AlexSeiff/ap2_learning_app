@@ -6,8 +6,7 @@ import { Markdown } from '../components/Markdown';
 import { isDue, rateCard } from '../lib/progress';
 import { shuffle } from '../lib/shuffle';
 import { useStore } from '../lib/store';
-
-const NEW_PER_SESSION = 20;
+import { NEW_PER_SESSION } from '../../shared/config';
 
 export const CARD_TYPE_LABELS: Record<CardType, string> = {
   wissen: 'Wissen',

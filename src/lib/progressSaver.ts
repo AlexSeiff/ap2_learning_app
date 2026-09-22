@@ -3,6 +3,7 @@
 // Jeder PUT trägt die Revision, auf der dieser Tab aufbaut. Antwortet der Server mit 409 (ein anderer Tab hat
 // inzwischen gespeichert), speichert dieser Tab bis zum Neuladen gar nicht mehr, statt fremden Fortschritt zu überschreiben.
 
+import { SAVE_DELAY_MS } from '../../shared/config';
 import { CONFLICT_MESSAGE, type Progress } from '../../shared/progress';
 
 export type SaveState = 'gespeichert' | 'speichert' | 'fehler' | 'konflikt';
@@ -15,7 +16,7 @@ export interface SaverOptions {
   delay?: number;
 }
 
-export function createProgressSaver({ send, onState, delay = 400 }: SaverOptions) {
+export function createProgressSaver({ send, onState, delay = SAVE_DELAY_MS }: SaverOptions) {
   let latest: Progress | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let inFlight = false;

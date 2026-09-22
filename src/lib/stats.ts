@@ -1,8 +1,7 @@
 import type { Content, Topic } from '../../shared/types';
 import { percent } from './grading';
 import type { Progress } from '../../shared/progress';
-
-export const EXAM_DATE = '2026-11-25';
+import { EXAM_DATE } from '../../shared/config';
 
 export function daysUntilExam(today = new Date()): number {
   const [y, m, d] = EXAM_DATE.split('-').map(Number);

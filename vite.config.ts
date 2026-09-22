@@ -2,6 +2,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import { apiPlugin } from './server/apiPlugin';
+import { DEV_PORT } from './shared/config';
 
 export default defineConfig(({ mode }) => {
   // ANTHROPIC_API_KEY / ANTHROPIC_MODEL / LERN_QUELLE dürfen auch in .env.local stehen.
@@ -11,7 +12,7 @@ export default defineConfig(({ mode }) => {
   }
   return {
     plugins: [react(), apiPlugin()],
-    server: { port: 5178 },
+    server: { port: DEV_PORT },
     test: { include: ['tests/**/*.test.ts'] },
   };
 });

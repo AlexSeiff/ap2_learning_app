@@ -8,8 +8,7 @@ import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
 import { recordAttempt } from '../lib/progress';
 import { useStore } from '../lib/store';
-
-export const EXAM_MINUTES = 90;
+import { EXAM_MINUTES } from '../../shared/config';
 
 export function KlausurAuswahl() {
   const { content, progress } = useStore();
