@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Content } from '../../shared/types';
-import { api } from './api';
+import { api, IS_STATIC } from './api';
 import { createProgressSaver, type SaveState } from './progressSaver';
 import { emptyProgress, migrateProgress, type Progress } from '../../shared/progress';
 
@@ -60,16 +60,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .catch((e: Error) => setError(e.message));
   }, [saver]);
 
-  // Beim Schließen des Tabs noch nicht bestätigte Änderungen senden (keepalive überlebt das Entladen der Seite).
+  // Beim Schließen des Tabs noch nicht bestätigte Änderungen senden.
   useEffect(() => {
     const flush = () => {
       const body = saver.flushBody();
-      if (body === undefined) return;
-      fetch('/api/progress', { method: 'PUT', body: JSON.stringify(body), keepalive: true, headers: { 'Content-Type': 'application/json' } });
+      if (body !== undefined) api.saveProgressOnUnload(body);
     };
     window.addEventListener('pagehide', flush);
     return () => window.removeEventListener('pagehide', flush);
   }, [saver]);
+
+  // Pages-Version: Hat ein anderer Tab gespeichert, ist dieser veraltet – gleich den Hinweis „anderer Tab“ zeigen.
+  useEffect(() => api.watchOtherTabs(() => saver.markConflict()), [saver]);
 
   // Den neuen Stand außerhalb des State-Updaters berechnen und speichern – Updater müssen rein sein (StrictMode ruft sie doppelt auf).
   const commit = useCallback(
@@ -90,7 +92,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       <div className="page">
         <h1>Fehler beim Laden</h1>
         <p className="error">{error}</p>
-        <p>Läuft der Server? Starte die App mit <code>npm run dev</code> im Ordner <code>lern-app</code>.</p>
+        {IS_STATIC ? (
+          <p>Prüf deine Internetverbindung und lade die Seite neu.</p>
+        ) : (
+          <p>Läuft der Server? Starte die App mit <code>npm run dev</code> im Ordner <code>lern-app</code>.</p>
+        )}
       </div>
     );
   }

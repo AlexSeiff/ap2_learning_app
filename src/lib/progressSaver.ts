@@ -50,13 +50,8 @@ export function createProgressSaver({ send, onState, delay = SAVE_DELAY_MS }: Sa
           onState(savedSeq === changeSeq ? 'gespeichert' : 'speichert', null);
         },
         (e: Error & { status?: number }) => {
-          if (e.status === 409) {
-            conflict = true;
-            again = false;
-            clearTimeout(timer);
-            timer = undefined;
-            onState('konflikt', CONFLICT_MESSAGE);
-          } else onState('fehler', e.message);
+          if (e.status === 409) stop();
+          else onState('fehler', e.message);
         },
       )
       .finally(() => {
@@ -66,6 +61,15 @@ export function createProgressSaver({ send, onState, delay = SAVE_DELAY_MS }: Sa
           save();
         }
       });
+  }
+
+  /** Konflikt mit einem anderen Tab: ab jetzt nichts mehr speichern, bis die Seite neu geladen wird. */
+  function stop() {
+    conflict = true;
+    again = false;
+    clearTimeout(timer);
+    timer = undefined;
+    onState('konflikt', CONFLICT_MESSAGE);
   }
 
   function fire() {
@@ -88,6 +92,10 @@ export function createProgressSaver({ send, onState, delay = SAVE_DELAY_MS }: Sa
       onState('speichert');
       clearTimeout(timer);
       timer = setTimeout(fire, delay);
+    },
+    /** Ein anderer Tab hat gespeichert (storage-Ereignis in der Pages-Version) – wie ein 409 behandeln. */
+    markConflict() {
+      if (!conflict) stop();
     },
     /** Gibt es Änderungen, die der Server noch nicht bestätigt hat (geplant, unterwegs oder fehlgeschlagen)? */
     get pending() {

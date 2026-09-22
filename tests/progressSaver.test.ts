@@ -149,4 +149,16 @@ describe('createProgressSaver', () => {
     expect(server.send).toHaveBeenCalledTimes(1);
     expect(states.at(-1)).toEqual(['konflikt', CONFLICT_MESSAGE]);
   });
+
+  it('markConflict (anderer Tab hat im Browser gespeichert) verwirft das geplante Speichern', async () => {
+    const server = fakeServer();
+    const saver = createProgressSaver({ send: server.send, onState });
+    saver.schedule(withAttempts(1));
+    saver.markConflict();
+    saver.markConflict();
+    await vi.runAllTimersAsync();
+    expect(server.send).not.toHaveBeenCalled();
+    expect(saver.flushBody()).toBeUndefined();
+    expect(states.filter(([s]) => s === 'konflikt')).toEqual([['konflikt', CONFLICT_MESSAGE]]);
+  });
 });

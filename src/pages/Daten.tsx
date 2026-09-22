@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { emptyProgress, migrateProgress } from '../../shared/progress';
-import { api } from '../lib/api';
+import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { downloadText } from '../lib/sheets';
 import { localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
@@ -12,7 +12,8 @@ export function Daten() {
   const [backups, setBackups] = useState<{ newest: string | null; count: number } | null>(null);
 
   useEffect(() => {
-    api.backups().then(setBackups, () => setBackups(null));
+    // Tagessicherungen gibt es nur in der lokalen App (data/backups/).
+    if (!IS_STATIC) api.backups().then(setBackups, () => setBackups(null));
   }, []);
 
   const tasks = Object.values(content.tasks);
@@ -47,8 +48,14 @@ export function Daten() {
           Lernblättern ({tasks.filter((t) => !t.generated && t.solution).length} mit Musterlösung) · {tasks.filter((t) => t.generated).length} KI-Aufgaben ·{' '}
           {content.flashcards.length} Karteikarten · {content.materials.length} Materialien
         </p>
-        <button type="button" onClick={reimport}>↻ Lernblätter neu importieren</button>
-        <p className="hint">Änderungen an den .md-Dateien werden auch automatisch erkannt – die Seite lädt dann neu.</p>
+        {IS_STATIC ? (
+          <p className="hint">Online-Version: Die Lernblätter sind beim Veröffentlichen eingebaut. Änderungen erscheinen nach dem nächsten Push.</p>
+        ) : (
+          <>
+            <button type="button" onClick={reimport}>↻ Lernblätter neu importieren</button>
+            <p className="hint">Änderungen an den .md-Dateien werden auch automatisch erkannt – die Seite lädt dann neu.</p>
+          </>
+        )}
         {content.issues.length ? (
           <>
             <h3>Hinweise ({content.issues.length})</h3>
@@ -90,9 +97,19 @@ export function Daten() {
       <section className="card">
         <h2>Fortschritt</h2>
         <p>
-          Gespeichert in <code>lern-app/data/fortschritt.json</code> – nur auf diesem Rechner. {progress.attempts.length} Versuche,{' '}
-          {progress.exams.length} Klausuren, {Object.keys(progress.cards).length} gelernte Karten.
+          {IS_STATIC ? (
+            <>Gespeichert in diesem Browser (localStorage) – nur auf diesem Gerät.</>
+          ) : (
+            <>Gespeichert in <code>lern-app/data/fortschritt.json</code> – nur auf diesem Rechner.</>
+          )}{' '}
+          {progress.attempts.length} Versuche, {progress.exams.length} Klausuren, {Object.keys(progress.cards).length} gelernte Karten.
         </p>
+        {IS_STATIC && (
+          <p className="hint">
+            🗄 Hier gibt es keine automatische Tagessicherung. Lade ab und zu eine Sicherung herunter – Browserdaten löschen löscht auch den Fortschritt.
+            Umziehen aus der lokalen App: dort „Sicherung herunterladen“, hier „Sicherung einspielen“ (und umgekehrt).
+          </p>
+        )}
         {backups && (
           <p className="hint">
             {backups.newest
@@ -123,7 +140,7 @@ export function Daten() {
 
       <section className="card">
         <h2>KI</h2>
-        <p>{aiEnabled ? <>✓ Aktiv mit Modell <code>{aiModel}</code>.</> : 'Deaktiviert – kein ANTHROPIC_API_KEY gesetzt (siehe README).'}</p>
+        <p>{IS_STATIC ? AI_UNAVAILABLE : aiEnabled ?<>✓ Aktiv mit Modell <code>{aiModel}</code>.</> : 'Deaktiviert – kein ANTHROPIC_API_KEY gesetzt (siehe README).'}</p>
       </section>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Task, TaskType } from '../../shared/types';
-import { api } from '../lib/api';
+import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { formatPoints } from '../lib/grading';
 import { useStore } from '../lib/store';
 
@@ -22,6 +22,23 @@ export function Generator() {
   const [state, setState] = useState<{ loading?: boolean; error?: string; created?: Task[] }>({});
 
   const generated = Object.values(content.tasks).filter((t) => t.generated);
+
+  if (IS_STATIC) {
+    return (
+      <div className="page narrow">
+        <h1>KI-Aufgaben</h1>
+        <div className="card warn">
+          <p>
+            <b>🤖 {AI_UNAVAILABLE}</b>
+          </p>
+          <p>
+            Diese Online-Version läuft ohne Server, damit der Schlüssel geheim bleibt. Neue KI-Aufgaben erstellst du in der App auf deinem Rechner
+            (<code>Lern-App starten.cmd</code>). Alles andere funktioniert auch hier.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!aiEnabled) {
     return (

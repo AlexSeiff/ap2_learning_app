@@ -1,13 +1,32 @@
 import type { ApiResponses, GenerateRequest, GradeRequest, SaveProgressRequest } from '../../shared/api';
 import type { TaskType } from '../../shared/types';
+import { ApiError } from './apiError';
+import { createStaticApi } from './staticApi';
 
-/** Fehler einer API-Anfrage mit HTTP-Status (z. B. 409, wenn ein anderer Tab neuer gespeichert hat). */
-export class ApiError extends Error {
-  status: number;
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
+export { ApiError };
+export { AI_UNAVAILABLE } from './staticApi';
+
+/**
+ * Statische Version für GitHub Pages (`npm run build:pages` = `vite build --mode pages`)?
+ * Dann gibt es keinen Server: Inhalte aus content.json, Fortschritt im localStorage, keine KI.
+ * Vite ersetzt MODE beim Build durch einen festen Wert – der nicht benutzte Zweig fällt aus dem Bundle.
+ */
+export const IS_STATIC = import.meta.env.MODE === 'pages';
+
+/** Woher die App Inhalte und Fortschritt bekommt: lokaler Server (/api/…) oder Browser (staticApi.ts). */
+export interface DataSource {
+  content(): Promise<ApiResponses['GET /api/content']>;
+  progress(): Promise<ApiResponses['GET /api/progress']>;
+  saveProgress(p: SaveProgressRequest): Promise<ApiResponses['PUT /api/progress']>;
+  /** Letztes Speichern beim Schließen des Tabs – muss das Entladen der Seite überleben. */
+  saveProgressOnUnload(p: SaveProgressRequest): void;
+  backups(): Promise<ApiResponses['GET /api/progress/backups']>;
+  aiStatus(): Promise<ApiResponses['GET /api/ai/status']>;
+  generate(topicId: string, count: number, types: TaskType[]): Promise<ApiResponses['POST /api/ai/generate']>;
+  grade(taskId: string, answer: string): Promise<ApiResponses['POST /api/ai/grade']>;
+  deleteGenerated(id: string): Promise<ApiResponses['DELETE /api/generated/:id']>;
+  /** Meldet, wenn ein anderer Tab gespeichert hat; liefert die Abmelde-Funktion. Mit Server merkt das erst der 409 beim Speichern. */
+  watchOtherTabs(onChange: () => void): () => void;
 }
 
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
@@ -22,15 +41,20 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
 }
 
 // Antworttypen je Route: shared/api.ts (ApiResponses) – dieselben Typen nutzt der Server.
-export const api = {
-  content: () => request<ApiResponses['GET /api/content']>('GET', '/api/content'),
-  progress: () => request<ApiResponses['GET /api/progress']>('GET', '/api/progress'),
-  saveProgress: (p: SaveProgressRequest) => request<ApiResponses['PUT /api/progress']>('PUT', '/api/progress', p),
-  backups: () => request<ApiResponses['GET /api/progress/backups']>('GET', '/api/progress/backups'),
-  aiStatus: () => request<ApiResponses['GET /api/ai/status']>('GET', '/api/ai/status'),
-  generate: (topicId: string, count: number, types: TaskType[]) =>
-    request<ApiResponses['POST /api/ai/generate']>('POST', '/api/ai/generate', { topicId, count, types } satisfies GenerateRequest),
-  grade: (taskId: string, answer: string) =>
-    request<ApiResponses['POST /api/ai/grade']>('POST', '/api/ai/grade', { taskId, answer } satisfies GradeRequest),
-  deleteGenerated: (id: string) => request<ApiResponses['DELETE /api/generated/:id']>('DELETE', `/api/generated/${encodeURIComponent(id)}`),
+const serverApi: DataSource = {
+  content: () => request('GET', '/api/content'),
+  progress: () => request('GET', '/api/progress'),
+  saveProgress: (p) => request('PUT', '/api/progress', p),
+  // keepalive überlebt das Entladen der Seite.
+  saveProgressOnUnload: (p) => {
+    fetch('/api/progress', { method: 'PUT', body: JSON.stringify(p), keepalive: true, headers: { 'Content-Type': 'application/json' } });
+  },
+  backups: () => request('GET', '/api/progress/backups'),
+  aiStatus: () => request('GET', '/api/ai/status'),
+  generate: (topicId, count, types) => request('POST', '/api/ai/generate', { topicId, count, types } satisfies GenerateRequest),
+  grade: (taskId, answer) => request('POST', '/api/ai/grade', { taskId, answer } satisfies GradeRequest),
+  deleteGenerated: (id) => request('DELETE', `/api/generated/${encodeURIComponent(id)}`),
+  watchOtherTabs: () => () => {},
 };
+
+export const api: DataSource = IS_STATIC ? createStaticApi() : serverApi;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Section, Task } from '../../shared/types';
-import { api } from '../lib/api';
+import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { autoGrade, difficulty, formatPoints } from '../lib/grading';
 import { numberBlanks, solutionMarkdown } from '../lib/sheets';
 import { useStore } from '../lib/store';
@@ -132,6 +132,11 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
               {aiEnabled && (
                 <button type="button" className="secondary" onClick={runAi} disabled={ai.loading}>
                   {ai.loading ? 'KI bewertet …' : '🤖 KI-Bewertung'}
+                </button>
+              )}
+              {IS_STATIC && (
+                <button type="button" className="secondary" disabled title={AI_UNAVAILABLE}>
+                  🤖 KI-Bewertung: nur in der lokalen App
                 </button>
               )}
             </div>
