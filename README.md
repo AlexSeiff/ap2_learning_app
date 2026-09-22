@@ -114,7 +114,7 @@ Aufbau:
 
 ```
 lern-app/
-├─ shared/        Datenmodell (types.ts) und Markdown-Parser (parser.ts)
+├─ shared/        Datenmodell (types.ts), Markdown-Parser (parser.ts), gespeicherter Fortschritt: Typen + zod-Schema (progress.ts)
 ├─ server/        Vite-Plugin mit lokaler API (/api/…), Speicherung, Claude-Anbindung
 ├─ src/           React-Oberfläche (pages/, components/, lib/)
 └─ tests/         Vitest-Tests

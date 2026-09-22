@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { JournalEntry } from '../lib/progress';
+import type { JournalEntry } from '../../shared/progress';
 import { formatPoints } from '../lib/grading';
 import { isDue, localDate } from '../lib/progress';
 import { useStore } from '../lib/store';

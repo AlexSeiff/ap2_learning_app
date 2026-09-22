@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import type { ExamRun, Progress } from '../../shared/progress';
 import type { Task, Topic } from '../../shared/types';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
-import { recordAttempt, type ExamRun, type Progress } from '../lib/progress';
+import { recordAttempt } from '../lib/progress';
 import { useStore } from '../lib/store';
 
 export const EXAM_MINUTES = 90;

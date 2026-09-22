@@ -1,8 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { checkProgressPut, isSuspiciousAttemptDrop, ProgressSchema } from '../shared/progressSchema';
-import { emptyProgress, recordAttempt } from '../src/lib/progress';
+import { checkProgressPut, emptyProgress, isSuspiciousAttemptDrop, ProgressPutSchema, ProgressSchema, type Progress } from '../shared/progress';
+import { recordAttempt } from '../src/lib/progress';
+import type { z } from 'zod';
 
 const withAttempts = (n: number) => {
   let p = emptyProgress();
@@ -14,6 +15,14 @@ describe('ProgressSchema', () => {
   it('akzeptiert einen leeren und einen gefüllten Fortschritt', () => {
     expect(ProgressSchema.safeParse(emptyProgress()).success).toBe(true);
     expect(ProgressSchema.safeParse(withAttempts(3)).success).toBe(true);
+  });
+
+  it('Typen und Schema passen zusammen: jeder Progress der App erfüllt das Schema', () => {
+    // Wird von `npm run typecheck` geprüft – weicht ein Typ vom Schema ab, schlägt der Typcheck fehl.
+    const asStored = (p: Progress): z.input<typeof ProgressSchema> => p;
+    const asPut = (p: Progress): z.input<typeof ProgressPutSchema> => ({ ...p, reset: true });
+    expect(ProgressSchema.safeParse(asStored(withAttempts(1))).success).toBe(true);
+    expect(ProgressPutSchema.safeParse(asPut(withAttempts(1))).success).toBe(true);
   });
 
   it('behält unbekannte Felder und ergänzt fehlende Sammlungen', () => {

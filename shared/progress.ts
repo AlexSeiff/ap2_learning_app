@@ -1,7 +1,70 @@
-// zod-Schema für den gespeicherten Lernfortschritt (data/fortschritt.json) und die Prüfung von PUT /api/progress.
-// Bewusst tolerant: unbekannte Felder bleiben erhalten (looseObject), damit ältere oder neuere Dateien nicht abgewiesen werden.
+// Gespeicherter Lernfortschritt (data/fortschritt.json): Typen, zod-Schema und Prüfung von PUT /api/progress.
+// Liegt in shared/, weil Client (lib/progress.ts, store.tsx) und Server (apiPlugin.ts) dasselbe Format nutzen.
+// Die Typen beschreiben, was die App schreibt. Das Schema ist bewusst toleranter (unbekannte Felder bleiben erhalten,
+// `mode` als beliebiger String, `null` statt NaN), damit ältere oder neuere Dateien nicht abgewiesen werden.
+// Ein Typtest in tests/progress.test.ts stellt sicher, dass jeder `Progress` das Schema erfüllt.
 
 import { z } from 'zod';
+
+export type Mode = 'klausur' | 'einzel' | 'wiederholung';
+export type Rating = 'gewusst' | 'unsicher' | 'nicht';
+
+export type Attempt = {
+  taskId: string;
+  date: string;
+  points: number;
+  max: number;
+  mode: Mode;
+};
+
+export type ExamRun = {
+  id: string;
+  topicId: string;
+  startedAt: string;
+  submittedAt?: string;
+  finishedAt?: string;
+  answers: Record<string, string>;
+  scores: Record<string, number>;
+  total?: number;
+  max: number;
+};
+
+export type CardState = {
+  box: number;
+  due: string;
+  reviews: number;
+  last?: Rating;
+};
+
+export type JournalEntry = {
+  taskId: string;
+  addedAt: string;
+  /** 0 = Wiederholung nach 1 Tag, 1 = nach 3 Tagen, 2 = nach 7 Tagen. */
+  stage: number;
+  due: string;
+  lastPoints: number;
+  max: number;
+  resolvedAt?: string;
+};
+
+export type Progress = {
+  version: 1;
+  attempts: Attempt[];
+  exams: ExamRun[];
+  activeExam?: ExamRun;
+  cards: Record<string, CardState>;
+  journal: Record<string, JournalEntry>;
+  lernziele: Record<string, boolean>;
+};
+
+export const emptyProgress = (): Progress => ({
+  version: 1,
+  attempts: [],
+  exams: [],
+  cards: {},
+  journal: {},
+  lernziele: {},
+});
 
 export const AttemptSchema = z.looseObject({
   taskId: z.string(),

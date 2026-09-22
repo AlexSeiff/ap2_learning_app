@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { ProgressSchema } from '../../shared/progressSchema';
+import { emptyProgress, ProgressSchema, type Progress } from '../../shared/progress';
 import { api } from '../lib/api';
 import { downloadText } from '../lib/sheets';
-import { emptyProgress, localDate, type Progress } from '../lib/progress';
+import { localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
 
 export function Daten() {

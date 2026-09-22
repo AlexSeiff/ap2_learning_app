@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import type { Rating } from '../../shared/progress';
 import type { CardType, Flashcard } from '../../shared/types';
 import { Markdown } from '../components/Markdown';
-import { isDue, rateCard, type Rating } from '../lib/progress';
+import { isDue, rateCard } from '../lib/progress';
 import { useStore } from '../lib/store';
 
 const NEW_PER_SESSION = 20;

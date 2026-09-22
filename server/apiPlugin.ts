@@ -4,7 +4,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
-import { checkProgressPut } from '../shared/progressSchema';
+import { checkProgressPut } from '../shared/progress';
 import type { Content, TaskType } from '../shared/types';
 import { aiEnabled, generateTasks, gradeAnswer, HttpError, MODEL } from './ai';
 import { loadContent, SOURCE_DIR } from './loadContent';

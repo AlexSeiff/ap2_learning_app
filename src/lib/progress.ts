@@ -1,64 +1,6 @@
-// Lernfortschritt: Datenmodell und reine Update-Funktionen (Fehlerjournal, Karteikarten).
+// Lernfortschritt: reine Update-Funktionen (Fehlerjournal, Karteikarten). Das gespeicherte Datenmodell liegt in shared/progress.ts.
 
-export type Mode = 'klausur' | 'einzel' | 'wiederholung';
-export type Rating = 'gewusst' | 'unsicher' | 'nicht';
-
-export interface Attempt {
-  taskId: string;
-  date: string;
-  points: number;
-  max: number;
-  mode: Mode;
-}
-
-export interface ExamRun {
-  id: string;
-  topicId: string;
-  startedAt: string;
-  submittedAt?: string;
-  finishedAt?: string;
-  answers: Record<string, string>;
-  scores: Record<string, number>;
-  total?: number;
-  max: number;
-}
-
-export interface CardState {
-  box: number;
-  due: string;
-  reviews: number;
-  last?: Rating;
-}
-
-export interface JournalEntry {
-  taskId: string;
-  addedAt: string;
-  /** 0 = Wiederholung nach 1 Tag, 1 = nach 3 Tagen, 2 = nach 7 Tagen. */
-  stage: number;
-  due: string;
-  lastPoints: number;
-  max: number;
-  resolvedAt?: string;
-}
-
-export interface Progress {
-  version: 1;
-  attempts: Attempt[];
-  exams: ExamRun[];
-  activeExam?: ExamRun;
-  cards: Record<string, CardState>;
-  journal: Record<string, JournalEntry>;
-  lernziele: Record<string, boolean>;
-}
-
-export const emptyProgress = (): Progress => ({
-  version: 1,
-  attempts: [],
-  exams: [],
-  cards: {},
-  journal: {},
-  lernziele: {},
-});
+import type { Attempt, Progress, Rating } from '../../shared/progress';
 
 /** Wiederholungsabstände im Fehlerjournal (Tage) je Stufe. */
 export const JOURNAL_INTERVALS = [1, 3, 7];

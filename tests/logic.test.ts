@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { Task } from '../shared/types';
 import { autoGrade, ihkGrade, parseGermanNumber } from '../src/lib/grading';
-import { addDays, emptyProgress, rateCard, recordAttempt } from '../src/lib/progress';
+import { emptyProgress } from '../shared/progress';
+import { addDays, rateCard, recordAttempt } from '../src/lib/progress';
 import { daysUntilExam, isoWeek } from '../src/lib/stats';
 
 const T0 = '2026-09-21';

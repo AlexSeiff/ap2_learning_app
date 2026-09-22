@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Content } from '../../shared/types';
 import { api } from './api';
-import { emptyProgress, type Progress } from './progress';
+import { emptyProgress, type Progress } from '../../shared/progress';
 
 interface Store {
   content: Content;
