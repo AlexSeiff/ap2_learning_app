@@ -27,7 +27,7 @@ export function parseGermanNumber(input: string): number | null {
   let s = input.trim().replace(/[^\d,.\-−]/g, '').replace('−', '-');
   if (!s) return null;
   if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
-  else if (/^\-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+  else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }

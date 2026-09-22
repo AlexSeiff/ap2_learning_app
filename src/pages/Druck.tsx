@@ -16,13 +16,14 @@ export function Druck() {
   const sheet = thema ? examSheet(content, thema, kind) : selectionSheet(content, ids, kind);
 
   // Der Seitentitel wird beim „Als PDF speichern" als Dateiname vorgeschlagen.
+  const fileBase = sheet?.fileBase;
   useEffect(() => {
     const prev = document.title;
-    if (sheet) document.title = sheet.fileBase;
+    if (fileBase) document.title = fileBase;
     return () => {
       document.title = prev;
     };
-  }, [sheet?.fileBase]);
+  }, [fileBase]);
 
   if (!sheet || !sheet.groups.some((g) => g.tasks.length)) {
     return (

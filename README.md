@@ -144,8 +144,14 @@ Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein an
 ```bash
 npm test             # Parser- und Logik-Tests (Formattests mit Fixtures, ein Rauchtest mit den echten Lernblättern aus content/)
 npm run typecheck
+npm run lint         # ESLint (typescript-eslint, React-Hooks-Regeln), Warnungen zählen als Fehler
+npm run format       # Prettier formatiert den Code (format:check prüft nur)
 npm run build:pages  # statische Version für GitHub Pages nach dist/
 ```
+
+TypeScript liegt doppelt vor: `tsc` (Typecheck, Build) ist TypeScript 7 aus dem Paket `@typescript/native`. Unter dem Paketnamen
+`typescript` steckt TypeScript 6 (`@typescript/typescript6`), weil typescript-eslint die Programmierschnittstelle von TypeScript 7 noch
+nicht unterstützt – so empfiehlt es auch Microsoft für den Übergang.
 
 Lokale App und Online-Version unterscheiden sich nur in der Datenquelle: `src/lib/api.ts` wählt über
 `import.meta.env.MODE === 'pages'` (gesetzt von `vite build --mode pages`) zwischen der lokalen API und `src/lib/staticApi.ts`

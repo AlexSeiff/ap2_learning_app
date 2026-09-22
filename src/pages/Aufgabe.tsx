@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
@@ -9,6 +9,11 @@ import { useStore } from '../lib/store';
 
 export function Aufgabe() {
   const { taskId } = useParams();
+  // Beim Wechsel zur nächsten Aufgabe alles zurücksetzen: neuer key = frischer Zustand.
+  return <AufgabeSeite key={taskId} taskId={taskId} />;
+}
+
+function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { content, progress, update } = useStore();
@@ -18,14 +23,6 @@ export function Aufgabe() {
   const [revealed, setRevealed] = useState(false);
   const [points, setPoints] = useState<number | undefined>();
   const [saved, setSaved] = useState(false);
-
-  // Beim Wechsel zur nächsten Aufgabe alles zurücksetzen.
-  useEffect(() => {
-    setAnswer('');
-    setRevealed(false);
-    setPoints(undefined);
-    setSaved(false);
-  }, [taskId]);
 
   if (!task) return <div className="page"><h1>Aufgabe nicht gefunden</h1><Link to="/aufgaben">Zur Aufgabenliste</Link></div>;
   const topic = content.topics.find((t) => t.id === task.topicId);
