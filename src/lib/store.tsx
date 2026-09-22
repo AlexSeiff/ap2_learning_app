@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Content } from '../../shared/types';
 import { api } from './api';
+import { createProgressSaver, type SaveState } from './progressSaver';
 import { emptyProgress, migrateProgress, type Progress } from '../../shared/progress';
 
 interface Store {
@@ -11,7 +12,7 @@ interface Store {
   update: (fn: (p: Progress) => Progress) => void;
   replaceProgress: (p: Progress) => void;
   reload: () => Promise<void>;
-  saveState: 'gespeichert' | 'speichert' | 'fehler';
+  saveState: SaveState;
   /** Meldung des Servers, wenn das Speichern abgelehnt wurde (z. B. HTTP 400). */
   saveError: string | null;
 }
@@ -29,13 +30,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<Progress | null>(null);
   const [ai, setAi] = useState({ enabled: false, model: '' });
   const [error, setError] = useState<string | null>(null);
-  const [saveState, setSaveState] = useState<Store['saveState']>('gespeichert');
+  const [saveState, setSaveState] = useState<SaveState>('gespeichert');
   const [saveError, setSaveError] = useState<string | null>(null);
-  const timer = useRef<number | undefined>(undefined);
-  const latest = useRef<Progress | null>(null);
-  // Nach „Zurücksetzen“/„Sicherung einspielen“ darf der Server deutlich weniger Versuche annehmen.
-  const resetPending = useRef(false);
-  const saveBody = () => (resetPending.current ? { ...latest.current, reset: true } : latest.current);
+  // Immer der neueste Stand – auch wenn mehrere update()-Aufrufe vor dem nächsten Rendern kommen.
+  const progressRef = useRef<Progress | null>(null);
+  const [saver] = useState(() =>
+    createProgressSaver({
+      send: api.saveProgress,
+      onState: (state, err) => {
+        setSaveState(state);
+        if (err !== undefined) setSaveError(err);
+      },
+    }),
+  );
 
   const reload = useCallback(async () => {
     setContent(await api.content());
@@ -45,63 +52,37 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     Promise.all([api.content(), api.progress(), api.aiStatus()])
       .then(([c, p, s]) => {
         setContent(c);
-        setProgress(migrateProgress(p));
+        progressRef.current = migrateProgress(p);
+        setProgress(progressRef.current);
         setAi(s);
       })
       .catch((e: Error) => setError(e.message));
   }, []);
 
-  const persist = useCallback((p: Progress, reset = false) => {
-    latest.current = p;
-    if (reset) resetPending.current = true;
-    setSaveState('speichert');
-    window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => {
-      const wasReset = resetPending.current;
-      api.saveProgress(saveBody()).then(
-        () => {
-          if (wasReset) resetPending.current = false;
-          setSaveState('gespeichert');
-          setSaveError(null);
-        },
-        (e: Error) => {
-          setSaveState('fehler');
-          setSaveError(e.message);
-        },
-      );
-    }, 400);
-  }, []);
-
-  // Beim Schließen des Tabs ausstehende Änderungen noch senden.
+  // Beim Schließen des Tabs noch nicht bestätigte Änderungen senden (keepalive überlebt das Entladen der Seite).
   useEffect(() => {
     const flush = () => {
-      if (timer.current !== undefined && latest.current) {
-        fetch('/api/progress', { method: 'PUT', body: JSON.stringify(saveBody()), keepalive: true, headers: { 'Content-Type': 'application/json' } });
-      }
+      const body = saver.flushBody();
+      if (body === undefined) return;
+      fetch('/api/progress', { method: 'PUT', body: JSON.stringify(body), keepalive: true, headers: { 'Content-Type': 'application/json' } });
     };
     window.addEventListener('pagehide', flush);
     return () => window.removeEventListener('pagehide', flush);
-  }, []);
+  }, [saver]);
 
-  const update = useCallback(
-    (fn: (p: Progress) => Progress) => {
-      setProgress((prev) => {
-        const next = fn(prev ?? emptyProgress());
-        persist(next);
-        return next;
-      });
-    },
-    [persist],
-  );
-
-  const replaceProgress = useCallback(
-    (p: Progress) => {
-      const next = migrateProgress(p);
+  // Den neuen Stand außerhalb des State-Updaters berechnen und speichern – Updater müssen rein sein (StrictMode ruft sie doppelt auf).
+  const commit = useCallback(
+    (next: Progress, reset = false) => {
+      progressRef.current = next;
       setProgress(next);
-      persist(next, true);
+      saver.schedule(next, reset);
     },
-    [persist],
+    [saver],
   );
+
+  const update = useCallback((fn: (p: Progress) => Progress) => commit(fn(progressRef.current ?? emptyProgress())), [commit]);
+
+  const replaceProgress = useCallback((p: Progress) => commit(migrateProgress(p), true), [commit]);
 
   if (error) {
     return (
