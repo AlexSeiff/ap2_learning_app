@@ -7,13 +7,15 @@ import type { Plugin } from 'vite';
 import { checkProgressPut } from '../shared/progress';
 import type { Content, TaskType } from '../shared/types';
 import { aiEnabled, generateTasks, gradeAnswer, HttpError, MODEL } from './ai';
-import { loadContent, SOURCE_DIR } from './loadContent';
+import { createContentCache, withGenerated } from './contentCache';
+import { isContentSource, loadContent, SOURCE_DIR } from './loadContent';
 import { backupInfo, readGenerated, readProgress, writeGenerated, writeProgress } from './store';
 
+const contentCache = createContentCache(() => loadContent());
+
+/** Generierte Aufgaben werden bei jedem Request frisch aus data/ gelesen, nur die Lernblätter kommen aus dem Cache. */
 function contentWithGenerated(): Content {
-  const content = loadContent();
-  for (const task of readGenerated()) content.tasks[task.id] = task;
-  return content;
+  return withGenerated(contentCache.get(), readGenerated());
 }
 
 async function readBody(req: IncomingMessage): Promise<any> {
@@ -38,13 +40,14 @@ export function apiPlugin(): Plugin {
   return {
     name: 'ap2-api',
     configureServer(server) {
-      // Änderungen an den Lernblättern → Seite neu laden, Inhalte werden dabei neu importiert.
+      // Lernblatt geändert, neu oder gelöscht → Cache leeren und Seite neu laden, Inhalte werden dabei neu importiert.
       server.watcher.add([join(SOURCE_DIR, '*.md'), join(SOURCE_DIR, '*Lernkarten*.json')]);
-      server.watcher.on('change', (file) => {
-        if (file.startsWith(SOURCE_DIR) && /\.(md|json)$/.test(file) && !file.includes('lern-app')) {
-          server.ws.send({ type: 'full-reload' });
-        }
-      });
+      const onSourceEvent = (file: string) => {
+        if (!isContentSource(file)) return;
+        contentCache.invalidate();
+        server.ws.send({ type: 'full-reload' });
+      };
+      for (const event of ['change', 'add', 'unlink'] as const) server.watcher.on(event, onSourceEvent);
 
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://localhost');
