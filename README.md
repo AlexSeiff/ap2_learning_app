@@ -18,6 +18,11 @@ npm run dev
 
 Beenden: im Terminalfenster `Strg + C`.
 
+**Gebaute Version:** `npm start` baut die App (`dist/`) und startet sie mit `vite preview` – ebenfalls unter http://localhost:5178,
+mit derselben lokalen API, denselben Daten in `data/` und den Lernblättern aus `AP-2`. Unterschied zu `npm run dev`: Nach dem
+Ändern eines Lernblatts lädt die Seite nicht von selbst neu (einfach F5 drücken), und Codeänderungen brauchen ein neues `npm start`.
+Nicht gleichzeitig mit `npm run dev` starten – beide nutzen Port 5178.
+
 ## Online-Version (GitHub Pages)
 
 Unterwegs lernen ohne eigenen Rechner: **https://alexseiff.github.io/ap2_learning_app/**
@@ -55,7 +60,7 @@ Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen 
 
 | Bereich | Was es tut |
 |---|---|
-| **Übersicht** | Countdown zur Prüfung, aktuelle Lernplan-Woche, fällige Wiederholungen, Fortschritt je Thema, schwächste Themen |
+| **Übersicht** | Countdown zur Prüfung, Lernserie (Tage in Folge), aktuelle Lernplan-Woche, fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
 | **Lernen** | Theorie aller 12 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
 | **Karteikarten** | 407 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (24 Decks) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
@@ -132,39 +137,77 @@ Importbericht im Terminal: `npm run import-report`
 
 Alles bleibt lokal:
 
-- `lern-app/data/fortschritt.json` – Versuche, Klausuren, Karteikarten, Fehlerjournal, Lernziele
+- `lern-app/data/fortschritt.json` – Versuche, Klausuren, Karteikarten, Fehlerjournal, Lernziele, Karteikarten-Lerntage (für die Lernserie)
 - `lern-app/data/generierte-aufgaben.json` – KI-Aufgaben
 
-Sicherung: *Daten & Import → Sicherung herunterladen*. Zusätzlich legt die App beim ersten Speichern eines Tages automatisch `lern-app/data/backups/fortschritt-JJJJ-MM-TT.json` an (die letzten 14 Tage bleiben erhalten).
+Sicherung: *Daten & Import → Sicherung herunterladen*. Zusätzlich legt die App beim ersten Speichern eines Tages automatisch `lern-app/data/backups/fortschritt-JJJJ-MM-TT.json` an (die letzten 14 Tage bleiben erhalten; die Seite *Daten & Import* zeigt die neueste).
+
+**Lernserie:** Ein Lerntag ist ein Tag (nach lokaler Uhrzeit) mit mindestens einem Aufgabenversuch, einer gestarteten, abgegebenen oder abgeschlossenen Klausur oder einer bewerteten Karteikarte. Die Serie zählt die Tage in Folge bis heute; hast du heute noch nichts gelernt, zählt sie bis gestern weiter und reißt erst morgen. Karteikarten zählen erst ab diesem Update mit (vorher speicherte die App dafür kein Datum).
 
 Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein anderer Tab inzwischen gespeichert, lehnt der Server das Speichern ab (HTTP 409) und die App zeigt „Die App ist in einem anderen Tab geöffnet – bitte neu laden“. Dieser Tab speichert dann nichts mehr, bis du ihn neu lädst – so überschreibt er nie den Fortschritt aus dem anderen Tab.
 
 ## Entwicklung
 
 ```bash
-npm test             # Parser- und Logik-Tests (Formattests mit Fixtures, ein Rauchtest mit den echten Lernblättern aus content/)
-npm run typecheck
-npm run lint         # ESLint (typescript-eslint, React-Hooks-Regeln), Warnungen zählen als Fehler
-npm run format       # Prettier formatiert den Code (format:check prüft nur)
-npm run build:pages  # statische Version für GitHub Pages nach dist/
+npm run dev           # Dev-Server mit lokaler API auf http://localhost:5178 (das startet auch Lern-App starten.cmd)
+npm start             # bauen (tsc + vite build) und die gebaute App mit lokaler API per vite preview auf Port 5178 starten
+npm test              # Vitest: Parser, Logik, Migration, Statistik (Formattests mit Fixtures, ein Rauchtest mit den echten Lernblättern aus content/)
+npm run typecheck     # tsc -b
+npm run lint          # ESLint (typescript-eslint, React-Hooks-Regeln), Warnungen zählen als Fehler
+npm run format        # Prettier formatiert den Code (format:check prüft nur)
+npm run build         # Typecheck + Build der lokalen App nach dist/
+npm run build:pages   # statische Version für GitHub Pages nach dist/ (mit content.json)
+npm run import-report # Importbericht der Lernblätter im Terminal
+npm run sync-content  # Lernblätter aus AP-2 nach content/ kopieren (für Pages und Tests)
 ```
+
+Vor jedem Commit sollten `npm test`, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build` und
+`npm run build:pages` durchlaufen – GitHub Actions (`.github/workflows/pages.yml`) prüft Tests, Lint und den Pages-Build bei jedem Push.
 
 TypeScript liegt doppelt vor: `tsc` (Typecheck, Build) ist TypeScript 7 aus dem Paket `@typescript/native`. Unter dem Paketnamen
 `typescript` steckt TypeScript 6 (`@typescript/typescript6`), weil typescript-eslint die Programmierschnittstelle von TypeScript 7 noch
 nicht unterstützt – so empfiehlt es auch Microsoft für den Übergang.
 
-Lokale App und Online-Version unterscheiden sich nur in der Datenquelle: `src/lib/api.ts` wählt über
-`import.meta.env.MODE === 'pages'` (gesetzt von `vite build --mode pages`) zwischen der lokalen API und `src/lib/staticApi.ts`
-(content.json + localStorage). Der Build liest die Lernblätter bewusst aus `content/` und nicht aus `AP-2` –
-so bauen GitHub Actions und dein Rechner dasselbe. Der Dev-Server liest weiter direkt aus `AP-2`.
+**Drei Betriebsarten, eine Oberfläche:**
+
+| | `npm run dev` | `npm start` (vite preview) | `npm run build:pages` (GitHub Pages) |
+|---|---|---|---|
+| API `/api/…` | `server/apiPlugin.ts` über `configureServer` | dieselbe Middleware über `configurePreviewServer` | keine – `src/lib/staticApi.ts` |
+| Lernblätter | live aus `AP-2`, Seite lädt bei Änderungen neu | aus `AP-2`, Cache wird bei Änderungen geleert (F5) | `content/` als `content.json` im Build |
+| Fortschritt | `data/fortschritt.json` + `data/backups/` | wie dev | localStorage im Browser |
+| `.env.local` (KI) | ja | ja | wird nicht gelesen |
+
+`src/lib/api.ts` wählt über `import.meta.env.MODE === 'pages'` (gesetzt von `vite build --mode pages`) zwischen der lokalen API und
+`staticApi.ts`. `vite.config.ts` lädt `.env.local`, bevor es das API-Plugin importiert – `server/ai.ts` und `server/loadContent.ts`
+lesen `ANTHROPIC_MODEL` und `LERN_QUELLE` beim Import. Der Pages-Build liest die Lernblätter bewusst aus `content/` und nicht aus
+`AP-2` – so bauen GitHub Actions und dein Rechner dasselbe.
+
+**Gespeicherter Fortschritt** (`shared/progress.ts`): Typen, zod-Schema, `checkProgressPut` (Server lehnt ungültige Daten, einen starken
+Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 3
+(1 → 2: `revision`, 2 → 3: `cardReviewDays`). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
+ergänzen und die Migrationstests in `tests/progress.test.ts` anpassen – sie laden unter anderem eine Kopie der echten Datei aus
+`tests/fixtures/`. Geschrieben wird atomar (Temp-Datei + Umbenennen, mit Wiederholung, falls OneDrive die Datei sperrt), vorher entsteht
+die Tagessicherung in `data/backups/`.
 
 Aufbau:
 
 ```
 lern-app/
-├─ shared/        Einstellungen wie Prüfungsdatum, Klausurdauer, Intervalle, Port (config.ts), Datenmodell (types.ts), Markdown-Parser (parser.ts), gespeicherter Fortschritt: Typen, zod-Schema, Migration (progress.ts), API-Vertrag: Request-Schemas und Antworttypen je Route (api.ts)
-├─ server/        Vite-Plugin mit lokaler API (/api/…, Routentabelle in apiPlugin.ts, Router in router.ts), Speicherung, Claude-Anbindung, content.json für Pages (pagesPlugin.ts), npm run sync-content (syncContent.ts)
+├─ shared/        Code für Client, Server und Tests
+│  ├─ config.ts     Einstellungen: Prüfungsdatum, Klausurdauer, neue Karten je Runde, Intervalle, Speicherverzögerung, Port
+│  ├─ progress.ts   gespeicherter Fortschritt: Typen, zod-Schema, Prüfung von PUT /api/progress, Migration
+│  ├─ api.ts        API-Vertrag: Request-Schemas und Antworttypen je Route (für apiPlugin.ts und src/lib/api.ts)
+│  ├─ types.ts      Inhaltsmodell (Thema, Aufgabe, Karteikarte, Klausur …)
+│  └─ parser.ts, lernkarten.ts   Markdown-Parser und Lernkarten-Import (rein, ohne Dateizugriff)
+├─ server/        läuft nur in Vite (dev und preview): apiPlugin.ts (Routentabelle, Middleware), router.ts, store.ts (JSON-Dateien,
+│                 Sicherungen), contentCache.ts, loadContent.ts, ai.ts (Claude), pagesPlugin.ts (content.json), report.ts, syncContent.ts
 ├─ content/       Kopie der Lernblätter und Lernkarten aus AP-2 für GitHub Pages und Tests (npm run sync-content)
-├─ src/           React-Oberfläche (pages/, components/, hooks/ mit dem Ablauf von Klausur und Karteikarten-Runde, lib/ mit reinen Funktionen)
-└─ tests/         Vitest-Tests; tests/fixtures/ enthält Beispieldateien (alte Fortschrittsformate für die Migrationstests, inhalt/ mit Mini-Lernblatt, Lösungen und Lernkarten für die Parser-Tests)
+├─ src/           React-Oberfläche
+│  ├─ pages/        eine Datei je Seite, möglichst nur Darstellung
+│  ├─ hooks/        useExamRun (Klausurablauf mit Timer), useCardSession (Karteikarten-Runde, Tastatur), useConfirm (Bestätigungsdialog)
+│  ├─ components/   AnswerInput, Markdown, TaskParts, ErrorBoundary, ConfirmDialog
+│  └─ lib/          reine Funktionen (progress, grading, stats, cards, shuffle, examTimer, sheets) plus store.tsx, api.ts, staticApi.ts
+├─ tests/         Vitest-Tests; tests/fixtures/ enthält alte Fortschrittsformate für die Migrationstests und inhalt/ mit Mini-Lernblatt,
+│                 Lösungen und Lernkarten für die Parser-Tests
+└─ data/          fortschritt.json, generierte-aufgaben.json, backups/ (nicht im Repository)
 ```
