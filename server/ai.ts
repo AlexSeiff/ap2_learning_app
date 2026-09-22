@@ -4,6 +4,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
+import type { GradeResult } from '../shared/api';
 import { TASK_TYPES, type Content, type Task, type TaskType } from '../shared/types';
 import { HttpError } from './router';
 
@@ -134,12 +135,6 @@ const GradeSchema = z.object({
   feedback: z.string(),
   fehlende_aspekte: z.array(z.string()),
 });
-
-export interface GradeResult {
-  points: number;
-  feedback: string;
-  missing: string[];
-}
 
 export async function gradeAnswer(task: Task, answer: string): Promise<GradeResult> {
   if (!task.solution) throw new HttpError(400, 'Für diese Aufgabe gibt es keine Musterlösung.');

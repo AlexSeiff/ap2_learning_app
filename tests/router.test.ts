@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { GenerateRequestSchema, GradeRequestSchema, HttpError, matchRoute, parseBody, type Route } from '../server/router';
+import { defineRoute, HttpError, matchRoute, parseBody, type Route } from '../server/router';
+import { GenerateRequestSchema, GradeRequestSchema } from '../shared/api';
 
 const handler = () => null;
 const routes: Route[] = [
@@ -25,6 +26,14 @@ describe('matchRoute', () => {
     expect(m?.params).toEqual(['gen-01-abc 1/2']);
     expect(matchRoute(routes, 'DELETE', '/api/generated/')).toBeUndefined();
     expect(matchRoute(routes, 'GET', '/api/generated/x')).toBeUndefined();
+  });
+});
+
+describe('defineRoute', () => {
+  it('liest Methode und Pfad aus dem Schlüssel, Muster ersetzt Pfade mit Parametern', () => {
+    expect(defineRoute('GET /api/progress/backups', () => ({ newest: null, count: 0 }))).toMatchObject({ method: 'GET', path: '/api/progress/backups' });
+    const del = defineRoute('DELETE /api/generated/:id', () => ({ ok: true as const }), /^\/api\/generated\/(.+)$/);
+    expect(matchRoute([del], 'DELETE', '/api/generated/gen-1')?.params).toEqual(['gen-1']);
   });
 });
 

@@ -4,13 +4,14 @@
 // inzwischen gespeichert), speichert dieser Tab bis zum Neuladen gar nicht mehr, statt fremden Fortschritt zu überschreiben.
 
 import { SAVE_DELAY_MS } from '../../shared/config';
+import type { SaveProgressRequest } from '../../shared/api';
 import { CONFLICT_MESSAGE, type Progress } from '../../shared/progress';
 
 export type SaveState = 'gespeichert' | 'speichert' | 'fehler' | 'konflikt';
 
 export interface SaverOptions {
   /** Sendet den Body an den Server und liefert die neue Revision; lehnt mit einer Fehlermeldung (und ggf. `status`) ab. */
-  send: (body: unknown) => Promise<{ revision: number }>;
+  send: (body: SaveProgressRequest) => Promise<{ revision: number }>;
   /** `error` undefined = bisherige Fehlermeldung stehen lassen. */
   onState: (state: SaveState, error?: string | null) => void;
   delay?: number;
@@ -32,7 +33,8 @@ export function createProgressSaver({ send, onState, delay = SAVE_DELAY_MS }: Sa
 
   // Nach „Zurücksetzen“/„Sicherung einspielen“ darf der Server deutlich weniger Versuche annehmen (reset: true).
   // Die Revision kommt immer vom Saver, nicht aus `latest` – eine eingespielte Sicherung trägt ihre alte Revision.
-  const body = () => ({ ...latest, revision: baseRevision, ...(resetSeq ? { reset: true } : {}) });
+  // latest ist gesetzt, sobald etwas geplant wurde – vorher wird nie gesendet.
+  const body = (): SaveProgressRequest => ({ ...(latest as Progress), revision: baseRevision, ...(resetSeq ? { reset: true } : {}) });
 
   function save() {
     if (conflict) return;
@@ -92,7 +94,7 @@ export function createProgressSaver({ send, onState, delay = SAVE_DELAY_MS }: Sa
       return !conflict && latest !== null && changeSeq !== savedSeq;
     },
     /** Body für das letzte Senden beim Schließen des Tabs – oder undefined, wenn nichts aussteht. */
-    flushBody(): unknown {
+    flushBody(): SaveProgressRequest | undefined {
       return this.pending ? body() : undefined;
     },
   };

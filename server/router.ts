@@ -2,8 +2,8 @@
 // Bewusst ohne Abhängigkeit zum Claude-SDK, damit Tests ihn direkt nutzen können.
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { z } from 'zod';
-import { TASK_TYPES } from '../shared/types';
+import type { z } from 'zod';
+import type { ApiResponses } from '../shared/api';
 
 export class HttpError extends Error {
   constructor(public status: number, message: string) {
@@ -23,6 +23,19 @@ export interface Route {
   path: string | RegExp;
   /** Rückgabewert wird als JSON mit Status 200 gesendet; Fehler als HttpError werfen. */
   handler: (ctx: RouteContext) => unknown;
+}
+
+/**
+ * Legt eine Route zu einem Eintrag aus ApiResponses an („GET /api/content“) – der Handler muss genau den
+ * dort vereinbarten Antworttyp liefern. `pattern` ersetzt den Pfad für Routen mit Parametern (z. B. :id).
+ */
+export function defineRoute<K extends keyof ApiResponses>(
+  key: K,
+  handler: (ctx: RouteContext) => ApiResponses[K] | Promise<ApiResponses[K]>,
+  pattern?: RegExp,
+): Route {
+  const [method, path] = key.split(' ') as [Route['method'], string];
+  return { method, path: pattern ?? path, handler };
 }
 
 /** Sucht die passende Route; rein, damit testbar. */
@@ -67,33 +80,3 @@ export function parseBody<S extends z.ZodType>(schema: S, body: unknown): z.infe
     .join('; ');
   throw new HttpError(400, `Ungültige Anfrage – ${details}`);
 }
-
-// Request-Schemas der KI-Routen. Fehlermeldungen auf Deutsch, weil sie direkt in der Oberfläche landen.
-
-const NOT_AN_OBJECT = { error: 'Die Anfrage muss ein JSON-Objekt sein.' };
-
-export const GenerateRequestSchema = z.object(
-  {
-    topicId: z.string({ error: 'Thema fehlt.' }).min(1, 'Thema fehlt.'),
-    count: z
-      .number({ error: 'Anzahl muss eine Zahl sein.' })
-      .int('Anzahl muss eine ganze Zahl sein.')
-      .min(1, 'Anzahl muss zwischen 1 und 10 liegen.')
-      .max(10, 'Anzahl muss zwischen 1 und 10 liegen.')
-      .default(3),
-    types: z
-      .array(z.enum(TASK_TYPES, { error: `Unbekannter Aufgabentyp (erlaubt: ${TASK_TYPES.join(', ')}).` }), {
-        error: 'Aufgabentypen müssen eine Liste sein.',
-      })
-      .default([]),
-  },
-  NOT_AN_OBJECT,
-);
-
-export const GradeRequestSchema = z.object(
-  {
-    taskId: z.string({ error: 'Aufgabe fehlt.' }).min(1, 'Aufgabe fehlt.'),
-    answer: z.string({ error: 'Antwort muss Text sein.' }).default(''),
-  },
-  NOT_AN_OBJECT,
-);

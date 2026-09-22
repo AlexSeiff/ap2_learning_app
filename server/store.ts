@@ -1,5 +1,6 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import type { BackupInfo } from '../shared/api';
 import type { Task } from '../shared/types';
 
 export const DATA_DIR = join(import.meta.dirname, '..', 'data');
@@ -32,12 +33,6 @@ export function renameWithRetry(from: string, to: string, rename: (from: string,
       sleep(RENAME_RETRY_DELAYS_MS[attempt]);
     }
   }
-}
-
-export interface BackupInfo {
-  /** Datum der neuesten Tagessicherung (YYYY-MM-DD) oder null. */
-  newest: string | null;
-  count: number;
 }
 
 function localDate(d = new Date()): string {

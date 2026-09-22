@@ -1,4 +1,5 @@
-import type { Content, Task, TaskType } from '../../shared/types';
+import type { ApiResponses, GenerateRequest, GradeRequest, SaveProgressRequest } from '../../shared/api';
+import type { TaskType } from '../../shared/types';
 
 /** Fehler einer API-Anfrage mit HTTP-Status (z. B. 409, wenn ein anderer Tab neuer gespeichert hat). */
 export class ApiError extends Error {
@@ -20,15 +21,16 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
   return data as T;
 }
 
+// Antworttypen je Route: shared/api.ts (ApiResponses) – dieselben Typen nutzt der Server.
 export const api = {
-  content: () => request<Content>('GET', '/api/content'),
-  progress: () => request<unknown>('GET', '/api/progress'),
-  saveProgress: (p: unknown) => request<{ ok: true; revision: number }>('PUT', '/api/progress', p),
-  backups: () => request<{ newest: string | null; count: number }>('GET', '/api/progress/backups'),
-  aiStatus: () => request<{ enabled: boolean; model: string }>('GET', '/api/ai/status'),
+  content: () => request<ApiResponses['GET /api/content']>('GET', '/api/content'),
+  progress: () => request<ApiResponses['GET /api/progress']>('GET', '/api/progress'),
+  saveProgress: (p: SaveProgressRequest) => request<ApiResponses['PUT /api/progress']>('PUT', '/api/progress', p),
+  backups: () => request<ApiResponses['GET /api/progress/backups']>('GET', '/api/progress/backups'),
+  aiStatus: () => request<ApiResponses['GET /api/ai/status']>('GET', '/api/ai/status'),
   generate: (topicId: string, count: number, types: TaskType[]) =>
-    request<Task[]>('POST', '/api/ai/generate', { topicId, count, types }),
+    request<ApiResponses['POST /api/ai/generate']>('POST', '/api/ai/generate', { topicId, count, types } satisfies GenerateRequest),
   grade: (taskId: string, answer: string) =>
-    request<{ points: number; feedback: string; missing: string[] }>('POST', '/api/ai/grade', { taskId, answer }),
-  deleteGenerated: (id: string) => request<{ ok: true }>('DELETE', `/api/generated/${encodeURIComponent(id)}`),
+    request<ApiResponses['POST /api/ai/grade']>('POST', '/api/ai/grade', { taskId, answer } satisfies GradeRequest),
+  deleteGenerated: (id: string) => request<ApiResponses['DELETE /api/generated/:id']>('DELETE', `/api/generated/${encodeURIComponent(id)}`),
 };
