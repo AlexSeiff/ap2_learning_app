@@ -17,7 +17,7 @@ function useNow(active: boolean) {
 
 /**
  * Ablauf einer Übungsklausur: starten, beantworten, abgeben (auch automatisch bei Zeitablauf),
- * bewerten und abschließen. Rückfragen (confirm) und Navigation bleiben in der Seite.
+ * bewerten und abschließen. Rückfragen (useConfirm) und Navigation bleiben in der Seite.
  */
 export function useExamRun(topicId: string | undefined) {
   const { content, progress, update } = useStore();

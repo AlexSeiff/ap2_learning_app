@@ -4,6 +4,7 @@ import type { Topic } from '../../shared/types';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
+import { useConfirm } from '../hooks/useConfirm';
 import { useExamRun } from '../hooks/useExamRun';
 import { formatRemaining, timerAnnouncement } from '../lib/examTimer';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
@@ -72,6 +73,7 @@ export function Klausur() {
     finish,
     abort,
   } = useExamRun(topicId);
+  const confirm = useConfirm();
 
   if (!topic || !exam)
     return (
@@ -108,8 +110,16 @@ export function Klausur() {
         <div className="actions">
           <button
             type="button"
-            onClick={() => {
-              if (otherRun && !confirm('Die andere laufende Klausur wird verworfen. Fortfahren?')) return;
+            onClick={async () => {
+              if (
+                otherRun &&
+                !(await confirm({
+                  message: 'Die andere laufende Klausur wird verworfen – mit allen Antworten. Fortfahren?',
+                  confirmLabel: 'Verwerfen und starten',
+                  danger: true,
+                }))
+              )
+                return;
               start();
             }}
           >
@@ -157,11 +167,19 @@ export function Klausur() {
             </span>
             <button
               type="button"
-              onClick={() => {
-                if (confirm(`Klausur abgeben? ${tasks.length - answered} Aufgaben sind noch leer.`)) {
-                  submit();
-                  window.scrollTo(0, 0);
-                }
+              onClick={async () => {
+                const empty = tasks.length - answered;
+                const ok = await confirm({
+                  title: 'Klausur abgeben?',
+                  message: empty
+                    ? `${empty} Aufgaben sind noch leer. Nach der Abgabe kannst du nichts mehr ändern.`
+                    : 'Nach der Abgabe kannst du nichts mehr ändern.',
+                  confirmLabel: '📝 Abgeben',
+                  cancelLabel: 'Weiterschreiben',
+                });
+                if (!ok) return;
+                submit();
+                window.scrollTo(0, 0);
               }}
             >
               Abgeben
@@ -174,9 +192,18 @@ export function Klausur() {
             </span>
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 const missing = tasks.length - scored;
-                if (missing && !confirm(`${missing} Aufgaben sind noch nicht bewertet und zählen 0 Punkte. Abschließen?`)) return;
+                if (
+                  missing &&
+                  !(await confirm({
+                    title: 'Bewertung abschließen?',
+                    message: `${missing} Aufgaben sind noch nicht bewertet und zählen 0 Punkte.`,
+                    confirmLabel: 'Abschließen',
+                    cancelLabel: 'Weiter bewerten',
+                  }))
+                )
+                  return;
                 finish();
                 window.scrollTo(0, 0);
               }}
@@ -188,11 +215,17 @@ export function Klausur() {
         <button
           type="button"
           className="ghost"
-          onClick={() => {
-            if (confirm('Klausur abbrechen? Alle Antworten dieser Klausur werden verworfen.')) {
-              abort();
-              navigate('/klausur');
-            }
+          onClick={async () => {
+            const ok = await confirm({
+              title: 'Klausur abbrechen?',
+              message: 'Alle Antworten und Punkte dieser Klausur werden verworfen.',
+              confirmLabel: '🗑️ Klausur verwerfen',
+              cancelLabel: submitted ? 'Weiter bewerten' : 'Weiterschreiben',
+              danger: true,
+            });
+            if (!ok) return;
+            abort();
+            navigate('/klausur');
           }}
         >
           Abbrechen

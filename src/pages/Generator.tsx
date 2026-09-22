@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Task, TaskType } from '../../shared/types';
+import { useConfirm } from '../hooks/useConfirm';
 import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { formatPoints } from '../lib/grading';
 import { useStore } from '../lib/store';
@@ -15,6 +16,7 @@ const TYPES: { id: TaskType; label: string }[] = [
 
 export function Generator() {
   const { content, aiEnabled, aiModel, reload } = useStore();
+  const confirm = useConfirm();
   const withTheory = content.topics.filter((t) => t.sections.length);
   const [topicId, setTopicId] = useState(withTheory[0]?.id ?? '01');
   const [count, setCount] = useState(3);
@@ -82,7 +84,8 @@ export function Generator() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm('Diese KI-Aufgabe löschen?')) return;
+    const ok = await confirm({ message: 'Diese KI-Aufgabe löschen?', confirmLabel: '🗑️ Löschen', danger: true });
+    if (!ok) return;
     await api.deleteGenerated(id);
     await reload();
   };

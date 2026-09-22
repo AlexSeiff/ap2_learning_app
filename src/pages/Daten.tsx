@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { emptyProgress, migrateProgress } from '../../shared/progress';
+import { useConfirm } from '../hooks/useConfirm';
 import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { downloadText } from '../lib/sheets';
 import { localDate } from '../lib/progress';
@@ -7,6 +8,7 @@ import { useStore } from '../lib/store';
 
 export function Daten() {
   const { content, progress, reload, replaceProgress, aiEnabled, aiModel } = useStore();
+  const confirm = useConfirm();
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [backups, setBackups] = useState<{ newest: string | null; count: number } | null>(null);
@@ -29,7 +31,13 @@ export function Daten() {
       // Auch ältere Sicherungen einspielen: migrateProgress ergänzt fehlende Felder. Nur Dateien ohne Versuchsliste sind keine Sicherung.
       if (!raw || typeof raw !== 'object' || !Array.isArray((raw as { attempts?: unknown }).attempts))
         throw new Error('Keine gültige Sicherungsdatei.');
-      if (!confirm('Aktuellen Fortschritt durch die Sicherung ersetzen?')) return;
+      const ok = await confirm({
+        title: 'Sicherung einspielen?',
+        message: `Dein aktueller Fortschritt wird komplett durch die Sicherung „${file.name}“ ersetzt.`,
+        confirmLabel: '⬆ Einspielen',
+        danger: true,
+      });
+      if (!ok) return;
       replaceProgress(migrateProgress(raw));
       setMsg('Sicherung wiederhergestellt.');
     } catch (e) {
@@ -167,11 +175,16 @@ export function Daten() {
           <button
             type="button"
             className="ghost danger"
-            onClick={() => {
-              if (confirm('Wirklich den GESAMTEN Lernfortschritt löschen? Lade vorher am besten eine Sicherung herunter.')) {
-                replaceProgress(emptyProgress());
-                setMsg('Fortschritt zurückgesetzt.');
-              }
+            onClick={async () => {
+              const ok = await confirm({
+                title: 'Fortschritt zurücksetzen?',
+                message: 'Wirklich den GESAMTEN Lernfortschritt löschen? Lade vorher am besten eine Sicherung herunter.',
+                confirmLabel: '🗑️ Alles löschen',
+                danger: true,
+              });
+              if (!ok) return;
+              replaceProgress(emptyProgress());
+              setMsg('Fortschritt zurückgesetzt.');
             }}
           >
             Fortschritt zurücksetzen
