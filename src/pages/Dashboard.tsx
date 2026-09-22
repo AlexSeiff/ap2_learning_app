@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { isDue } from '../lib/progress';
-import { daysUntilExam, isoWeek, topicStats } from '../lib/stats';
+import { daysUntilExam, examTrends, isoWeek, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
@@ -10,6 +10,8 @@ const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
 export function Dashboard() {
   const { content, progress } = useStore();
   const stats = topicStats(content, progress);
+  const trends = examTrends(content, progress);
+  const streak = studyStreak(progress);
   const days = daysUntilExam();
   const kw = isoWeek();
   const week = content.weeks.find((w) => w.kw === kw) ?? content.weeks.find((w) => w.kw > kw);
@@ -44,6 +46,17 @@ export function Dashboard() {
         <div className="kpi">
           <span className="kpi-value">{avgExam === undefined ? '–' : `${Math.round(avgExam)} %`}</span>
           <span className="kpi-label">Ø Übungsklausuren{avgExam !== undefined && ` · Note ${ihkGrade(avgExam).note}`}</span>
+        </div>
+        <div className="kpi" title="Tage in Folge mit Aufgaben, Klausuren oder Karteikarten">
+          <span className="kpi-value">
+            {streak.current > 0 ? '🔥 ' : ''}
+            {streak.current} {streak.current === 1 ? 'Tag' : 'Tage'}
+          </span>
+          <span className="kpi-label">
+            Lernserie
+            {streak.current > 0 && !streak.today && ' · heute noch lernen, sonst reißt sie'}
+            {streak.longest > streak.current && ` · Rekord ${streak.longest}`}
+          </span>
         </div>
       </div>
 
@@ -121,6 +134,44 @@ export function Dashboard() {
         </p>
       </section>
 
+      {!!trends.length && (
+        <section className="card">
+          <h2>Klausur-Trend je Thema</h2>
+          <div className="table-wrap">
+            <table className="stats">
+              <thead>
+                <tr>
+                  <th>Thema</th>
+                  <th>Verlauf</th>
+                  <th>Letzte</th>
+                  <th>Veränderung</th>
+                </tr>
+              </thead>
+              <tbody>
+                {trends.map((t) => (
+                  <tr key={t.topic.id}>
+                    <td>
+                      <Link to={`/klausur/${t.topic.id}`}>{t.topic.title}</Link>
+                      <span className="muted small"> ({t.runs.length}×)</span>
+                    </td>
+                    <td>
+                      <Sparkline values={t.runs.map((r) => r.pct)} />
+                    </td>
+                    <td>
+                      <Bar value={t.latest} />
+                    </td>
+                    <td>
+                      <Delta value={t.delta} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="hint">Veränderung: letzte gegenüber vorletzter Klausur zum selben Thema, in Prozentpunkten.</p>
+        </section>
+      )}
+
       {!!finished.length && (
         <section className="card">
           <h2>Letzte Klausuren</h2>
@@ -155,6 +206,38 @@ function Bar({ value }: { value?: number }) {
     <span className="bar" title={`${Math.round(value)} %`}>
       <span className={`bar-fill ${cls}`} style={{ width: `${Math.min(100, value)}%` }} />
       <span className="bar-label">{Math.round(value)} %</span>
+    </span>
+  );
+}
+
+/** Mini-Verlauf der Klausurergebnisse (0–100 %) als Inline-SVG; die gestrichelte Linie markiert 50 % (bestanden). */
+function Sparkline({ values }: { values: number[] }) {
+  const w = 110;
+  const h = 26;
+  const pad = 3;
+  const x = (i: number) => (values.length === 1 ? w / 2 : pad + (i * (w - 2 * pad)) / (values.length - 1));
+  const y = (v: number) => pad + ((100 - Math.max(0, Math.min(100, v))) * (h - 2 * pad)) / 100;
+  const label = `Klausurergebnisse: ${values.map((v) => `${Math.round(v)} %`).join(', ')}`;
+  return (
+    <svg className="sparkline" width={w} height={h} viewBox={`0 0 ${w} ${h}`} role="img" aria-label={label}>
+      <title>{label}</title>
+      <line className="sparkline-pass" x1={0} x2={w} y1={y(50)} y2={y(50)} />
+      {values.length > 1 && <polyline points={values.map((v, i) => `${x(i)},${y(v)}`).join(' ')} />}
+      {values.map((v, i) => (
+        <circle key={i} cx={x(i)} cy={y(v)} r={i === values.length - 1 ? 3 : 2} />
+      ))}
+    </svg>
+  );
+}
+
+function Delta({ value }: { value?: number }) {
+  if (value === undefined) return <span className="muted small">erst ab 2 Klausuren</span>;
+  const rounded = Math.round(value);
+  if (rounded === 0) return <span className="muted">± 0</span>;
+  return (
+    <span className={rounded > 0 ? 'ok' : 'bad'}>
+      {rounded > 0 ? '▲ +' : '▼ −'}
+      {Math.abs(rounded)} %-Pkt.
     </span>
   );
 }

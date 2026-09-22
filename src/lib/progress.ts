@@ -65,6 +65,7 @@ export function rateCard(p: Progress, cardId: string, rating: Rating, today = lo
   return {
     ...p,
     cards: { ...p.cards, [cardId]: { box, due: addDays(today, days), reviews: prev.reviews + 1, last: rating } },
+    cardReviewDays: { ...p.cardReviewDays, [today]: (p.cardReviewDays[today] ?? 0) + 1 },
   };
 }
 

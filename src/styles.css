@@ -177,6 +177,10 @@ table.stats { width: 100%; }
 .bar-fill.mid { background: var(--mid); }
 .bar-fill.low { background: var(--low); }
 .bar-label { position: relative; font-size: 0.78rem; font-weight: 600; padding-left: 6px; line-height: 20px; mix-blend-mode: difference; color: #fff; }
+.sparkline { vertical-align: middle; overflow: visible; }
+.sparkline polyline { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.sparkline circle { fill: var(--accent); }
+.sparkline-pass { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 3; }
 
 /* Lernen */
 .with-toc { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; max-width: 1250px; }

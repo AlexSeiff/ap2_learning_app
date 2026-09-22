@@ -81,7 +81,7 @@ describe('checkProgressPut', () => {
   it('erstes Speichern auf eine Datei ohne revision (Kopie der echten Datei) klappt und vergibt Revision 1', () => {
     const stored = JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures', 'fortschritt-v1-2026-09-22.json'), 'utf8'));
     const r = checkProgressPut(migrateProgress(stored), stored);
-    expect(r).toMatchObject({ ok: true, progress: { version: 2, revision: 1 } });
+    expect(r).toMatchObject({ ok: true, progress: { version: PROGRESS_VERSION, revision: 1 } });
     if (r.ok) expect(r.progress.attempts).toEqual(stored.attempts);
   });
 
@@ -126,8 +126,8 @@ describe('migrateProgress', () => {
   it('übernimmt den aktuellen Stand (Kopie von data/fortschritt.json vom 22.09.2026) ohne Verlust', () => {
     const raw = fixture('fortschritt-v1-2026-09-22.json');
     const migrated = migrateProgress(raw);
-    // Einzige Änderung: Version 1 → 2 mit Revisionszähler 0.
-    expect(migrated).toEqual({ ...raw, version: 2, revision: 0 });
+    // Einzige Änderungen: aktuelle Version, Revisionszähler 0 (Version 2) und leere Karteikarten-Lerntage (Version 3).
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, revision: 0, cardReviewDays: {} });
     expect(migrated.attempts).toHaveLength(16);
     expect(migrated.exams).toHaveLength(1);
     expect(Object.keys(migrated.cards)).toHaveLength(8);

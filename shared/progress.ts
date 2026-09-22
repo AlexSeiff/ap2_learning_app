@@ -60,10 +60,16 @@ export type Progress = {
   cards: Record<string, CardState>;
   journal: Record<string, JournalEntry>;
   lernziele: Record<string, boolean>;
+  /**
+   * Anzahl bewerteter Karteikarten je lokalem Datum (YYYY-MM-DD), für die Lernserie auf der Übersicht.
+   * CardState merkt sich nur den letzten Stand einer Karte, daraus lässt sich nicht ablesen, an welchen Tagen gelernt wurde
+   * (seit Version 3, ältere Dateien: leer).
+   */
+  cardReviewDays: Record<string, number>;
 };
 
 /** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
-export const PROGRESS_VERSION = 2;
+export const PROGRESS_VERSION = 3;
 
 export const emptyProgress = (): Progress => ({
   version: PROGRESS_VERSION,
@@ -73,6 +79,7 @@ export const emptyProgress = (): Progress => ({
   cards: {},
   journal: {},
   lernziele: {},
+  cardReviewDays: {},
 });
 
 type Raw = Record<string, unknown>;
@@ -145,6 +152,8 @@ function migrateJournalEntry(v: unknown, taskId: string): JournalEntry | undefin
 const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   // 1 → 2: Revisionszähler gegen Überschreiben aus einem zweiten Tab.
   1: (raw) => ({ ...raw, version: 2, revision: num(raw.revision) }),
+  // 2 → 3: Karteikarten-Lerntage (cardReviewDays) für die Lernserie; startet leer, aufgefüllt wird unten in migrateProgress.
+  2: (raw) => ({ ...raw, version: 3 }),
 };
 
 /**
@@ -169,6 +178,7 @@ export function migrateProgress(raw: unknown): Progress {
     cards: filterRecord(data.cards, migrateCard),
     journal: filterRecord(data.journal, migrateJournalEntry),
     lernziele: filterRecord(data.lernziele, (v) => (typeof v === 'boolean' ? v : undefined)),
+    cardReviewDays: filterRecord(data.cardReviewDays, (v) => (typeof v === 'number' && v >= 0 ? v : undefined)),
   };
 }
 
@@ -220,6 +230,7 @@ export const ProgressSchema = z.looseObject({
   cards: z.record(z.string(), CardStateSchema).default({}),
   journal: z.record(z.string(), JournalEntrySchema).default({}),
   lernziele: z.record(z.string(), z.boolean()).default({}),
+  cardReviewDays: z.record(z.string(), z.number()).default({}),
 });
 
 export type ProgressData = z.infer<typeof ProgressSchema>;
