@@ -4,7 +4,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
-import type { Content, Task, TaskType } from '../shared/types';
+import { TASK_TYPES, type Content, type Task, type TaskType } from '../shared/types';
+import { HttpError } from './router';
 
 export const MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-5';
 
@@ -17,12 +18,6 @@ function getClient(): Anthropic {
   if (!aiEnabled()) throw new HttpError(400, 'Kein ANTHROPIC_API_KEY gesetzt – KI-Funktionen sind deaktiviert.');
   client ??= new Anthropic();
   return client;
-}
-
-export class HttpError extends Error {
-  constructor(public status: number, message: string) {
-    super(message);
-  }
 }
 
 function explainApiError(err: unknown): never {
@@ -45,7 +40,7 @@ const TYPE_LABELS: Record<TaskType, string> = {
 const GeneratedSchema = z.object({
   aufgaben: z.array(
     z.object({
-      typ: z.enum(['offen', 'mc', 'lueckentext', 'zuordnung', 'rechnen']),
+      typ: z.enum(TASK_TYPES),
       punkte: z.number(),
       aufgabentext: z.string(),
       optionen: z.array(z.string()).nullable(),

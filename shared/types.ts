@@ -41,7 +41,9 @@ export interface Solution {
   criteria?: { label: string; points: number }[];
 }
 
-export type TaskType = 'offen' | 'mc' | 'lueckentext' | 'zuordnung' | 'rechnen';
+/** Alle Aufgabentypen – auch Grundlage für die zod-Prüfung der API-Anfragen. */
+export const TASK_TYPES = ['offen', 'mc', 'lueckentext', 'zuordnung', 'rechnen'] as const;
+export type TaskType = (typeof TASK_TYPES)[number];
 
 export interface Task {
   /** Global eindeutig, z. B. „01-A1" oder „gen-…". */

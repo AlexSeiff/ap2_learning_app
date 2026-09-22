@@ -1,14 +1,14 @@
 // Vite-Plugin: stellt die lokale API unter /api bereit (Inhalte, Fortschritt, KI).
 // So startet die gesamte App mit einem einzigen `npm run dev`.
 
-import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { checkProgressPut } from '../shared/progress';
-import type { Content, TaskType } from '../shared/types';
-import { aiEnabled, generateTasks, gradeAnswer, HttpError, MODEL } from './ai';
+import type { Content } from '../shared/types';
+import { aiEnabled, generateTasks, gradeAnswer, MODEL } from './ai';
 import { createContentCache, withGenerated } from './contentCache';
 import { isContentSource, loadContent, SOURCE_DIR } from './loadContent';
+import { GenerateRequestSchema, GradeRequestSchema, HttpError, matchRoute, parseBody, readBody, send, type Route } from './router';
 import { backupInfo, readGenerated, readProgress, writeGenerated, writeProgress } from './store';
 
 const contentCache = createContentCache(() => loadContent());
@@ -18,23 +18,52 @@ function contentWithGenerated(): Content {
   return withGenerated(contentCache.get(), readGenerated());
 }
 
-async function readBody(req: IncomingMessage): Promise<any> {
-  const chunks: Buffer[] = [];
-  for await (const chunk of req) chunks.push(chunk as Buffer);
-  const raw = Buffer.concat(chunks).toString('utf8');
-  if (!raw) return {};
-  try {
-    return JSON.parse(raw);
-  } catch {
-    throw new HttpError(400, 'Ungültiges JSON im Request.');
-  }
-}
-
-function send(res: ServerResponse, status: number, data: unknown) {
-  res.statusCode = status;
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.end(JSON.stringify(data));
-}
+const routes: Route[] = [
+  { method: 'GET', path: '/api/content', handler: () => contentWithGenerated() },
+  { method: 'GET', path: '/api/progress', handler: () => readProgress() },
+  { method: 'GET', path: '/api/progress/backups', handler: () => backupInfo() },
+  {
+    method: 'PUT',
+    path: '/api/progress',
+    handler: async ({ req }) => {
+      // Nie ungeprüft schreiben: leere/kaputte Daten, ein versehentlich geleerter Stand oder ein veralteter Tab (409)
+      // würden echten Fortschritt überschreiben. Lesen, Prüfen und Schreiben laufen synchron – also ohne Wettlauf zweier PUTs.
+      const checked = checkProgressPut(await readBody(req), readProgress());
+      if (!checked.ok) throw new HttpError(checked.status, checked.error);
+      writeProgress(checked.progress);
+      return { ok: true, revision: checked.progress.revision };
+    },
+  },
+  { method: 'GET', path: '/api/ai/status', handler: () => ({ enabled: aiEnabled(), model: MODEL }) },
+  {
+    method: 'POST',
+    path: '/api/ai/generate',
+    handler: async ({ req }) => {
+      const { topicId, count, types } = parseBody(GenerateRequestSchema, await readBody(req));
+      const tasks = await generateTasks(contentWithGenerated(), topicId, count, types);
+      writeGenerated([...readGenerated(), ...tasks]);
+      return tasks;
+    },
+  },
+  {
+    method: 'POST',
+    path: '/api/ai/grade',
+    handler: async ({ req }) => {
+      const { taskId, answer } = parseBody(GradeRequestSchema, await readBody(req));
+      const task = contentWithGenerated().tasks[taskId];
+      if (!task) throw new HttpError(404, 'Aufgabe nicht gefunden.');
+      return gradeAnswer(task, answer);
+    },
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/generated\/(.+)$/,
+    handler: ({ params: [id] }) => {
+      writeGenerated(readGenerated().filter((t) => t.id !== id));
+      return { ok: true };
+    },
+  },
+];
 
 export function apiPlugin(): Plugin {
   return {
@@ -52,39 +81,10 @@ export function apiPlugin(): Plugin {
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://localhost');
         if (!url.pathname.startsWith('/api/')) return next();
-        const route = `${req.method} ${url.pathname}`;
         try {
-          if (route === 'GET /api/content') return send(res, 200, contentWithGenerated());
-          if (route === 'GET /api/progress') return send(res, 200, readProgress());
-          if (route === 'GET /api/progress/backups') return send(res, 200, backupInfo());
-          if (route === 'PUT /api/progress') {
-            // Nie ungeprüft schreiben: leere/kaputte Daten, ein versehentlich geleerter Stand oder ein veralteter Tab (409)
-            // würden echten Fortschritt überschreiben. Lesen, Prüfen und Schreiben laufen synchron – also ohne Wettlauf zweier PUTs.
-            const checked = checkProgressPut(await readBody(req), readProgress());
-            if (!checked.ok) throw new HttpError(checked.status, checked.error);
-            writeProgress(checked.progress);
-            return send(res, 200, { ok: true, revision: checked.progress.revision });
-          }
-          if (route === 'GET /api/ai/status') return send(res, 200, { enabled: aiEnabled(), model: MODEL });
-          if (route === 'POST /api/ai/generate') {
-            const { topicId, count, types } = await readBody(req);
-            const tasks = await generateTasks(contentWithGenerated(), String(topicId), Number(count) || 3, (types ?? []) as TaskType[]);
-            writeGenerated([...readGenerated(), ...tasks]);
-            return send(res, 200, tasks);
-          }
-          if (route === 'POST /api/ai/grade') {
-            const { taskId, answer } = await readBody(req);
-            const task = contentWithGenerated().tasks[String(taskId)];
-            if (!task) throw new HttpError(404, 'Aufgabe nicht gefunden.');
-            return send(res, 200, await gradeAnswer(task, String(answer ?? '')));
-          }
-          const del = /^DELETE \/api\/generated\/(.+)$/.exec(route);
-          if (del) {
-            const id = decodeURIComponent(del[1]);
-            writeGenerated(readGenerated().filter((t) => t.id !== id));
-            return send(res, 200, { ok: true });
-          }
-          send(res, 404, { error: `Unbekannte Route ${route}` });
+          const match = matchRoute(routes, req.method ?? 'GET', url.pathname);
+          if (!match) return send(res, 404, { error: `Unbekannte Route ${req.method} ${url.pathname}` });
+          send(res, 200, await match.route.handler({ req, params: match.params }));
         } catch (err) {
           const status = err instanceof HttpError ? err.status : 500;
           const message = err instanceof Error ? err.message : String(err);
