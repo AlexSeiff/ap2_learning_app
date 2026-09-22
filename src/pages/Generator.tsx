@@ -32,8 +32,8 @@ export function Generator() {
             <b>🤖 {AI_UNAVAILABLE}</b>
           </p>
           <p>
-            Diese Online-Version läuft ohne Server, damit der Schlüssel geheim bleibt. Neue KI-Aufgaben erstellst du in der App auf deinem Rechner
-            (<code>Lern-App starten.cmd</code>). Alles andere funktioniert auch hier.
+            Diese Online-Version läuft ohne Server, damit der Schlüssel geheim bleibt. Neue KI-Aufgaben erstellst du in der App auf deinem
+            Rechner (<code>Lern-App starten.cmd</code>). Alles andere funktioniert auch hier.
           </p>
         </div>
       </div>
@@ -50,12 +50,20 @@ export function Generator() {
           </p>
           <p>So schaltest du sie frei:</p>
           <ol>
-            <li>API-Schlüssel unter <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a> erstellen.</li>
+            <li>
+              API-Schlüssel unter{' '}
+              <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">
+                console.anthropic.com
+              </a>{' '}
+              erstellen.
+            </li>
             <li>
               Im Ordner <code>lern-app</code> eine Datei <code>.env.local</code> anlegen mit der Zeile
               <pre>ANTHROPIC_API_KEY=sk-ant-…</pre>
             </li>
-            <li>Server neu starten (<code>npm run dev</code>).</li>
+            <li>
+              Server neu starten (<code>npm run dev</code>).
+            </li>
           </ol>
         </div>
       </div>
@@ -83,14 +91,19 @@ export function Generator() {
     <div className="page">
       <h1>KI-Aufgaben generieren</h1>
       <p className="lead">
-        Neue Aufgaben im IHK-Stil – streng auf Basis des jeweiligen Lernblatts, jeweils mit Musterlösung und Punkteschema. Modell: <code>{aiModel}</code>
+        Neue Aufgaben im IHK-Stil – streng auf Basis des jeweiligen Lernblatts, jeweils mit Musterlösung und Punkteschema. Modell:{' '}
+        <code>{aiModel}</code>
       </p>
       <div className="card">
         <div className="filters">
           <label>
             Thema
             <select value={topicId} onChange={(e) => setTopicId(e.target.value)}>
-              {withTheory.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
+              {withTheory.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.title}
+                </option>
+              ))}
             </select>
           </label>
           <label>
@@ -118,7 +131,9 @@ export function Generator() {
           <p className="ok">
             ✓ {state.created.length} Aufgaben erstellt:{' '}
             {state.created.map((t) => (
-              <Link key={t.id} to={`/aufgabe/${t.id}`} className="inline-link">{t.code}</Link>
+              <Link key={t.id} to={`/aufgabe/${t.id}`} className="inline-link">
+                {t.code}
+              </Link>
             ))}
           </p>
         )}
@@ -126,18 +141,28 @@ export function Generator() {
 
       <section className="card">
         <h2>Gespeicherte KI-Aufgaben ({generated.length})</h2>
-        <p className="hint">Prüfe generierte Aufgaben kritisch – bei Fehlern einfach löschen. Sie erscheinen auch unter Einzelaufgaben (Filter „KI-generiert").</p>
+        <p className="hint">
+          Prüfe generierte Aufgaben kritisch – bei Fehlern einfach löschen. Sie erscheinen auch unter Einzelaufgaben (Filter
+          „KI-generiert").
+        </p>
         <ul className="task-list">
           {generated.map((t) => (
             <li key={t.id}>
               <Link to={`/aufgabe/${t.id}`} className="task-link">
                 <span className="task-code">{t.code}</span>
-                <span className="task-preview">{t.markdown.replace(/[*`#>|]/g, '').split('\n')[0].slice(0, 120)}</span>
+                <span className="task-preview">
+                  {t.markdown
+                    .replace(/[*`#>|]/g, '')
+                    .split('\n')[0]
+                    .slice(0, 120)}
+                </span>
               </Link>
               <span className="muted small">{content.topics.find((x) => x.id === t.topicId)?.title}</span>
               <span className="badge">{TYPES.find((x) => x.id === t.type)?.label}</span>
               <span className="badge">{formatPoints(t.points)} P</span>
-              <button type="button" className="ghost danger" onClick={() => remove(t.id)} aria-label="Löschen">🗑</button>
+              <button type="button" className="ghost danger" onClick={() => remove(t.id)} aria-label="Löschen">
+                🗑
+              </button>
             </li>
           ))}
         </ul>

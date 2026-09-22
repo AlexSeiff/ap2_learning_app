@@ -46,7 +46,10 @@ export function createLocalProgressStore(storage: () => KeyValueStorage) {
         checked = checkProgressPut(body, readRaw());
         if (checked.ok) storage().setItem(PROGRESS_KEY, JSON.stringify(checked.progress));
       } catch (e) {
-        throw new ApiError(500, `Speichern im Browser fehlgeschlagen (${(e as Error).message}). Lade zur Sicherheit eine Sicherung herunter.`);
+        throw new ApiError(
+          500,
+          `Speichern im Browser fehlgeschlagen (${(e as Error).message}). Lade zur Sicherheit eine Sicherung herunter.`,
+        );
       }
       if (!checked.ok) throw new ApiError(checked.status, checked.error);
       return { ok: true, revision: checked.progress.revision };

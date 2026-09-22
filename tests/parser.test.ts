@@ -184,7 +184,10 @@ describe('Robustheit', () => {
 
   it('parseCriteria überspringt Summenzeilen', () => {
     const md = '| Element | P |\n|---|---|\n| A | 2 |\n| B | 1,5 |\n| **Summe** | **3,5** |';
-    expect(parseCriteria(md)).toEqual([{ label: 'A', points: 2 }, { label: 'B', points: 1.5 }]);
+    expect(parseCriteria(md)).toEqual([
+      { label: 'A', points: 2 },
+      { label: 'B', points: 1.5 },
+    ]);
   });
 
   it('parseLernplan versteht Wochen mit und ohne Datum', () => {

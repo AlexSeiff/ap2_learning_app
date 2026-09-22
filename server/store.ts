@@ -27,8 +27,13 @@ export function renameWithRetry(from: string, to: string, rename: (from: string,
       const code = (err as NodeJS.ErrnoException).code ?? '';
       if (!RETRY_CODES.has(code)) throw err;
       if (attempt >= RENAME_RETRY_DELAYS_MS.length) {
-        console.error(`[lern-app] ${to} konnte nach ${attempt + 1} Versuchen nicht ersetzt werden (${code}). Hält OneDrive oder ein anderes Programm die Datei offen?`);
-        throw new Error('Speichern fehlgeschlagen: Die Datei ist gerade gesperrt (z. B. durch OneDrive). Bitte gleich noch einmal versuchen.', { cause: err });
+        console.error(
+          `[lern-app] ${to} konnte nach ${attempt + 1} Versuchen nicht ersetzt werden (${code}). Hält OneDrive oder ein anderes Programm die Datei offen?`,
+        );
+        throw new Error(
+          'Speichern fehlgeschlagen: Die Datei ist gerade gesperrt (z. B. durch OneDrive). Bitte gleich noch einmal versuchen.',
+          { cause: err },
+        );
       }
       sleep(RENAME_RETRY_DELAYS_MS[attempt]);
     }

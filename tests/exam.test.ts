@@ -69,7 +69,13 @@ describe('Karteikarten-Filter', () => {
   ];
 
   it('liest fehlende URL-Parameter als „alle"', () => {
-    expect(readCardFilter(new URLSearchParams('thema=01&typ=falle'))).toEqual({ thema: '01', deck: 'alle', art: 'alle', typ: 'falle', stufe: 'alle' });
+    expect(readCardFilter(new URLSearchParams('thema=01&typ=falle'))).toEqual({
+      thema: '01',
+      deck: 'alle',
+      art: 'alle',
+      typ: 'falle',
+      stufe: 'alle',
+    });
   });
 
   it('„alle" entfernt den Parameter, andere Parameter bleiben', () => {

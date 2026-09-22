@@ -24,18 +24,32 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
   const [points, setPoints] = useState<number | undefined>();
   const [saved, setSaved] = useState(false);
 
-  if (!task) return <div className="page"><h1>Aufgabe nicht gefunden</h1><Link to="/aufgaben">Zur Aufgabenliste</Link></div>;
+  if (!task)
+    return (
+      <div className="page">
+        <h1>Aufgabe nicht gefunden</h1>
+        <Link to="/aufgaben">Zur Aufgabenliste</Link>
+      </div>
+    );
   const topic = content.topics.find((t) => t.id === task.topicId);
   const block = topic?.exam?.blocks.find((b) => b.taskIds.includes(task.id));
   const history = progress.attempts.filter((a) => a.taskId === task.id);
   const journal = progress.journal[task.id];
 
-  const nextDue = Object.values(progress.journal).find((j) => !j.resolvedAt && isDue(j.due) && j.taskId !== task.id && content.tasks[j.taskId]);
+  const nextDue = Object.values(progress.journal).find(
+    (j) => !j.resolvedAt && isDue(j.due) && j.taskId !== task.id && content.tasks[j.taskId],
+  );
 
   const save = () => {
     if (points === undefined) return;
     update((p) =>
-      recordAttempt(p, { taskId: task.id, date: new Date().toISOString(), points, max: task.points, mode: repeat ? 'wiederholung' : 'einzel' }),
+      recordAttempt(p, {
+        taskId: task.id,
+        date: new Date().toISOString(),
+        points,
+        max: task.points,
+        mode: repeat ? 'wiederholung' : 'einzel',
+      }),
     );
     setSaved(true);
   };
@@ -60,7 +74,9 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
         <AnswerInput task={task} value={answer} onChange={setAnswer} disabled={revealed} />
         {!revealed ? (
           <div className="actions">
-            <button type="button" onClick={() => setRevealed(true)}>Abgeben &amp; Lösung anzeigen</button>
+            <button type="button" onClick={() => setRevealed(true)}>
+              Abgeben &amp; Lösung anzeigen
+            </button>
           </div>
         ) : (
           <>
@@ -71,15 +87,17 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
                   Ergebnis speichern{points !== undefined && ` (${formatPoints(points)} / ${formatPoints(task.points)} P)`}
                 </button>
               ) : (
-                <span className="ok">
-                  ✓ Gespeichert{points! < task.points ? ' – kommt morgen im Fehlerjournal wieder.' : '.'}
-                </span>
+                <span className="ok">✓ Gespeichert{points! < task.points ? ' – kommt morgen im Fehlerjournal wieder.' : '.'}</span>
               )}
               {saved && repeat && nextDue && (
-                <button type="button" onClick={() => navigate(`/aufgabe/${nextDue.taskId}?modus=wiederholung`)}>Nächste Wiederholung →</button>
+                <button type="button" onClick={() => navigate(`/aufgabe/${nextDue.taskId}?modus=wiederholung`)}>
+                  Nächste Wiederholung →
+                </button>
               )}
               {saved && !repeat && (
-                <Link className="button secondary" to={`/aufgaben?thema=${task.topicId}`}>Weitere Aufgaben</Link>
+                <Link className="button secondary" to={`/aufgaben?thema=${task.topicId}`}>
+                  Weitere Aufgaben
+                </Link>
               )}
             </div>
           </>
@@ -89,7 +107,9 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
       {history.length > 0 && (
         <p className="hint">
           Bisherige Versuche:{' '}
-          {history.map((h) => `${new Date(h.date).toLocaleDateString('de-DE')}: ${formatPoints(h.points)}/${formatPoints(h.max)} P`).join(' · ')}
+          {history
+            .map((h) => `${new Date(h.date).toLocaleDateString('de-DE')}: ${formatPoints(h.points)}/${formatPoints(h.max)} P`)
+            .join(' · ')}
         </p>
       )}
     </div>

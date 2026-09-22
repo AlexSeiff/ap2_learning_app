@@ -106,12 +106,21 @@ export async function generateTasks(content: Content, topicId: string, count: nu
     const stamp = Date.now().toString(36);
     return parsed.aufgaben.map((a, i): Task => {
       const auto =
-        a.typ === 'mc' ? { options: a.optionen ?? [], correct: a.richtige_optionen ?? [] }
-        : a.typ === 'lueckentext' ? { blanks: a.luecken_loesungen ?? [] }
-        : a.typ === 'zuordnung' ? { pairs: (a.paare ?? []).map((p) => ({ left: p.links, right: p.rechts })) }
-        : a.typ === 'rechnen' && a.zahl_ergebnis
-          ? { numeric: { value: a.zahl_ergebnis.wert, tolerance: Math.abs(a.zahl_ergebnis.toleranz), unit: a.zahl_ergebnis.einheit ?? undefined } }
-          : undefined;
+        a.typ === 'mc'
+          ? { options: a.optionen ?? [], correct: a.richtige_optionen ?? [] }
+          : a.typ === 'lueckentext'
+            ? { blanks: a.luecken_loesungen ?? [] }
+            : a.typ === 'zuordnung'
+              ? { pairs: (a.paare ?? []).map((p) => ({ left: p.links, right: p.rechts })) }
+              : a.typ === 'rechnen' && a.zahl_ergebnis
+                ? {
+                    numeric: {
+                      value: a.zahl_ergebnis.wert,
+                      tolerance: Math.abs(a.zahl_ergebnis.toleranz),
+                      unit: a.zahl_ergebnis.einheit ?? undefined,
+                    },
+                  }
+                : undefined;
       return {
         id: `gen-${topicId}-${stamp}-${i + 1}`,
         code: `K${i + 1}`,

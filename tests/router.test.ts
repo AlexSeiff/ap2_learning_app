@@ -31,7 +31,10 @@ describe('matchRoute', () => {
 
 describe('defineRoute', () => {
   it('liest Methode und Pfad aus dem Schlüssel, Muster ersetzt Pfade mit Parametern', () => {
-    expect(defineRoute('GET /api/progress/backups', () => ({ newest: null, count: 0 }))).toMatchObject({ method: 'GET', path: '/api/progress/backups' });
+    expect(defineRoute('GET /api/progress/backups', () => ({ newest: null, count: 0 }))).toMatchObject({
+      method: 'GET',
+      path: '/api/progress/backups',
+    });
     const del = defineRoute('DELETE /api/generated/:id', () => ({ ok: true as const }), /^\/api\/generated\/(.+)$/);
     expect(matchRoute([del], 'DELETE', '/api/generated/gen-1')?.params).toEqual(['gen-1']);
   });
@@ -49,7 +52,11 @@ function error(fn: () => unknown): HttpError {
 
 describe('Request-Schemas', () => {
   it('generate: gültige Anfrage, Vorgaben für count und types', () => {
-    expect(parseBody(GenerateRequestSchema, { topicId: '03', count: 5, types: ['mc', 'rechnen'] })).toEqual({ topicId: '03', count: 5, types: ['mc', 'rechnen'] });
+    expect(parseBody(GenerateRequestSchema, { topicId: '03', count: 5, types: ['mc', 'rechnen'] })).toEqual({
+      topicId: '03',
+      count: 5,
+      types: ['mc', 'rechnen'],
+    });
     expect(parseBody(GenerateRequestSchema, { topicId: '03' })).toEqual({ topicId: '03', count: 3, types: [] });
   });
 
@@ -74,7 +81,9 @@ describe('Request-Schemas', () => {
     expect(parseBody(GradeRequestSchema, { taskId: '01-A1' })).toEqual({ taskId: '01-A1', answer: '' });
     expect(parseBody(GradeRequestSchema, { taskId: '01-A1', answer: 'SELECT 1' })).toEqual({ taskId: '01-A1', answer: 'SELECT 1' });
     expect(error(() => parseBody(GradeRequestSchema, { answer: 'x' })).message).toContain('taskId: Aufgabe fehlt.');
-    expect(error(() => parseBody(GradeRequestSchema, { taskId: '01-A1', answer: 42 })).message).toContain('answer: Antwort muss Text sein.');
+    expect(error(() => parseBody(GradeRequestSchema, { taskId: '01-A1', answer: 42 })).message).toContain(
+      'answer: Antwort muss Text sein.',
+    );
   });
 
   it('kein JSON-Objekt → deutsche Meldung', () => {

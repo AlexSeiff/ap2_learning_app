@@ -3,7 +3,16 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { shuffledOrder } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
 import { formatPoints } from '../lib/grading';
-import { downloadText, examSheet, selectionSheet, sheetToMarkdown, solutionMarkdown, taskLabel, taskMarkdown, type SheetKind } from '../lib/sheets';
+import {
+  downloadText,
+  examSheet,
+  selectionSheet,
+  sheetToMarkdown,
+  solutionMarkdown,
+  taskLabel,
+  taskMarkdown,
+  type SheetKind,
+} from '../lib/sheets';
 import { useStore } from '../lib/store';
 
 /** Druckansicht: Aufgaben- und Lösungsblatt sind getrennte Seiten mit identischer Nummerierung. */
@@ -40,8 +49,12 @@ export function Druck() {
   return (
     <div className="print-page">
       <div className="print-toolbar no-print">
-        <button type="button" className="ghost" onClick={() => history.back()}>← Zurück</button>
-        <button type="button" onClick={() => window.print()}>🖨️ Drucken / Als PDF speichern</button>
+        <button type="button" className="ghost" onClick={() => history.back()}>
+          ← Zurück
+        </button>
+        <button type="button" onClick={() => window.print()}>
+          🖨️ Drucken / Als PDF speichern
+        </button>
         <button type="button" className="secondary" onClick={() => downloadText(`${sheet.fileBase}.md`, sheetToMarkdown(sheet, kind))}>
           ⬇ Markdown
         </button>
@@ -53,7 +66,9 @@ export function Druck() {
 
       <header className="sheet-head">
         <div>
-          <h1>{kind === 'aufgaben' ? 'Aufgabenblatt' : 'Lösungsblatt'}: {sheet.title}</h1>
+          <h1>
+            {kind === 'aufgaben' ? 'Aufgabenblatt' : 'Lösungsblatt'}: {sheet.title}
+          </h1>
           <p>{sheet.subtitle}</p>
         </div>
         <div className="sheet-meta">
@@ -84,11 +99,7 @@ export function Druck() {
                 {kind === 'aufgaben' && t.type === 'offen' && (
                   <div className="write-space" style={{ height: `${Math.min(22, 3 + t.points * 1.1)}em` }} />
                 )}
-                {kind === 'loesungen' && (
-                  <p className="score-line">
-                    Erreicht: ______ / {formatPoints(t.points)} P
-                  </p>
-                )}
+                {kind === 'loesungen' && <p className="score-line">Erreicht: ______ / {formatPoints(t.points)} P</p>}
               </div>
             );
           })}

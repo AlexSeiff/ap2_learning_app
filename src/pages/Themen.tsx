@@ -27,7 +27,12 @@ export function Thema() {
   const { topicId } = useParams();
   const { content, progress, update } = useStore();
   const topic = content.topics.find((t) => t.id === topicId);
-  if (!topic) return <div className="page"><h1>Thema nicht gefunden</h1></div>;
+  if (!topic)
+    return (
+      <div className="page">
+        <h1>Thema nicht gefunden</h1>
+      </div>
+    );
   const cards = content.flashcards.filter((c) => c.topicId === topic.id).length;
 
   return (
@@ -35,12 +40,27 @@ export function Thema() {
       <aside className="toc">
         <b>Inhalt</b>
         {topic.sections.map((s) => (
-          <a key={s.id} href={`#${s.id}`} className={`toc-l${s.level}`} onClick={(e) => { e.preventDefault(); document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' }); }}>
+          <a
+            key={s.id}
+            href={`#${s.id}`}
+            className={`toc-l${s.level}`}
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
             {s.title}
           </a>
         ))}
         {!!topic.lernziele.length && (
-          <a href="#lernziele" className="toc-l2" onClick={(e) => { e.preventDefault(); document.getElementById('lernziele')?.scrollIntoView({ behavior: 'smooth' }); }}>
+          <a
+            href="#lernziele"
+            className="toc-l2"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('lernziele')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
             Lernziel-Check
           </a>
         )}
@@ -51,9 +71,19 @@ export function Thema() {
         </p>
         <h1>{topic.title}</h1>
         <div className="actions">
-          {topic.exam && <Link className="button" to={`/klausur/${topic.id}`}>📝 Übungsklausur</Link>}
-          <Link className="button secondary" to={`/aufgaben?thema=${topic.id}`}>Einzelaufgaben</Link>
-          {cards > 0 && <Link className="button secondary" to={`/karteikarten?thema=${topic.id}`}>🗂️ {cards} Karteikarten</Link>}
+          {topic.exam && (
+            <Link className="button" to={`/klausur/${topic.id}`}>
+              📝 Übungsklausur
+            </Link>
+          )}
+          <Link className="button secondary" to={`/aufgaben?thema=${topic.id}`}>
+            Einzelaufgaben
+          </Link>
+          {cards > 0 && (
+            <Link className="button secondary" to={`/karteikarten?thema=${topic.id}`}>
+              🗂️ {cards} Karteikarten
+            </Link>
+          )}
         </div>
         {topic.sections.map((s) => (
           <section key={s.id} id={s.id} className="theory">

@@ -95,7 +95,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         {IS_STATIC ? (
           <p>Prüf deine Internetverbindung und lade die Seite neu.</p>
         ) : (
-          <p>Läuft der Server? Starte die App mit <code>npm run dev</code> im Ordner <code>lern-app</code>.</p>
+          <p>
+            Läuft der Server? Starte die App mit <code>npm run dev</code> im Ordner <code>lern-app</code>.
+          </p>
         )}
       </div>
     );

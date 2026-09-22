@@ -23,7 +23,9 @@ describe('Echte Lernblätter in content/', () => {
 
   it('jede Übungsklausur ergibt 100 Punkte und jede Aufgabe hat eine Musterlösung', () => {
     for (const t of content.topics) expect(t.exam?.totalPoints, t.file).toBe(100);
-    const missing = Object.values(content.tasks).filter((t) => !t.solution?.markdown).map((t) => t.id);
+    const missing = Object.values(content.tasks)
+      .filter((t) => !t.solution?.markdown)
+      .map((t) => t.id);
     expect(missing).toEqual([]);
   });
 

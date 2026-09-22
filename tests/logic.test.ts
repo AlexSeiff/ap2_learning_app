@@ -50,7 +50,9 @@ describe('Karteikarten (Leitner)', () => {
 
 describe('Bewertung', () => {
   it('IHK-Notenschlüssel inkl. Grenzen', () => {
-    expect([100, 92, 91.6, 91, 81, 80, 67, 66, 50, 49, 30, 29, 0].map((p) => ihkGrade(p).note)).toEqual([1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
+    expect([100, 92, 91.6, 91, 81, 80, 67, 66, 50, 49, 30, 29, 0].map((p) => ihkGrade(p).note)).toEqual([
+      1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6,
+    ]);
   });
 
   it('liest deutsche Zahlen', () => {
@@ -76,7 +78,16 @@ describe('Bewertung', () => {
     expect(r.points).toBe(2.5);
     expect(autoGrade(lt, { kind: 'lueckentext', values: ['', '', 'm:n'] }).details[2]).toBe(true);
 
-    const zu: Task = { ...base, type: 'zuordnung', auto: { pairs: [{ left: 'a', right: '1' }, { left: 'b', right: '2' }] } };
+    const zu: Task = {
+      ...base,
+      type: 'zuordnung',
+      auto: {
+        pairs: [
+          { left: 'a', right: '1' },
+          { left: 'b', right: '2' },
+        ],
+      },
+    };
     expect(autoGrade(zu, { kind: 'zuordnung', mapping: { 0: 0, 1: 0 } }).points).toBe(2);
   });
 

@@ -23,7 +23,13 @@ export interface Sheet {
 
 function safeName(s: string): string {
   return s
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/Ä/g, 'Ae').replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue').replace(/ß/g, 'ss')
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/Ä/g, 'Ae')
+    .replace(/Ö/g, 'Oe')
+    .replace(/Ü/g, 'Ue')
+    .replace(/ß/g, 'ss')
     .replace(/[^A-Za-z0-9]+/g, '_')
     .replace(/^_|_$/g, '');
 }
@@ -75,7 +81,8 @@ export function taskLabel(t: Task): string {
 export function solutionMarkdown(t: Task): string {
   const parts: string[] = [];
   const a = t.auto;
-  if (a?.options && a.correct) parts.push(`**Richtig:** ${a.correct.map((i) => `${String.fromCharCode(65 + i)}) ${a.options![i]}`).join(' · ')}`);
+  if (a?.options && a.correct)
+    parts.push(`**Richtig:** ${a.correct.map((i) => `${String.fromCharCode(65 + i)}) ${a.options![i]}`).join(' · ')}`);
   if (a?.blanks) parts.push(`**Lücken:** ${a.blanks.map((b, i) => `[${i + 1}] ${b}`).join(' · ')}`);
   if (a?.pairs) parts.push(`**Zuordnung:**\n\n${a.pairs.map((p) => `- ${p.left} → ${p.right}`).join('\n')}`);
   if (a?.numeric) parts.push(`**Ergebnis:** ${formatPoints(a.numeric.value)}${a.numeric.unit ? ` ${a.numeric.unit}` : ''}`);
@@ -91,7 +98,8 @@ export function taskMarkdown(t: Task, shuffledRights?: string[]): string {
   if (a?.options) md += '\n\n' + a.options.map((o, i) => `- ☐ ${String.fromCharCode(65 + i)}) ${o}`).join('\n');
   if (a?.pairs) {
     const rights = shuffledRights ?? a.pairs.map((p) => p.right);
-    md += '\n\n| Begriff | Nr. | | Erklärung |\n|---|---|---|---|\n' +
+    md +=
+      '\n\n| Begriff | Nr. | | Erklärung |\n|---|---|---|---|\n' +
       a.pairs.map((p, i) => `| ${p.left} | ___ | ${i + 1} | ${rights[i]} |`).join('\n');
   }
   return md;

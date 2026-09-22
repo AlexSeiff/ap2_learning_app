@@ -14,7 +14,9 @@ for (const t of c.topics) {
 }
 console.log(`\nLernkarten: ${c.flashcards.filter((f) => f.kind === 'lernkarte').length} in ${c.decks.length} Decks`);
 for (const d of c.decks) {
-  console.log(`  ${d.id.padEnd(5)} ${d.title.padEnd(48)} ${String(d.cardCount).padStart(3)} Karten → ${d.topicId ? `Deep Dive ${d.topicId}` : 'kein Deep Dive'}`);
+  console.log(
+    `  ${d.id.padEnd(5)} ${d.title.padEnd(48)} ${String(d.cardCount).padStart(3)} Karten → ${d.topicId ? `Deep Dive ${d.topicId}` : 'kein Deep Dive'}`,
+  );
 }
 console.log(`\nMaterialien: ${c.materials.map((m) => m.title).join(', ')}`);
 console.log(`Lernplan-Wochen: ${c.weeks.length}`);

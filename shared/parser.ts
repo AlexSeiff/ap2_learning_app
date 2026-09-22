@@ -1,19 +1,7 @@
 // Parser für die Markdown-Lernblätter (DeepDive_NN_*.md) und ihre Lösungsdateien (*_Loesungen.md).
 // Reine Funktionen ohne Dateisystemzugriff, damit Server und Tests sie gleichermaßen nutzen können.
 
-import type {
-  Content,
-  Exam,
-  ExamBlock,
-  Flashcard,
-  ImportIssue,
-  MaterialDoc,
-  Section,
-  Solution,
-  Task,
-  Topic,
-  WeekPlan,
-} from './types';
+import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic, WeekPlan } from './types';
 import { parseLernkarten } from './lernkarten';
 
 interface Line {
@@ -30,12 +18,15 @@ const SOLUTION_START = /^(?:[-*]\s+)?\*\*([A-Z]\d+[a-z]?)(?:\s*\((\d+(?:,\d+)?)\
 
 export function toLines(markdown: string): Line[] {
   let inFence = false;
-  return markdown.replace(/\r\n?/g, '\n').split('\n').map((text) => {
-    const isFence = /^\s*(```|~~~)/.test(text);
-    const line = { text, inFence: inFence || isFence };
-    if (isFence) inFence = !inFence;
-    return line;
-  });
+  return markdown
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map((text) => {
+      const isFence = /^\s*(```|~~~)/.test(text);
+      const line = { text, inFence: inFence || isFence };
+      if (isFence) inFence = !inFence;
+      return line;
+    });
 }
 
 function heading(line: Line): { level: number; title: string } | null {
@@ -60,7 +51,10 @@ export function trimBlock(lines: string[]): string {
 export function slugify(s: string): string {
   return s
     .toLowerCase()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 }
@@ -136,9 +130,7 @@ export function parseFachgespraech(body: Line[], topicId: string): Flashcard[] {
 }
 
 export function parseLernziele(body: Line[]): string[] {
-  return body
-    .map((l) => /^\s*[-*]\s+\[[ xX]\]\s+(.*)$/.exec(l.text)?.[1].trim())
-    .filter((s): s is string => !!s);
+  return body.map((l) => /^\s*[-*]\s+\[[ xX]\]\s+(.*)$/.exec(l.text)?.[1].trim()).filter((s): s is string => !!s);
 }
 
 /** Liest Aufgaben (A1, B2 …) aus einem Klausurblock. */
@@ -176,7 +168,7 @@ function parseTasks(body: Line[], topicId: string, block: string): { intro: stri
 
 export function parseExam(lines: Line[], topicId: string, extraAttachments: Section[] = []): { exam: Exam; tasks: Task[] } {
   const [first, ...rest] = lines;
-  const title = first ? heading(first)?.title ?? 'Übungsklausur' : 'Übungsklausur';
+  const title = first ? (heading(first)?.title ?? 'Übungsklausur') : 'Übungsklausur';
   const parts = splitByHeadings(rest, 3);
   const exam: Exam = { title, intro: '', attachments: [...extraAttachments], blocks: [], totalPoints: 0 };
   const tasks: Task[] = [];
@@ -226,7 +218,11 @@ export function parseCriteria(markdown: string): { label: string; points: number
 
 function splitRow(line: string): string[] | null {
   if (!/^\s*\|.*\|\s*$/.test(line)) return null;
-  return line.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+  return line
+    .trim()
+    .replace(/^\||\|$/g, '')
+    .split('|')
+    .map((c) => c.trim());
 }
 
 export function buildSolution(lines: string[]): Solution {
@@ -280,13 +276,7 @@ export interface ParsedTopic {
  * Parst ein Lernblatt samt optionaler Lösungsdatei.
  * Liegen die Musterlösungen im Blatt selbst (älteres Format), werden sie dort gesucht.
  */
-export function parseTopic(
-  id: string,
-  file: string,
-  markdown: string,
-  solutionFile?: string,
-  solutionMarkdown?: string,
-): ParsedTopic {
+export function parseTopic(id: string, file: string, markdown: string, solutionFile?: string, solutionMarkdown?: string): ParsedTopic {
   const issues: ImportIssue[] = [];
   const lines = toLines(markdown);
   const titleLine = lines.find((l) => heading(l)?.level === 1);
@@ -305,8 +295,13 @@ export function parseTopic(
     if (examStart < 0 && h.level <= 2 && EXAM_HEADING.test(h.title)) {
       examStart = i;
       examLevel = h.level;
-    } else if (examStart >= 0 && examEnd === lines.length && i > examStart && h.level <= Math.max(examLevel, 2) &&
-      (h.level <= examLevel || /Fachgespräch|Musterlösung|Lernziel/.test(h.title))) {
+    } else if (
+      examStart >= 0 &&
+      examEnd === lines.length &&
+      i > examStart &&
+      h.level <= Math.max(examLevel, 2) &&
+      (h.level <= examLevel || /Fachgespräch|Musterlösung|Lernziel/.test(h.title))
+    ) {
       examEnd = i;
     }
   });
@@ -343,7 +338,13 @@ export function parseTopic(
     if (/Fachgespräch/.test(part.title)) flashcards.push(...parseFachgespraech(part.body, id));
     else if (/Lernziel/.test(part.title)) lernziele = parseLernziele(part.body);
     else if (/Musterlösung/.test(part.title)) inlineSolutions = part.body;
-    else sections.push({ id: `${id}-${slugify(part.title)}`, title: part.title, level: part.level, markdown: trimBlock(part.body.map((l) => l.text)) });
+    else
+      sections.push({
+        id: `${id}-${slugify(part.title)}`,
+        title: part.title,
+        level: part.level,
+        markdown: trimBlock(part.body.map((l) => l.text)),
+      });
   }
 
   let exam: Exam | undefined;
@@ -359,7 +360,7 @@ export function parseTopic(
   const solutionLines = solutionMarkdown ? toLines(solutionMarkdown) : inlineSolutions;
   if (solutionLines) {
     const solutions = parseSolutions(solutionLines);
-    const srcFile = solutionMarkdown ? solutionFile ?? file : file;
+    const srcFile = solutionMarkdown ? (solutionFile ?? file) : file;
     for (const task of tasks) {
       const sol = solutions.get(task.code);
       if (!sol) {

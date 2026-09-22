@@ -47,7 +47,8 @@ export function topicFromSource(source: string, deckTitle: string, topics: Map<s
  */
 export function answerToMarkdown(answer: string): string {
   // Nur ganze, großgeschriebene SQL-Schlüsselwörter – sonst landet z. B. „Alternative:" im Codeblock.
-  const CODE = /^\s*(?:(?:SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY|INSERT|UPDATE|DELETE|SET|VALUES|CREATE|ALTER|DROP|UNION|WITH|LIMIT|ON|AND|OR|(?:(?:LEFT|RIGHT|INNER|FULL)(?: OUTER)? )?JOIN)\b|\)|--)/;
+  const CODE =
+    /^\s*(?:(?:SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY|INSERT|UPDATE|DELETE|SET|VALUES|CREATE|ALTER|DROP|UNION|WITH|LIMIT|ON|AND|OR|(?:(?:LEFT|RIGHT|INNER|FULL)(?: OUTER)? )?JOIN)\b|\)|--)/;
   const lines = answer.replace(/\r/g, '').split('\n');
   if (lines.length === 1) return answer;
   const out: string[] = [];
@@ -65,7 +66,10 @@ export function answerToMarkdown(answer: string): string {
   }
   flush();
   // Einzelne Textzeilen als harte Umbrüche, Codeblöcke als eigene Absätze.
-  return out.map((l) => (l.startsWith('```') ? `\n${l}\n` : `${l}  `)).join('\n').trim();
+  return out
+    .map((l) => (l.startsWith('```') ? `\n${l}\n` : `${l}  `))
+    .join('\n')
+    .trim();
 }
 
 export function parseLernkarten(fileName: string, json: string, topics: Map<string, string>): ParsedCards {

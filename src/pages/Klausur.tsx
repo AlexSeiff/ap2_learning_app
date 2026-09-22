@@ -26,19 +26,23 @@ export function KlausurAuswahl() {
         </div>
       )}
       <div className="grid">
-        {content.topics.filter((t) => t.exam).map((t) => {
-          const runs = progress.exams.filter((e) => e.topicId === t.id && e.total !== undefined);
-          const best = runs.length ? Math.max(...runs.map((e) => percent(e.total!, e.max))) : undefined;
-          return (
-            <Link key={t.id} to={`/klausur/${t.id}`} className="tile">
-              <span className="tile-num">{t.id === '00' ? '＋' : t.number}</span>
-              <span className="tile-title">{t.title}</span>
-              <span className="tile-meta">
-                {runs.length ? `${runs.length}× geschrieben · bestes ${Math.round(best!)} % (Note ${ihkGrade(best!).note})` : 'noch nicht geschrieben'}
-              </span>
-            </Link>
-          );
-        })}
+        {content.topics
+          .filter((t) => t.exam)
+          .map((t) => {
+            const runs = progress.exams.filter((e) => e.topicId === t.id && e.total !== undefined);
+            const best = runs.length ? Math.max(...runs.map((e) => percent(e.total!, e.max))) : undefined;
+            return (
+              <Link key={t.id} to={`/klausur/${t.id}`} className="tile">
+                <span className="tile-num">{t.id === '00' ? '＋' : t.number}</span>
+                <span className="tile-title">{t.title}</span>
+                <span className="tile-meta">
+                  {runs.length
+                    ? `${runs.length}× geschrieben · bestes ${Math.round(best!)} % (Note ${ihkGrade(best!).note})`
+                    : 'noch nicht geschrieben'}
+                </span>
+              </Link>
+            );
+          })}
       </div>
     </div>
   );
@@ -48,10 +52,32 @@ export function Klausur() {
   const { topicId } = useParams();
   const navigate = useNavigate();
   const { content } = useStore();
-  const { topic, exam, tasks, run, otherRun, result, submitted, remaining, answered, scored, sum, start, setAnswer, setScore, submit, finish, abort } =
-    useExamRun(topicId);
+  const {
+    topic,
+    exam,
+    tasks,
+    run,
+    otherRun,
+    result,
+    submitted,
+    remaining,
+    answered,
+    scored,
+    sum,
+    start,
+    setAnswer,
+    setScore,
+    submit,
+    finish,
+    abort,
+  } = useExamRun(topicId);
 
-  if (!topic || !exam) return <div className="page"><h1>Keine Klausur für dieses Thema</h1></div>;
+  if (!topic || !exam)
+    return (
+      <div className="page">
+        <h1>Keine Klausur für dieses Thema</h1>
+      </div>
+    );
 
   if (result) return <ExamResult topic={topic} run={result} />;
   const traps = content.flashcards.filter((c) => c.topicId === topic.id && c.typ === 'falle').length;
@@ -59,22 +85,25 @@ export function Klausur() {
   if (!run) {
     return (
       <div className="page narrow">
-        <p className="crumbs"><Link to="/klausur">Übungsklausur</Link></p>
+        <p className="crumbs">
+          <Link to="/klausur">Übungsklausur</Link>
+        </p>
         <h1>{exam.title}</h1>
-        <p className="lead">Deep Dive {topic.number}: {topic.title}</p>
+        <p className="lead">
+          Deep Dive {topic.number}: {topic.title}
+        </p>
         {exam.intro && <Markdown>{exam.intro}</Markdown>}
         <ul className="plain">
           {exam.blocks.map((b) => (
             <li key={b.letter}>
-              Block {b.letter} – {b.title} <span className="muted">({formatPoints(b.points)} P, {b.taskIds.length} Aufgaben)</span>
+              Block {b.letter} – {b.title}{' '}
+              <span className="muted">
+                ({formatPoints(b.points)} P, {b.taskIds.length} Aufgaben)
+              </span>
             </li>
           ))}
         </ul>
-        {otherRun && (
-          <p className="card warn">
-            Es läuft noch eine andere Klausur. Beim Start hier wird sie verworfen.
-          </p>
-        )}
+        {otherRun && <p className="card warn">Es läuft noch eine andere Klausur. Beim Start hier wird sie verworfen.</p>}
         <div className="actions">
           <button
             type="button"
@@ -86,14 +115,25 @@ export function Klausur() {
             ▶ Klausur starten ({EXAM_MINUTES} min)
           </button>
           {traps > 0 && (
-            <Link className="button secondary" to={`/karteikarten?thema=${topic.id}&typ=falle`} title="Typische Prüfungsfehler vor der Klausur wiederholen">
+            <Link
+              className="button secondary"
+              to={`/karteikarten?thema=${topic.id}&typ=falle`}
+              title="Typische Prüfungsfehler vor der Klausur wiederholen"
+            >
               ⚠️ {traps} Fallen-Karten vorher
             </Link>
           )}
-          <Link className="button secondary" to={`/druck?art=aufgaben&thema=${topic.id}`}>🖨️ Aufgabenblatt (PDF)</Link>
-          <Link className="button secondary" to={`/druck?art=loesungen&thema=${topic.id}`}>🖨️ Lösungsblatt (PDF)</Link>
+          <Link className="button secondary" to={`/druck?art=aufgaben&thema=${topic.id}`}>
+            🖨️ Aufgabenblatt (PDF)
+          </Link>
+          <Link className="button secondary" to={`/druck?art=loesungen&thema=${topic.id}`}>
+            🖨️ Lösungsblatt (PDF)
+          </Link>
         </div>
-        <p className="hint">Tipp: Aufgabenblatt ausdrucken, handschriftlich lösen und danach hier nur noch die Punkte eintragen – so trainierst du wie in der Prüfung.</p>
+        <p className="hint">
+          Tipp: Aufgabenblatt ausdrucken, handschriftlich lösen und danach hier nur noch die Punkte eintragen – so trainierst du wie in der
+          Prüfung.
+        </p>
       </div>
     );
   }
@@ -107,8 +147,12 @@ export function Klausur() {
         <b>{exam.title}</b>
         {!submitted ? (
           <>
-            <span className={`timer ${remaining < 10 * 60_000 ? 'low' : ''}`}>⏱ {String(mm).padStart(2, '0')}:{String(ss).padStart(2, '0')}</span>
-            <span className="muted">{answered}/{tasks.length} beantwortet</span>
+            <span className={`timer ${remaining < 10 * 60_000 ? 'low' : ''}`}>
+              ⏱ {String(mm).padStart(2, '0')}:{String(ss).padStart(2, '0')}
+            </span>
+            <span className="muted">
+              {answered}/{tasks.length} beantwortet
+            </span>
             <button
               type="button"
               onClick={() => {
@@ -123,7 +167,9 @@ export function Klausur() {
           </>
         ) : (
           <>
-            <span className="muted">Bewertet: {scored}/{tasks.length} · Zwischenstand {formatPoints(sum)} P</span>
+            <span className="muted">
+              Bewertet: {scored}/{tasks.length} · Zwischenstand {formatPoints(sum)} P
+            </span>
             <button
               type="button"
               onClick={() => {
@@ -153,8 +199,8 @@ export function Klausur() {
 
       {submitted && (
         <div className="card info">
-          <b>Lösungsblatt freigeschaltet.</b> Vergleiche jede Antwort mit der Musterlösung und vergib Punkte wie ein Prüfer –
-          Kriterien abhaken, Punkte eintragen oder die KI-Bewertung nutzen.{' '}
+          <b>Lösungsblatt freigeschaltet.</b> Vergleiche jede Antwort mit der Musterlösung und vergib Punkte wie ein Prüfer – Kriterien
+          abhaken, Punkte eintragen oder die KI-Bewertung nutzen.{' '}
           <Link to={`/druck?art=loesungen&thema=${topic.id}`}>Lösungsblatt drucken</Link>
         </div>
       )}
@@ -174,9 +220,7 @@ export function Klausur() {
               <div key={id} className={`task-card ${submitted ? 'review' : ''}`}>
                 <TaskText task={task} />
                 <AnswerInput task={task} value={run.answers[id]} onChange={(v) => setAnswer(id, v)} disabled={submitted} />
-                {submitted && (
-                  <GradePanel task={task} answer={run.answers[id]} points={run.scores[id]} onPoints={(v) => setScore(id, v)} />
-                )}
+                {submitted && <GradePanel task={task} answer={run.answers[id]} points={run.scores[id]} onPoints={(v) => setScore(id, v)} />}
               </div>
             );
           })}
@@ -198,7 +242,9 @@ function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
     <div className="page narrow">
       <h1>Ergebnis: {topic.title}</h1>
       <div className={`result grade-${grade.note}`}>
-        <span className="result-points">{formatPoints(total)} / {formatPoints(run.max)} P</span>
+        <span className="result-points">
+          {formatPoints(total)} / {formatPoints(run.max)} P
+        </span>
         <span className="result-grade">
           Note {grade.note} – {grade.label}
         </span>
@@ -207,7 +253,8 @@ function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
         {pct >= 92
           ? 'Stark – das Thema sitzt auf Einser-Niveau.'
           : `Bis zur 1 fehlen dir ${formatPoints(Math.max(0, Math.ceil(0.92 * run.max) - total))} Punkte.`}{' '}
-        {lost.length > 0 && `${lost.length} Aufgaben unter voller Punktzahl wurden ins Fehlerjournal übernommen (Wiederholung morgen, dann nach 3 und 7 Tagen).`}
+        {lost.length > 0 &&
+          `${lost.length} Aufgaben unter voller Punktzahl wurden ins Fehlerjournal übernommen (Wiederholung morgen, dann nach 3 und 7 Tagen).`}
       </p>
       {lost.length > 0 && (
         <ul className="plain">
@@ -219,8 +266,12 @@ function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
         </ul>
       )}
       <div className="actions">
-        <Link className="button" to="/fehlerjournal">Zum Fehlerjournal</Link>
-        <Link className="button secondary" to="/klausur">Weitere Klausur</Link>
+        <Link className="button" to="/fehlerjournal">
+          Zum Fehlerjournal
+        </Link>
+        <Link className="button secondary" to="/klausur">
+          Weitere Klausur
+        </Link>
       </div>
     </div>
   );

@@ -85,11 +85,17 @@ function SaveErrorBanner() {
     return (
       <div className="card warn" role="alert">
         <p>⚠ {CONFLICT_MESSAGE}. Änderungen in diesem Tab werden nicht mehr gespeichert.</p>
-        <button type="button" onClick={() => window.location.reload()}>↻ Neu laden</button>
+        <button type="button" onClick={() => window.location.reload()}>
+          ↻ Neu laden
+        </button>
       </div>
     );
   }
-  return saveError ? <p className="card warn" role="alert">⚠ {saveError}</p> : null;
+  return saveError ? (
+    <p className="card warn" role="alert">
+      ⚠ {saveError}
+    </p>
+  ) : null;
 }
 
 // Neuer key pro Route: nach einem Absturz reicht ein Klick in der Navigation, um weiterzulernen.
@@ -125,7 +131,14 @@ export function App() {
                     <Route path="/material" element={<Material />} />
                     <Route path="/material/:docId" element={<Material />} />
                     <Route path="/daten" element={<Daten />} />
-                    <Route path="*" element={<div className="page"><h1>Seite nicht gefunden</h1></div>} />
+                    <Route
+                      path="*"
+                      element={
+                        <div className="page">
+                          <h1>Seite nicht gefunden</h1>
+                        </div>
+                      }
+                    />
                   </Routes>
                 </PageErrorBoundary>
               </main>

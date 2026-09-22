@@ -16,14 +16,16 @@ export function Fehlerjournal() {
     <div className="page">
       <h1>Fehlerjournal</h1>
       <p className="lead">
-        Jede Aufgabe unter voller Punktzahl landet automatisch hier und kommt nach <b>1, 3 und 7 Tagen</b> wieder.
-        Erst nach drei vollen Wiederholungen gilt sie als erledigt; ein Fehler setzt sie auf Tag 1 zurück.
+        Jede Aufgabe unter voller Punktzahl landet automatisch hier und kommt nach <b>1, 3 und 7 Tagen</b> wieder. Erst nach drei vollen
+        Wiederholungen gilt sie als erledigt; ein Fehler setzt sie auf Tag 1 zurück.
       </p>
       <section className="card">
         <h2>Heute fällig ({due.length})</h2>
         {due.length ? (
           <>
-            <Link className="button" to={`/aufgabe/${due[0].taskId}?modus=wiederholung`}>▶ Wiederholung starten</Link>
+            <Link className="button" to={`/aufgabe/${due[0].taskId}?modus=wiederholung`}>
+              ▶ Wiederholung starten
+            </Link>
             <EntryList entries={due} />
           </>
         ) : (
@@ -58,7 +60,12 @@ function EntryList({ entries }: { entries: JournalEntry[] }) {
           <li key={j.taskId}>
             <Link to={`/aufgabe/${t.id}${j.resolvedAt ? '' : '?modus=wiederholung'}`} className="task-link">
               <span className="task-code">{t.code}</span>
-              <span className="task-preview">{t.markdown.replace(/[*`#>|]/g, '').split('\n')[0].slice(0, 120)}</span>
+              <span className="task-preview">
+                {t.markdown
+                  .replace(/[*`#>|]/g, '')
+                  .split('\n')[0]
+                  .slice(0, 120)}
+              </span>
             </Link>
             <span className="muted small">{topic?.title}</span>
             <span className="small">

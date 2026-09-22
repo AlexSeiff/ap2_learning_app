@@ -256,7 +256,8 @@ function formatIssue(issue: z.core.$ZodIssue): string {
   return issue.path.length ? issue.path.join('.') : '(gesamt)';
 }
 
-export type ProgressPutResult = { ok: true; progress: ProgressData & { revision: number } } | { ok: false; status: 400 | 409; error: string };
+export type ProgressPutResult =
+  { ok: true; progress: ProgressData & { revision: number } } | { ok: false; status: 400 | 409; error: string };
 
 /**
  * Prüft einen PUT-Body gegen das Schema und gegen den gespeicherten Stand.

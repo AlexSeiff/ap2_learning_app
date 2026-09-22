@@ -16,7 +16,8 @@ import type { z } from 'zod';
 
 const withAttempts = (n: number) => {
   let p = emptyProgress();
-  for (let i = 0; i < n; i++) p = recordAttempt(p, { taskId: `01-A${i}`, date: '2026-09-21', points: 1, max: 1, mode: 'einzel' }, '2026-09-21');
+  for (let i = 0; i < n; i++)
+    p = recordAttempt(p, { taskId: `01-A${i}`, date: '2026-09-21', points: 1, max: 1, mode: 'einzel' }, '2026-09-21');
   return p;
 };
 
@@ -87,7 +88,11 @@ describe('checkProgressPut', () => {
   it('zählt die Revision hoch und lehnt einen veralteten Tab mit 409 ab', () => {
     const stored = { ...withAttempts(3), revision: 4 };
     expect(checkProgressPut({ ...withAttempts(4), revision: 4 }, stored)).toMatchObject({ ok: true, progress: { revision: 5 } });
-    for (const body of [{ ...withAttempts(4), revision: 3 }, { ...withAttempts(4), revision: 5 }, { ...withAttempts(4), revision: undefined }]) {
+    for (const body of [
+      { ...withAttempts(4), revision: 3 },
+      { ...withAttempts(4), revision: 5 },
+      { ...withAttempts(4), revision: undefined },
+    ]) {
       expect(checkProgressPut(body, stored)).toEqual({
         ok: false,
         status: 409,
@@ -99,7 +104,10 @@ describe('checkProgressPut', () => {
   it('auch reset: true braucht die aktuelle Revision', () => {
     const stored = { ...withAttempts(16), revision: 2 };
     expect(checkProgressPut({ ...emptyProgress(), revision: 1, reset: true }, stored)).toMatchObject({ ok: false, status: 409 });
-    expect(checkProgressPut({ ...emptyProgress(), revision: 2, reset: true }, stored)).toMatchObject({ ok: true, progress: { revision: 3 } });
+    expect(checkProgressPut({ ...emptyProgress(), revision: 2, reset: true }, stored)).toMatchObject({
+      ok: true,
+      progress: { revision: 3 },
+    });
   });
 
   it('Schwelle: mehr als 5 weniger oder weniger als die Hälfte', () => {
@@ -141,7 +149,14 @@ describe('migrateProgress', () => {
       '01-pf1': { box: 3, due: '2026-08-10', reviews: 0 },
       '02-fg2': { box: 1, due: '2026-08-05', reviews: 2, last: 'unsicher' },
     });
-    expect(migrated.journal['01-A1']).toEqual({ taskId: '01-A1', addedAt: '2026-08-01', stage: 0, due: '2026-08-02', lastPoints: 3, max: 6 });
+    expect(migrated.journal['01-A1']).toEqual({
+      taskId: '01-A1',
+      addedAt: '2026-08-01',
+      stage: 0,
+      due: '2026-08-02',
+      lastPoints: 3,
+      max: 6,
+    });
     expect(migrated.lernziele).toEqual({ '01-1': true, '01-2': false });
     expect(ProgressSchema.safeParse(migrated).success).toBe(true);
   });

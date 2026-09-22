@@ -31,7 +31,7 @@ export function Aufgaben() {
 
   const topicOrder = new Map(content.topics.map((t, i) => [t.id, i]));
   const all = Object.values(content.tasks).sort(
-    (a, b) => (topicOrder.get(a.topicId)! - topicOrder.get(b.topicId)!) || a.id.localeCompare(b.id, 'de', { numeric: true }),
+    (a, b) => topicOrder.get(a.topicId)! - topicOrder.get(b.topicId)! || a.id.localeCompare(b.id, 'de', { numeric: true }),
   );
   const blocks = [...new Set(all.filter((t) => f.thema === 'alle' || t.topicId === f.thema).map((t) => t.block))].sort();
   const needle = f.suche.toLowerCase();
@@ -66,16 +66,30 @@ export function Aufgaben() {
       <div className="filters">
         <label>
           Thema
-          <select value={f.thema} onChange={(e) => { set('thema', e.target.value); set('block', 'alle'); }}>
+          <select
+            value={f.thema}
+            onChange={(e) => {
+              set('thema', e.target.value);
+              set('block', 'alle');
+            }}
+          >
             <option value="alle">Alle Themen</option>
-            {content.topics.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
+            {content.topics.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.title}
+              </option>
+            ))}
           </select>
         </label>
         <label>
           Block
           <select value={f.block} onChange={(e) => set('block', e.target.value)}>
             <option value="alle">Alle</option>
-            {blocks.map((b) => <option key={b} value={b}>{b === 'KI' ? 'KI-generiert' : `Block ${b}`}</option>)}
+            {blocks.map((b) => (
+              <option key={b} value={b}>
+                {b === 'KI' ? 'KI-generiert' : `Block ${b}`}
+              </option>
+            ))}
           </select>
         </label>
         <label>
@@ -114,17 +128,27 @@ export function Aufgaben() {
         <span>
           {tasks.length} Aufgaben · {selected.size} ausgewählt
         </span>
-        <button type="button" className="ghost" onClick={() => setSelected(new Set(tasks.map((t) => t.id)))}>Alle auswählen</button>
-        <button type="button" className="ghost" onClick={() => setSelected(new Set())} disabled={!selected.size}>Auswahl leeren</button>
+        <button type="button" className="ghost" onClick={() => setSelected(new Set(tasks.map((t) => t.id)))}>
+          Alle auswählen
+        </button>
+        <button type="button" className="ghost" onClick={() => setSelected(new Set())} disabled={!selected.size}>
+          Auswahl leeren
+        </button>
         {selected.size > 0 && (
           <>
-            <Link className="button secondary" to={`/druck?art=aufgaben&ids=${ids}`}>🖨️ Aufgabenblatt</Link>
-            <Link className="button secondary" to={`/druck?art=loesungen&ids=${ids}`}>🖨️ Lösungsblatt</Link>
+            <Link className="button secondary" to={`/druck?art=aufgaben&ids=${ids}`}>
+              🖨️ Aufgabenblatt
+            </Link>
+            <Link className="button secondary" to={`/druck?art=loesungen&ids=${ids}`}>
+              🖨️ Lösungsblatt
+            </Link>
           </>
         )}
         {tasks.length > 0 && (
           // Zufall erst beim Klick ziehen – beim Rendern wäre er unrein und bei jedem Neurendern anders.
-          <button type="button" onClick={() => navigate(`/aufgabe/${tasks[Math.floor(Math.random() * tasks.length)].id}`)}>🎲 Zufallsaufgabe</button>
+          <button type="button" onClick={() => navigate(`/aufgabe/${tasks[Math.floor(Math.random() * tasks.length)].id}`)}>
+            🎲 Zufallsaufgabe
+          </button>
         )}
       </div>
 
@@ -136,7 +160,12 @@ export function Aufgaben() {
               <input type="checkbox" checked={selected.has(t.id)} onChange={() => toggle(t.id)} aria-label={`${t.code} auswählen`} />
               <Link to={`/aufgabe/${t.id}`} className="task-link">
                 <span className="task-code">{t.code}</span>
-                <span className="task-preview">{t.markdown.replace(/[*`#>|]/g, '').split('\n')[0].slice(0, 140)}</span>
+                <span className="task-preview">
+                  {t.markdown
+                    .replace(/[*`#>|]/g, '')
+                    .split('\n')[0]
+                    .slice(0, 140)}
+                </span>
               </Link>
               <span className="muted small">{topicTitle(t.topicId)}</span>
               <span className="badge">{formatPoints(t.points)} P</span>

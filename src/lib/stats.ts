@@ -46,7 +46,12 @@ export function topicStats(content: Content, progress: Progress): TopicStats[] {
       topic,
       bestExam: examPcts.length ? Math.max(...examPcts) : undefined,
       lastExam: examPcts.length ? examPcts[examPcts.length - 1] : undefined,
-      avgTaskPct: last.length ? percent(last.reduce((s, a) => s + a.points, 0), last.reduce((s, a) => s + a.max, 0)) : undefined,
+      avgTaskPct: last.length
+        ? percent(
+            last.reduce((s, a) => s + a.points, 0),
+            last.reduce((s, a) => s + a.max, 0),
+          )
+        : undefined,
       attempts: last.length,
       cardsTotal: cards.length,
       cardsKnown: cards.filter((c) => (progress.cards[c.id]?.box ?? 0) >= 3).length,

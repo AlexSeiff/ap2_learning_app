@@ -96,7 +96,10 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
       <div className="grading">
         {autoResult ? (
           <p className={autoResult.points === task.points ? 'ok' : 'bad'}>
-            Automatisch bewertet: <b>{formatPoints(autoResult.points)} / {formatPoints(task.points)} P</b>
+            Automatisch bewertet:{' '}
+            <b>
+              {formatPoints(autoResult.points)} / {formatPoints(task.points)} P
+            </b>
             {task.type === 'mc' && autoResult.points === 0 && ' (Multiple Choice zählt nur vollständig richtig)'}
           </p>
         ) : (
@@ -116,9 +119,15 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
             )}
             <div className="points-input">
               <span>Selbstbewertung:</span>
-              <button type="button" onClick={() => onPoints(0)}>0</button>
-              <button type="button" onClick={() => onPoints(Math.round(task.points)/2)}>½</button>
-              <button type="button" onClick={() => onPoints(task.points)}>voll</button>
+              <button type="button" onClick={() => onPoints(0)}>
+                0
+              </button>
+              <button type="button" onClick={() => onPoints(Math.round(task.points) / 2)}>
+                ½
+              </button>
+              <button type="button" onClick={() => onPoints(task.points)}>
+                voll
+              </button>
               <input
                 type="number"
                 min={0}

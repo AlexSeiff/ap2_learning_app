@@ -1,0 +1,2 @@
+# Im Repository und im Arbeitsordner immer LF – passend zu Prettier (endOfLine: lf)
+* text=auto eol=lf

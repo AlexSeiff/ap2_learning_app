@@ -30,9 +30,11 @@ describe('Lernkarten-Format (tests/fixtures/inhalt/AP2_FIDPA_Lernkarten.json)', 
 
   it('macht aus SQL-Zeilen der Antwort einen Codeblock', () => {
     const answer = cards.find((c) => c.id === 'SQL-002')?.answer;
-    expect(answer).toBe(answerToMarkdown(
-      'SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON b.kunden_id = k.kunden_id\nWHERE b.bestell_id IS NULL\nAlternative: NOT EXISTS',
-    ));
+    expect(answer).toBe(
+      answerToMarkdown(
+        'SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON b.kunden_id = k.kunden_id\nWHERE b.bestell_id IS NULL\nAlternative: NOT EXISTS',
+      ),
+    );
     expect(answer).toMatch(/^```sql\nSELECT k\.name\n/);
     expect(answer).toMatch(/Alternative: NOT EXISTS/);
   });
@@ -40,7 +42,11 @@ describe('Lernkarten-Format (tests/fixtures/inhalt/AP2_FIDPA_Lernkarten.json)', 
   it('ordnet Decks den Deep Dives zu, WiSo & Co. bleiben ohne Deep Dive', () => {
     // Im Fixture-Ordner gibt es nur Deep Dive 1 – „Deep Dive 5 und 12" findet dort kein Thema.
     expect(content.decks.map((d) => d.topicId)).toEqual(['01', undefined, undefined]);
-    const topics = new Map([['01', 'SQL'], ['05', 'Prozessanalyse & Prozessmodellierung'], ['12', 'Projektmanagement & Wirtschaftlichkeit']]);
+    const topics = new Map([
+      ['01', 'SQL'],
+      ['05', 'Prozessanalyse & Prozessmodellierung'],
+      ['12', 'Projektmanagement & Wirtschaftlichkeit'],
+    ]);
     const parsed = parseLernkarten('x.json', readFileSync(join(FIXTURES, 'AP2_FIDPA_Lernkarten.json'), 'utf8'), topics);
     const topicOf = (id: string) => parsed.decks.find((d) => d.id === id)?.topicId;
     expect(topicOf('sql')).toBe('01');
@@ -50,12 +56,18 @@ describe('Lernkarten-Format (tests/fixtures/inhalt/AP2_FIDPA_Lernkarten.json)', 
   });
 
   it('übernimmt die Lernhinweise aus meta', () => {
-    expect(content.cardHints).toEqual(['Karten vom Typ „falle“ vor jeder Übungsklausur wiederholen.', 'Rechenkarten auf Papier nachrechnen.']);
+    expect(content.cardHints).toEqual([
+      'Karten vom Typ „falle“ vor jeder Übungsklausur wiederholen.',
+      'Rechenkarten auf Papier nachrechnen.',
+    ]);
   });
 });
 
 describe('Hilfsfunktionen', () => {
-  const topics = new Map([['05', 'Prozessanalyse & Prozessmodellierung'], ['12', 'Projektmanagement & Wirtschaftlichkeit']]);
+  const topics = new Map([
+    ['05', 'Prozessanalyse & Prozessmodellierung'],
+    ['12', 'Projektmanagement & Wirtschaftlichkeit'],
+  ]);
 
   it('topicFromSource', () => {
     expect(topicFromSource('Deep Dive 5 + BPMN-Vertiefung', 'Prozessanalyse', topics)).toBe('05');
@@ -73,11 +85,19 @@ describe('Hilfsfunktionen', () => {
   it('meldet kaputte Dateien und doppelte IDs statt abzustürzen', () => {
     expect(parseLernkarten('x.json', '{kaputt', topics).issues[0].message).toMatch(/Ungültiges JSON/);
     const json = JSON.stringify({
-      decks: [{ id: 'd', titel: 'D', quelle: 'Themenliste', anzahl_karten: 3, karten: [
-        { id: 'A-1', frage: 'F', antwort: 'A', typ: 'wissen' },
-        { id: 'A-1', frage: 'F2', antwort: 'A2', typ: 'wissen' },
-        { id: 'A-2', frage: 'F3', antwort: 'A3', typ: 'quatsch' },
-      ] }],
+      decks: [
+        {
+          id: 'd',
+          titel: 'D',
+          quelle: 'Themenliste',
+          anzahl_karten: 3,
+          karten: [
+            { id: 'A-1', frage: 'F', antwort: 'A', typ: 'wissen' },
+            { id: 'A-1', frage: 'F2', antwort: 'A2', typ: 'wissen' },
+            { id: 'A-2', frage: 'F3', antwort: 'A3', typ: 'quatsch' },
+          ],
+        },
+      ],
     });
     const r = parseLernkarten('x.json', json, topics);
     expect(r.cards.map((c) => c.id)).toEqual(['A-1', 'A-2']);

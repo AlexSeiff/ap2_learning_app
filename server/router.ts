@@ -6,7 +6,10 @@ import type { z } from 'zod';
 import type { ApiResponses } from '../shared/api';
 
 export class HttpError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
     super(message);
   }
 }

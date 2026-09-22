@@ -24,7 +24,10 @@ export function formatPoints(n: number): string {
 
 /** Liest „1.234,5", „1234.5", „12,5 %" usw. */
 export function parseGermanNumber(input: string): number | null {
-  let s = input.trim().replace(/[^\d,.\-−]/g, '').replace('−', '-');
+  let s = input
+    .trim()
+    .replace(/[^\d,.\-−]/g, '')
+    .replace('−', '-');
   if (!s) return null;
   if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
   else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
@@ -33,8 +36,13 @@ export function parseGermanNumber(input: string): number | null {
 }
 
 const normalize = (s: string) =>
-  s.toLowerCase().trim()
-    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
     .replace(/[\s\-_.]+/g, ' ');
 
 /** Antwortformat für automatisch bewertbare Aufgaben. */
@@ -63,9 +71,7 @@ export function autoGrade(task: Task, answer: AutoAnswer): { points: number; det
     }
     case 'lueckentext': {
       const blanks = a.blanks ?? [];
-      const details = blanks.map((b, i) =>
-        b.split('/').some((alt) => normalize(alt) === normalize(answer.values[i] ?? '')),
-      );
+      const details = blanks.map((b, i) => b.split('/').some((alt) => normalize(alt) === normalize(answer.values[i] ?? '')));
       return { points: round(details.filter(Boolean).length / Math.max(blanks.length, 1)), details };
     }
     case 'zuordnung': {

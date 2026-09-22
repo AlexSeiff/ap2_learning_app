@@ -65,11 +65,16 @@ describe('renameWithRetry (OneDrive-Sperren)', () => {
     const calls: string[] = [];
     const sleeps: number[] = [];
     const errors = [locked('EPERM'), locked('EBUSY'), locked('EACCES')];
-    renameWithRetry('a', 'b', (from, to) => {
-      calls.push(`${from}->${to}`);
-      const err = errors.shift();
-      if (err) throw err;
-    }, (ms) => sleeps.push(ms));
+    renameWithRetry(
+      'a',
+      'b',
+      (from, to) => {
+        calls.push(`${from}->${to}`);
+        const err = errors.shift();
+        if (err) throw err;
+      },
+      (ms) => sleeps.push(ms),
+    );
     expect(calls).toHaveLength(4);
     expect(sleeps).toEqual(RENAME_RETRY_DELAYS_MS.slice(0, 3));
   });
@@ -79,10 +84,15 @@ describe('renameWithRetry (OneDrive-Sperren)', () => {
     const sleeps: number[] = [];
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(() =>
-      renameWithRetry('a', 'b', () => {
-        calls++;
-        throw locked('EBUSY');
-      }, (ms) => sleeps.push(ms)),
+      renameWithRetry(
+        'a',
+        'b',
+        () => {
+          calls++;
+          throw locked('EBUSY');
+        },
+        (ms) => sleeps.push(ms),
+      ),
     ).toThrow(/gesperrt/);
     expect(error).toHaveBeenCalledOnce();
     error.mockRestore();
@@ -93,10 +103,15 @@ describe('renameWithRetry (OneDrive-Sperren)', () => {
   it('wiederholt andere Fehler nicht', () => {
     let calls = 0;
     expect(() =>
-      renameWithRetry('a', 'b', () => {
-        calls++;
-        throw locked('ENOENT');
-      }, () => {}),
+      renameWithRetry(
+        'a',
+        'b',
+        () => {
+          calls++;
+          throw locked('ENOENT');
+        },
+        () => {},
+      ),
     ).toThrow('ENOENT');
     expect(calls).toBe(1);
   });

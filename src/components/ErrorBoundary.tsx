@@ -23,9 +23,14 @@ export class ErrorBoundary extends Component<Props, State> {
       <div className="page narrow">
         <div className="card warn" role="alert">
           <h2>⚠ Hier ist etwas schiefgelaufen</h2>
-          <p>Diese Seite konnte nicht angezeigt werden. Dein gespeicherter Fortschritt bleibt erhalten. Lade die Seite neu oder wähle links eine andere Seite.</p>
+          <p>
+            Diese Seite konnte nicht angezeigt werden. Dein gespeicherter Fortschritt bleibt erhalten. Lade die Seite neu oder wähle links
+            eine andere Seite.
+          </p>
           <pre className="error-text">{error.message || String(error)}</pre>
-          <button type="button" onClick={() => window.location.reload()}>↻ Neu laden</button>
+          <button type="button" onClick={() => window.location.reload()}>
+            ↻ Neu laden
+          </button>
         </div>
       </div>
     );

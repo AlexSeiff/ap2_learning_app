@@ -43,9 +43,7 @@ export function Dashboard() {
         </Link>
         <div className="kpi">
           <span className="kpi-value">{avgExam === undefined ? '–' : `${Math.round(avgExam)} %`}</span>
-          <span className="kpi-label">
-            Ø Übungsklausuren{avgExam !== undefined && ` · Note ${ihkGrade(avgExam).note}`}
-          </span>
+          <span className="kpi-label">Ø Übungsklausuren{avgExam !== undefined && ` · Note ${ihkGrade(avgExam).note}`}</span>
         </div>
       </div>
 
@@ -127,19 +125,22 @@ export function Dashboard() {
         <section className="card">
           <h2>Letzte Klausuren</h2>
           <ul className="plain">
-            {finished.slice(-5).reverse().map((e) => {
-              const t = content.topics.find((x) => x.id === e.topicId);
-              const p = (e.total! / e.max) * 100;
-              return (
-                <li key={e.id}>
-                  {new Date(e.finishedAt ?? e.startedAt).toLocaleDateString('de-DE')} · {t?.title} ·{' '}
-                  <b>
-                    {formatPoints(e.total!)} / {formatPoints(e.max)} P
-                  </b>{' '}
-                  · Note {ihkGrade(p).note}
-                </li>
-              );
-            })}
+            {finished
+              .slice(-5)
+              .reverse()
+              .map((e) => {
+                const t = content.topics.find((x) => x.id === e.topicId);
+                const p = (e.total! / e.max) * 100;
+                return (
+                  <li key={e.id}>
+                    {new Date(e.finishedAt ?? e.startedAt).toLocaleDateString('de-DE')} · {t?.title} ·{' '}
+                    <b>
+                      {formatPoints(e.total!)} / {formatPoints(e.max)} P
+                    </b>{' '}
+                    · Note {ihkGrade(p).note}
+                  </li>
+                );
+              })}
           </ul>
         </section>
       )}

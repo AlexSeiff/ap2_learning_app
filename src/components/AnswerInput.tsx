@@ -13,10 +13,14 @@ export function decodeAnswer(task: Task, raw: string | undefined): AutoAnswer | 
     /* leer → Standardwert */
   }
   switch (task.type) {
-    case 'mc': return { kind: 'mc', selected: [] };
-    case 'lueckentext': return { kind: 'lueckentext', values: [] };
-    case 'zuordnung': return { kind: 'zuordnung', mapping: {} };
-    default: return { kind: 'rechnen', value: '' };
+    case 'mc':
+      return { kind: 'mc', selected: [] };
+    case 'lueckentext':
+      return { kind: 'lueckentext', values: [] };
+    case 'zuordnung':
+      return { kind: 'zuordnung', mapping: {} };
+    default:
+      return { kind: 'rechnen', value: '' };
   }
 }
 
