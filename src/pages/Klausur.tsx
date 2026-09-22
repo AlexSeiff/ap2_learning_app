@@ -5,6 +5,7 @@ import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
 import { useExamRun } from '../hooks/useExamRun';
+import { formatRemaining, timerAnnouncement } from '../lib/examTimer';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
 import { useStore } from '../lib/store';
 import { EXAM_MINUTES } from '../../shared/config';
@@ -138,17 +139,18 @@ export function Klausur() {
     );
   }
 
-  const mm = Math.floor(remaining / 60_000);
-  const ss = Math.floor((remaining % 60_000) / 1000);
-
   return (
     <div className="page exam">
       <div className="exam-bar">
         <b>{exam.title}</b>
         {!submitted ? (
           <>
-            <span className={`timer ${remaining < 10 * 60_000 ? 'low' : ''}`}>
-              ⏱ {String(mm).padStart(2, '0')}:{String(ss).padStart(2, '0')}
+            {/* Sichtbarer Timer tickt jede Sekunde, ist aber keine Live-Region; angesagt wird nur alle 5 Minuten (sr-only). */}
+            <span role="timer" aria-label="Restzeit" className={`timer ${remaining < 10 * 60_000 ? 'low' : ''}`}>
+              ⏱ {formatRemaining(remaining)}
+            </span>
+            <span className="sr-only" aria-live="polite">
+              {timerAnnouncement(remaining)}
             </span>
             <span className="muted">
               {answered}/{tasks.length} beantwortet

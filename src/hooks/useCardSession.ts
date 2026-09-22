@@ -55,8 +55,12 @@ export function useCardSession() {
   useEffect(() => {
     if (!card) return;
     const onKey = (e: KeyboardEvent) => {
-      if (['INPUT', 'SELECT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest('input, select, textarea')) return;
       if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter') {
+        // Fokus auf einem Button (auch der Karte selbst, role="button"): der löst selbst aus – sonst würde doppelt umgedreht
+        // bzw. „✓ Gewusst“ per Enter nur umdrehen statt bewerten.
+        if (target?.closest('button, a, [role="button"]')) return;
         e.preventDefault();
         setFlipped((x) => !x);
       } else if (flipped && e.key === '1') rate('gewusst');

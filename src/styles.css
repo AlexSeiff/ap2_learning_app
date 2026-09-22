@@ -242,6 +242,8 @@ textarea.answer.mono { font-family: 'Cascadia Code', Consolas, monospace; font-s
 .exam-bar b { margin-right: auto; }
 .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1.15rem; }
 .timer.low { color: var(--low); }
+/* Nur für Screenreader sichtbar (z. B. Zeitansage der Klausur) */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .exam-block h2 { border-bottom: 2px solid var(--border); padding-bottom: 4px; }
 .result { display: flex; flex-direction: column; align-items: center; padding: 24px; border-radius: var(--radius); margin: 16px 0; background: var(--surface-2); }
 .result-points { font-size: 2.4rem; font-weight: 800; }
@@ -253,6 +255,7 @@ textarea.answer.mono { font-family: 'Cascadia Code', Consolas, monospace; font-s
 /* Karteikarten */
 .session-head { display: flex; justify-content: space-between; align-items: center; color: var(--muted); }
 .flashcard { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px 32px; min-height: 260px; cursor: pointer; box-shadow: var(--shadow); margin: 12px 0; }
+.flashcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .fc-meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
 .fc-question { font-size: 1.2rem; font-weight: 600; }
 .fc-answer { margin-top: 20px; padding-top: 16px; border-top: 2px dashed var(--border); }

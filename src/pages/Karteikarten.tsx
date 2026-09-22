@@ -40,7 +40,19 @@ export function Karteikarten() {
             Karte {index + 1} / {session.length}
           </span>
         </div>
-        <div className={`flashcard ${flipped ? 'flipped' : ''} ${card.typ === 'falle' ? 'trap' : ''}`} onClick={flip}>
+        {/* Kein <button>: die Karte enthält Markdown mit Absätzen, Listen und Codeblöcken – das ist in einem Button ungültig. */}
+        <div
+          className={`flashcard ${flipped ? 'flipped' : ''} ${card.typ === 'falle' ? 'trap' : ''}`}
+          role="button"
+          tabIndex={0}
+          aria-expanded={flipped}
+          onClick={flip}
+          onKeyDown={(e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            e.preventDefault();
+            if (!e.repeat) flip();
+          }}
+        >
           <div className="fc-meta">
             <span>
               {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
