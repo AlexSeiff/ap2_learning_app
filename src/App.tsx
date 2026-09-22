@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { HashRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { type ReactNode, useEffect, useState } from 'react';
+import { HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { isDue } from './lib/progress';
 import { useStore } from './lib/store';
 import { Aufgabe } from './pages/Aufgabe';
@@ -91,6 +92,12 @@ function SaveErrorBanner() {
   return saveError ? <p className="card warn" role="alert">⚠ {saveError}</p> : null;
 }
 
+// Neuer key pro Route: nach einem Absturz reicht ein Klick in der Navigation, um weiterzulernen.
+function PageErrorBoundary({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  return <ErrorBoundary key={pathname}>{children}</ErrorBoundary>;
+}
+
 export function App() {
   return (
     <HashRouter>
@@ -103,22 +110,24 @@ export function App() {
               <Nav />
               <main>
                 <SaveErrorBanner />
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/lernen" element={<Themen />} />
-                  <Route path="/lernen/:topicId" element={<Thema />} />
-                  <Route path="/karteikarten" element={<Karteikarten />} />
-                  <Route path="/klausur" element={<KlausurAuswahl />} />
-                  <Route path="/klausur/:topicId" element={<Klausur />} />
-                  <Route path="/aufgaben" element={<Aufgaben />} />
-                  <Route path="/aufgabe/:taskId" element={<Aufgabe />} />
-                  <Route path="/fehlerjournal" element={<Fehlerjournal />} />
-                  <Route path="/generator" element={<Generator />} />
-                  <Route path="/material" element={<Material />} />
-                  <Route path="/material/:docId" element={<Material />} />
-                  <Route path="/daten" element={<Daten />} />
-                  <Route path="*" element={<div className="page"><h1>Seite nicht gefunden</h1></div>} />
-                </Routes>
+                <PageErrorBoundary>
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/lernen" element={<Themen />} />
+                    <Route path="/lernen/:topicId" element={<Thema />} />
+                    <Route path="/karteikarten" element={<Karteikarten />} />
+                    <Route path="/klausur" element={<KlausurAuswahl />} />
+                    <Route path="/klausur/:topicId" element={<Klausur />} />
+                    <Route path="/aufgaben" element={<Aufgaben />} />
+                    <Route path="/aufgabe/:taskId" element={<Aufgabe />} />
+                    <Route path="/fehlerjournal" element={<Fehlerjournal />} />
+                    <Route path="/generator" element={<Generator />} />
+                    <Route path="/material" element={<Material />} />
+                    <Route path="/material/:docId" element={<Material />} />
+                    <Route path="/daten" element={<Daten />} />
+                    <Route path="*" element={<div className="page"><h1>Seite nicht gefunden</h1></div>} />
+                  </Routes>
+                </PageErrorBoundary>
               </main>
             </div>
           }

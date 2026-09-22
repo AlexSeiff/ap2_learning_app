@@ -140,6 +140,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .card.warn { background: var(--mid-soft); border-color: transparent; }
 .card.info { background: var(--accent-soft); border-color: transparent; }
 .card.success { background: var(--good-soft); border-color: transparent; }
+.error-text { white-space: pre-wrap; word-break: break-word; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 12px 0; }
 .kpi { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; color: var(--text); box-shadow: var(--shadow); }
 a.kpi:hover { text-decoration: none; border-color: var(--accent); }
