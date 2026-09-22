@@ -7,6 +7,33 @@ export const DATA_DIR = join(import.meta.dirname, '..', 'data');
 export const BACKUP_KEEP = 14;
 const BACKUP_FILE = /^fortschritt-(\d{4}-\d{2}-\d{2})\.json$/;
 
+/** Fehlercodes, mit denen Windows ein Umbenennen ablehnt, solange OneDrive o. Ä. die Datei offen hält. */
+const RETRY_CODES = new Set(['EPERM', 'EBUSY', 'EACCES']);
+/** Wartezeiten zwischen den Versuchen: 5 Versuche über insgesamt ca. 500 ms. */
+export const RENAME_RETRY_DELAYS_MS = [50, 100, 150, 200];
+
+function sleepSync(ms: number) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+/** renameSync mit kurzem Wiederholen, falls die Zieldatei gerade gesperrt ist (OneDrive-Ordner unter Windows). */
+export function renameWithRetry(from: string, to: string, rename: (from: string, to: string) => void = renameSync, sleep = sleepSync) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      rename(from, to);
+      return;
+    } catch (err) {
+      const code = (err as NodeJS.ErrnoException).code ?? '';
+      if (!RETRY_CODES.has(code)) throw err;
+      if (attempt >= RENAME_RETRY_DELAYS_MS.length) {
+        console.error(`[lern-app] ${to} konnte nach ${attempt + 1} Versuchen nicht ersetzt werden (${code}). Hält OneDrive oder ein anderes Programm die Datei offen?`);
+        throw new Error('Speichern fehlgeschlagen: Die Datei ist gerade gesperrt (z. B. durch OneDrive). Bitte gleich noch einmal versuchen.', { cause: err });
+      }
+      sleep(RENAME_RETRY_DELAYS_MS[attempt]);
+    }
+  }
+}
+
 export interface BackupInfo {
   /** Datum der neuesten Tagessicherung (YYYY-MM-DD) oder null. */
   newest: string | null;
@@ -29,7 +56,7 @@ export function createStore(dataDir = DATA_DIR) {
       return JSON.parse(readFileSync(path, 'utf8')) as T;
     } catch {
       // Beschädigte Datei nicht überschreiben, sondern sichern und neu beginnen.
-      renameSync(path, `${path}.defekt-${Date.now()}`);
+      renameWithRetry(path, `${path}.defekt-${Date.now()}`);
       return fallback;
     }
   }
@@ -39,7 +66,7 @@ export function createStore(dataDir = DATA_DIR) {
     const path = join(dataDir, file);
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(`${path}.tmp`, JSON.stringify(data, null, 2), 'utf8');
-    renameSync(`${path}.tmp`, path);
+    renameWithRetry(`${path}.tmp`, path);
   }
 
   function listBackups(): string[] {

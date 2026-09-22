@@ -1,8 +1,8 @@
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createStore } from '../server/store';
+import { createStore, RENAME_RETRY_DELAYS_MS, renameWithRetry } from '../server/store';
 
 let dir: string;
 
@@ -55,5 +55,65 @@ describe('Tagessicherung von fortschritt.json', () => {
     warn.mockRestore();
     expect(readJson(join(dir, 'fortschritt.json'))).toEqual({ n: 2 });
     expect(existsSync(join(dir, 'fortschritt.json.tmp'))).toBe(false);
+  });
+});
+
+describe('renameWithRetry (OneDrive-Sperren)', () => {
+  const locked = (code: string) => Object.assign(new Error(code), { code });
+
+  it('wiederholt bei EPERM/EBUSY/EACCES und hat dann Erfolg', () => {
+    const calls: string[] = [];
+    const sleeps: number[] = [];
+    const errors = [locked('EPERM'), locked('EBUSY'), locked('EACCES')];
+    renameWithRetry('a', 'b', (from, to) => {
+      calls.push(`${from}->${to}`);
+      const err = errors.shift();
+      if (err) throw err;
+    }, (ms) => sleeps.push(ms));
+    expect(calls).toHaveLength(4);
+    expect(sleeps).toEqual(RENAME_RETRY_DELAYS_MS.slice(0, 3));
+  });
+
+  it('gibt nach 5 Versuchen (~500 ms) mit deutscher Meldung auf und loggt', () => {
+    let calls = 0;
+    const sleeps: number[] = [];
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() =>
+      renameWithRetry('a', 'b', () => {
+        calls++;
+        throw locked('EBUSY');
+      }, (ms) => sleeps.push(ms)),
+    ).toThrow(/gesperrt/);
+    expect(error).toHaveBeenCalledOnce();
+    error.mockRestore();
+    expect(calls).toBe(5);
+    expect(sleeps.reduce((a, b) => a + b, 0)).toBe(500);
+  });
+
+  it('wiederholt andere Fehler nicht', () => {
+    let calls = 0;
+    expect(() =>
+      renameWithRetry('a', 'b', () => {
+        calls++;
+        throw locked('ENOENT');
+      }, () => {}),
+    ).toThrow('ENOENT');
+    expect(calls).toBe(1);
+  });
+
+  it('wartet mit der echten Schlaf-Funktion tatsächlich', () => {
+    const src = join(dir, 'x.tmp');
+    writeFileSync(src, '1');
+    let first = true;
+    const start = Date.now();
+    renameWithRetry(src, join(dir, 'x.json'), (from, to) => {
+      if (first) {
+        first = false;
+        throw locked('EPERM');
+      }
+      renameSync(from, to);
+    });
+    expect(Date.now() - start).toBeGreaterThanOrEqual(40);
+    expect(existsSync(join(dir, 'x.json'))).toBe(true);
   });
 });
