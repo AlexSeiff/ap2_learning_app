@@ -1,0 +1,114 @@
+import { useRef, useState } from 'react';
+import { downloadText } from '../lib/sheets';
+import { emptyProgress, localDate, type Progress } from '../lib/progress';
+import { useStore } from '../lib/store';
+
+export function Daten() {
+  const { content, progress, reload, replaceProgress, aiEnabled, aiModel } = useStore();
+  const [msg, setMsg] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const tasks = Object.values(content.tasks);
+
+  const reimport = async () => {
+    await reload();
+    setMsg(`Neu importiert: ${new Date().toLocaleTimeString('de-DE')}`);
+  };
+
+  const importBackup = async (file: File) => {
+    try {
+      const data = JSON.parse(await file.text()) as Progress;
+      if (data.version !== 1 || !Array.isArray(data.attempts)) throw new Error('Keine gültige Sicherungsdatei.');
+      if (!confirm('Aktuellen Fortschritt durch die Sicherung ersetzen?')) return;
+      replaceProgress(data);
+      setMsg('Sicherung wiederhergestellt.');
+    } catch (e) {
+      setMsg(`Fehler: ${(e as Error).message}`);
+    }
+  };
+
+  return (
+    <div className="page">
+      <h1>Daten &amp; Import</h1>
+      {msg && <p className="card info">{msg}</p>}
+
+      <section className="card">
+        <h2>Importbericht</h2>
+        <p>
+          Stand: {new Date(content.importedAt).toLocaleString('de-DE')} · {content.topics.length} Themen · {tasks.filter((t) => !t.generated).length} Aufgaben aus
+          Lernblättern ({tasks.filter((t) => !t.generated && t.solution).length} mit Musterlösung) · {tasks.filter((t) => t.generated).length} KI-Aufgaben ·{' '}
+          {content.flashcards.length} Karteikarten · {content.materials.length} Materialien
+        </p>
+        <button type="button" onClick={reimport}>↻ Lernblätter neu importieren</button>
+        <p className="hint">Änderungen an den .md-Dateien werden auch automatisch erkannt – die Seite lädt dann neu.</p>
+        {content.issues.length ? (
+          <>
+            <h3>Hinweise ({content.issues.length})</h3>
+            <ul>
+              {content.issues.map((i, n) => (
+                <li key={n}>
+                  <code>{i.file}</code>: {i.message}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="ok">✓ Keine Auffälligkeiten – jede Aufgabe hat eine Musterlösung.</p>
+        )}
+        <div className="table-wrap">
+          <table className="stats">
+            <thead>
+              <tr><th>Nr.</th><th>Thema</th><th>Datei</th><th>Lösungen</th><th>Aufgaben</th><th>Punkte</th></tr>
+            </thead>
+            <tbody>
+              {content.topics.map((t) => {
+                const tt = tasks.filter((x) => x.topicId === t.id && !x.generated);
+                return (
+                  <tr key={t.id}>
+                    <td>{t.id}</td>
+                    <td>{t.title}</td>
+                    <td className="small"><code>{t.file}</code></td>
+                    <td className="small"><code>{t.solutionFile ?? (tt.some((x) => x.solution) ? '(im Blatt)' : '–')}</code></td>
+                    <td>{tt.filter((x) => x.solution).length}/{tt.length}</td>
+                    <td>{t.exam?.totalPoints ?? '–'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="card">
+        <h2>Fortschritt</h2>
+        <p>
+          Gespeichert in <code>lern-app/data/fortschritt.json</code> – nur auf diesem Rechner. {progress.attempts.length} Versuche,{' '}
+          {progress.exams.length} Klausuren, {Object.keys(progress.cards).length} gelernte Karten.
+        </p>
+        <div className="actions">
+          <button type="button" className="secondary" onClick={() => downloadText(`AP2_Fortschritt_${localDate()}.json`, JSON.stringify(progress, null, 2), 'application/json')}>
+            ⬇ Sicherung herunterladen
+          </button>
+          <button type="button" className="secondary" onClick={() => fileRef.current?.click()}>⬆ Sicherung einspielen</button>
+          <input ref={fileRef} type="file" accept="application/json" hidden onChange={(e) => e.target.files?.[0] && importBackup(e.target.files[0])} />
+          <button
+            type="button"
+            className="ghost danger"
+            onClick={() => {
+              if (confirm('Wirklich den GESAMTEN Lernfortschritt löschen? Lade vorher am besten eine Sicherung herunter.')) {
+                replaceProgress(emptyProgress());
+                setMsg('Fortschritt zurückgesetzt.');
+              }
+            }}
+          >
+            Fortschritt zurücksetzen
+          </button>
+        </div>
+      </section>
+
+      <section className="card">
+        <h2>KI</h2>
+        <p>{aiEnabled ? <>✓ Aktiv mit Modell <code>{aiModel}</code>.</> : 'Deaktiviert – kein ANTHROPIC_API_KEY gesetzt (siehe README).'}</p>
+      </section>
+    </div>
+  );
+}

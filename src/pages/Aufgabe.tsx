@@ -1,0 +1,100 @@
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { AnswerInput } from '../components/AnswerInput';
+import { Markdown } from '../components/Markdown';
+import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
+import { formatPoints } from '../lib/grading';
+import { isDue, recordAttempt } from '../lib/progress';
+import { useStore } from '../lib/store';
+
+export function Aufgabe() {
+  const { taskId } = useParams();
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const { content, progress, update } = useStore();
+  const task = taskId ? content.tasks[taskId] : undefined;
+  const repeat = params.get('modus') === 'wiederholung';
+  const [answer, setAnswer] = useState('');
+  const [revealed, setRevealed] = useState(false);
+  const [points, setPoints] = useState<number | undefined>();
+  const [saved, setSaved] = useState(false);
+
+  // Beim Wechsel zur nächsten Aufgabe alles zurücksetzen.
+  useEffect(() => {
+    setAnswer('');
+    setRevealed(false);
+    setPoints(undefined);
+    setSaved(false);
+  }, [taskId]);
+
+  if (!task) return <div className="page"><h1>Aufgabe nicht gefunden</h1><Link to="/aufgaben">Zur Aufgabenliste</Link></div>;
+  const topic = content.topics.find((t) => t.id === task.topicId);
+  const block = topic?.exam?.blocks.find((b) => b.taskIds.includes(task.id));
+  const history = progress.attempts.filter((a) => a.taskId === task.id);
+  const journal = progress.journal[task.id];
+
+  const nextDue = Object.values(progress.journal).find((j) => !j.resolvedAt && isDue(j.due) && j.taskId !== task.id && content.tasks[j.taskId]);
+
+  const save = () => {
+    if (points === undefined) return;
+    update((p) =>
+      recordAttempt(p, { taskId: task.id, date: new Date().toISOString(), points, max: task.points, mode: repeat ? 'wiederholung' : 'einzel' }),
+    );
+    setSaved(true);
+  };
+
+  return (
+    <div className="page narrow">
+      <p className="crumbs">
+        <Link to={repeat ? '/fehlerjournal' : `/aufgaben?thema=${task.topicId}`}>{repeat ? 'Fehlerjournal' : 'Einzelaufgaben'}</Link> /{' '}
+        {topic?.title} {block && `/ Block ${block.letter} – ${block.title}`}
+      </p>
+      {journal && !journal.resolvedAt && (
+        <p className="card warn">
+          Im Fehlerjournal · Stufe {journal.stage + 1}/3 · zuletzt {formatPoints(journal.lastPoints)}/{formatPoints(journal.max)} P · fällig{' '}
+          {new Date(journal.due).toLocaleDateString('de-DE')}
+        </p>
+      )}
+      {topic?.exam && <Attachments items={topic.exam.attachments} />}
+      {block?.intro && <Markdown>{block.intro}</Markdown>}
+
+      <div className="task-card">
+        <TaskText task={task} showMeta />
+        <AnswerInput task={task} value={answer} onChange={setAnswer} disabled={revealed} />
+        {!revealed ? (
+          <div className="actions">
+            <button type="button" onClick={() => setRevealed(true)}>Abgeben &amp; Lösung anzeigen</button>
+          </div>
+        ) : (
+          <>
+            <GradePanel task={task} answer={answer} points={points} onPoints={setPoints} />
+            <div className="actions">
+              {!saved ? (
+                <button type="button" onClick={save} disabled={points === undefined}>
+                  Ergebnis speichern{points !== undefined && ` (${formatPoints(points)} / ${formatPoints(task.points)} P)`}
+                </button>
+              ) : (
+                <span className="ok">
+                  ✓ Gespeichert{points! < task.points ? ' – kommt morgen im Fehlerjournal wieder.' : '.'}
+                </span>
+              )}
+              {saved && repeat && nextDue && (
+                <button type="button" onClick={() => navigate(`/aufgabe/${nextDue.taskId}?modus=wiederholung`)}>Nächste Wiederholung →</button>
+              )}
+              {saved && !repeat && (
+                <Link className="button secondary" to={`/aufgaben?thema=${task.topicId}`}>Weitere Aufgaben</Link>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {history.length > 0 && (
+        <p className="hint">
+          Bisherige Versuche:{' '}
+          {history.map((h) => `${new Date(h.date).toLocaleDateString('de-DE')}: ${formatPoints(h.points)}/${formatPoints(h.max)} P`).join(' · ')}
+        </p>
+      )}
+    </div>
+  );
+}
