@@ -1,0 +1,97 @@
+// zod-Schema für den gespeicherten Lernfortschritt (data/fortschritt.json) und die Prüfung von PUT /api/progress.
+// Bewusst tolerant: unbekannte Felder bleiben erhalten (looseObject), damit ältere oder neuere Dateien nicht abgewiesen werden.
+
+import { z } from 'zod';
+
+export const AttemptSchema = z.looseObject({
+  taskId: z.string(),
+  date: z.string(),
+  points: z.number(),
+  max: z.number(),
+  mode: z.string(),
+});
+
+export const ExamRunSchema = z.looseObject({
+  id: z.string(),
+  topicId: z.string(),
+  startedAt: z.string(),
+  submittedAt: z.string().optional(),
+  finishedAt: z.string().optional(),
+  answers: z.record(z.string(), z.string()),
+  // NaN aus einem Eingabefeld wird in JSON zu null – das darf das Speichern nicht blockieren.
+  scores: z.record(z.string(), z.number().nullable()),
+  total: z.number().nullable().optional(),
+  max: z.number(),
+});
+
+export const CardStateSchema = z.looseObject({
+  box: z.number(),
+  due: z.string(),
+  reviews: z.number(),
+  last: z.string().optional(),
+});
+
+export const JournalEntrySchema = z.looseObject({
+  taskId: z.string(),
+  addedAt: z.string(),
+  stage: z.number(),
+  due: z.string(),
+  lastPoints: z.number(),
+  max: z.number(),
+  resolvedAt: z.string().optional(),
+});
+
+export const ProgressSchema = z.looseObject({
+  version: z.number().int().min(1),
+  attempts: z.array(AttemptSchema),
+  exams: z.array(ExamRunSchema).default([]),
+  activeExam: ExamRunSchema.optional(),
+  cards: z.record(z.string(), CardStateSchema).default({}),
+  journal: z.record(z.string(), JournalEntrySchema).default({}),
+  lernziele: z.record(z.string(), z.boolean()).default({}),
+});
+
+export type ProgressData = z.infer<typeof ProgressSchema>;
+
+/** Body von PUT /api/progress: der Fortschritt plus optional `reset: true` für bewusstes Zurücksetzen/Einspielen. */
+export const ProgressPutSchema = ProgressSchema.extend({ reset: z.boolean().optional() });
+
+/**
+ * Ab wann ein neuer Stand „viel weniger“ Versuche hat als der gespeicherte.
+ * Versuche werden in der App nur angehängt, nie gelöscht. Ein Rückgang um mehr als 5 Versuche
+ * oder auf weniger als die Hälfte ist daher fast sicher ein Versehen (leerer Stand, alter Tab, falsche Datei).
+ */
+export function isSuspiciousAttemptDrop(storedCount: number, newCount: number): boolean {
+  return newCount < storedCount && (storedCount - newCount > 5 || newCount < storedCount / 2);
+}
+
+function formatIssue(issue: z.core.$ZodIssue): string {
+  return issue.path.length ? issue.path.join('.') : '(gesamt)';
+}
+
+export type ProgressPutResult = { ok: true; progress: ProgressData } | { ok: false; error: string };
+
+/**
+ * Prüft einen PUT-Body gegen das Schema und gegen den gespeicherten Stand.
+ * Rein (ohne Dateizugriff), damit Server und Tests dieselbe Logik nutzen.
+ */
+export function checkProgressPut(body: unknown, stored: unknown): ProgressPutResult {
+  const parsed = ProgressPutSchema.safeParse(body);
+  if (!parsed.success) {
+    const where = parsed.error.issues.slice(0, 3).map(formatIssue).join(', ');
+    return { ok: false, error: `Fortschritt nicht gespeichert: Die Daten sind ungültig (Fehler bei ${where}).` };
+  }
+  const { reset, ...progress } = parsed.data;
+  const storedAttempts = (stored as { attempts?: unknown } | null)?.attempts;
+  const storedCount = Array.isArray(storedAttempts) ? storedAttempts.length : 0;
+  if (!reset && isSuspiciousAttemptDrop(storedCount, progress.attempts.length)) {
+    return {
+      ok: false,
+      error:
+        `Fortschritt nicht gespeichert: Er enthält nur ${progress.attempts.length} statt ${storedCount} Versuche. ` +
+        'Zum bewussten Zurücksetzen nutze „Fortschritt zurücksetzen“ oder „Sicherung einspielen“ auf der Seite Daten & Import. ' +
+        'Ist die App in einem anderen Tab offen? Dann bitte diese Seite neu laden.',
+    };
+  }
+  return { ok: true, progress };
+}

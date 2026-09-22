@@ -70,6 +70,11 @@ function Nav() {
   );
 }
 
+function SaveErrorBanner() {
+  const { saveError } = useStore();
+  return saveError ? <p className="card warn" role="alert">⚠ {saveError}</p> : null;
+}
+
 export function App() {
   return (
     <HashRouter>
@@ -81,6 +86,7 @@ export function App() {
             <div className="layout">
               <Nav />
               <main>
+                <SaveErrorBanner />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/lernen" element={<Themen />} />

@@ -4,6 +4,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
+import { checkProgressPut } from '../shared/progressSchema';
 import type { Content, TaskType } from '../shared/types';
 import { aiEnabled, generateTasks, gradeAnswer, HttpError, MODEL } from './ai';
 import { loadContent, SOURCE_DIR } from './loadContent';
@@ -54,7 +55,10 @@ export function apiPlugin(): Plugin {
           if (route === 'GET /api/progress') return send(res, 200, readProgress());
           if (route === 'GET /api/progress/backups') return send(res, 200, backupInfo());
           if (route === 'PUT /api/progress') {
-            writeProgress(await readBody(req));
+            // Nie ungeprüft schreiben: leere/kaputte Daten oder ein versehentlich geleerter Stand würden echten Fortschritt überschreiben.
+            const checked = checkProgressPut(await readBody(req), readProgress());
+            if (!checked.ok) throw new HttpError(400, checked.error);
+            writeProgress(checked.progress);
             return send(res, 200, { ok: true });
           }
           if (route === 'GET /api/ai/status') return send(res, 200, { enabled: aiEnabled(), model: MODEL });
