@@ -1,6 +1,8 @@
 // Vite-Plugin: stellt die lokale API unter /api bereit (Inhalte, Fortschritt, KI).
-// So startet die gesamte App mit einem einzigen `npm run dev`.
+// So startet die gesamte App mit einem einzigen `npm run dev` – oder gebaut mit `npm start` (vite preview).
 
+import { watch } from 'node:fs';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { GenerateRequestSchema, GradeRequestSchema, type ErrorResponse } from '../shared/api';
@@ -68,20 +70,37 @@ export function apiPlugin(): Plugin {
       };
       for (const event of ['change', 'add', 'unlink'] as const) server.watcher.on(event, onSourceEvent);
 
-      server.middlewares.use(async (req, res, next) => {
-        const url = new URL(req.url ?? '/', 'http://localhost');
-        if (!url.pathname.startsWith('/api/')) return next();
-        try {
-          const match = matchRoute(routes, req.method ?? 'GET', url.pathname);
-          if (!match) return send(res, 404, { error: `Unbekannte Route ${req.method} ${url.pathname}` } satisfies ErrorResponse);
-          send(res, 200, await match.route.handler({ req, params: match.params }));
-        } catch (err) {
-          const status = err instanceof HttpError ? err.status : 500;
-          const message = err instanceof Error ? err.message : String(err);
-          if (status === 500) console.error(err);
-          send(res, status, { error: message } satisfies ErrorResponse);
-        }
-      });
+      server.middlewares.use(apiMiddleware);
+    },
+    configurePreviewServer(server) {
+      // npm start / vite preview: gebaute App, aber dieselbe API mit denselben Daten (data/) und Lernblättern (AP-2) wie im
+      // Dev-Server. Die Vorschau hat keinen Vite-Watcher: fs.watch leert nur den Cache, neu laden (F5) musst du selbst.
+      try {
+        const watcher = watch(SOURCE_DIR, (_event, name) => {
+          if (name && isContentSource(join(SOURCE_DIR, name.toString()))) contentCache.invalidate();
+        });
+        server.httpServer.once('close', () => watcher.close());
+      } catch (err) {
+        // Ohne Watcher bleiben geänderte Lernblätter bis zum Neustart unsichtbar – kein Grund, nicht zu starten.
+        console.warn(`Lernblätter werden nicht überwacht: ${err instanceof Error ? err.message : String(err)}`);
+      }
+      server.middlewares.use(apiMiddleware);
     },
   };
+}
+
+/** Middleware für /api/* – dieselbe für Dev-Server und Vorschau. */
+async function apiMiddleware(req: IncomingMessage, res: ServerResponse, next: () => void): Promise<void> {
+  const url = new URL(req.url ?? '/', 'http://localhost');
+  if (!url.pathname.startsWith('/api/')) return next();
+  try {
+    const match = matchRoute(routes, req.method ?? 'GET', url.pathname);
+    if (!match) return send(res, 404, { error: `Unbekannte Route ${req.method} ${url.pathname}` } satisfies ErrorResponse);
+    send(res, 200, await match.route.handler({ req, params: match.params }));
+  } catch (err) {
+    const status = err instanceof HttpError ? err.status : 500;
+    const message = err instanceof Error ? err.message : String(err);
+    if (status === 500) console.error(err);
+    send(res, status, { error: message } satisfies ErrorResponse);
+  }
 }

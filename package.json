@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --open",
     "build": "tsc -b && vite build",
+    "start": "npm run build && vite preview --open",
     "build:pages": "tsc -b && vite build --mode pages",
     "typecheck": "tsc -b",
     "test": "vitest run",
