@@ -1,0 +1,269 @@
+# Deep Dive 9: Datenqualität sicherstellen (KW 37)
+## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
+
+---
+
+## Prüfungsrelevanz
+
+Dieser Themenblock ist das **namensgebende Kernthema** deines Prüfungsbereichs „Sicherstellen der Datenqualität". Alles, was du in den Deep Dives 1 bis 8 gelernt hast, läuft hier zusammen: SQL-Prüfabfragen, Normalisierung als Fehlervermeidung, Statistik zur Auffälligkeitserkennung, ETL als Kontrollpunkt.
+
+Typische Aufgaben: Qualitätsdimensionen benennen und auf einen Datenauszug anwenden, Kennzahlen berechnen, Probleme in einer Tabelle identifizieren, Validierungsregeln formulieren, präventive Maßnahmen vorschlagen und Verantwortlichkeiten festlegen.
+
+**Der rote Faden dieser Einheit:** Fehler finden ist Handwerk – Fehler **verhindern** ist die Prüfungsleistung.
+
+Szenario: **Möbelhaus Nordholz GmbH**.
+
+---
+
+# Teil 1 – Die Dimensionen der Datenqualität
+
+Datenqualität ist kein einzelner Wert, sondern hat mehrere Aspekte. Man definiert sie als **Eignung der Daten für den vorgesehenen Verwendungszweck** – dieselben Daten können für eine Auswertung ausreichen und für eine andere unbrauchbar sein.
+
+| Dimension | Frage | Prüfung | Beispiel für eine Verletzung |
+|---|---|---|---|
+| **Vollständigkeit** | Sind alle erforderlichen Werte vorhanden? | Anteil NULL/Leerwerte je Feld | 30 % der Kunden ohne E-Mail |
+| **Korrektheit** | Stimmen die Werte mit der Realität überein? | Abgleich mit Referenzquelle, Stichprobe | falscher Firmenname |
+| **Konsistenz** | Widersprechen sich Werte innerhalb oder zwischen Systemen? | Kreuzvergleiche | Lieferdatum vor Bestelldatum |
+| **Eindeutigkeit** | Existiert jede Realweltentität genau einmal? | DISTINCT-Vergleich, Dublettensuche | Kunde doppelt angelegt |
+| **Aktualität** | Sind die Werte hinreichend jung? | Alter des letzten Änderungsdatums | Adresse seit fünf Jahren nicht gepflegt |
+| **Genauigkeit** | Ist die Detailtiefe ausreichend? | Nachkommastellen, Messauflösung | Dauer nur in Tagen statt Stunden |
+| **Gültigkeit / Konformität** | Entsprechen die Werte den Formatregeln? | Muster-, Wertebereichsprüfung | PLZ mit vier Stellen |
+| **Relevanz** | Werden die richtigen Merkmale erhoben? | fachlicher Abgleich | Merkmal fehlt für die Fragestellung |
+
+**Prüfungstaktik:** Fünf Dimensionen mit je einer Prüf- **und** einer Sicherungsmaßnahme sicher parat haben. Die Aufgabe lautet fast immer „nennen und erläutern Sie" – reine Aufzählungen bekommen nur die halbe Punktzahl.
+
+**Wichtige Abgrenzung:** *Gültig* ist nicht dasselbe wie *korrekt*. Eine Postleitzahl mit fünf Ziffern ist formal gültig – sie kann trotzdem falsch sein. Formatprüfungen fangen nur einen Teil der Fehler.
+
+---
+
+# Teil 2 – Data Profiling: Probleme finden
+
+**Data Profiling** ist die systematische Untersuchung eines Datenbestands, **bevor** man ihn verwendet. Drei Ebenen:
+
+## 2.1 Spaltenanalyse (Column Profiling)
+
+Je Spalte werden erhoben: Anzahl und Anteil der NULL-Werte, Anzahl verschiedener Werte, Minimum und Maximum, Mittelwert und Median, Häufigkeitsverteilung, typische Muster und Feldlängen.
+
+```sql
+-- Vollständigkeit je Spalte
+SELECT COUNT(*) AS gesamt,
+       COUNT(*) - COUNT(email) AS fehlende_email,
+       ROUND(COUNT(email) * 100.0 / COUNT(*), 2) AS vollstaendigkeit_prozent
+FROM kunde;
+
+-- Wertebereich prüfen
+SELECT MIN(umsatz), MAX(umsatz), COUNT(*) AS unplausibel
+FROM bestellung WHERE umsatz <= 0;
+```
+
+**Was dabei typischerweise auffällt:**
+- Auffällige Häufungen einzelner Werte → **Platzhalter** (01.01.1900, „unbekannt", „xxx", 0, 99999)
+- Sehr viele verschiedene Werte in einem Kategoriefeld → uneinheitliche Freitexteingaben
+- Nur wenige verschiedene Werte in einem Schlüsselfeld → das Feld identifiziert nicht eindeutig
+- Extreme Minima/Maxima → Erfassungsfehler (Komma verrutscht, Einheit verwechselt)
+
+## 2.2 Spaltenübergreifende Analyse
+
+Beziehungen **innerhalb** eines Datensatzes prüfen: Enddatum nach Startdatum? Rechnungsbetrag = Menge × Preis? Lieferdatum nach Bestelldatum? Diese Regeln decken Fehler auf, die jede einzelne Spalte für sich unauffällig lässt.
+
+## 2.3 Tabellenübergreifende Analyse
+
+Beziehungen **zwischen** Tabellen prüfen – vor allem die **referenzielle Integrität**:
+
+```sql
+-- Verwaiste Datensätze: Bestellung ohne existierenden Kunden
+SELECT b.bestell_id
+FROM bestellung b
+LEFT JOIN kunde k ON b.kunden_id = k.kunden_id
+WHERE k.kunden_id IS NULL;
+
+-- Dubletten aufspüren
+SELECT email, COUNT(*) AS anzahl
+FROM kunde
+GROUP BY email
+HAVING COUNT(*) > 1;
+```
+
+---
+
+# Teil 3 – Datenqualitätskennzahlen
+
+Ohne Messung keine Steuerung. Die Grundform ist immer gleich:
+
+**Qualitätsgrad = korrekte Datensätze / geprüfte Datensätze · 100**
+
+| Kennzahl | Formel |
+|---|---|
+| Vollständigkeitsgrad (Feld) | gefüllte Werte / alle Datensätze · 100 |
+| Vollständigkeitsgrad (Datenbestand) | gefüllte Zellen / alle Pflichtzellen · 100 |
+| Eindeutigkeitsgrad | eindeutige Entitäten / Datensätze · 100 |
+| Gültigkeitsgrad | formatkonforme Werte / geprüfte Werte · 100 |
+| Fehlerquote | fehlerhafte Sätze / geprüfte Sätze · 100 |
+
+**Zwei Regeln für die Prüfung:**
+1. **Bezugsgröße immer angeben.** „95 % Vollständigkeit" ist ohne die Angabe, ob je Feld oder über alle Zellen gerechnet wurde, wertlos – und die beiden Werte unterscheiden sich stark.
+2. **Schwellenwerte und Verantwortliche definieren.** Eine Kennzahl ohne Zielwert und ohne Zuständigkeit löst nichts aus. Beispiel: „Vollständigkeit E-Mail ≥ 90 %, Verantwortung Vertriebsleitung, monatliche Messung."
+
+**Kosten schlechter Datenqualität – die 1-10-100-Regel:** Einen Fehler bei der Erfassung zu vermeiden kostet etwa 1 Einheit, ihn später zu korrigieren etwa 10, und ihn unentdeckt zu lassen etwa 100 (Fehlentscheidung, Fehllieferung, Imageschaden). Diese Regel ist die beste Begründung für **präventive** Maßnahmen – ein starkes Argument im Fachgespräch.
+
+---
+
+# Teil 4 – Probleme beheben: Data Cleansing
+
+## 4.1 Fehlende Werte
+
+| Strategie | Wann geeignet | Nachteil |
+|---|---|---|
+| Datensatz löschen | wenige Fälle, zufällig verteilt | Informationsverlust, Verzerrung wenn nicht zufällig |
+| Mittelwert/Median einsetzen | metrische Felder, wenige Fälle | verringert die Streuung künstlich |
+| Modus einsetzen | kategoriale Felder | verstärkt die häufigste Kategorie |
+| Eigene Kategorie „unbekannt" | kategoriale Felder | zusätzliche Ausprägung |
+| Fachlich nachrecherchieren | wichtige Felder, kleine Menge | aufwendig, aber am korrektesten |
+
+**Wichtig:** Fehlt ein Wert **nicht zufällig** (etwa weil ein bestimmter Spediteur die Lieferdauer nie meldet), verzerrt jede Ersetzung das Ergebnis. Dann ist die Ursache zu klären, nicht die Lücke zu füllen.
+
+## 4.2 Dubletten
+
+Exakte Dubletten sind trivial zu finden. Das Problem sind **unscharfe Dubletten**: „Braun GmbH" und „Braun G.m.b.H.", „Müller" und „Mueller", Adressen mit „Str." und „Straße".
+
+Vorgehen:
+1. **Normalisieren:** Groß-/Kleinschreibung vereinheitlichen, Rechtsformzusätze und Sonderzeichen entfernen, Umlaute umschreiben
+2. **Vergleichen:** über mehrere Felder gleichzeitig (Name + PLZ + Geburtsdatum), mit Ähnlichkeitsmaßen (Levenshtein-Distanz) oder phonetischen Verfahren (Kölner Phonetik, Soundex)
+3. **Zusammenführen** zu einem **Golden Record**: dem führenden, bereinigten Datensatz je Realweltentität – dabei je Feld entscheiden, welche Quelle Vorrang hat
+4. **Prävention:** Dublettenprüfung bereits bei der Neuanlage
+
+## 4.3 Ausreißer und unplausible Werte
+
+Vorgehen wie in Deep Dive 3: Ursache klären, Entscheidung dokumentieren, Auswirkung prüfen. **Niemals ungeprüft löschen** – ein echter Extremwert kann genau der interessante Fall sein.
+
+---
+
+# Teil 5 – Prävention: Fehler gar nicht erst entstehen lassen
+
+Hier liegt der Unterschied zwischen einer befriedigenden und einer sehr guten Prüfungsantwort. Fehler zu bereinigen ist Symptombehandlung; wer nur bereinigt, bereinigt jeden Monat erneut.
+
+## 5.1 Technische Maßnahmen
+
+| Maßnahme | Wirkung |
+|---|---|
+| **Pflichtfelder (NOT NULL)** | erzwingt Vollständigkeit bei der Erfassung |
+| **Wertebereichsprüfung (CHECK)** | `CHECK (umsatz >= 0)`, `CHECK (geburtsdatum < CURRENT_DATE)` |
+| **Formatprüfung** | Muster für PLZ, E-Mail, IBAN; Prüfziffernverfahren |
+| **Auswahllisten statt Freitext** | verhindert uneinheitliche Schreibweisen |
+| **Referenzielle Integrität (FOREIGN KEY)** | verhindert verwaiste Datensätze |
+| **UNIQUE-Constraint** | verhindert Dubletten im Schlüsselfeld |
+| **Normalisierung (3. NF)** | verhindert Änderungsanomalien und damit Inkonsistenz |
+| **Plausibilitätsprüfung** | feldübergreifend: Enddatum nach Startdatum |
+| **Automatische Übernahme** | keine Mehrfacherfassung derselben Daten über Systemgrenzen |
+
+## 5.2 Organisatorische Maßnahmen (Data Governance)
+
+- **Data Owner:** fachlich verantwortlich für einen Datenbereich, entscheidet über Regeln und Freigaben
+- **Data Steward:** operativ zuständig für Pflege, Prüfung und Bereinigung
+- **Verbindliche Erfassungsrichtlinien** und Schulung der erfassenden Personen
+- **Regelmäßige Qualitätsmessung** mit Schwellenwerten und Berichtsweg
+- **Master Data Management:** ein führendes System je Stammdatenart, statt paralleler Pflege in mehreren Systemen
+- **Vier-Augen-Prinzip** an kritischen Stellen
+
+> ❓ **Prüferfrage:** Sie haben 2.400 Dubletten bereinigt. Warum ist das allein keine ausreichende Antwort auf die Aufgabe „Datenqualität sicherstellen"?
+> *Weil die Bereinigung nur den Ist-Bestand korrigiert, nicht die Ursache. Ohne Dublettenprüfung bei der Neuanlage, ohne UNIQUE-Constraint und ohne definierte Zuständigkeit entstehen dieselben Dubletten weiter. „Sicherstellen" verlangt präventive und organisatorische Maßnahmen samt laufender Messung – die Bereinigung ist nur der Ausgangspunkt.*
+
+## 5.3 Datenqualität im ETL-Prozess
+
+Der ETL-Lauf (→ Deep Dive 8) ist der zentrale Kontrollpunkt: Regelwerk anwenden, fehlerhafte Sätze in **Quarantäne** ausleiten statt zu verwerfen, Fehlerprotokoll mit Verantwortlichem führen, Abstimmsummen gegen die Quelle bilden und Kennzahlen je Lauf protokollieren.
+
+---
+
+## Die 8 häufigsten Fehler aus Prüfersicht
+
+1. Dimensionen nur aufgezählt, ohne Prüf- und Sicherungsmaßnahme zu nennen.
+2. Nur Bereinigung vorgeschlagen, keine Prävention.
+3. Kennzahl ohne Bezugsgröße angegeben.
+4. Kennzahl ohne Schwellenwert und ohne Verantwortlichen definiert.
+5. Fehlende Werte automatisch durch den Mittelwert ersetzt, ohne die Ursache zu prüfen.
+6. Platzhalterwerte (0, 01.01.1900) als echte Werte in die Auswertung übernommen.
+7. Gültigkeit und Korrektheit gleichgesetzt.
+8. Keine Zuständigkeit benannt – Datenqualität als reines IT-Thema behandelt.
+
+---
+
+# Übungsklausur Datenqualität (100 Punkte, 90 Minuten)
+
+Bearbeite die Klausur **am Ende von KW 37** am Stück, handschriftlich, mit Taschenrechner.
+
+## Anlage – Auszug aus der Kundentabelle (10 Datensätze)
+
+| Nr | kunden_id | name | email | plz | geburtsdatum | umsatz |
+|---|---|---|---|---|---|---|
+| 1 | K-1001 | Huber GmbH | info@huber.de | 80331 | 15.03.1985 | 1.250,00 |
+| 2 | K-1002 | Schmidt AG | *(leer)* | 20095 | 22.07.1979 | 890,50 |
+| 3 | K-1003 | Fischer KG | kontakt@fischer.de | 8033 | 01.01.1900 | 2.100,00 |
+| 4 | K-1004 | Weber e.K. | weber@mail | 50667 | 30.11.1990 | −450,00 |
+| 5 | K-1005 | Braun GmbH | braun@braun.de | 20095 | 05.05.1988 | 3.200,00 |
+| 6 | K-1006 | Huber GmbH | info@huber.de | 80331 | 15.03.1985 | 1.250,00 |
+| 7 | K-1007 | Meyer OHG | *(leer)* | 10115 | 01.01.1900 | 760,00 |
+| 8 | K-1008 | Braun G.m.b.H. | braun@braun.de | 20095 | 05.05.1988 | 3.200,00 |
+| 9 | K-1009 | Klein AG | klein@klein.de | 04109 | 12.02.2035 | 1.500,00 |
+| 10 | K-1010 | Roth KG | *(leer)* | 70173 | 28.08.1975 | 980,00 |
+
+## Block A – Dimensionen (20 P)
+
+**A1 (15 P):** *Nennen* Sie fünf Dimensionen der Datenqualität. *Erläutern* Sie je Dimension kurz die Bedeutung und *nennen* Sie je eine Maßnahme zur Sicherstellung.
+
+**A2 (5 P):** *Erläutern* Sie den Unterschied zwischen **Gültigkeit** und **Korrektheit** und *belegen* Sie ihn mit einem Beispiel aus der Anlage.
+
+## Block B – Probleme identifizieren (24 P)
+
+**B1 (18 P):** *Analysieren* Sie die Anlage. *Benennen* Sie **sechs** Datenqualitätsprobleme. *Geben* Sie jeweils die betroffene Datensatznummer, die verletzte Dimension und die Konsequenz für eine Auswertung an.
+
+**B2 (6 P):** Datensatz 3 und 7 enthalten das Geburtsdatum 01.01.1900. *Erläutern* Sie, welche Ursache typischerweise dahintersteckt und warum dieser Wert gefährlicher ist als ein leeres Feld.
+
+## Block C – Kennzahlen berechnen (20 P)
+
+**C1 (12 P):** *Berechnen* Sie für die Anlage: (a) Vollständigkeitsgrad des Feldes E-Mail, (b) Eindeutigkeitsgrad der Kunden, (c) Gültigkeitsgrad des Feldes PLZ, (d) Anteil plausibler Geburtsdaten. *Geben* Sie jeweils den Rechenweg an.
+
+**C2 (4 P):** Für sechs Pflichtfelder mit insgesamt 60 Zellen sind drei Zellen leer. *Berechnen* Sie den Vollständigkeitsgrad des Datenbestands und *erläutern* Sie, warum dieser Wert deutlich günstiger aussieht als das Ergebnis aus C1 (a).
+
+**C3 (4 P):** *Formulieren* Sie für das Feld E-Mail eine vollständige Datenqualitätskennzahl mit Zielwert, Messintervall und Verantwortlichkeit.
+
+## Block D – Bereinigen (18 P)
+
+**D1 (8 P):** *Beschreiben* Sie das Vorgehen zur Erkennung und Behandlung der Dubletten in der Anlage. *Gehen* Sie auf exakte und unscharfe Dubletten getrennt *ein* und *erläutern* Sie den Begriff **Golden Record**.
+
+**D2 (6 P):** In einem anderen Datenbestand fehlen 12 % der Lieferdauern. *Nennen* Sie drei Strategien im Umgang mit fehlenden Werten und *bewerten* Sie je einen Vor- und Nachteil.
+
+**D3 (4 P):** Bei der Prüfung fällt auf, dass die fehlenden Lieferdauern **ausschließlich** Aufträge eines bestimmten Spediteurs betreffen. *Beurteilen* Sie, ob ein Ersetzen durch den Mittelwert hier vertretbar ist.
+
+## Block E – Prävention und Verantwortung (18 P)
+
+**E1 (10 P):** *Nennen* Sie fünf technische Maßnahmen, mit denen die in der Anlage gefundenen Fehler künftig verhindert werden. *Ordnen* Sie jeder Maßnahme das konkrete Problem aus der Anlage zu.
+
+**E2 (4 P):** *Erläutern* Sie die Rollen **Data Owner** und **Data Steward** und *grenzen* Sie sie voneinander ab.
+
+**E3 (4 P):** Die Geschäftsführung fragt, warum in Prävention investiert werden soll, „wo man die Daten doch einmal im Jahr bereinigen kann". *Argumentieren* Sie mit der 1-10-100-Regel.
+
+---
+
+## Fachgespräch: typische Fragen des Ausschusses
+
+1. „Wie haben Sie die Qualität Ihrer Datenbasis geprüft – und was haben Sie dabei gefunden?"
+2. „Welche Datenqualitätsprobleme haben Sie bereinigt, und welche haben Sie bewusst stehen lassen? *Begründen* Sie beides."
+3. „Wie stellen Sie sicher, dass dieselben Fehler nicht wieder entstehen?"
+4. „Wer ist in Ihrem Betrieb für die Qualität dieser Daten verantwortlich?"
+5. „Wie hätte sich ein unentdecktes Datenqualitätsproblem auf Ihr Analyseergebnis ausgewirkt?"
+6. „Welche Datenqualitätskennzahl würden Sie dauerhaft überwachen – und ab welchem Wert müsste jemand eingreifen?"
+
+---
+
+## Lernziel-Check (Ende KW 37 alles mit Ja beantworten)
+
+- [ ] Ich nenne fünf Dimensionen mit je einer Prüf- und einer Sicherungsmaßnahme.
+- [ ] Ich unterscheide Gültigkeit und Korrektheit an einem Beispiel.
+- [ ] Ich finde in einem Datenauszug systematisch Probleme und ordne sie Dimensionen zu.
+- [ ] Ich berechne Qualitätskennzahlen und gebe immer die Bezugsgröße an.
+- [ ] Ich formuliere eine Kennzahl vollständig – mit Zielwert, Intervall und Verantwortlichem.
+- [ ] Ich beschreibe Dublettenerkennung inklusive unscharfer Fälle und Golden Record.
+- [ ] Ich kenne die Strategien bei fehlenden Werten und erkenne nicht zufällige Lücken.
+- [ ] Ich nenne zu jedem Problem eine **präventive** Maßnahme, nicht nur eine Bereinigung.
+- [ ] Ich erkläre Data Owner, Data Steward und die 1-10-100-Regel.
+- [ ] Übungsklausur mit ≥ 92 Punkten bestanden.

@@ -1,8 +1,9 @@
+import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import type { Content, Task } from '../shared/types';
 import { createContentCache, withGenerated } from '../server/contentCache';
-import { isContentFile, isContentSource } from '../server/loadContent';
+import { CONTENT_DIR, isContentFile, isContentSource, listContentFiles } from '../server/loadContent';
 
 const task = (id: string, markdown = id) => ({ id, markdown }) as unknown as Task;
 
@@ -68,5 +69,14 @@ describe('isContentSource', () => {
     expect(isContentFile('Lernblatt.MD')).toBe(true);
     expect(isContentFile('lernkarten-extra.json')).toBe(true);
     expect(isContentFile('bild.png')).toBe(false);
+  });
+});
+
+describe('content/ (Kopie für GitHub Pages und Tests)', () => {
+  it('enthält nur Lernblätter und Lernkarten – nichts, was loadContent() nicht liest', () => {
+    const files = readdirSync(CONTENT_DIR);
+    expect(files.length).toBeGreaterThan(0);
+    expect(files.filter((f) => !isContentFile(f))).toEqual([]);
+    expect(listContentFiles(CONTENT_DIR)).toEqual([...files].sort());
   });
 });

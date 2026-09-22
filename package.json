@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite --open",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build --mode pages",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "import-report": "tsx server/report.ts"
+    "import-report": "tsx server/report.ts",
+    "sync-content": "tsx server/syncContent.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

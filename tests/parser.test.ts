@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { buildContent, parseCriteria, parseLernplan, parseSolutions, parseTopic, toLines } from '../shared/parser';
-import { loadContent } from '../server/loadContent';
+import { CONTENT_DIR, loadContent } from '../server/loadContent';
 
-// Echte Lernblätter aus dem AP-2-Ordner
-const content = loadContent();
+// Echte Lernblätter – aus der Kopie in content/ (npm run sync-content), damit die Tests auch in GitHub Actions laufen
+const content = loadContent(CONTENT_DIR);
 const sheets = content.topics.filter((t) => t.id !== '00');
 
 describe('Import der echten Lernblätter', () => {

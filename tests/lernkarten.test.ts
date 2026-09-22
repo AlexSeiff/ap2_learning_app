@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { answerToMarkdown, parseLernkarten, topicFromSource } from '../shared/lernkarten';
-import { loadContent } from '../server/loadContent';
+import { CONTENT_DIR, loadContent } from '../server/loadContent';
 
-const content = loadContent();
+const content = loadContent(CONTENT_DIR);
 const cards = content.flashcards.filter((c) => c.kind === 'lernkarte');
 
 describe('Lernkarten-Datei AP2_FIDPA_Lernkarten.json', () => {
