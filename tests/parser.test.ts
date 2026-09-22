@@ -1,76 +1,145 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { buildContent, parseCriteria, parseLernplan, parseSolutions, parseTopic, toLines } from '../shared/parser';
-import { CONTENT_DIR, loadContent } from '../server/loadContent';
+import { loadContent } from '../server/loadContent';
 
-// Echte Lernblätter – aus der Kopie in content/ (npm run sync-content), damit die Tests auch in GitHub Actions laufen
-const content = loadContent(CONTENT_DIR);
-const sheets = content.topics.filter((t) => t.id !== '00');
+// Kleine Lernblatt-Fixtures im Format der echten Blätter – so bricht das Bearbeiten eines Lernblatts keine Formattests.
+// Grobe Prüfungen gegen die echten Inhalte stehen in inhalte.smoke.test.ts.
+const FIXTURES = join(import.meta.dirname, 'fixtures', 'inhalt');
+const content = loadContent(FIXTURES);
+const topic = content.topics.find((t) => t.id === '01')!;
 
-describe('Import der echten Lernblätter', () => {
-  it('findet alle 12 Deep Dives mit Lösungsdatei', () => {
-    expect(sheets.map((t) => t.id)).toEqual(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']);
-    for (const t of sheets) expect(t.solutionFile, t.file).toBe(t.file.replace('.md', '_Loesungen.md'));
-  });
-
-  it('jede Übungsklausur ergibt genau 100 Punkte und Blocksummen stimmen', () => {
-    for (const t of content.topics) {
-      expect(t.exam?.totalPoints, t.file).toBe(100);
-      for (const b of t.exam!.blocks) {
-        const sum = b.taskIds.reduce((s, id) => s + content.tasks[id].points, 0);
-        expect(sum, `${t.file} Block ${b.letter}`).toBe(b.points);
-      }
-    }
-  });
-
-  it('jede Aufgabe hat eine Musterlösung und es gibt keine Importhinweise', () => {
-    const missing = Object.values(content.tasks).filter((t) => !t.solution?.markdown).map((t) => t.id);
-    expect(missing).toEqual([]);
+describe('Lernblatt-Format (tests/fixtures/inhalt)', () => {
+  it('liest Titel, Kalenderwoche und Lösungsdatei ohne Importhinweise', () => {
     expect(content.issues).toEqual([]);
+    expect(content.topics.map((t) => t.id)).toEqual(['01']);
+    expect(topic).toMatchObject({ number: 1, title: 'SQL', week: 'KW 28–29', solutionFile: 'DeepDive_01_SQL_Loesungen.md' });
   });
 
-  it('liest Aufgabentext inkl. Codeblock (SQL A3)', () => {
+  it('zerlegt die Theorie in Abschnitte, Überschriften in Codeblöcken zählen nicht', () => {
+    expect(topic.sections.map((s) => s.title)).toEqual([
+      'Die Übungsdatenbank „Möbelhaus Test"',
+      'Teil 1 – Grundlagen',
+      '1.1 SELECT: Projektion und Selektion',
+      '1.2 WHERE im Detail',
+    ]);
+    const select = topic.sections[2];
+    expect(select.id).toBe('01-1-1-select-projektion-und-selektion');
+    expect(select.markdown).toContain('# kein Heading');
+  });
+
+  it('liest Prüferfragen – auch über mehrere Zitatzeilen – samt kursiver Antwort', () => {
+    const pf = content.flashcards.filter((c) => c.kind === 'prueferfrage');
+    expect(pf.map((c) => c.id)).toEqual(['01-pf1', '01-pf2']);
+    expect(pf[0]).toMatchObject({
+      question: 'Worin unterscheiden sich Projektion und Selektion?',
+      answer: 'Projektion wählt Spalten, Selektion filtert Zeilen.',
+    });
+    expect(pf[1].question).toBe('Warum liefert `WHERE telefon = NULL` keine Zeilen,\nobwohl NULL-Werte existieren?');
+    expect(pf[1].answer).toMatch(/^Vergleiche mit NULL/);
+  });
+
+  it('baut die Übungsklausur mit Blöcken, Punkten und Anlagen', () => {
+    const exam = topic.exam!;
+    expect(exam.title).toBe('Übungsklausur SQL (100 Punkte, 90 Minuten)');
+    expect(exam.intro).toMatch(/^Bearbeite die Klausur/);
+    expect(exam.totalPoints).toBe(100);
+    expect(exam.blocks.map((b) => [b.letter, b.title, b.points])).toEqual([
+      ['A', 'Wissen und Fehleranalyse', 20],
+      ['B', 'Abfragen entwickeln', 80],
+    ]);
+    expect(exam.blocks[0].taskIds).toEqual(['01-A1', '01-A2', '01-A3']);
+    expect(exam.blocks[1].intro).toBe('Szenario: Das Möbelhaus erweitert seine Auswertungen.');
+    // Übungsdatenbank aus der Theorie zuerst, dann die Anlagen der Klausur
+    expect(exam.attachments.map((a) => a.title)).toEqual(['Die Übungsdatenbank „Möbelhaus Test"', 'Anlage 1 – Auszug Tabelle bestellung']);
+    for (const b of exam.blocks) expect(b.taskIds.reduce((s, id) => s + content.tasks[id].points, 0)).toBe(b.points);
+  });
+
+  it('liest Aufgabentext inkl. Codeblock und ordnet Lösung und Prüferkommentar zu', () => {
     const a3 = content.tasks['01-A3'];
-    expect(a3.points).toBe(9);
-    expect(a3.block).toBe('A');
+    expect(a3).toMatchObject({ code: 'A3', block: 'A', points: 9, type: 'offen' });
     expect(a3.markdown).toContain('```sql');
     expect(a3.markdown).toContain('GROUP BY name;');
+    expect(a3.markdown).not.toContain('Block B');
     expect(a3.solution?.kommentar).toMatch(/^Je Fehler 1 P/);
+    expect(a3.solution?.markdown).toContain('HAVING COUNT(*) > 1;');
     expect(a3.solution?.markdown).not.toContain('Prüferkommentar');
+    expect(content.tasks['01-A2'].solution?.kommentar).toBeUndefined();
   });
 
-  it('erkennt Punktetabellen als Bewertungskriterien (BPMN B1)', () => {
-    const crit = content.tasks['05-B1'].solution?.criteria;
-    expect(crit?.length).toBeGreaterThanOrEqual(5);
-    // Die Tabelle summiert bewusst auf 20 P (Maximum 18 P) – die App deckelt beim Abhaken auf die Aufgabenpunkte.
-    expect(crit!.reduce((s, c) => s + c.points, 0)).toBe(20);
+  it('jede Aufgabe hat eine Lösung; „Auswertung" beendet die Lösungsdatei', () => {
+    expect(Object.values(content.tasks).filter((t) => !t.solution?.markdown)).toEqual([]);
+    expect(content.tasks['01-A1'].solution?.markdown).not.toContain('Auswertung');
+    expect(content.tasks['01-B3'].solution?.markdown).not.toContain('---');
   });
 
-  it('stellt Anlagen und die Übungsdatenbank für die Klausur bereit', () => {
-    const sql = content.topics.find((t) => t.id === '01')!;
-    expect(sql.exam!.attachments[0].title).toMatch(/Übungsdatenbank/);
-    const dm = content.topics.find((t) => t.id === '02')!;
-    expect(dm.exam!.attachments.some((a) => a.title.startsWith('Anlage 1'))).toBe(true);
-    expect(dm.exam!.blocks[1].intro).toMatch(/^Szenario:/);
+  it('erkennt Punktetabellen als Bewertungskriterien und überspringt die Summenzeile', () => {
+    expect(content.tasks['01-B1'].solution?.criteria).toEqual([
+      { label: 'Pool „Möbelhaus" mit zwei Lanes', points: 3 },
+      { label: 'Startereignis in der Annahme', points: 2 },
+      { label: 'XOR-Gateway mit beschrifteten Pfaden', points: 3.5 },
+      { label: 'Nachrichtenfluss zum Kundenpool', points: 2 },
+    ]);
+    expect(content.tasks['01-B2'].solution?.criteria).toBeUndefined();
   });
 
-  it('liest Prüferfragen, Fachgespräch-Fragen und Lernziele', () => {
-    const pf = content.flashcards.filter((c) => c.kind === 'prueferfrage');
-    expect(pf.length).toBe(22);
-    expect(pf.every((c) => c.answer && !c.answer.startsWith('*'))).toBe(true);
-    const fg = content.flashcards.find((c) => c.id === '01-fg2')!;
-    expect(fg.answer).toMatch(/^Plausibilisierung/);
-    expect(sheets.every((t) => t.lernziele.length >= 8)).toBe(true);
+  it('liest Fachgespräch-Fragen mit erwarteter Antwort und den Lernziel-Check', () => {
+    const fg = content.flashcards.filter((c) => c.kind === 'fachgespraech');
+    expect(fg.map((c) => c.question)).toEqual([
+      'Begründen Sie Ihre Wahl zwischen INNER und LEFT JOIN.',
+      'Wie haben Sie sichergestellt, dass Ihre Abfragen **korrekte** Ergebnisse liefern?',
+    ]);
+    expect(fg[0].answer).toBeUndefined();
+    expect(fg[1].answer).toBe('Plausibilisierung über Zeilenzahlen, Stichproben gegen das Quellsystem.');
+    expect(topic.lernziele).toEqual([
+      'Ich kann WHERE und HAVING sauber abgrenzen.',
+      'Ich kenne das NULL-Verhalten aller Aggregatfunktionen.',
+      'Übungsklausur mit ≥ 92 Punkten bestanden.',
+    ]);
   });
 
-  it('importiert das ältere SQL-Blatt mit integrierten Lösungen', () => {
-    const legacy = content.topics.find((t) => t.id === '00')!;
-    expect(legacy.file).toBe('Deep_Dive_SQL_KW28_29.md');
-    expect(content.tasks['00-C7'].solution?.markdown).toMatch(/Aggregatbedingung/);
+  it('liefert mit Windows-Zeilenenden (CRLF) dasselbe Ergebnis', () => {
+    const read = (name: string) => readFileSync(join(FIXTURES, name), 'utf8');
+    const crlf = (s: string) => s.replace(/\n/g, '\r\n');
+    const sheet = read('DeepDive_01_SQL.md');
+    const sol = read('DeepDive_01_SQL_Loesungen.md');
+    const lf = parseTopic('01', 'a.md', sheet, 'b.md', sol);
+    const win = parseTopic('01', 'a.md', crlf(sheet), 'b.md', crlf(sol));
+    expect(win.tasks).toEqual(lf.tasks);
+    expect(win.issues).toEqual([]);
   });
+});
 
-  it('liest den Lernplan wochenweise', () => {
-    expect(content.weeks.find((w) => w.kw === 39)?.text).toMatch(/Visualisierung/);
-    expect(content.weeks.at(-1)?.kw).toBe(48);
+describe('Älteres Format mit integrierten Lösungen (Deep_Dive_SQL_*.md)', () => {
+  const legacy = [
+    '# Deep-Dive-Lernzettel: SQL (KW 28–29)',
+    '## 1. Beispieldatenbank „DataFit GmbH"',
+    'Tabellen',
+    '## 5. Übungsklausur SQL – 100 Punkte, Richtzeit 90 Minuten',
+    '### Teil A – Wissensfragen (40 P)',
+    '- **W1 (40 P):** Erläutern Sie WHERE und HAVING.',
+    '  Mit Beispiel.',
+    '### Teil C – Fortgeschritten (60 P)',
+    '- **C7 (60 P):** Finden Sie die vier Fehler.',
+    '## 6. Musterlösungen mit Bewertungshinweisen',
+    '**W1:** WHERE vor, HAVING nach der Gruppierung.',
+    '**C7 – die vier Fehler:**',
+    '1. Aggregatbedingung im WHERE.',
+    '**Auswertung:** 92–100 P = sehr gut',
+    '## 7. Fachgespräch-Fragen rund um SQL',
+    '1. „Warum LEFT JOIN?" (Erwartet: Kunden ohne Bestellung bleiben erhalten.)',
+  ].join('\n');
+
+  it('liest Aufgaben aus Aufzählungen und Lösungen aus dem Blatt selbst', () => {
+    const c = buildContent([{ name: 'Deep_Dive_SQL_KW28_29.md', text: legacy }]);
+    expect(c.issues).toEqual([]);
+    const t = c.topics[0];
+    expect(t).toMatchObject({ id: '00', title: 'SQL (Zusatzmaterial DataFit)', week: 'KW 28–29' });
+    expect(t.exam!.attachments[0].title).toMatch(/Beispieldatenbank/);
+    expect(c.tasks['00-W1'].markdown).toBe('Erläutern Sie WHERE und HAVING.\nMit Beispiel.');
+    expect(c.tasks['00-C7'].solution?.markdown).toMatch(/Aggregatbedingung/);
+    expect(c.flashcards.find((f) => f.id === '00-fg1')?.answer).toBe('Kunden ohne Bestellung bleiben erhalten.');
   });
 });
 
@@ -84,6 +153,15 @@ describe('Robustheit', () => {
     expect(r.issues.map((i) => i.message)).toEqual([
       'Keine Musterlösung für Aufgabe A2 gefunden.',
       'Lösung A9 ohne passende Aufgabe im Lernblatt.',
+    ]);
+  });
+
+  it('meldet abweichende Punktzahlen und Klausuren ungleich 100 Punkte', () => {
+    const sheet = '# Deep Dive 98: Test\n\n# Übungsklausur\n\n## Block A – Wissen (90 P)\n\n**A1 (90 P):** Frage\n';
+    const r = parseTopic('98', 'x.md', sheet, 'x_Loesungen.md', '**A1 (80 P):**\nAntwort');
+    expect(r.issues.map((i) => i.message)).toEqual([
+      'Punktzahl A1 weicht ab: Blatt 90 P, Lösung 80 P.',
+      'Klausur ergibt 90 statt 100 Punkte.',
     ]);
   });
 

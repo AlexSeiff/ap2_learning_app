@@ -1,38 +1,56 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { answerToMarkdown, parseLernkarten, topicFromSource } from '../shared/lernkarten';
-import { CONTENT_DIR, loadContent } from '../server/loadContent';
+import { loadContent } from '../server/loadContent';
 
-const content = loadContent(CONTENT_DIR);
+// Fixture im Format von AP2_FIDPA_Lernkarten.json (3 Decks, 7 Karten) – die echte Datei prüft inhalte.smoke.test.ts grob.
+const FIXTURES = join(import.meta.dirname, 'fixtures', 'inhalt');
+const content = loadContent(FIXTURES);
 const cards = content.flashcards.filter((c) => c.kind === 'lernkarte');
 
-describe('Lernkarten-Datei AP2_FIDPA_Lernkarten.json', () => {
-  it('importiert alle 407 Karten in 24 Decks ohne Hinweise', () => {
-    expect(cards).toHaveLength(407);
-    expect(content.decks).toHaveLength(24);
+describe('Lernkarten-Format (tests/fixtures/inhalt/AP2_FIDPA_Lernkarten.json)', () => {
+  it('importiert alle Karten und Decks ohne Hinweise', () => {
     expect(content.issues).toEqual([]);
-    expect(new Set(cards.map((c) => c.id)).size).toBe(407);
+    expect(cards.map((c) => c.id)).toEqual(['SQL-001', 'SQL-002', 'SQL-003', 'WI-001', 'WI-002', 'WS1-001', 'WS1-002']);
+    expect(content.decks.map((d) => [d.id, d.cardCount, d.status])).toEqual([
+      ['sql', 3, 'behandelt'],
+      ['wi', 2, 'behandelt'],
+      ['ws1', 2, 'offen'],
+    ]);
+    expect(content.decks[0]).toMatchObject({ title: 'SQL', area: 'Sicherstellen der Datenqualität', source: 'Deep Dive 1' });
   });
 
   it('übernimmt Typ, Schwierigkeit und Tags', () => {
     const byTyp = (t: string) => cards.filter((c) => c.typ === t).length;
-    expect([byTyp('wissen'), byTyp('abgrenzung'), byTyp('rechnung'), byTyp('anwendung'), byTyp('falle')]).toEqual([216, 55, 26, 48, 62]);
-    expect(cards.every((c) => c.schwierigkeit && c.schwierigkeit >= 1 && c.schwierigkeit <= 3)).toBe(true);
-    expect(cards.find((c) => c.id === 'ORG-001')?.tags?.length).toBeGreaterThan(0);
+    expect([byTyp('wissen'), byTyp('abgrenzung'), byTyp('rechnung'), byTyp('anwendung'), byTyp('falle')]).toEqual([2, 1, 1, 1, 2]);
+    expect(cards.find((c) => c.id === 'WI-001')).toMatchObject({ deckId: 'wi', typ: 'rechnung', schwierigkeit: 3, tags: ['amortisation'] });
+    expect(cards.find((c) => c.id === 'WI-002')?.tags).toEqual([]);
+  });
+
+  it('macht aus SQL-Zeilen der Antwort einen Codeblock', () => {
+    const answer = cards.find((c) => c.id === 'SQL-002')?.answer;
+    expect(answer).toBe(answerToMarkdown(
+      'SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON b.kunden_id = k.kunden_id\nWHERE b.bestell_id IS NULL\nAlternative: NOT EXISTS',
+    ));
+    expect(answer).toMatch(/^```sql\nSELECT k\.name\n/);
+    expect(answer).toMatch(/Alternative: NOT EXISTS/);
   });
 
   it('ordnet Decks den Deep Dives zu, WiSo & Co. bleiben ohne Deep Dive', () => {
-    const topicOf = (id: string) => content.decks.find((d) => d.id === id)?.topicId;
+    // Im Fixture-Ordner gibt es nur Deep Dive 1 – „Deep Dive 5 und 12" findet dort kein Thema.
+    expect(content.decks.map((d) => d.topicId)).toEqual(['01', undefined, undefined]);
+    const topics = new Map([['01', 'SQL'], ['05', 'Prozessanalyse & Prozessmodellierung'], ['12', 'Projektmanagement & Wirtschaftlichkeit']]);
+    const parsed = parseLernkarten('x.json', readFileSync(join(FIXTURES, 'AP2_FIDPA_Lernkarten.json'), 'utf8'), topics);
+    const topicOf = (id: string) => parsed.decks.find((d) => d.id === id)?.topicId;
     expect(topicOf('sql')).toBe('01');
-    expect(topicOf('its')).toBe('10');
-    expect(topicOf('alg')).toBe('11');
-    expect(topicOf('wi')).toBe('12'); // „Deep Dive 5 und 12" → Titel passt zu Projektmanagement & Wirtschaftlichkeit
+    expect(topicOf('wi')).toBe('12'); // Titel „Wirtschaftlichkeit" passt zu Projektmanagement & Wirtschaftlichkeit
     expect(topicOf('ws1')).toBeUndefined();
-    expect(topicOf('org')).toBeUndefined();
-    expect(content.decks.filter((d) => d.status === 'offen').every((d) => !d.topicId)).toBe(true);
+    expect(parsed.cards.filter((c) => c.deckId === 'wi').every((c) => c.topicId === '12')).toBe(true);
   });
 
   it('übernimmt die Lernhinweise aus meta', () => {
-    expect(content.cardHints.some((h) => h.includes('falle'))).toBe(true);
+    expect(content.cardHints).toEqual(['Karten vom Typ „falle“ vor jeder Übungsklausur wiederholen.', 'Rechenkarten auf Papier nachrechnen.']);
   });
 });
 

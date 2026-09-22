@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "titel": "AP2 Lernkarten – Testdatei für die Parser-Tests",
+    "version": "1.0",
+    "anzahl_decks": 3,
+    "anzahl_karten": 7,
+    "hinweise": [
+      "Karten vom Typ „falle“ vor jeder Übungsklausur wiederholen.",
+      "Rechenkarten auf Papier nachrechnen."
+    ]
+  },
+  "decks": [
+    {
+      "id": "sql",
+      "titel": "SQL",
+      "pruefungsbereich": "Sicherstellen der Datenqualität",
+      "quelle": "Deep Dive 1",
+      "status": "behandelt",
+      "anzahl_karten": 3,
+      "karten": [
+        {
+          "id": "SQL-001",
+          "frage": "Was ist der Unterschied zwischen Projektion und Selektion?",
+          "antwort": "Projektion wählt Spalten aus. Selektion filtert Zeilen über eine Bedingung.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": ["select"]
+        },
+        {
+          "id": "SQL-002",
+          "frage": "Alle Kunden ohne Bestellung?",
+          "antwort": "SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON b.kunden_id = k.kunden_id\nWHERE b.bestell_id IS NULL\nAlternative: NOT EXISTS",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": ["join", "null"]
+        },
+        {
+          "id": "SQL-003",
+          "frage": "Typischer Fehler bei WHERE COUNT(*) > 1?",
+          "antwort": "Aggregatbedingungen gehören in HAVING.",
+          "typ": "falle",
+          "schwierigkeit": 1,
+          "tags": ["having"]
+        }
+      ]
+    },
+    {
+      "id": "wi",
+      "titel": "Wirtschaftlichkeit",
+      "pruefungsbereich": "Durchführen einer Prozessanalyse",
+      "quelle": "Deep Dive 5 und 12",
+      "status": "behandelt",
+      "anzahl_karten": 2,
+      "karten": [
+        {
+          "id": "WI-001",
+          "frage": "Wie berechnet man die Amortisationsdauer?",
+          "antwort": "Investition / jährliche Einsparung\nBeispiel: 12.000 € / 4.000 € = 3 Jahre",
+          "typ": "rechnung",
+          "schwierigkeit": 3,
+          "tags": ["amortisation"]
+        },
+        {
+          "id": "WI-002",
+          "frage": "Was ist ein Break-even-Point?",
+          "antwort": "Die Menge, ab der Erlöse die Kosten decken.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "ws1",
+      "titel": "WiSo – Ausbildung & Arbeitsrecht",
+      "pruefungsbereich": "Wirtschafts- und Sozialkunde",
+      "quelle": "Themenliste (noch nicht vertieft)",
+      "status": "offen",
+      "anzahl_karten": 2,
+      "karten": [
+        {
+          "id": "WS1-001",
+          "frage": "Wie lang ist die Probezeit in der Ausbildung?",
+          "antwort": "Mindestens 1, höchstens 4 Monate.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": ["bbig"]
+        },
+        {
+          "id": "WS1-002",
+          "frage": "Gilt der Mindestlohn für Auszubildende?",
+          "antwort": "Nein, für Azubis gilt die Mindestausbildungsvergütung.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": ["verguetung"]
+        }
+      ]
+    }
+  ]
+}

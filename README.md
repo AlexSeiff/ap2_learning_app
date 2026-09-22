@@ -142,7 +142,7 @@ Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein an
 ## Entwicklung
 
 ```bash
-npm test             # Parser- und Logik-Tests (nutzen die echten Lernblätter aus content/)
+npm test             # Parser- und Logik-Tests (Formattests mit Fixtures, ein Rauchtest mit den echten Lernblättern aus content/)
 npm run typecheck
 npm run build:pages  # statische Version für GitHub Pages nach dist/
 ```
@@ -160,5 +160,5 @@ lern-app/
 ├─ server/        Vite-Plugin mit lokaler API (/api/…, Routentabelle in apiPlugin.ts, Router in router.ts), Speicherung, Claude-Anbindung, content.json für Pages (pagesPlugin.ts), npm run sync-content (syncContent.ts)
 ├─ content/       Kopie der Lernblätter und Lernkarten aus AP-2 für GitHub Pages und Tests (npm run sync-content)
 ├─ src/           React-Oberfläche (pages/, components/, hooks/ mit dem Ablauf von Klausur und Karteikarten-Runde, lib/ mit reinen Funktionen)
-└─ tests/         Vitest-Tests; tests/fixtures/ enthält Beispieldateien (u. a. alte Fortschrittsformate für die Migrationstests)
+└─ tests/         Vitest-Tests; tests/fixtures/ enthält Beispieldateien (alte Fortschrittsformate für die Migrationstests, inhalt/ mit Mini-Lernblatt, Lösungen und Lernkarten für die Parser-Tests)
 ```
