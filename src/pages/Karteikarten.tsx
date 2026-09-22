@@ -4,6 +4,7 @@ import type { Rating } from '../../shared/progress';
 import type { CardType, Flashcard } from '../../shared/types';
 import { Markdown } from '../components/Markdown';
 import { isDue, rateCard } from '../lib/progress';
+import { shuffle } from '../lib/shuffle';
 import { useStore } from '../lib/store';
 
 const NEW_PER_SESSION = 20;
@@ -62,7 +63,7 @@ export function Karteikarten() {
   const fresh = deck.filter((c) => !progress.cards[c.id]);
 
   const start = (cards: Flashcard[]) => {
-    setSession([...cards].sort(() => Math.random() - 0.5));
+    setSession(shuffle(cards));
     setIndex(0);
     setFlipped(false);
     setDone({ gewusst: 0, unsicher: 0, nicht: 0 });
