@@ -118,6 +118,6 @@ Aufbau:
 lern-app/
 ├─ shared/        Einstellungen wie Prüfungsdatum, Klausurdauer, Intervalle, Port (config.ts), Datenmodell (types.ts), Markdown-Parser (parser.ts), gespeicherter Fortschritt: Typen, zod-Schema, Migration (progress.ts)
 ├─ server/        Vite-Plugin mit lokaler API (/api/…), Speicherung, Claude-Anbindung
-├─ src/           React-Oberfläche (pages/, components/, lib/)
+├─ src/           React-Oberfläche (pages/, components/, hooks/ mit dem Ablauf von Klausur und Karteikarten-Runde, lib/ mit reinen Funktionen)
 └─ tests/         Vitest-Tests; tests/fixtures/ enthält Beispieldateien (u. a. alte Fortschrittsformate für die Migrationstests)
 ```

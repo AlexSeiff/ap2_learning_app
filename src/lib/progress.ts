@@ -1,7 +1,8 @@
-// Lernfortschritt: reine Update-Funktionen (Fehlerjournal, Karteikarten). Das gespeicherte Datenmodell liegt in shared/progress.ts.
+// Lernfortschritt: reine Update-Funktionen (Fehlerjournal, Klausur, Karteikarten). Das gespeicherte Datenmodell liegt in shared/progress.ts.
 
 import { CARD_INTERVALS, JOURNAL_INTERVALS } from '../../shared/config';
-import type { Attempt, Progress, Rating } from '../../shared/progress';
+import type { Attempt, ExamRun, Progress, Rating } from '../../shared/progress';
+import type { Task } from '../../shared/types';
 
 export function localDate(d = new Date()): string {
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -39,6 +40,22 @@ export function recordAttempt(p: Progress, attempt: Attempt, today = localDate()
         : { ...entry, stage, due: addDays(today, JOURNAL_INTERVALS[stage]), lastPoints: attempt.points };
   }
   return { ...p, attempts: [...p.attempts, attempt], journal };
+}
+
+/** Überträgt eine bewertete Klausur in die Historie und alle Einzelergebnisse ins Fehlerjournal. */
+export function finishExam(p: Progress, run: ExamRun, tasks: Task[], now = new Date().toISOString()): Progress {
+  let next = p;
+  for (const t of tasks) {
+    next = recordAttempt(next, { taskId: t.id, date: now, points: run.scores[t.id] ?? 0, max: t.points, mode: 'klausur' });
+  }
+  const total = tasks.reduce((s, t) => s + (run.scores[t.id] ?? 0), 0);
+  return { ...next, activeExam: undefined, exams: [...next.exams, { ...run, total, finishedAt: now }] };
+}
+
+/** Gibt die laufende Klausur ab. Eine bereits abgegebene behält ihren Zeitpunkt (Timer und StrictMode können doppelt auslösen). */
+export function submitExam(p: Progress, now = new Date().toISOString()): Progress {
+  if (!p.activeExam || p.activeExam.submittedAt) return p;
+  return { ...p, activeExam: { ...p.activeExam, submittedAt: now } };
 }
 
 export function rateCard(p: Progress, cardId: string, rating: Rating, today = localDate()): Progress {

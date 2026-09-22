@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import type { ExamRun, Progress } from '../../shared/progress';
-import type { Task, Topic } from '../../shared/types';
+import type { ExamRun } from '../../shared/progress';
+import type { Topic } from '../../shared/types';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
+import { useExamRun } from '../hooks/useExamRun';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
-import { recordAttempt } from '../lib/progress';
 import { useStore } from '../lib/store';
 import { EXAM_MINUTES } from '../../shared/config';
 
@@ -45,49 +44,14 @@ export function KlausurAuswahl() {
   );
 }
 
-function useNow(active: boolean) {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!active) return;
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, [active]);
-  return now;
-}
-
-/** Überträgt eine bewertete Klausur in die Historie und alle Einzelergebnisse ins Fehlerjournal. */
-export function finishExam(p: Progress, run: ExamRun, tasks: Task[], now = new Date().toISOString()): Progress {
-  let next = p;
-  for (const t of tasks) {
-    next = recordAttempt(next, { taskId: t.id, date: now, points: run.scores[t.id] ?? 0, max: t.points, mode: 'klausur' });
-  }
-  const total = tasks.reduce((s, t) => s + (run.scores[t.id] ?? 0), 0);
-  return { ...next, activeExam: undefined, exams: [...next.exams, { ...run, total, finishedAt: now }] };
-}
-
 export function Klausur() {
   const { topicId } = useParams();
   const navigate = useNavigate();
-  const { content, progress, update } = useStore();
-  const topic = content.topics.find((t) => t.id === topicId);
-  const run = progress.activeExam?.topicId === topicId ? progress.activeExam : undefined;
-  const otherRun = progress.activeExam && !run ? progress.activeExam : undefined;
-  const [result, setResult] = useState<ExamRun | null>(null);
-  const now = useNow(!!run && !run.submittedAt);
+  const { content } = useStore();
+  const { topic, exam, tasks, run, otherRun, result, submitted, remaining, answered, scored, sum, start, setAnswer, setScore, submit, finish, abort } =
+    useExamRun(topicId);
 
-  const deadline = run ? new Date(run.startedAt).getTime() + EXAM_MINUTES * 60_000 : 0;
-  const remaining = Math.max(0, deadline - now);
-
-  // Zeit abgelaufen → automatisch abgeben (wie in der echten Prüfung).
-  useEffect(() => {
-    if (run && !run.submittedAt && remaining === 0) {
-      update((p) => (p.activeExam ? { ...p, activeExam: { ...p.activeExam, submittedAt: new Date().toISOString() } } : p));
-    }
-  }, [run, remaining, update]);
-
-  if (!topic?.exam) return <div className="page"><h1>Keine Klausur für dieses Thema</h1></div>;
-  const exam = topic.exam;
-  const tasks = exam.blocks.flatMap((b) => b.taskIds.map((id) => content.tasks[id])).filter(Boolean);
+  if (!topic || !exam) return <div className="page"><h1>Keine Klausur für dieses Thema</h1></div>;
 
   if (result) return <ExamResult topic={topic} run={result} />;
   const traps = content.flashcards.filter((c) => c.topicId === topic.id && c.typ === 'falle').length;
@@ -116,17 +80,7 @@ export function Klausur() {
             type="button"
             onClick={() => {
               if (otherRun && !confirm('Die andere laufende Klausur wird verworfen. Fortfahren?')) return;
-              update((p) => ({
-                ...p,
-                activeExam: {
-                  id: `ex-${Date.now().toString(36)}`,
-                  topicId: topic.id,
-                  startedAt: new Date().toISOString(),
-                  answers: {},
-                  scores: {},
-                  max: exam.totalPoints,
-                },
-              }));
+              start();
             }}
           >
             ▶ Klausur starten ({EXAM_MINUTES} min)
@@ -144,15 +98,6 @@ export function Klausur() {
     );
   }
 
-  const setAnswer = (taskId: string, value: string) =>
-    update((p) => (p.activeExam ? { ...p, activeExam: { ...p.activeExam, answers: { ...p.activeExam.answers, [taskId]: value } } } : p));
-  const setScore = (taskId: string, value: number) =>
-    update((p) => (p.activeExam ? { ...p, activeExam: { ...p.activeExam, scores: { ...p.activeExam.scores, [taskId]: value } } } : p));
-
-  const submitted = !!run.submittedAt;
-  const answered = tasks.filter((t) => run.answers[t.id]?.trim()).length;
-  const scored = tasks.filter((t) => run.scores[t.id] !== undefined).length;
-  const sum = tasks.reduce((s, t) => s + (run.scores[t.id] ?? 0), 0);
   const mm = Math.floor(remaining / 60_000);
   const ss = Math.floor((remaining % 60_000) / 1000);
 
@@ -168,7 +113,7 @@ export function Klausur() {
               type="button"
               onClick={() => {
                 if (confirm(`Klausur abgeben? ${tasks.length - answered} Aufgaben sind noch leer.`)) {
-                  update((p) => (p.activeExam ? { ...p, activeExam: { ...p.activeExam, submittedAt: new Date().toISOString() } } : p));
+                  submit();
                   window.scrollTo(0, 0);
                 }
               }}
@@ -184,9 +129,7 @@ export function Klausur() {
               onClick={() => {
                 const missing = tasks.length - scored;
                 if (missing && !confirm(`${missing} Aufgaben sind noch nicht bewertet und zählen 0 Punkte. Abschließen?`)) return;
-                const final: ExamRun = { ...run, scores: Object.fromEntries(tasks.map((t) => [t.id, run.scores[t.id] ?? 0])) };
-                update((p) => finishExam(p, final, tasks));
-                setResult({ ...final, total: Object.values(final.scores).reduce((a, b) => a + b, 0) });
+                finish();
                 window.scrollTo(0, 0);
               }}
             >
@@ -199,7 +142,7 @@ export function Klausur() {
           className="ghost"
           onClick={() => {
             if (confirm('Klausur abbrechen? Alle Antworten dieser Klausur werden verworfen.')) {
-              update((p) => ({ ...p, activeExam: undefined }));
+              abort();
               navigate('/klausur');
             }
           }}
