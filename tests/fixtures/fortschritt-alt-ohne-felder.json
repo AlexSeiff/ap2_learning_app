@@ -1,0 +1,19 @@
+{
+  "attempts": [
+    { "taskId": "01-A1", "date": "2026-08-01T10:00:00.000Z", "points": 3, "max": 6, "mode": "einzel" },
+    { "taskId": "02-B2", "points": 4, "max": 4 },
+    { "taskId": "03-C1", "date": "2026-08-02T10:00:00.000Z", "points": 0, "max": 5, "mode": "wiederholung", "notiz": "alt" }
+  ],
+  "exams": [
+    { "id": "ex-alt1", "topicId": "01", "startedAt": "2026-08-01T09:00:00.000Z", "max": 100, "total": 55, "finishedAt": "2026-08-01T10:30:00.000Z", "scores": { "01-A1": 3, "01-A2": null } }
+  ],
+  "activeExam": { "id": "ex-alt2", "topicId": "02", "startedAt": "2026-08-03T09:00:00.000Z", "max": 100, "answers": { "02-A1": "Antwort" } },
+  "cards": {
+    "01-pf1": { "box": 3, "due": "2026-08-10" },
+    "02-fg2": { "due": "2026-08-05", "reviews": 2, "last": "unsicher" }
+  },
+  "journal": {
+    "01-A1": { "addedAt": "2026-08-01", "due": "2026-08-02", "lastPoints": 3, "max": 6 }
+  },
+  "lernziele": { "01-1": true, "01-2": false }
+}

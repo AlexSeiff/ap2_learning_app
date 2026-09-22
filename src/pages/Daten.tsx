@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { emptyProgress, ProgressSchema, type Progress } from '../../shared/progress';
+import { emptyProgress, migrateProgress } from '../../shared/progress';
 import { api } from '../lib/api';
 import { downloadText } from '../lib/sheets';
 import { localDate } from '../lib/progress';
@@ -24,10 +24,11 @@ export function Daten() {
 
   const importBackup = async (file: File) => {
     try {
-      const parsed = ProgressSchema.safeParse(JSON.parse(await file.text()));
-      if (!parsed.success || parsed.data.version !== 1) throw new Error('Keine gültige Sicherungsdatei.');
+      const raw: unknown = JSON.parse(await file.text());
+      // Auch ältere Sicherungen einspielen: migrateProgress ergänzt fehlende Felder. Nur Dateien ohne Versuchsliste sind keine Sicherung.
+      if (!raw || typeof raw !== 'object' || !Array.isArray((raw as { attempts?: unknown }).attempts)) throw new Error('Keine gültige Sicherungsdatei.');
       if (!confirm('Aktuellen Fortschritt durch die Sicherung ersetzen?')) return;
-      replaceProgress(parsed.data as Progress);
+      replaceProgress(migrateProgress(raw));
       setMsg('Sicherung wiederhergestellt.');
     } catch (e) {
       setMsg(`Fehler: ${(e as Error).message}`);

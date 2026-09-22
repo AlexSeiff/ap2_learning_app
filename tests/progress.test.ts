@@ -1,7 +1,16 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { checkProgressPut, emptyProgress, isSuspiciousAttemptDrop, ProgressPutSchema, ProgressSchema, type Progress } from '../shared/progress';
+import {
+  checkProgressPut,
+  emptyProgress,
+  isSuspiciousAttemptDrop,
+  migrateProgress,
+  PROGRESS_VERSION,
+  ProgressPutSchema,
+  ProgressSchema,
+  type Progress,
+} from '../shared/progress';
 import { recordAttempt } from '../src/lib/progress';
 import type { z } from 'zod';
 
@@ -75,5 +84,72 @@ describe('checkProgressPut', () => {
     expect(isSuspiciousAttemptDrop(20, 14)).toBe(true);
     expect(isSuspiciousAttemptDrop(4, 1)).toBe(true);
     expect(isSuspiciousAttemptDrop(4, 2)).toBe(false);
+  });
+});
+
+describe('migrateProgress', () => {
+  const fixture = (name: string) => JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures', name), 'utf8'));
+
+  it('übernimmt den aktuellen Stand (Kopie von data/fortschritt.json vom 22.09.2026) ohne Verlust', () => {
+    const raw = fixture('fortschritt-v1-2026-09-22.json');
+    const migrated = migrateProgress(raw);
+    expect(migrated).toEqual(raw);
+    expect(migrated.attempts).toHaveLength(16);
+    expect(migrated.exams).toHaveLength(1);
+    expect(Object.keys(migrated.cards)).toHaveLength(8);
+    expect(Object.keys(migrated.journal)).toHaveLength(13);
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+  });
+
+  it('bringt eine alte Datei ohne version und mit fehlenden Feldern auf das aktuelle Format', () => {
+    const raw = fixture('fortschritt-alt-ohne-felder.json');
+    const migrated = migrateProgress(raw);
+    expect(migrated.version).toBe(PROGRESS_VERSION);
+    // Alle Einträge bleiben erhalten, fehlende Felder werden ergänzt, unbekannte bleiben stehen.
+    expect(migrated.attempts.map((a) => a.taskId)).toEqual(['01-A1', '02-B2', '03-C1']);
+    expect(migrated.attempts[1]).toEqual({ taskId: '02-B2', date: '', points: 4, max: 4, mode: 'einzel' });
+    expect(migrated.attempts[2]).toMatchObject({ mode: 'wiederholung', notiz: 'alt' });
+    expect(migrated.exams[0]).toEqual({ ...raw.exams[0], answers: {} });
+    expect(migrated.activeExam).toEqual({ ...raw.activeExam, scores: {} });
+    expect(migrated.cards).toEqual({
+      '01-pf1': { box: 3, due: '2026-08-10', reviews: 0 },
+      '02-fg2': { box: 1, due: '2026-08-05', reviews: 2, last: 'unsicher' },
+    });
+    expect(migrated.journal['01-A1']).toEqual({ taskId: '01-A1', addedAt: '2026-08-01', stage: 0, due: '2026-08-02', lastPoints: 3, max: 6 });
+    expect(migrated.lernziele).toEqual({ '01-1': true, '01-2': false });
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+  });
+
+  it('ist idempotent und liefert für Unbrauchbares einen leeren Stand', () => {
+    const once = migrateProgress(fixture('fortschritt-alt-ohne-felder.json'));
+    expect(migrateProgress(once)).toEqual(once);
+    for (const raw of [null, undefined, 'x', 42, []]) expect(migrateProgress(raw)).toEqual(emptyProgress());
+  });
+
+  it('verwirft nur Einträge, die sich nicht zuordnen lassen, und Felder mit falschem Typ', () => {
+    const migrated = migrateProgress({
+      version: 1,
+      attempts: [{ points: 1 }, 'x', { taskId: '01-A1', points: 1, max: 1, mode: 'einzel', date: 'd' }],
+      exams: [null, { id: 'e', topicId: '01', startedAt: 's', submittedAt: null, max: 1, answers: {}, scores: {} }],
+      cards: { a: 'kaputt', b: { box: 2, due: 'd', reviews: 1, last: 7 } },
+      lernziele: { x: 'ja', y: true },
+    });
+    expect(migrated.attempts).toHaveLength(1);
+    expect(migrated.exams).toEqual([{ id: 'e', topicId: '01', startedAt: 's', max: 1, answers: {}, scores: {} }]);
+    expect(migrated.cards).toEqual({ b: { box: 2, due: 'd', reviews: 1 } });
+    expect(migrated.lernziele).toEqual({ y: true });
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+  });
+
+  it('lädt die echte data/fortschritt.json ohne Verlust (nur lesend)', () => {
+    const file = join(import.meta.dirname, '..', 'data', 'fortschritt.json');
+    if (!existsSync(file)) return;
+    const raw = JSON.parse(readFileSync(file, 'utf8'));
+    const migrated = migrateProgress(raw);
+    expect(migrated.attempts).toEqual(raw.attempts);
+    expect(migrated.exams).toEqual(raw.exams ?? []);
+    expect(migrated.cards).toEqual(raw.cards ?? {});
+    expect(migrated.journal).toEqual(raw.journal ?? {});
+    expect(migrated.lernziele).toEqual(raw.lernziele ?? {});
   });
 });

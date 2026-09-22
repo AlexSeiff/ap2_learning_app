@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "attempts": [
+    {
+      "taskId": "01-A1",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 6,
+      "max": 6,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-A2",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 4,
+      "max": 4,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-A3",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 9,
+      "max": 9,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B1",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 5,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B2",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 5,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B3",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 4,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B4",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 6,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B5",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 4,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B6",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 7,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B7",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 7,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B8",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 12,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B9",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 8,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-B10",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 8,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-C1",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 7,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "01-C2",
+      "date": "2026-09-21T14:54:07.307Z",
+      "points": 0,
+      "max": 8,
+      "mode": "klausur"
+    },
+    {
+      "taskId": "03-C1",
+      "date": "2026-09-21T14:55:26.908Z",
+      "points": 5,
+      "max": 10,
+      "mode": "einzel"
+    }
+  ],
+  "exams": [
+    {
+      "id": "ex-mubd891s",
+      "topicId": "01",
+      "startedAt": "2026-09-21T14:53:48.112Z",
+      "answers": {
+        "01-A1": "WHERE filtert Zeilen vor der Gruppierung, HAVING filtert Gruppen nach der Aggregation."
+      },
+      "scores": {
+        "01-A1": 6,
+        "01-A2": 4,
+        "01-A3": 9,
+        "01-B1": 0,
+        "01-B2": 0,
+        "01-B3": 0,
+        "01-B4": 0,
+        "01-B5": 0,
+        "01-B6": 0,
+        "01-B7": 0,
+        "01-B8": 0,
+        "01-B9": 0,
+        "01-B10": 0,
+        "01-C1": 0,
+        "01-C2": 0
+      },
+      "max": 100,
+      "submittedAt": "2026-09-21T14:53:57.265Z",
+      "total": 19,
+      "finishedAt": "2026-09-21T14:54:07.307Z"
+    }
+  ],
+  "cards": {
+    "01-pf1": {
+      "box": 1,
+      "due": "2026-09-22",
+      "reviews": 3,
+      "last": "nicht"
+    },
+    "01-pf2": {
+      "box": 2,
+      "due": "2026-09-24",
+      "reviews": 1,
+      "last": "gewusst"
+    },
+    "01-pf4": {
+      "box": 2,
+      "due": "2026-09-24",
+      "reviews": 1,
+      "last": "gewusst"
+    },
+    "01-pf3": {
+      "box": 2,
+      "due": "2026-09-24",
+      "reviews": 1,
+      "last": "gewusst"
+    },
+    "01-fg3": {
+      "box": 1,
+      "due": "2026-09-21",
+      "reviews": 1,
+      "last": "nicht"
+    },
+    "03-pf3": {
+      "box": 1,
+      "due": "2026-09-22",
+      "reviews": 1,
+      "last": "unsicher"
+    },
+    "01-fg1": {
+      "box": 1,
+      "due": "2026-09-22",
+      "reviews": 2,
+      "last": "nicht"
+    },
+    "02-fg2": {
+      "box": 1,
+      "due": "2026-09-22",
+      "reviews": 1,
+      "last": "nicht"
+    }
+  },
+  "journal": {
+    "01-B1": {
+      "taskId": "01-B1",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 5
+    },
+    "01-B2": {
+      "taskId": "01-B2",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 5
+    },
+    "01-B3": {
+      "taskId": "01-B3",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 4
+    },
+    "01-B4": {
+      "taskId": "01-B4",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 6
+    },
+    "01-B5": {
+      "taskId": "01-B5",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 4
+    },
+    "01-B6": {
+      "taskId": "01-B6",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 7
+    },
+    "01-B7": {
+      "taskId": "01-B7",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 7
+    },
+    "01-B8": {
+      "taskId": "01-B8",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 12
+    },
+    "01-B9": {
+      "taskId": "01-B9",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 8
+    },
+    "01-B10": {
+      "taskId": "01-B10",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 8
+    },
+    "01-C1": {
+      "taskId": "01-C1",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 7
+    },
+    "01-C2": {
+      "taskId": "01-C2",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 0,
+      "max": 8
+    },
+    "03-C1": {
+      "taskId": "03-C1",
+      "addedAt": "2026-09-21",
+      "stage": 0,
+      "due": "2026-09-22",
+      "lastPoints": 5,
+      "max": 10
+    }
+  },
+  "lernziele": {}
+}

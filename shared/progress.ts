@@ -57,14 +57,110 @@ export type Progress = {
   lernziele: Record<string, boolean>;
 };
 
+/** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
+export const PROGRESS_VERSION = 1;
+
 export const emptyProgress = (): Progress => ({
-  version: 1,
+  version: PROGRESS_VERSION,
   attempts: [],
   exams: [],
   cards: {},
   journal: {},
   lernziele: {},
 });
+
+type Raw = Record<string, unknown>;
+
+const isObject = (v: unknown): v is Raw => typeof v === 'object' && v !== null && !Array.isArray(v);
+const str = (v: unknown, fallback = '') => (typeof v === 'string' ? v : fallback);
+const num = (v: unknown, fallback = 0) => (typeof v === 'number' ? v : fallback);
+/** Optionales Feld nur übernehmen, wenn es den richtigen Typ hat – sonst weglassen statt das Speichern zu blockieren. */
+const opt = (key: string, value: unknown, ok: boolean) => (ok ? { [key]: value } : {});
+
+/** Wendet `map` auf jeden Eintrag eines Objekts an und verwirft Einträge, für die es undefined liefert. */
+function filterRecord<T>(v: unknown, map: (value: unknown, key: string) => T | undefined): Record<string, T> {
+  if (!isObject(v)) return {};
+  const out: Record<string, T> = {};
+  for (const [key, value] of Object.entries(v)) {
+    const mapped = map(value, key);
+    if (mapped !== undefined) out[key] = mapped;
+  }
+  return out;
+}
+
+function migrateAttempt(v: unknown): Attempt | undefined {
+  if (!isObject(v) || typeof v.taskId !== 'string') return undefined;
+  return { ...v, taskId: v.taskId, date: str(v.date), points: num(v.points), max: num(v.max), mode: str(v.mode, 'einzel') as Mode };
+}
+
+function migrateExam(v: unknown, index: number | string): ExamRun | undefined {
+  if (!isObject(v)) return undefined;
+  const { submittedAt, finishedAt, total, ...rest } = v;
+  return {
+    ...rest,
+    ...opt('submittedAt', submittedAt, typeof submittedAt === 'string'),
+    ...opt('finishedAt', finishedAt, typeof finishedAt === 'string'),
+    ...opt('total', total, typeof total === 'number' || total === null),
+    id: str(v.id, `ex-migriert-${index}`),
+    topicId: str(v.topicId),
+    startedAt: str(v.startedAt),
+    answers: filterRecord(v.answers, (a) => (typeof a === 'string' ? a : undefined)),
+    // null (aus NaN) bleibt erhalten, damit sich an bewerteten Aufgaben nichts ändert.
+    scores: filterRecord(v.scores, (s) => (typeof s === 'number' || s === null ? (s as number) : undefined)),
+    max: num(v.max),
+  };
+}
+
+function migrateCard(v: unknown): CardState | undefined {
+  if (!isObject(v)) return undefined;
+  const { last, ...rest } = v;
+  return { ...rest, ...opt('last', last, typeof last === 'string'), box: num(v.box, 1), due: str(v.due), reviews: num(v.reviews) };
+}
+
+function migrateJournalEntry(v: unknown, taskId: string): JournalEntry | undefined {
+  if (!isObject(v)) return undefined;
+  const { resolvedAt, ...rest } = v;
+  return {
+    ...rest,
+    ...opt('resolvedAt', resolvedAt, typeof resolvedAt === 'string'),
+    taskId: str(v.taskId, taskId),
+    addedAt: str(v.addedAt),
+    stage: num(v.stage),
+    due: str(v.due),
+    lastPoints: num(v.lastPoints),
+    max: num(v.max),
+  };
+}
+
+/**
+ * Schritte von Version n auf n+1, angewendet auf die rohen Daten vor dem Auffüllen.
+ * Version 1 ist das erste Format (Dateien ohne `version` gelten als Version 1).
+ */
+const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {};
+
+/**
+ * Bringt gespeicherten Fortschritt beliebigen Alters auf das aktuelle Format.
+ * Fehlende Sammlungen und Felder werden mit neutralen Werten ergänzt, unbekannte Felder bleiben erhalten.
+ * Verworfen wird nur, was sich keinem Eintrag zuordnen lässt (z. B. ein Versuch ohne taskId).
+ */
+export function migrateProgress(raw: unknown): Progress {
+  if (!isObject(raw)) return emptyProgress();
+  let data: Raw = raw;
+  for (let v = num(data.version, 1); v < PROGRESS_VERSION; v++) data = MIGRATIONS[v]?.(data) ?? data;
+
+  const { activeExam, ...rest } = data;
+  const exam = migrateExam(activeExam, 'aktiv');
+  return {
+    ...rest,
+    version: PROGRESS_VERSION,
+    attempts: Array.isArray(data.attempts) ? data.attempts.map(migrateAttempt).filter((a) => a !== undefined) : [],
+    exams: Array.isArray(data.exams) ? data.exams.map(migrateExam).filter((e) => e !== undefined) : [],
+    ...(exam ? { activeExam: exam } : {}),
+    cards: filterRecord(data.cards, migrateCard),
+    journal: filterRecord(data.journal, migrateJournalEntry),
+    lernziele: filterRecord(data.lernziele, (v) => (typeof v === 'boolean' ? v : undefined)),
+  };
+}
 
 export const AttemptSchema = z.looseObject({
   taskId: z.string(),

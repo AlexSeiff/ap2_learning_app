@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Content } from '../../shared/types';
 import { api } from './api';
-import { emptyProgress, type Progress } from '../../shared/progress';
+import { emptyProgress, migrateProgress, type Progress } from '../../shared/progress';
 
 interface Store {
   content: Content;
@@ -22,12 +22,6 @@ export function useStore(): Store {
   const s = useContext(StoreContext);
   if (!s) throw new Error('useStore außerhalb des StoreProvider');
   return s;
-}
-
-function normalizeProgress(raw: unknown): Progress {
-  const base = emptyProgress();
-  if (!raw || typeof raw !== 'object') return base;
-  return { ...base, ...(raw as Partial<Progress>), version: 1 };
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
@@ -51,7 +45,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     Promise.all([api.content(), api.progress(), api.aiStatus()])
       .then(([c, p, s]) => {
         setContent(c);
-        setProgress(normalizeProgress(p));
+        setProgress(migrateProgress(p));
         setAi(s);
       })
       .catch((e: Error) => setError(e.message));
@@ -102,7 +96,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const replaceProgress = useCallback(
     (p: Progress) => {
-      const next = normalizeProgress(p);
+      const next = migrateProgress(p);
       setProgress(next);
       persist(next, true);
     },
