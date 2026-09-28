@@ -12,9 +12,13 @@ export const SOURCE_DIR = resolve(process.env.LERN_QUELLE ?? join(import.meta.di
  */
 export const CONTENT_DIR = resolve(import.meta.dirname, '..', 'content');
 
-/** Dateiname eines Lernblatts (*.md außer Prompt_*) oder einer Lernkarten-JSON? */
+/** Dateiname eines Lernblatts (*.md außer Prompt_*), einer Lernkarten-JSON oder der SQL-Übungen-JSON? */
 export function isContentFile(name: string): boolean {
-  return (name.toLowerCase().endsWith('.md') && !name.startsWith('Prompt_')) || /Lernkarten.*\.json$/i.test(name);
+  return (
+    (name.toLowerCase().endsWith('.md') && !name.startsWith('Prompt_')) ||
+    /Lernkarten.*\.json$/i.test(name) ||
+    /SQL_Uebungen.*\.json$/i.test(name)
+  );
 }
 
 /** Liegt `file` direkt im Quellordner und wird von loadContent() gelesen? (Für den Datei-Watcher.) */

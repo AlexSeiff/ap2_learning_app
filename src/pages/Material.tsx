@@ -13,7 +13,7 @@ export function Material() {
         <p className="crumbs">
           <Link to="/material">Material</Link> / {doc.file}
         </p>
-        <Markdown>{doc.markdown}</Markdown>
+        <Markdown source={doc.file}>{doc.markdown}</Markdown>
       </div>
     );
   }

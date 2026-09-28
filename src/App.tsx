@@ -1,8 +1,9 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { isDue } from './lib/progress';
+import { sqlSummary } from './lib/sql';
 import { useStore } from './lib/store';
 import { Aufgabe } from './pages/Aufgabe';
 import { Aufgaben } from './pages/Aufgaben';
@@ -15,6 +16,11 @@ import { Karteikarten } from './pages/Karteikarten';
 import { Klausur, KlausurAuswahl } from './pages/Klausur';
 import { Material } from './pages/Material';
 import { Thema, Themen } from './pages/Themen';
+
+// SQL-Seiten lazy: sql.js (WASM) und CodeMirror landen so nicht im Hauptbundle.
+const SqlFrei = lazy(() => import('./pages/SqlFrei').then((m) => ({ default: m.SqlFrei })));
+const SqlUebungen = lazy(() => import('./pages/SqlUebungen').then((m) => ({ default: m.SqlUebungen })));
+const SqlUebung = lazy(() => import('./pages/SqlUebung').then((m) => ({ default: m.SqlUebung })));
 
 function useTheme() {
   const [theme, setTheme] = useState<string>(() => {
@@ -39,9 +45,13 @@ function useTheme() {
 }
 
 function Nav() {
-  const { progress, saveState } = useStore();
+  const { content, progress, saveState } = useStore();
   const theme = useTheme();
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
+  const dueSql = sqlSummary(
+    progress,
+    content.sqlExercises.map((e) => e.id),
+  ).due;
   const link = (to: string, label: string, badge?: number) => (
     <NavLink to={to} end={to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
       {label}
@@ -56,6 +66,7 @@ function Nav() {
       {link('/karteikarten', 'Karteikarten')}
       {link('/klausur', 'Übungsklausur')}
       {link('/aufgaben', 'Einzelaufgaben')}
+      {link('/sql', '🧮 SQL-Editor', dueSql)}
       {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
       {link('/generator', 'KI-Aufgaben')}
       {link('/material', 'Material')}
@@ -117,29 +128,34 @@ export function App() {
               <main>
                 <SaveErrorBanner />
                 <PageErrorBoundary>
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/lernen" element={<Themen />} />
-                    <Route path="/lernen/:topicId" element={<Thema />} />
-                    <Route path="/karteikarten" element={<Karteikarten />} />
-                    <Route path="/klausur" element={<KlausurAuswahl />} />
-                    <Route path="/klausur/:topicId" element={<Klausur />} />
-                    <Route path="/aufgaben" element={<Aufgaben />} />
-                    <Route path="/aufgabe/:taskId" element={<Aufgabe />} />
-                    <Route path="/fehlerjournal" element={<Fehlerjournal />} />
-                    <Route path="/generator" element={<Generator />} />
-                    <Route path="/material" element={<Material />} />
-                    <Route path="/material/:docId" element={<Material />} />
-                    <Route path="/daten" element={<Daten />} />
-                    <Route
-                      path="*"
-                      element={
-                        <div className="page">
-                          <h1>Seite nicht gefunden</h1>
-                        </div>
-                      }
-                    />
-                  </Routes>
+                  <Suspense fallback={<div className="page loading">Lade SQL-Editor …</div>}>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/lernen" element={<Themen />} />
+                      <Route path="/lernen/:topicId" element={<Thema />} />
+                      <Route path="/karteikarten" element={<Karteikarten />} />
+                      <Route path="/klausur" element={<KlausurAuswahl />} />
+                      <Route path="/klausur/:topicId" element={<Klausur />} />
+                      <Route path="/aufgaben" element={<Aufgaben />} />
+                      <Route path="/aufgabe/:taskId" element={<Aufgabe />} />
+                      <Route path="/sql" element={<SqlFrei />} />
+                      <Route path="/sql/uebungen" element={<SqlUebungen />} />
+                      <Route path="/sql/uebung/:id" element={<SqlUebung />} />
+                      <Route path="/fehlerjournal" element={<Fehlerjournal />} />
+                      <Route path="/generator" element={<Generator />} />
+                      <Route path="/material" element={<Material />} />
+                      <Route path="/material/:docId" element={<Material />} />
+                      <Route path="/daten" element={<Daten />} />
+                      <Route
+                        path="*"
+                        element={
+                          <div className="page">
+                            <h1>Seite nicht gefunden</h1>
+                          </div>
+                        }
+                      />
+                    </Routes>
+                  </Suspense>
                 </PageErrorBoundary>
               </main>
             </div>

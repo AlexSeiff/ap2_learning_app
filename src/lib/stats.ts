@@ -72,7 +72,7 @@ export function toLocalDay(value: string | undefined): string | undefined {
 
 /**
  * Alle Tage (lokales Datum), an denen gelernt wurde: Aufgabenversuche (auch aus Klausuren und dem Fehlerjournal),
- * Klausuren (gestartet, abgegeben, abgeschlossen) und bewertete Karteikarten. Lernziele abhaken zählt nicht – dafür gibt es kein Datum.
+ * Klausuren (gestartet, abgegeben, abgeschlossen), bewertete Karteikarten und geprüfte SQL-Übungen. Lernziele abhaken zählt nicht – dafür gibt es kein Datum.
  */
 export function activityDays(progress: Progress): Set<string> {
   const days = new Set<string>();
@@ -87,6 +87,7 @@ export function activityDays(progress: Progress): Set<string> {
     add(e.finishedAt);
   }
   for (const [day, count] of Object.entries(progress.cardReviewDays)) if (count > 0) add(day);
+  for (const [day, count] of Object.entries(progress.sqlDays)) if (count > 0) add(day);
   return days;
 }
 

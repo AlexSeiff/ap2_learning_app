@@ -95,7 +95,7 @@ export function Klausur() {
         <p className="lead">
           Deep Dive {topic.number}: {topic.title}
         </p>
-        {exam.intro && <Markdown>{exam.intro}</Markdown>}
+        {exam.intro && <Markdown source={false}>{exam.intro}</Markdown>}
         <ul className="plain">
           {exam.blocks.map((b) => (
             <li key={b.letter}>
@@ -247,7 +247,7 @@ export function Klausur() {
           <h2>
             Block {b.letter} – {b.title} <span className="muted">({formatPoints(b.points)} P)</span>
           </h2>
-          {b.intro && <Markdown>{b.intro}</Markdown>}
+          {b.intro && <Markdown source={false}>{b.intro}</Markdown>}
           {b.taskIds.map((id) => {
             const task = content.tasks[id];
             if (!task) return null;

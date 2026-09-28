@@ -126,8 +126,9 @@ describe('migrateProgress', () => {
   it('übernimmt den aktuellen Stand (Kopie von data/fortschritt.json vom 22.09.2026) ohne Verlust', () => {
     const raw = fixture('fortschritt-v1-2026-09-22.json');
     const migrated = migrateProgress(raw);
-    // Einzige Änderungen: aktuelle Version, Revisionszähler 0 (Version 2) und leere Karteikarten-Lerntage (Version 3).
-    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, revision: 0, cardReviewDays: {} });
+    // Einzige Änderungen: aktuelle Version, Revisionszähler 0 (Version 2), leere Karteikarten-Lerntage (Version 3)
+    // und leere SQL-Übungen (Version 4).
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, revision: 0, cardReviewDays: {}, sql: {}, sqlDays: {} });
     expect(migrated.attempts).toHaveLength(16);
     expect(migrated.exams).toHaveLength(1);
     expect(Object.keys(migrated.cards)).toHaveLength(8);
@@ -159,6 +160,41 @@ describe('migrateProgress', () => {
     });
     expect(migrated.lernziele).toEqual({ '01-1': true, '01-2': false });
     expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+  });
+
+  it('Version 3 → 4: ergänzt leere SQL-Übungen und SQL-Lerntage, sonst bleibt alles gleich', () => {
+    const raw = fixture('fortschritt-v3-2026-09-28.json');
+    const migrated = migrateProgress(raw);
+    expect(PROGRESS_VERSION).toBe(4);
+    expect(migrated).toEqual({ ...raw, version: 4, sql: {}, sqlDays: {} });
+    expect(migrated.revision).toBe(7);
+    expect(migrated.cardReviewDays).toEqual({ '2026-09-26': 4, '2026-09-27': 2 });
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+  });
+
+  it('übernimmt SQL-Stände tolerant: falsche Typen fallen weg, unbekannte Felder bleiben', () => {
+    const migrated = migrateProgress({
+      version: 4,
+      attempts: [],
+      sql: {
+        'SQL-MH-001': { attempts: 2, hintsUsed: 1, solvedAt: '2026-09-27', lastQuery: 'SELECT 1', stage: 2, due: '2026-09-30', extra: 'x' },
+        'SQL-MH-002': { solutionShown: 'ja', stage: '1', due: 5 },
+        kaputt: 'nein',
+      },
+      sqlDays: { '2026-09-27': 3, '2026-09-28': -1, x: 'y' },
+    });
+    expect(migrated.sql).toEqual({
+      'SQL-MH-001': { attempts: 2, hintsUsed: 1, solvedAt: '2026-09-27', lastQuery: 'SELECT 1', stage: 2, due: '2026-09-30', extra: 'x' },
+      'SQL-MH-002': { attempts: 0, hintsUsed: 0 },
+    });
+    expect(migrated.sqlDays).toEqual({ '2026-09-27': 3 });
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+    expect(migrateProgress(migrated)).toEqual(migrated);
+  });
+
+  it('Schema: sql und sqlDays sind optional (ältere Dateien) und werden geprüft', () => {
+    expect(ProgressSchema.parse({ version: 3, attempts: [] })).toMatchObject({ sql: {}, sqlDays: {} });
+    expect(ProgressSchema.safeParse({ version: 4, attempts: [], sql: { a: { attempts: 'x', hintsUsed: 0 } } }).success).toBe(false);
   });
 
   it('ist idempotent und liefert für Unbrauchbares einen leeren Stand', () => {

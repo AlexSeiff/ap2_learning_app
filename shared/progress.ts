@@ -47,6 +47,22 @@ export type JournalEntry = {
   resolvedAt?: string;
 };
 
+/** Stand einer SQL-Übung (seit Version 4). */
+export type SqlState = {
+  /** Gezählte „Prüfen“-Klicks. */
+  attempts: number;
+  /** Erste richtige Prüfung, ohne vorher die Lösung angesehen zu haben. */
+  solvedAt?: string;
+  lastCheckedAt?: string;
+  hintsUsed: number;
+  solutionShown?: boolean;
+  /** Wird beim erneuten Öffnen der Übung wiederhergestellt (max. 4.000 Zeichen). */
+  lastQuery?: string;
+  /** Wiederholungsstufe wie im Fehlerjournal: 1 → nach 1 Tag, 2 → nach 3 Tagen, 3 → nach 7 Tagen. */
+  stage?: number;
+  due?: string;
+};
+
 export type Progress = {
   version: typeof PROGRESS_VERSION;
   /**
@@ -66,10 +82,14 @@ export type Progress = {
    * (seit Version 3, ältere Dateien: leer).
    */
   cardReviewDays: Record<string, number>;
+  /** Stand der SQL-Übungen je Übungs-ID (seit Version 4, ältere Dateien: leer). */
+  sql: Record<string, SqlState>;
+  /** Anzahl geprüfter SQL-Übungen je lokalem Datum (YYYY-MM-DD), für die Lernserie (seit Version 4, ältere Dateien: leer). */
+  sqlDays: Record<string, number>;
 };
 
 /** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
-export const PROGRESS_VERSION = 3;
+export const PROGRESS_VERSION = 4;
 
 export const emptyProgress = (): Progress => ({
   version: PROGRESS_VERSION,
@@ -80,6 +100,8 @@ export const emptyProgress = (): Progress => ({
   journal: {},
   lernziele: {},
   cardReviewDays: {},
+  sql: {},
+  sqlDays: {},
 });
 
 type Raw = Record<string, unknown>;
@@ -145,6 +167,25 @@ function migrateJournalEntry(v: unknown, taskId: string): JournalEntry | undefin
   };
 }
 
+function migrateSqlState(v: unknown): SqlState | undefined {
+  if (!isObject(v)) return undefined;
+  const { solvedAt, lastCheckedAt, solutionShown, lastQuery, stage, due, ...rest } = v;
+  return {
+    ...rest,
+    ...opt('solvedAt', solvedAt, typeof solvedAt === 'string'),
+    ...opt('lastCheckedAt', lastCheckedAt, typeof lastCheckedAt === 'string'),
+    ...opt('solutionShown', solutionShown, typeof solutionShown === 'boolean'),
+    ...opt('lastQuery', lastQuery, typeof lastQuery === 'string'),
+    ...opt('stage', stage, typeof stage === 'number'),
+    ...opt('due', due, typeof due === 'string'),
+    attempts: num(v.attempts),
+    hintsUsed: num(v.hintsUsed),
+  };
+}
+
+/** Zähler je Tag: nur nicht-negative Zahlen übernehmen. */
+const dayCount = (v: unknown) => (typeof v === 'number' && v >= 0 ? v : undefined);
+
 /**
  * Schritte von Version n auf n+1, angewendet auf die rohen Daten vor dem Auffüllen.
  * Version 1 ist das erste Format (Dateien ohne `version` gelten als Version 1).
@@ -154,6 +195,8 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   1: (raw) => ({ ...raw, version: 2, revision: num(raw.revision) }),
   // 2 → 3: Karteikarten-Lerntage (cardReviewDays) für die Lernserie; startet leer, aufgefüllt wird unten in migrateProgress.
   2: (raw) => ({ ...raw, version: 3 }),
+  // 3 → 4: SQL-Übungen (sql) und ihre Lerntage (sqlDays); starten leer, aufgefüllt wird unten in migrateProgress.
+  3: (raw) => ({ ...raw, version: 4 }),
 };
 
 /**
@@ -178,7 +221,9 @@ export function migrateProgress(raw: unknown): Progress {
     cards: filterRecord(data.cards, migrateCard),
     journal: filterRecord(data.journal, migrateJournalEntry),
     lernziele: filterRecord(data.lernziele, (v) => (typeof v === 'boolean' ? v : undefined)),
-    cardReviewDays: filterRecord(data.cardReviewDays, (v) => (typeof v === 'number' && v >= 0 ? v : undefined)),
+    cardReviewDays: filterRecord(data.cardReviewDays, dayCount),
+    sql: filterRecord(data.sql, migrateSqlState),
+    sqlDays: filterRecord(data.sqlDays, dayCount),
   };
 }
 
@@ -220,6 +265,17 @@ export const JournalEntrySchema = z.looseObject({
   resolvedAt: z.string().optional(),
 });
 
+export const SqlStateSchema = z.looseObject({
+  attempts: z.number(),
+  solvedAt: z.string().optional(),
+  lastCheckedAt: z.string().optional(),
+  hintsUsed: z.number(),
+  solutionShown: z.boolean().optional(),
+  lastQuery: z.string().optional(),
+  stage: z.number().optional(),
+  due: z.string().optional(),
+});
+
 export const ProgressSchema = z.looseObject({
   version: z.number().int().min(1),
   // Optional, damit Dateien von vor Version 2 gültig bleiben (fehlend = 0).
@@ -231,6 +287,8 @@ export const ProgressSchema = z.looseObject({
   journal: z.record(z.string(), JournalEntrySchema).default({}),
   lernziele: z.record(z.string(), z.boolean()).default({}),
   cardReviewDays: z.record(z.string(), z.number()).default({}),
+  sql: z.record(z.string(), SqlStateSchema).default({}),
+  sqlDays: z.record(z.string(), z.number()).default({}),
 });
 
 export type ProgressData = z.infer<typeof ProgressSchema>;

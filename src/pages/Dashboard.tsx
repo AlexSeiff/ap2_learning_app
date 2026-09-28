@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { isDue } from '../lib/progress';
+import { sqlSummary } from '../lib/sql';
 import { daysUntilExam, examTrends, isoWeek, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
 
@@ -20,6 +21,10 @@ export function Dashboard() {
     const s = progress.cards[c.id];
     return !s || isDue(s.due);
   }).length;
+  const sql = sqlSummary(
+    progress,
+    content.sqlExercises.map((e) => e.id),
+  );
   const finished = progress.exams.filter((e) => e.total !== undefined);
   const avgExam = finished.length ? finished.reduce((s, e) => s + (e.total! / e.max) * 100, 0) / finished.length : undefined;
   const weakest = stats
@@ -43,11 +48,22 @@ export function Dashboard() {
           <span className="kpi-value">{dueCards}</span>
           <span className="kpi-label">Karteikarten fällig</span>
         </Link>
+        {sql.total > 0 && (
+          <Link to="/sql/uebungen" className="kpi">
+            <span className="kpi-value">
+              {sql.solved}/{sql.total}
+            </span>
+            <span className="kpi-label">
+              SQL-Übungen gelöst
+              {sql.due > 0 && ` · ${sql.due} ${sql.due === 1 ? 'Wiederholung' : 'Wiederholungen'} fällig`}
+            </span>
+          </Link>
+        )}
         <div className="kpi">
           <span className="kpi-value">{avgExam === undefined ? '–' : `${Math.round(avgExam)} %`}</span>
           <span className="kpi-label">Ø Übungsklausuren{avgExam !== undefined && ` · Note ${ihkGrade(avgExam).note}`}</span>
         </div>
-        <div className="kpi" title="Tage in Folge mit Aufgaben, Klausuren oder Karteikarten">
+        <div className="kpi" title="Tage in Folge mit Aufgaben, Klausuren, Karteikarten oder SQL-Übungen">
           <span className="kpi-value">
             {streak.current > 0 ? '🔥 ' : ''}
             {streak.current} {streak.current === 1 ? 'Tag' : 'Tage'}

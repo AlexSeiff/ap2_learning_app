@@ -17,6 +17,8 @@ function content(): Content {
     cardHints: [],
     materials: [],
     weeks: [],
+    sqlDatasets: [],
+    sqlExercises: [],
     issues: [],
   };
 }
@@ -68,6 +70,7 @@ describe('isContentSource', () => {
   it('isContentFile entspricht dem Filter von loadContent()', () => {
     expect(isContentFile('Lernblatt.MD')).toBe(true);
     expect(isContentFile('lernkarten-extra.json')).toBe(true);
+    expect(isContentFile('AP2_SQL_Uebungen.json')).toBe(true);
     expect(isContentFile('bild.png')).toBe(false);
   });
 });

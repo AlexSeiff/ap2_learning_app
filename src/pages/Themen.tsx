@@ -88,7 +88,7 @@ export function Thema() {
         {topic.sections.map((s) => (
           <section key={s.id} id={s.id} className="theory">
             {s.level <= 1 ? <h2 className="part">{s.title}</h2> : s.level === 2 ? <h2>{s.title}</h2> : <h3>{s.title}</h3>}
-            <Markdown>{s.markdown}</Markdown>
+            <Markdown source={topic.file}>{s.markdown}</Markdown>
           </section>
         ))}
         {!!topic.lernziele.length && (

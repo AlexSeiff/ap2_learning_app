@@ -82,20 +82,20 @@ export function Druck() {
         sheet.attachments.map((a) => (
           <section key={a.id} className="sheet-attachment">
             <h2>{a.title}</h2>
-            <Markdown>{a.markdown}</Markdown>
+            <Markdown source={false}>{a.markdown}</Markdown>
           </section>
         ))}
 
       {sheet.groups.map((g, gi) => (
         <section key={gi} className="sheet-group">
           {g.heading && <h2>{g.heading}</h2>}
-          {kind === 'aufgaben' && g.intro && <Markdown>{g.intro}</Markdown>}
+          {kind === 'aufgaben' && g.intro && <Markdown source={false}>{g.intro}</Markdown>}
           {g.tasks.map((t) => {
             const rights = t.auto?.pairs && shuffledOrder(t.auto.pairs.length, t.id).map((j) => t.auto!.pairs![j].right);
             return (
               <div key={t.id} className="sheet-task">
                 <h3>{taskLabel(t)}</h3>
-                <Markdown>{kind === 'aufgaben' ? taskMarkdown(t, rights) : solutionMarkdown(t)}</Markdown>
+                <Markdown source={false}>{kind === 'aufgaben' ? taskMarkdown(t, rights) : solutionMarkdown(t)}</Markdown>
                 {kind === 'aufgaben' && t.type === 'offen' && (
                   <div className="write-space" style={{ height: `${Math.min(22, 3 + t.points * 1.1)}em` }} />
                 )}

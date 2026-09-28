@@ -19,7 +19,7 @@ export function TaskText({ task, showMeta }: { task: Task; showMeta?: boolean })
         {showMeta && <span className={`badge diff-${difficulty(task.points)}`}>{difficulty(task.points)}</span>}
         {task.generated && <span className="badge ai">KI</span>}
       </div>
-      <Markdown>{task.type === 'lueckentext' ? numberBlanks(task.markdown) : task.markdown}</Markdown>
+      <Markdown source={false}>{task.type === 'lueckentext' ? numberBlanks(task.markdown) : task.markdown}</Markdown>
     </div>
   );
 }
@@ -31,7 +31,7 @@ export function Attachments({ items, open }: { items: Section[]; open?: boolean 
       {items.map((a) => (
         <details key={a.id} open={open}>
           <summary>📎 {a.title}</summary>
-          <Markdown>{a.markdown}</Markdown>
+          <Markdown source={false}>{a.markdown}</Markdown>
         </details>
       ))}
     </div>
@@ -85,7 +85,9 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
     <div className="grade-panel">
       <div className="solution">
         <h4>Musterlösung</h4>
-        <Markdown>{solutionMarkdown({ ...task, solution: task.solution && { ...task.solution, kommentar: undefined } })}</Markdown>
+        <Markdown source={task.topicId}>
+          {solutionMarkdown({ ...task, solution: task.solution && { ...task.solution, kommentar: undefined } })}
+        </Markdown>
         {task.solution?.kommentar && (
           <div className="kommentar">
             <b>Prüferkommentar:</b> {task.solution.kommentar}

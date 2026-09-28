@@ -18,6 +18,16 @@ for (const d of c.decks) {
     `  ${d.id.padEnd(5)} ${d.title.padEnd(48)} ${String(d.cardCount).padStart(3)} Karten → ${d.topicId ? `Deep Dive ${d.topicId}` : 'kein Deep Dive'}`,
   );
 }
+console.log(`\nSQL-Übungen: ${c.sqlExercises.length} in ${c.sqlDatasets.length} Datensätzen`);
+for (const d of c.sqlDatasets) {
+  const n = c.sqlExercises.filter((u) => u.datensatz === d.id).length;
+  console.log(
+    `  ${d.id.padEnd(14)} ${d.titel.padEnd(40)} ${String(n).padStart(3)} Übungen${d.variante ? ' · mit Variante' : ''} → ${d.topicId ? `Deep Dive ${d.topicId}` : 'kein Deep Dive'}`,
+  );
+}
+const byTopic = new Map<string, number>();
+for (const u of c.sqlExercises) byTopic.set(u.topicId ?? '–', (byTopic.get(u.topicId ?? '–') ?? 0) + 1);
+if (byTopic.size) console.log(`  je Deep Dive: ${[...byTopic].map(([t, n]) => `${t}: ${n}`).join(', ')}`);
 console.log(`\nMaterialien: ${c.materials.map((m) => m.title).join(', ')}`);
 console.log(`Lernplan-Wochen: ${c.weeks.length}`);
 console.log(`\nHinweise (${c.issues.length}):`);

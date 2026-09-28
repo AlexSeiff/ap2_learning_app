@@ -1,0 +1,1604 @@
+{
+  "meta": {
+    "version": "1.0",
+    "hinweise": [
+      "SQLite-Dialekt – siehe Dialekt-Hinweise im Editor.",
+      "Die Möbelhaus-Tabellen entsprechen genau dem Blatt aus Deep Dive 1.",
+      "Geprüft wird das Ergebnis deiner Abfrage, nicht ihr Text."
+    ]
+  },
+  "datensaetze": [
+    {
+      "id": "moebelhaus",
+      "titel": "Möbelhaus Nordholz GmbH",
+      "quelle": "Deep Dive 1",
+      "beschreibung": "Übungsdatenbank aus Deep Dive 1: kunde 1:n bestellung 1:n bestellposition n:1 produkt. Genau die Tabellen vom Blatt.",
+      "setup": "PRAGMA foreign_keys = ON;\nCREATE TABLE kunde (\n  kunden_id      INTEGER PRIMARY KEY,\n  name           VARCHAR(100) NOT NULL,\n  ort            VARCHAR(50),\n  registriert_am DATE\n);\nCREATE TABLE produkt (\n  produkt_id  INTEGER PRIMARY KEY,\n  bezeichnung VARCHAR(100) NOT NULL,\n  kategorie   VARCHAR(50),\n  preis       DECIMAL(8,2) CHECK (preis >= 0)\n);\nCREATE TABLE bestellung (\n  bestell_id   INTEGER PRIMARY KEY,\n  kunden_id    INTEGER NOT NULL,\n  bestelldatum DATE,\n  FOREIGN KEY (kunden_id) REFERENCES kunde(kunden_id)\n);\nCREATE TABLE bestellposition (\n  bestell_id INTEGER NOT NULL,\n  produkt_id INTEGER NOT NULL,\n  menge      INTEGER NOT NULL CHECK (menge > 0),\n  PRIMARY KEY (bestell_id, produkt_id),\n  FOREIGN KEY (bestell_id) REFERENCES bestellung(bestell_id),\n  FOREIGN KEY (produkt_id) REFERENCES produkt(produkt_id)\n);\nINSERT INTO kunde (kunden_id, name, ort, registriert_am) VALUES\n  (1, 'Huber GmbH', 'München', '2023-04-12'),\n  (2, 'Schmidt AG', 'Hamburg', '2024-01-30'),\n  (3, 'Fischer KG', 'München', '2022-09-05'),\n  (4, 'Weber e.K.', 'Köln', '2025-06-18'),\n  (5, 'Braun GmbH', 'Hamburg', '2024-11-02');\nINSERT INTO produkt (produkt_id, bezeichnung, kategorie, preis) VALUES\n  (10, 'Bürostuhl Comfort', 'Möbel', 249.00),\n  (11, 'Schreibtisch Basic', 'Möbel', 399.00),\n  (12, 'Monitor 27 Zoll', 'Elektronik', 189.00),\n  (13, 'Dockingstation', 'Elektronik', 129.00),\n  (14, 'Schreibtischlampe', 'Zubehör', 39.90);\nINSERT INTO bestellung (bestell_id, kunden_id, bestelldatum) VALUES\n  (100, 1, '2026-01-15'),\n  (101, 3, '2026-02-03'),\n  (102, 1, '2026-02-20'),\n  (103, 2, '2026-03-11'),\n  (104, 3, '2026-04-27'),\n  (105, 1, '2026-05-30');\nINSERT INTO bestellposition (bestell_id, produkt_id, menge) VALUES\n  (100, 10, 2),\n  (100, 12, 2),\n  (101, 11, 1),\n  (101, 14, 3),\n  (102, 13, 4),\n  (103, 12, 5),\n  (104, 10, 1),\n  (105, 14, 2);",
+      "variante": "INSERT INTO kunde (kunden_id, name, ort, registriert_am) VALUES (7, 'Lorenz GmbH', 'München', '2025-09-01');\nINSERT INTO produkt (produkt_id, bezeichnung, kategorie, preis) VALUES (16, 'Rollcontainer', 'Möbel', 179.00);\nINSERT INTO bestellung (bestell_id, kunden_id, bestelldatum) VALUES (107, 4, '2026-06-10');\nINSERT INTO bestellposition (bestell_id, produkt_id, menge) VALUES (107, 16, 2), (107, 13, 1);\nUPDATE produkt SET preis = 44.90 WHERE produkt_id = 14;"
+    },
+    {
+      "id": "datafit",
+      "titel": "DataFit GmbH (Zusatzmaterial)",
+      "quelle": "Deep_Dive_SQL_KW28_29",
+      "beschreibung": "Sportartikel-Shop aus dem älteren SQL-Lernzettel (Übungsskript Abschnitt 8). Kundin 3 hat keine E-Mail, Kunde 4 keine Bestellung. Umsatz immer über menge * einzelpreis.",
+      "setup": "PRAGMA foreign_keys = ON;\nCREATE TABLE kunde (\n  kunden_id INTEGER PRIMARY KEY,\n  vorname VARCHAR(50), nachname VARCHAR(50) NOT NULL,\n  email VARCHAR(100), ort VARCHAR(50), registriert_am DATE);\n\nCREATE TABLE produkt (\n  produkt_id INTEGER PRIMARY KEY,\n  bezeichnung VARCHAR(100), kategorie VARCHAR(50),\n  preis DECIMAL(8,2), lagerbestand INTEGER);\n\nCREATE TABLE bestellung (\n  bestell_id INTEGER PRIMARY KEY,\n  kunden_id INTEGER REFERENCES kunde(kunden_id),\n  bestelldatum DATE, status VARCHAR(20));\n\nCREATE TABLE bestellposition (\n  position_id INTEGER PRIMARY KEY,\n  bestell_id INTEGER REFERENCES bestellung(bestell_id),\n  produkt_id INTEGER REFERENCES produkt(produkt_id),\n  menge INTEGER, einzelpreis DECIMAL(8,2));\n\nINSERT INTO kunde VALUES\n (1,'Anna','Schmidt','anna.schmidt@mail.de','Köln','2024-03-12'),\n (2,'Ben','Weber','b.weber@web.de','Hamburg','2024-07-01'),\n (3,'Clara','Fischer',NULL,'Köln','2025-01-20'),\n (4,'David','Meyer','d.meyer@gmx.de','München','2025-06-15'),\n (5,'Emre','Yilmaz','e.yilmaz@mail.de','Hamburg','2026-02-03');\n\nINSERT INTO produkt VALUES\n (10,'Laufschuh Speed','Schuhe',89.99,120),\n (11,'Yogamatte Pro','Fitness',34.90,200),\n (12,'Hantelset 20kg','Fitness',59.00,35),\n (13,'Trinkflasche 1L','Zubehör',12.50,540),\n (14,'Laufjacke Wind','Bekleidung',74.95,0);\n\nINSERT INTO bestellung VALUES\n (100,1,'2026-05-02','geliefert'),(101,2,'2026-05-10','geliefert'),\n (102,1,'2026-06-01','storniert'),(103,3,'2026-06-05','geliefert'),\n (104,1,'2026-06-20','offen'),(105,5,'2026-07-01','offen');\n\nINSERT INTO bestellposition VALUES\n (1000,100,10,1,89.99),(1001,100,13,2,12.50),\n (1002,101,11,1,34.90),(1003,102,12,1,59.00),\n (1004,103,13,3,12.50),(1005,104,14,1,74.95),\n (1006,105,10,1,89.99),(1007,105,11,2,34.90);"
+    },
+    {
+      "id": "kundenimport",
+      "titel": "Kundenimport mit Qualitätsmängeln",
+      "quelle": "Deep Dive 9",
+      "beschreibung": "Kundentabelle aus der Anlage der DD9-Übungsklausur (10 Datensätze, Datum im ISO-Format, leere E-Mail = NULL) plus eine erfundene Bestelltabelle ohne Fremdschlüssel mit typischen Fehlern.",
+      "setup": "PRAGMA foreign_keys = ON;\n-- Importtabellen ohne Fremdschlüssel: genau deshalb können Qualitätsmängel entstehen.\nCREATE TABLE kunde (\n  nr           INTEGER PRIMARY KEY,\n  kunden_id    VARCHAR(10),\n  name         VARCHAR(100),\n  email        VARCHAR(100),\n  plz          VARCHAR(5),\n  geburtsdatum DATE,\n  umsatz       DECIMAL(10,2)\n);\nCREATE TABLE bestellung (\n  bestell_id   INTEGER PRIMARY KEY,\n  kunden_id    VARCHAR(10),\n  bestelldatum DATE,\n  lieferdatum  DATE,\n  betrag       DECIMAL(10,2)\n);\nINSERT INTO kunde (nr, kunden_id, name, email, plz, geburtsdatum, umsatz) VALUES\n  (1, 'K-1001', 'Huber GmbH', 'info@huber.de', '80331', '1985-03-15', 1250.00),\n  (2, 'K-1002', 'Schmidt AG', NULL, '20095', '1979-07-22', 890.50),\n  (3, 'K-1003', 'Fischer KG', 'kontakt@fischer.de', '8033', '1900-01-01', 2100.00),\n  (4, 'K-1004', 'Weber e.K.', 'weber@mail', '50667', '1990-11-30', -450.00),\n  (5, 'K-1005', 'Braun GmbH', 'braun@braun.de', '20095', '1988-05-05', 3200.00),\n  (6, 'K-1006', 'Huber GmbH', 'info@huber.de', '80331', '1985-03-15', 1250.00),\n  (7, 'K-1007', 'Meyer OHG', NULL, '10115', '1900-01-01', 760.00),\n  (8, 'K-1008', 'Braun G.m.b.H.', 'braun@braun.de', '20095', '1988-05-05', 3200.00),\n  (9, 'K-1009', 'Klein AG', 'klein@klein.de', '04109', '2035-02-12', 1500.00),\n  (10, 'K-1010', 'Roth KG', NULL, '70173', '1975-08-28', 980.00);\nINSERT INTO bestellung (bestell_id, kunden_id, bestelldatum, lieferdatum, betrag) VALUES\n  (500, 'K-1001', '2026-03-02', '2026-03-05', 1250.00),\n  (501, 'K-1002', '2026-03-10', '2026-03-14', 890.50),\n  (502, 'K-1005', '2026-04-01', '2026-03-28', 3200.00),\n  (503, 'K-1099', '2026-04-15', '2026-04-18', 420.00),\n  (504, 'K-1004', '2026-05-02', '2026-05-06', -450.00),\n  (505, 'K-1009', '2026-05-20', NULL, 1500.00),\n  (506, 'K-1010', '2026-06-01', '2026-06-03', 0.00);"
+    }
+  ],
+  "uebungen": [
+    {
+      "id": "SQL-MH-001",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden aus München",
+      "aufgabe": "Gib alle Kunden (name, ort) aus München aus, alphabetisch aufsteigend nach Name sortiert.",
+      "schwierigkeit": 1,
+      "tags": [
+        "select",
+        "where",
+        "order by"
+      ],
+      "loesung": "SELECT name, ort\nFROM kunde\nWHERE ort = 'München'\nORDER BY name ASC;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Du brauchst nur die Tabelle kunde.",
+        "Text steht in einfachen Anführungszeichen: 'München'.",
+        "Sortieren mit ORDER BY name ASC."
+      ],
+      "erklaerung": "Ergebnis: Fischer KG, Huber GmbH. WHERE filtert die Zeilen (Selektion), SELECT wählt die Spalten (Projektion).",
+      "quelle_aufgabe": "DD1 Übungsklausur B1"
+    },
+    {
+      "id": "SQL-MH-002",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Günstige Elektronik",
+      "aufgabe": "Gib alle Produkte (bezeichnung, preis) der Kategorie Elektronik aus, die weniger als 150 € kosten.",
+      "schwierigkeit": 1,
+      "tags": [
+        "select",
+        "where",
+        "and"
+      ],
+      "loesung": "SELECT bezeichnung, preis\nFROM produkt\nWHERE kategorie = 'Elektronik' AND preis < 150;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Zwei Bedingungen müssen gleichzeitig gelten.",
+        "Verknüpfe sie mit AND. Zahlen ohne Anführungszeichen."
+      ],
+      "erklaerung": "Ergebnis: Dockingstation, 129.00. Der Monitor (189 €) fällt durch die Preisbedingung raus.",
+      "quelle_aufgabe": "DD1 Übungsklausur B2"
+    },
+    {
+      "id": "SQL-MH-003",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Alles mit „Schreibtisch“",
+      "aufgabe": "Gib die Bezeichnung aller Produkte aus, deren Bezeichnung mit „Schreibtisch“ beginnt.",
+      "schwierigkeit": 1,
+      "tags": [
+        "select",
+        "like"
+      ],
+      "loesung": "SELECT bezeichnung\nFROM produkt\nWHERE bezeichnung LIKE 'Schreibtisch%';",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Mit = findest du nur exakt gleiche Texte.",
+        "Muster gehen mit LIKE. % steht für beliebig viele Zeichen."
+      ],
+      "erklaerung": "Ergebnis: Schreibtisch Basic, Schreibtischlampe. 'Schreibtisch%' heißt: beginnt mit Schreibtisch, danach egal was.",
+      "quelle_aufgabe": "DD1 Übungsklausur B3"
+    },
+    {
+      "id": "SQL-MH-004",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden je Ort",
+      "aufgabe": "Ermittle die Anzahl der Kunden je Ort. Spalten: ort, anzahl.",
+      "schwierigkeit": 2,
+      "tags": [
+        "group by",
+        "count",
+        "aggregat"
+      ],
+      "loesung": "SELECT ort, COUNT(*) AS anzahl\nFROM kunde\nGROUP BY ort;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "ort",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "„Je Ort“ heißt: Gruppen bilden.",
+        "COUNT(*) zählt die Zeilen jeder Gruppe.",
+        "ort ist nicht aggregiert – also muss ort ins GROUP BY."
+      ],
+      "erklaerung": "Ergebnis: München 2, Hamburg 2, Köln 1.",
+      "quelle_aufgabe": "DD1 Übungsklausur B4"
+    },
+    {
+      "id": "SQL-MH-005",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Durchschnittspreis",
+      "aufgabe": "Ermittle den Durchschnittspreis aller Produkte. Die Ergebnisspalte soll durchschnittspreis heißen.",
+      "schwierigkeit": 1,
+      "tags": [
+        "avg",
+        "aggregat",
+        "alias"
+      ],
+      "loesung": "SELECT AVG(preis) AS durchschnittspreis\nFROM produkt;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "durchschnittspreis"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Es gibt eine Aggregatfunktion für den Mittelwert.",
+        "Den Spaltennamen vergibst du mit AS."
+      ],
+      "erklaerung": "Ergebnis: 201.18. Ohne Alias gibt es in der Prüfung 1 Punkt Abzug – er war ausdrücklich gefordert.",
+      "quelle_aufgabe": "DD1 Übungsklausur B5"
+    },
+    {
+      "id": "SQL-MH-006",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen mit mehreren Positionen",
+      "aufgabe": "Gib alle Bestellungen (bestell_id) mit der Anzahl ihrer Positionen aus – aber nur Bestellungen mit mehr als einer Position.",
+      "schwierigkeit": 2,
+      "tags": [
+        "group by",
+        "having",
+        "count"
+      ],
+      "loesung": "SELECT bestell_id, COUNT(*) AS positionen\nFROM bestellposition\nGROUP BY bestell_id\nHAVING COUNT(*) > 1;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Die Positionen stehen in bestellposition.",
+        "Erst je bestell_id gruppieren und zählen.",
+        "Bedingungen auf Gruppen gehören in HAVING, nicht in WHERE."
+      ],
+      "erklaerung": "Ergebnis: 100 mit 2 Positionen, 101 mit 2 Positionen. Wer WHERE COUNT(*) > 1 schreibt, verliert in der Prüfung 4 Punkte.",
+      "quelle_aufgabe": "DD1 Übungsklausur B6"
+    },
+    {
+      "id": "SQL-MH-007",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen mit Kundenname",
+      "aufgabe": "Gib für jede Bestellung bestell_id, bestelldatum und den Namen des Kunden aus.",
+      "schwierigkeit": 2,
+      "tags": [
+        "join",
+        "inner join"
+      ],
+      "loesung": "SELECT b.bestell_id, b.bestelldatum, k.name\nFROM bestellung b\nINNER JOIN kunde k ON b.kunden_id = k.kunden_id;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Der Name steht in kunde, das Datum in bestellung.",
+        "Verknüpfe beide über kunden_id.",
+        "Tabellen-Aliase (b, k) machen die Abfrage lesbar."
+      ],
+      "erklaerung": "6 Zeilen. LEFT JOIN wäre hier auch richtig – jede Bestellung hat einen Kunden.",
+      "quelle_aufgabe": "DD1 Übungsklausur B7"
+    },
+    {
+      "id": "SQL-MH-008",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Umsatz je Kunde",
+      "aufgabe": "Ermittle den Gesamtumsatz je Kunde (name, umsatz) über alle Bestellungen, absteigend nach Umsatz sortiert. Umsatz = menge × preis.",
+      "schwierigkeit": 3,
+      "tags": [
+        "join",
+        "group by",
+        "sum",
+        "order by"
+      ],
+      "loesung": "SELECT k.name, SUM(bp.menge * p.preis) AS umsatz\nFROM kunde k\nINNER JOIN bestellung b ON k.kunden_id = b.kunden_id\nINNER JOIN bestellposition bp ON b.bestell_id = bp.bestell_id\nINNER JOIN produkt p ON bp.produkt_id = p.produkt_id\nGROUP BY k.name\nORDER BY umsatz DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "name",
+          "umsatz"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Du brauchst alle vier Tabellen.",
+        "Umsatz = menge × preis, summiert je Kunde.",
+        "GROUP BY k.name, danach ORDER BY umsatz DESC."
+      ],
+      "erklaerung": "Ergebnis: Huber GmbH 1471.80 · Schmidt AG 945.00 · Fischer KG 767.70. Rechenweg Huber: Best. 100 = 2×249 + 2×189 = 876,00; Best. 102 = 4×129 = 516,00; Best. 105 = 2×39,90 = 79,80.",
+      "quelle_aufgabe": "DD1 Übungsklausur B8"
+    },
+    {
+      "id": "SQL-MH-009",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden ohne Bestellung",
+      "aufgabe": "Gib alle Kunden (name) aus, die noch nie bestellt haben.",
+      "schwierigkeit": 2,
+      "tags": [
+        "left join",
+        "is null",
+        "join"
+      ],
+      "loesung": "SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON k.kunden_id = b.kunden_id\nWHERE b.bestell_id IS NULL;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Mit INNER JOIN ist die Aufgabe unlösbar – Kunden ohne Bestellung fallen raus.",
+        "LEFT JOIN behält alle Kunden. Ohne Treffer sind die Bestellspalten NULL.",
+        "Filtere auf b.bestell_id IS NULL."
+      ],
+      "erklaerung": "Ergebnis: Weber e.K., Braun GmbH. Genauso richtig: WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung).",
+      "quelle_aufgabe": "DD1 Übungsklausur B9"
+    },
+    {
+      "id": "SQL-MH-010",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Teurer als der Durchschnitt",
+      "aufgabe": "Gib alle Produkte (bezeichnung, preis) aus, die teurer sind als der Durchschnittspreis aller Produkte.",
+      "schwierigkeit": 2,
+      "tags": [
+        "unterabfrage",
+        "avg"
+      ],
+      "loesung": "SELECT bezeichnung, preis\nFROM produkt\nWHERE preis > (SELECT AVG(preis) FROM produkt);",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "AVG darf nicht direkt ins WHERE.",
+        "Berechne den Durchschnitt in einer Unterabfrage in Klammern."
+      ],
+      "erklaerung": "Ergebnis: Bürostuhl Comfort 249.00, Schreibtisch Basic 399.00 (Durchschnitt 201.18). Ein von Hand eingesetzter Wert gibt nur halbe Punkte – er stimmt nach der nächsten Preisänderung nicht mehr.",
+      "quelle_aufgabe": "DD1 Übungsklausur B10"
+    },
+    {
+      "id": "SQL-MH-011",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Orte mit mehreren Kunden (A3 korrigiert)",
+      "aufgabe": "Gib alle Orte aus, in denen mehr als ein Kunde ansässig ist, mit der Anzahl (ort, anzahl). Das ist die korrigierte Abfrage aus A3 – achte auf alle drei Fehler.",
+      "schwierigkeit": 2,
+      "tags": [
+        "group by",
+        "having",
+        "fehleranalyse"
+      ],
+      "loesung": "SELECT ort, COUNT(*) AS anzahl\nFROM kunde\nGROUP BY ort\nHAVING COUNT(*) > 1;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "ort",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Gruppiert wird nach der Spalte, die du ausgibst.",
+        "Die Bedingung auf die Anzahl gehört in HAVING.",
+        "Der Alias anzahl ist dort noch nicht bekannt – schreib COUNT(*)."
+      ],
+      "erklaerung": "Ergebnis: München 2, Hamburg 2. Die drei Fehler im Original: Aggregat in WHERE, Alias in WHERE, GROUP BY name statt ort.",
+      "quelle_aufgabe": "DD1 Übungsklausur A3"
+    },
+    {
+      "id": "SQL-MH-012",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Günstigster Preis je Kategorie",
+      "aufgabe": "Gib je Kategorie den günstigsten Preis aus (kategorie, guenstigster), absteigend nach dem günstigsten Preis sortiert. (Aus C1: Schreib die Abfrage selbst.)",
+      "schwierigkeit": 2,
+      "tags": [
+        "group by",
+        "min",
+        "order by"
+      ],
+      "loesung": "SELECT kategorie, MIN(preis) AS guenstigster\nFROM produkt\nGROUP BY kategorie\nORDER BY guenstigster DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "kategorie",
+          "guenstigster"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "MIN liefert den kleinsten Wert je Gruppe.",
+        "Sortiert wird nach dem Aggregat, nicht nach der Kategorie."
+      ],
+      "erklaerung": "Ergebnis: Möbel 249.00, Elektronik 129.00, Zubehör 39.90. Häufigster Fehler: nach Kategorie-Alphabet sortiert.",
+      "quelle_aufgabe": "DD1 Übungsklausur C1"
+    },
+    {
+      "id": "SQL-MH-013",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Tabelle retoure anlegen",
+      "aufgabe": "Lege die Tabelle retoure an: retoure_id als Primärschlüssel; bestell_id als Pflichtfeld und Fremdschlüssel auf bestellung; grund als Pflicht-Textfeld; erstattung als Dezimalzahl, die nicht negativ sein darf; datum mit dem aktuellen Datum als Standardwert.",
+      "schwierigkeit": 3,
+      "tags": [
+        "ddl",
+        "create table",
+        "constraints",
+        "foreign key"
+      ],
+      "loesung": "CREATE TABLE retoure (\n  retoure_id  INTEGER PRIMARY KEY,\n  bestell_id  INTEGER NOT NULL,\n  grund       VARCHAR(200) NOT NULL,\n  erstattung  DECIMAL(8,2) CHECK (erstattung >= 0),\n  datum       DATE DEFAULT CURRENT_DATE,\n  FOREIGN KEY (bestell_id) REFERENCES bestellung(bestell_id)\n);",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": "SELECT\n  (SELECT COUNT(*) FROM pragma_table_info('retoure')) AS spalten,\n  (SELECT name FROM pragma_table_info('retoure') WHERE pk = 1) AS primaerschluessel,\n  (SELECT group_concat(name, ', ') FROM (SELECT name FROM pragma_table_info('retoure') WHERE \"notnull\" = 1 ORDER BY name)) AS pflichtfelder,\n  (SELECT \"from\" || ' -> ' || lower(\"table\") FROM pragma_foreign_key_list('retoure')) AS fremdschluessel,\n  (SELECT name FROM pragma_table_info('retoure') WHERE dflt_value IS NOT NULL) AS mit_standardwert,\n  (SELECT upper(sql) LIKE '%CHECK%ERSTATTUNG%>=%0%' FROM sqlite_master WHERE name = 'retoure') AS check_erstattung;",
+      "hinweise": [
+        "Grundgerüst: CREATE TABLE retoure ( spalte typ constraint, … ).",
+        "Pflichtfeld = NOT NULL, nicht negativ = CHECK (erstattung >= 0), Standardwert = DEFAULT CURRENT_DATE.",
+        "Fremdschlüssel am Ende: FOREIGN KEY (bestell_id) REFERENCES bestellung(bestell_id)."
+      ],
+      "erklaerung": "Geprüft werden Spalten, Primärschlüssel, Pflichtfelder, Fremdschlüssel, Standardwert und CHECK – nicht die Datentypen. INT statt INTEGER oder TEXT statt VARCHAR ist auch in der Prüfung ok.",
+      "quelle_aufgabe": "DD1 Übungsklausur C2"
+    },
+    {
+      "id": "SQL-MH-014",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden aus Köln oder Hamburg",
+      "aufgabe": "Gib name und ort aller Kunden aus, die in Köln oder Hamburg sitzen.",
+      "schwierigkeit": 1,
+      "tags": [
+        "where",
+        "in"
+      ],
+      "loesung": "SELECT name, ort\nFROM kunde\nWHERE ort IN ('Köln', 'Hamburg');",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Zwei erlaubte Werte für dieselbe Spalte.",
+        "IN ('Köln', 'Hamburg') ersetzt zwei ORs."
+      ],
+      "erklaerung": "Ergebnis: Schmidt AG, Weber e.K., Braun GmbH. Gleichwertig: WHERE ort = 'Köln' OR ort = 'Hamburg'.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.2 WHERE im Detail"
+    },
+    {
+      "id": "SQL-MH-015",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Preisspanne mit BETWEEN",
+      "aufgabe": "Gib bezeichnung und preis aller Produkte aus, die zwischen 100 € und 200 € kosten (Grenzen eingeschlossen).",
+      "schwierigkeit": 1,
+      "tags": [
+        "where",
+        "between"
+      ],
+      "loesung": "SELECT bezeichnung, preis\nFROM produkt\nWHERE preis BETWEEN 100 AND 200;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Für Bereiche gibt es BETWEEN x AND y.",
+        "BETWEEN schließt beide Grenzen ein."
+      ],
+      "erklaerung": "Ergebnis: Monitor 27 Zoll 189.00, Dockingstation 129.00. Gleichwertig: preis >= 100 AND preis <= 200.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.2 WHERE im Detail"
+    },
+    {
+      "id": "SQL-MH-016",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Orte ohne Doppelte",
+      "aufgabe": "Gib jeden Ort, in dem Kunden sitzen, genau einmal aus – alphabetisch aufsteigend.",
+      "schwierigkeit": 1,
+      "tags": [
+        "distinct",
+        "order by"
+      ],
+      "loesung": "SELECT DISTINCT ort\nFROM kunde\nORDER BY ort ASC;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Doppelte Zeilen entfernst du mit DISTINCT.",
+        "DISTINCT steht direkt hinter SELECT."
+      ],
+      "erklaerung": "Ergebnis: Hamburg, Köln, München – 3 statt 5 Zeilen.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.3 ORDER BY und DISTINCT"
+    },
+    {
+      "id": "SQL-MH-017",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Bruttopreis berechnen",
+      "aufgabe": "Gib bezeichnung, preis und den Bruttopreis (preis × 1,19) aller Produkte aus. Die berechnete Spalte soll bruttopreis heißen.",
+      "schwierigkeit": 1,
+      "tags": [
+        "berechnete spalte",
+        "alias"
+      ],
+      "loesung": "SELECT bezeichnung, preis, preis * 1.19 AS bruttopreis\nFROM produkt;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "bezeichnung",
+          "preis",
+          "bruttopreis"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Im SELECT darfst du rechnen.",
+        "In SQL schreibst du 1.19 mit Punkt. Den Namen gibst du mit AS."
+      ],
+      "erklaerung": "Zum Beispiel Bürostuhl Comfort: 249 × 1.19 = 296.31.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.4 Berechnete Spalten und Aliase"
+    },
+    {
+      "id": "SQL-MH-018",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kennzahlen zum Sortiment",
+      "aufgabe": "Ermittle in einer Zeile: Anzahl der Produkte, den niedrigsten und den höchsten Preis (anzahl, min_preis, max_preis).",
+      "schwierigkeit": 1,
+      "tags": [
+        "count",
+        "min",
+        "max",
+        "aggregat"
+      ],
+      "loesung": "SELECT COUNT(*) AS anzahl, MIN(preis) AS min_preis, MAX(preis) AS max_preis\nFROM produkt;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "anzahl",
+          "min_preis",
+          "max_preis"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Drei Aggregatfunktionen in einem SELECT.",
+        "Ohne GROUP BY gibt es genau eine Ergebniszeile."
+      ],
+      "erklaerung": "Ergebnis: 5, 39.90, 399.00.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.5 Aggregatfunktionen"
+    },
+    {
+      "id": "SQL-MH-019",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Stammkunden",
+      "aufgabe": "Gib name und Anzahl der Bestellungen (anzahl) aller Kunden aus, die mehr als eine Bestellung haben.",
+      "schwierigkeit": 2,
+      "tags": [
+        "join",
+        "group by",
+        "having"
+      ],
+      "loesung": "SELECT k.name, COUNT(*) AS anzahl\nFROM kunde k\nINNER JOIN bestellung b ON k.kunden_id = b.kunden_id\nGROUP BY k.name\nHAVING COUNT(*) > 1;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "name",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Verknüpfe kunde und bestellung.",
+        "Gruppiere je Kunde und zähle.",
+        "Die Bedingung „mehr als eine“ gehört in HAVING."
+      ],
+      "erklaerung": "Ergebnis: Huber GmbH 3, Fischer KG 2.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.1 GROUP BY und HAVING"
+    },
+    {
+      "id": "SQL-MH-020",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen je Kunde – auch null",
+      "aufgabe": "Gib für alle Kunden name und die Anzahl ihrer Bestellungen aus (anzahl). Kunden ohne Bestellung sollen mit 0 erscheinen.",
+      "schwierigkeit": 3,
+      "tags": [
+        "left join",
+        "group by",
+        "count",
+        "null"
+      ],
+      "loesung": "SELECT k.name, COUNT(b.bestell_id) AS anzahl\nFROM kunde k\nLEFT JOIN bestellung b ON k.kunden_id = b.kunden_id\nGROUP BY k.kunden_id, k.name;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "name",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Alle Kunden behalten – also LEFT JOIN.",
+        "COUNT(*) zählt auch die NULL-Zeile und liefert dann 1 statt 0.",
+        "Zähle eine Spalte der rechten Tabelle: COUNT(b.bestell_id)."
+      ],
+      "erklaerung": "Ergebnis: Huber 3, Schmidt 1, Fischer 2, Weber 0, Braun 0. Genau hier zeigt sich der Unterschied zwischen COUNT(*) und COUNT(spalte).",
+      "quelle_aufgabe": "DD1 Teil 2, 2.2 JOINs"
+    },
+    {
+      "id": "SQL-MH-021",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden mit Elektronik-Bestellung",
+      "aufgabe": "Gib die Namen aller Kunden aus, die mindestens ein Produkt der Kategorie Elektronik bestellt haben. Jeder Kunde nur einmal.",
+      "schwierigkeit": 3,
+      "tags": [
+        "unterabfrage",
+        "in",
+        "join"
+      ],
+      "loesung": "SELECT name\nFROM kunde\nWHERE kunden_id IN (\n  SELECT b.kunden_id\n  FROM bestellung b\n  INNER JOIN bestellposition bp ON b.bestell_id = bp.bestell_id\n  INNER JOIN produkt p ON bp.produkt_id = p.produkt_id\n  WHERE p.kategorie = 'Elektronik'\n);",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Der Weg geht über bestellung, bestellposition und produkt.",
+        "Mit IN (Unterabfrage) erscheint jeder Kunde nur einmal.",
+        "Alternative: vier Tabellen joinen und SELECT DISTINCT k.name."
+      ],
+      "erklaerung": "Ergebnis: Huber GmbH, Schmidt AG. Huber hat zwei Elektronik-Bestellungen, erscheint aber nur einmal.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.3 Unterabfragen"
+    },
+    {
+      "id": "SQL-MH-022",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Umsatz je Kategorie",
+      "aufgabe": "Ermittle den Umsatz je Produktkategorie (kategorie, umsatz), absteigend nach Umsatz. Umsatz = menge × preis.",
+      "schwierigkeit": 2,
+      "tags": [
+        "join",
+        "group by",
+        "sum",
+        "order by"
+      ],
+      "loesung": "SELECT p.kategorie, SUM(bp.menge * p.preis) AS umsatz\nFROM bestellposition bp\nINNER JOIN produkt p ON bp.produkt_id = p.produkt_id\nGROUP BY p.kategorie\nORDER BY umsatz DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "kategorie",
+          "umsatz"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "menge steht in bestellposition, preis und kategorie in produkt.",
+        "Zwei Tabellen reichen.",
+        "GROUP BY p.kategorie, ORDER BY umsatz DESC."
+      ],
+      "erklaerung": "Ergebnis: Elektronik 1839.00, Möbel 1146.00, Zubehör 199.50.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.2 JOINs"
+    },
+    {
+      "id": "SQL-MH-023",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen im 1. Quartal",
+      "aufgabe": "Gib bestell_id und bestelldatum aller Bestellungen aus dem ersten Quartal 2026 aus, die neueste zuerst.",
+      "schwierigkeit": 1,
+      "tags": [
+        "where",
+        "between",
+        "datum",
+        "order by"
+      ],
+      "loesung": "SELECT bestell_id, bestelldatum\nFROM bestellung\nWHERE bestelldatum BETWEEN '2026-01-01' AND '2026-03-31'\nORDER BY bestelldatum DESC;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Datumswerte im ISO-Format und in Anführungszeichen: '2026-01-01'.",
+        "Q1 = Januar bis März.",
+        "Neueste zuerst = DESC."
+      ],
+      "erklaerung": "Ergebnis: 103, 102, 101, 100.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.2 WHERE im Detail"
+    },
+    {
+      "id": "SQL-MH-024",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Absatz je Produkt",
+      "aufgabe": "Gib je Produkt die bezeichnung und die insgesamt bestellte Menge (gesamtmenge) aus, die meistverkaufte zuerst.",
+      "schwierigkeit": 2,
+      "tags": [
+        "join",
+        "group by",
+        "sum",
+        "order by"
+      ],
+      "loesung": "SELECT p.bezeichnung, SUM(bp.menge) AS gesamtmenge\nFROM produkt p\nINNER JOIN bestellposition bp ON p.produkt_id = bp.produkt_id\nGROUP BY p.bezeichnung\nORDER BY gesamtmenge DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "bezeichnung",
+          "gesamtmenge"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Verknüpfe produkt und bestellposition.",
+        "SUM(menge) je Produkt."
+      ],
+      "erklaerung": "Ergebnis: Monitor 27 Zoll 7, Schreibtischlampe 5, Dockingstation 4, Bürostuhl Comfort 3, Schreibtisch Basic 1.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.1 GROUP BY"
+    },
+    {
+      "id": "SQL-MH-025",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Neuen Kunden anlegen",
+      "aufgabe": "Lege den Kunden Nr. 6 an: Krause OHG aus Bremen, registriert am 2026-07-06.",
+      "schwierigkeit": 1,
+      "tags": [
+        "dml",
+        "insert"
+      ],
+      "loesung": "INSERT INTO kunde (kunden_id, name, ort, registriert_am)\nVALUES (6, 'Krause OHG', 'Bremen', '2026-07-06');",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": "SELECT kunden_id, name, ort, registriert_am FROM kunde ORDER BY kunden_id;",
+      "hinweise": [
+        "INSERT INTO tabelle (spalten) VALUES (werte).",
+        "Texte und Datum in einfachen Anführungszeichen, die ID ohne."
+      ],
+      "erklaerung": "Geprüft wird danach die ganze Tabelle kunde. Die Spaltenliste ist nicht Pflicht, macht die Anweisung aber robust.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.4 DML"
+    },
+    {
+      "id": "SQL-MH-026",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Preis ändern",
+      "aufgabe": "Der Bürostuhl Comfort (produkt_id 10) kostet ab sofort 259.00 €. Ändere nur diesen Preis.",
+      "schwierigkeit": 1,
+      "tags": [
+        "dml",
+        "update"
+      ],
+      "loesung": "UPDATE produkt\nSET preis = 259.00\nWHERE produkt_id = 10;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": "SELECT produkt_id, preis FROM produkt ORDER BY produkt_id;",
+      "hinweise": [
+        "UPDATE tabelle SET spalte = wert WHERE …",
+        "Ohne WHERE änderst du alle Preise!"
+      ],
+      "erklaerung": "UPDATE ohne WHERE trifft die ganze Tabelle – ein beliebter Fehlersuche-Punkt in der Prüfung.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.4 DML"
+    },
+    {
+      "id": "SQL-MH-027",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellpositionen löschen",
+      "aufgabe": "Lösche alle Positionen der Bestellung 105.",
+      "schwierigkeit": 1,
+      "tags": [
+        "dml",
+        "delete"
+      ],
+      "loesung": "DELETE FROM bestellposition\nWHERE bestell_id = 105;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": "SELECT bestell_id, produkt_id, menge FROM bestellposition ORDER BY bestell_id, produkt_id;",
+      "hinweise": [
+        "DELETE FROM tabelle WHERE …",
+        "Die Positionen stehen in bestellposition, nicht in bestellung."
+      ],
+      "erklaerung": "Danach sind noch 7 Positionen übrig. DELETE ohne WHERE würde alle löschen.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.4 DML"
+    },
+    {
+      "id": "SQL-MH-028",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Zubehör teurer machen",
+      "aufgabe": "Erhöhe die Preise aller Produkte der Kategorie Zubehör um 10 %.",
+      "schwierigkeit": 2,
+      "tags": [
+        "dml",
+        "update",
+        "berechnung"
+      ],
+      "loesung": "UPDATE produkt\nSET preis = preis * 1.10\nWHERE kategorie = 'Zubehör';",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": "SELECT produkt_id, preis FROM produkt ORDER BY produkt_id;",
+      "hinweise": [
+        "Der neue Preis hängt vom alten ab.",
+        "SET preis = preis * 1.10."
+      ],
+      "erklaerung": "Die Schreibtischlampe kostet danach 43.89 €, alle anderen Preise bleiben gleich.",
+      "quelle_aufgabe": "DD1 Teil 2, 2.4 DML"
+    },
+    {
+      "id": "SQL-DF-001",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Fitness-Produkte nach Preis",
+      "aufgabe": "Gib bezeichnung und preis aller Produkte der Kategorie Fitness aus, absteigend nach Preis sortiert.",
+      "schwierigkeit": 1,
+      "tags": [
+        "where",
+        "order by"
+      ],
+      "loesung": "SELECT bezeichnung, preis\nFROM produkt\nWHERE kategorie = 'Fitness'\nORDER BY preis DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Filter auf kategorie = 'Fitness'.",
+        "Absteigend = DESC."
+      ],
+      "erklaerung": "Ergebnis: Hantelset 20kg (59.00), Yogamatte Pro (34.90).",
+      "quelle_aufgabe": "DataFit Übungsklausur B1"
+    },
+    {
+      "id": "SQL-DF-002",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Neukunden aus Köln oder Hamburg",
+      "aufgabe": "Gib vorname und nachname aller Kunden aus Köln oder Hamburg aus, die sich ab dem 01.01.2025 registriert haben.",
+      "schwierigkeit": 2,
+      "tags": [
+        "where",
+        "and",
+        "or",
+        "klammern",
+        "datum"
+      ],
+      "loesung": "SELECT vorname, nachname\nFROM kunde\nWHERE ort IN ('Köln', 'Hamburg')\n  AND registriert_am >= '2025-01-01';",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "AND bindet stärker als OR.",
+        "Ohne Klammern um das OR erscheint auch Anna (Köln, 2024). Oder du nimmst IN ('Köln', 'Hamburg').",
+        "Datum im ISO-Format: '2025-01-01'."
+      ],
+      "erklaerung": "Ergebnis: Clara Fischer, Emre Yilmaz.",
+      "quelle_aufgabe": "DataFit Übungsklausur B2"
+    },
+    {
+      "id": "SQL-DF-003",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden mit E-Mail",
+      "aufgabe": "Ermittle, wie viele Kunden eine E-Mail-Adresse hinterlegt haben (Spalte anzahl).",
+      "schwierigkeit": 1,
+      "tags": [
+        "count",
+        "null"
+      ],
+      "loesung": "SELECT COUNT(email) AS anzahl\nFROM kunde;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "COUNT(spalte) ignoriert NULL.",
+        "Alternative: COUNT(*) mit WHERE email IS NOT NULL."
+      ],
+      "erklaerung": "Ergebnis: 4 – Clara Fischer hat keine E-Mail. COUNT(*) würde 5 liefern.",
+      "quelle_aufgabe": "DataFit Übungsklausur B3"
+    },
+    {
+      "id": "SQL-DF-004",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Lauf-Produkte oder knapper Bestand",
+      "aufgabe": "Gib bezeichnung und lagerbestand aller Produkte aus, deren Bezeichnung mit „Lauf“ beginnt oder deren Lagerbestand unter 50 liegt.",
+      "schwierigkeit": 1,
+      "tags": [
+        "where",
+        "like",
+        "or"
+      ],
+      "loesung": "SELECT bezeichnung, lagerbestand\nFROM produkt\nWHERE bezeichnung LIKE 'Lauf%' OR lagerbestand < 50;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "LIKE 'Lauf%' für den Anfang der Bezeichnung.",
+        "Eine der beiden Bedingungen reicht – also OR."
+      ],
+      "erklaerung": "Ergebnis: Laufschuh Speed, Hantelset 20kg, Laufjacke Wind.",
+      "quelle_aufgabe": "DataFit Übungsklausur B5"
+    },
+    {
+      "id": "SQL-DF-005",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen im Juni",
+      "aufgabe": "Gib bestell_id, bestelldatum und status aller Bestellungen aus dem Juni 2026 aus, die neueste zuerst.",
+      "schwierigkeit": 1,
+      "tags": [
+        "where",
+        "between",
+        "datum",
+        "order by"
+      ],
+      "loesung": "SELECT bestell_id, bestelldatum, status\nFROM bestellung\nWHERE bestelldatum BETWEEN '2026-06-01' AND '2026-06-30'\nORDER BY bestelldatum DESC;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "BETWEEN '2026-06-01' AND '2026-06-30' – beide Grenzen zählen mit.",
+        "Neueste zuerst = ORDER BY … DESC."
+      ],
+      "erklaerung": "Ergebnis: 104, 103, 102.",
+      "quelle_aufgabe": "DataFit Übungsklausur B6"
+    },
+    {
+      "id": "SQL-DF-006",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen je Status",
+      "aufgabe": "Ermittle die Anzahl der Bestellungen je Status (status, anzahl).",
+      "schwierigkeit": 1,
+      "tags": [
+        "group by",
+        "count"
+      ],
+      "loesung": "SELECT status, COUNT(*) AS anzahl\nFROM bestellung\nGROUP BY status;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "status",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Je Status eine Gruppe.",
+        "status muss ins GROUP BY."
+      ],
+      "erklaerung": "Ergebnis: geliefert 3, offen 2, storniert 1.",
+      "quelle_aufgabe": "DataFit Übungsklausur C1"
+    },
+    {
+      "id": "SQL-DF-007",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Umsatz je Bestellung über 100 €",
+      "aufgabe": "Ermittle je Bestellung den Umsatz (bestell_id, umsatz) aus bestellposition. Gib nur Bestellungen mit mehr als 100 € Umsatz aus, absteigend sortiert.",
+      "schwierigkeit": 2,
+      "tags": [
+        "group by",
+        "having",
+        "sum",
+        "order by"
+      ],
+      "loesung": "SELECT bestell_id, SUM(menge * einzelpreis) AS umsatz\nFROM bestellposition\nGROUP BY bestell_id\nHAVING SUM(menge * einzelpreis) > 100\nORDER BY umsatz DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "bestell_id",
+          "umsatz"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Umsatz = menge * einzelpreis, summiert je Bestellung.",
+        "Die 100-€-Grenze gilt für die Summe – also HAVING.",
+        "Im HAVING die Summe ausschreiben, nicht den Alias."
+      ],
+      "erklaerung": "Ergebnis: 105 mit 159.79 €, 100 mit 114.99 €.",
+      "quelle_aufgabe": "DataFit Übungsklausur C2"
+    },
+    {
+      "id": "SQL-DF-008",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Bestellungen mit Nachname",
+      "aufgabe": "Gib zu jeder Bestellung den Nachnamen des Kunden, die Bestellnummer und das Bestelldatum aus.",
+      "schwierigkeit": 1,
+      "tags": [
+        "join",
+        "inner join"
+      ],
+      "loesung": "SELECT k.nachname, b.bestell_id, b.bestelldatum\nFROM bestellung b\nINNER JOIN kunde k ON b.kunden_id = k.kunden_id;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Verknüpfe bestellung und kunde über kunden_id.",
+        "Spaltenreihenfolge: nachname, bestell_id, bestelldatum."
+      ],
+      "erklaerung": "6 Zeilen – eine je Bestellung.",
+      "quelle_aufgabe": "DataFit Übungsklausur C3"
+    },
+    {
+      "id": "SQL-DF-009",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden ohne Bestellung",
+      "aufgabe": "Ermittle vorname und nachname aller Kunden, die noch keine Bestellung aufgegeben haben.",
+      "schwierigkeit": 2,
+      "tags": [
+        "left join",
+        "is null"
+      ],
+      "loesung": "SELECT k.vorname, k.nachname\nFROM kunde k\nLEFT JOIN bestellung b ON k.kunden_id = b.kunden_id\nWHERE b.bestell_id IS NULL;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "INNER JOIN verliert genau die gesuchten Kunden.",
+        "LEFT JOIN + WHERE b.bestell_id IS NULL."
+      ],
+      "erklaerung": "Ergebnis: David Meyer. Gleichwertig: WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung).",
+      "quelle_aufgabe": "DataFit Übungsklausur C4"
+    },
+    {
+      "id": "SQL-DF-010",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Umsatz gelieferter Bestellungen je Kunde",
+      "aufgabe": "Ermittle je Kunde (nachname) den Gesamtumsatz (umsatz) über alle gelieferten Bestellungen, absteigend nach Umsatz. Umsatz = menge × einzelpreis.",
+      "schwierigkeit": 3,
+      "tags": [
+        "join",
+        "where",
+        "group by",
+        "sum",
+        "order by"
+      ],
+      "loesung": "SELECT k.nachname, SUM(bp.menge * bp.einzelpreis) AS umsatz\nFROM kunde k\nJOIN bestellung b ON k.kunden_id = b.kunden_id\nJOIN bestellposition bp ON b.bestell_id = bp.bestell_id\nWHERE b.status = 'geliefert'\nGROUP BY k.kunden_id, k.nachname\nORDER BY umsatz DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "nachname",
+          "umsatz"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Drei Tabellen: kunde, bestellung, bestellposition.",
+        "Der Status filtert einzelne Zeilen – also WHERE, vor dem GROUP BY.",
+        "Nimm einzelpreis aus bestellposition, nicht den aktuellen Produktpreis."
+      ],
+      "erklaerung": "Ergebnis: Schmidt 114.99 · Fischer 37.50 · Weber 34.90. Gruppieren über kunden_id und nachname fasst namensgleiche Kunden nicht zusammen.",
+      "quelle_aufgabe": "DataFit Übungsklausur C5"
+    },
+    {
+      "id": "SQL-DF-011",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Überdurchschnittlich teuer",
+      "aufgabe": "Gib bezeichnung und preis aller Produkte aus, die teurer sind als der Durchschnittspreis aller Produkte. Nutze eine Unterabfrage.",
+      "schwierigkeit": 2,
+      "tags": [
+        "unterabfrage",
+        "avg"
+      ],
+      "loesung": "SELECT bezeichnung, preis\nFROM produkt\nWHERE preis > (SELECT AVG(preis) FROM produkt);",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Den Durchschnitt liefert SELECT AVG(preis) FROM produkt.",
+        "Setz ihn in Klammern hinter preis >."
+      ],
+      "erklaerung": "Ergebnis: Laufschuh Speed, Hantelset 20kg, Laufjacke Wind (Durchschnitt 54.27 €).",
+      "quelle_aufgabe": "DataFit Übungsklausur C6"
+    },
+    {
+      "id": "SQL-DF-012",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Fehlerhafte Abfrage korrigieren",
+      "aufgabe": "Ermittle je Ort die Anzahl der Kunden (ort, anzahl), die sich ab dem 01.01.2025 registriert haben. Gib nur Orte mit mehr als einem solchen Kunden aus. (Die Vorlage in C7 hat vier Fehler.)",
+      "schwierigkeit": 3,
+      "tags": [
+        "where",
+        "group by",
+        "having",
+        "fehleranalyse"
+      ],
+      "loesung": "SELECT ort, COUNT(kunden_id) AS anzahl\nFROM kunde\nWHERE registriert_am >= '2025-01-01'\nGROUP BY ort\nHAVING COUNT(kunden_id) > 1;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "ort",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "leerErlaubt": true,
+      "hinweise": [
+        "Das Datum filtert Zeilen – WHERE. Die Anzahl filtert Gruppen – HAVING.",
+        "Datum in Anführungszeichen und ISO-Format: '2025-01-01'.",
+        "Gruppiert wird nach ort, nicht nach nachname."
+      ],
+      "erklaerung": "Mit den Beispieldaten ist das Ergebnis leer (je Ort nur ein Kunde ab 2025). Eine leere Ergebnismenge ist kein Fehler.",
+      "quelle_aufgabe": "DataFit Übungsklausur C7"
+    },
+    {
+      "id": "SQL-DF-013",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Tabelle retoure (DataFit)",
+      "aufgabe": "Lege die Tabelle retoure an: retoure_id (Ganzzahl, Primärschlüssel), bestell_id (Ganzzahl, Pflichtfeld, Fremdschlüssel auf bestellung), grund (Text, max. 200 Zeichen, Pflichtfeld), erstattung (Dezimalzahl mit 2 Nachkommastellen), angelegt_am (Datum, Standardwert: aktuelles Datum).",
+      "schwierigkeit": 3,
+      "tags": [
+        "ddl",
+        "create table",
+        "constraints",
+        "foreign key"
+      ],
+      "loesung": "CREATE TABLE retoure (\n  retoure_id   INTEGER PRIMARY KEY,\n  bestell_id   INTEGER NOT NULL,\n  grund        VARCHAR(200) NOT NULL,\n  erstattung   DECIMAL(8,2),\n  angelegt_am  DATE DEFAULT CURRENT_DATE,\n  FOREIGN KEY (bestell_id) REFERENCES bestellung(bestell_id)\n);",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": "SELECT\n  (SELECT group_concat(name, ', ') FROM (SELECT name FROM pragma_table_info('retoure') ORDER BY name)) AS spalten,\n  (SELECT name FROM pragma_table_info('retoure') WHERE pk = 1) AS primaerschluessel,\n  (SELECT group_concat(name, ', ') FROM (SELECT name FROM pragma_table_info('retoure') WHERE \"notnull\" = 1 ORDER BY name)) AS pflichtfelder,\n  (SELECT \"from\" || ' -> ' || lower(\"table\") FROM pragma_foreign_key_list('retoure')) AS fremdschluessel,\n  (SELECT name FROM pragma_table_info('retoure') WHERE dflt_value IS NOT NULL) AS mit_standardwert;",
+      "hinweise": [
+        "Pflichtfeld = NOT NULL, Standardwert = DEFAULT CURRENT_DATE.",
+        "VARCHAR(200) für den Text, DECIMAL(8,2) für den Betrag.",
+        "FOREIGN KEY (bestell_id) REFERENCES bestellung(bestell_id)."
+      ],
+      "erklaerung": "Geprüft werden Spaltennamen, Primärschlüssel, Pflichtfelder, Fremdschlüssel und Standardwert. Datentypen dürfen abweichen.",
+      "quelle_aufgabe": "DataFit Übungsklausur C8"
+    },
+    {
+      "id": "SQL-DF-014",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden mit offener Bestellung",
+      "aufgabe": "Gib vorname und nachname aller Kunden aus, die mindestens eine offene Bestellung haben. Nutze eine Unterabfrage mit IN.",
+      "schwierigkeit": 2,
+      "tags": [
+        "unterabfrage",
+        "in"
+      ],
+      "loesung": "SELECT vorname, nachname\nFROM kunde\nWHERE kunden_id IN (SELECT kunden_id FROM bestellung WHERE status = 'offen');",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Die Unterabfrage liefert alle kunden_id mit status = 'offen'.",
+        "Die äußere Abfrage filtert mit kunden_id IN (…)."
+      ],
+      "erklaerung": "Ergebnis: Anna Schmidt, Emre Yilmaz. Merke: Spalten aus der zweiten Tabelle nur als Filter → Unterabfrage reicht.",
+      "quelle_aufgabe": "DataFit Abschnitt 3.3 Unterabfragen"
+    },
+    {
+      "id": "SQL-DF-015",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Die drei teuersten Produkte",
+      "aufgabe": "Gib bezeichnung und preis der drei teuersten Produkte aus, das teuerste zuerst.",
+      "schwierigkeit": 1,
+      "tags": [
+        "order by",
+        "limit"
+      ],
+      "loesung": "SELECT bezeichnung, preis\nFROM produkt\nORDER BY preis DESC\nLIMIT 3;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Erst absteigend nach Preis sortieren.",
+        "Dann mit LIMIT 3 begrenzen (SQL Server: SELECT TOP 3)."
+      ],
+      "erklaerung": "Ergebnis: Laufschuh Speed 89.99, Laufjacke Wind 74.95, Hantelset 20kg 59.00.",
+      "quelle_aufgabe": "DataFit Abschnitt 2.3 ORDER BY"
+    },
+    {
+      "id": "SQL-DF-016",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Neues Produkt Springseil",
+      "aufgabe": "Lege das Produkt 15 an: Springseil, Kategorie Fitness, Preis 9.99 €, Lagerbestand 300.",
+      "schwierigkeit": 1,
+      "tags": [
+        "dml",
+        "insert"
+      ],
+      "loesung": "INSERT INTO produkt (produkt_id, bezeichnung, kategorie, preis, lagerbestand)\nVALUES (15, 'Springseil', 'Fitness', 9.99, 300);",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": "SELECT produkt_id, bezeichnung, kategorie, preis, lagerbestand FROM produkt ORDER BY produkt_id;",
+      "hinweise": [
+        "INSERT INTO produkt (…) VALUES (…).",
+        "Texte in einfache Anführungszeichen, Zahlen mit Punkt."
+      ],
+      "erklaerung": "Danach hat produkt 6 Zeilen.",
+      "quelle_aufgabe": "DataFit Abschnitt 3.4 DML"
+    },
+    {
+      "id": "SQL-DF-017",
+      "datensatz": "datafit",
+      "thema": "Deep Dive 1",
+      "titel": "Stornierte Bestellungen löschen",
+      "aufgabe": "Lösche alle stornierten Bestellungen. Achtung: Die Bestellpositionen verweisen per Fremdschlüssel auf die Bestellung – lösche deren Positionen zuerst. Du darfst zwei Anweisungen schreiben.",
+      "schwierigkeit": 3,
+      "tags": [
+        "dml",
+        "delete",
+        "foreign key",
+        "unterabfrage"
+      ],
+      "loesung": "DELETE FROM bestellposition\nWHERE bestell_id IN (SELECT bestell_id FROM bestellung WHERE status = 'storniert');\nDELETE FROM bestellung\nWHERE status = 'storniert';",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": "SELECT b.bestell_id, b.status, COUNT(bp.position_id) AS positionen\nFROM bestellung b\nLEFT JOIN bestellposition bp ON b.bestell_id = bp.bestell_id\nGROUP BY b.bestell_id, b.status\nORDER BY b.bestell_id;",
+      "hinweise": [
+        "DELETE FROM bestellung WHERE status = 'storniert' allein scheitert: FOREIGN KEY constraint failed.",
+        "Erst die Positionen der stornierten Bestellungen löschen – die bestell_id liefert eine Unterabfrage.",
+        "Dann die Bestellungen selbst."
+      ],
+      "erklaerung": "Referenzielle Integrität in Aktion: Die Datenbank verhindert verwaiste Positionen (ON DELETE RESTRICT ist Standard). Mit ON DELETE CASCADE würden die Positionen automatisch mitgelöscht.",
+      "quelle_aufgabe": "DataFit Abschnitt 3.4 DML / 3.5 DDL"
+    },
+    {
+      "id": "SQL-DQ-001",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Vollständigkeit E-Mail",
+      "aufgabe": "Miss die Vollständigkeit des Feldes email: Anzahl aller Datensätze (gesamt), Anzahl fehlender E-Mails (fehlende_email) und den Vollständigkeitsgrad in Prozent, auf 2 Stellen gerundet (vollstaendigkeit_prozent).",
+      "schwierigkeit": 2,
+      "tags": [
+        "datenqualität",
+        "vollständigkeit",
+        "count",
+        "null"
+      ],
+      "loesung": "SELECT COUNT(*) AS gesamt,\n       COUNT(*) - COUNT(email) AS fehlende_email,\n       ROUND(COUNT(email) * 100.0 / COUNT(*), 2) AS vollstaendigkeit_prozent\nFROM kunde;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "gesamt",
+          "fehlende_email",
+          "vollstaendigkeit_prozent"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "COUNT(*) zählt alle Zeilen, COUNT(email) nur die gefüllten.",
+        "Die Differenz ist die Zahl der Lücken.",
+        "Mit 100.0 rechnen, sonst gibt es Ganzzahldivision."
+      ],
+      "erklaerung": "Ergebnis: 10, 3, 70.00 – wie in DD9 C1 (a). Datensätze 2, 7 und 10 haben keine E-Mail.",
+      "quelle_aufgabe": "DD9 Teil 2.1 / Übungsklausur C1 (a)"
+    },
+    {
+      "id": "SQL-DQ-002",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 1",
+      "titel": "COUNT(*) gegen COUNT(email)",
+      "aufgabe": "Gib in einer Zeile COUNT(*) als alle_zeilen und COUNT(email) als mit_email aus.",
+      "schwierigkeit": 1,
+      "tags": [
+        "datenqualität",
+        "count",
+        "null"
+      ],
+      "loesung": "SELECT COUNT(*) AS alle_zeilen, COUNT(email) AS mit_email\nFROM kunde;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "alle_zeilen",
+          "mit_email"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Zwei Aggregatfunktionen in einem SELECT.",
+        "COUNT(spalte) ignoriert NULL."
+      ],
+      "erklaerung": "Ergebnis: 10 und 7. Genau das fragt DD1 A2 ab – nur mit anderen Zahlen.",
+      "quelle_aufgabe": "DD1 Teil 1, 1.5 / Übungsklausur A2"
+    },
+    {
+      "id": "SQL-DQ-003",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 1",
+      "titel": "Dubletten per E-Mail",
+      "aufgabe": "Finde alle E-Mail-Adressen, die mehrfach vorkommen (email, anzahl). Leere E-Mails sollen nicht als Dublette zählen.",
+      "schwierigkeit": 2,
+      "tags": [
+        "datenqualität",
+        "eindeutigkeit",
+        "group by",
+        "having",
+        "null"
+      ],
+      "loesung": "SELECT email, COUNT(*) AS anzahl\nFROM kunde\nWHERE email IS NOT NULL\nGROUP BY email\nHAVING COUNT(*) > 1;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "email",
+          "anzahl"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Muster: GROUP BY email, HAVING COUNT(*) > 1.",
+        "GROUP BY fasst alle NULL-Werte zu einer Gruppe zusammen – die hätte hier 3 Zeilen.",
+        "Schließe NULL vorher mit WHERE email IS NOT NULL aus."
+      ],
+      "erklaerung": "Ergebnis: braun@braun.de 2, info@huber.de 2. Ohne den NULL-Filter kommt eine Zeile NULL 3 dazu – das ist keine Dublette.",
+      "quelle_aufgabe": "DD1 SQL für Datenqualitätsprüfungen (2) / DD9 Teil 2.3"
+    },
+    {
+      "id": "SQL-DQ-004",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Exakte Dubletten",
+      "aufgabe": "Finde exakte Dubletten: Kunden, bei denen name, email, plz und geburtsdatum mehrfach gleich vorkommen (name, email, plz, geburtsdatum, anzahl).",
+      "schwierigkeit": 2,
+      "tags": [
+        "datenqualität",
+        "eindeutigkeit",
+        "group by",
+        "having"
+      ],
+      "loesung": "SELECT name, email, plz, geburtsdatum, COUNT(*) AS anzahl\nFROM kunde\nGROUP BY name, email, plz, geburtsdatum\nHAVING COUNT(*) > 1;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Gruppiere über alle Merkmale, die gleich sein müssen.",
+        "Jede nicht aggregierte Spalte im SELECT gehört ins GROUP BY."
+      ],
+      "erklaerung": "Ergebnis: Huber GmbH (Datensätze 1 und 6). Braun GmbH / Braun G.m.b.H. findest du so nicht – das ist eine unscharfe Dublette.",
+      "quelle_aufgabe": "DD9 Übungsklausur D1"
+    },
+    {
+      "id": "SQL-DQ-005",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Unscharfe Dubletten",
+      "aufgabe": "Finde Paare von Datensätzen mit gleicher E-Mail, PLZ und gleichem Geburtsdatum, aber unterschiedlichem Namen. Gib nr_1, name_1, nr_2, name_2 aus – jedes Paar nur einmal.",
+      "schwierigkeit": 3,
+      "tags": [
+        "datenqualität",
+        "eindeutigkeit",
+        "self join"
+      ],
+      "loesung": "SELECT a.nr AS nr_1, a.name AS name_1, b.nr AS nr_2, b.name AS name_2\nFROM kunde a\nINNER JOIN kunde b\n  ON a.email = b.email\n AND a.plz = b.plz\n AND a.geburtsdatum = b.geburtsdatum\nWHERE a.nr < b.nr\n  AND a.name <> b.name;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "nr_1",
+          "name_1",
+          "nr_2",
+          "name_2"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Verknüpfe die Tabelle mit sich selbst (zwei Aliase, z. B. a und b).",
+        "Die Merkmale müssen gleich sein, der Name ungleich.",
+        "a.nr < b.nr verhindert, dass jedes Paar doppelt oder mit sich selbst erscheint."
+      ],
+      "erklaerung": "Ergebnis: 5 Braun GmbH – 8 Braun G.m.b.H. Mehrfeldvergleich statt nur Namensvergleich: genau so beschreibt es DD9 D1.",
+      "quelle_aufgabe": "DD9 Übungsklausur D1"
+    },
+    {
+      "id": "SQL-DQ-006",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "PLZ nicht fünfstellig",
+      "aufgabe": "Gib nr, name und plz aller Datensätze aus, deren PLZ nicht genau fünf Zeichen lang ist.",
+      "schwierigkeit": 1,
+      "tags": [
+        "datenqualität",
+        "gültigkeit",
+        "where"
+      ],
+      "loesung": "SELECT nr, name, plz\nFROM kunde\nWHERE LENGTH(plz) <> 5;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Die Länge eines Textes liefert LENGTH().",
+        "Ungleich schreibst du <>."
+      ],
+      "erklaerung": "Ergebnis: 3 Fischer KG 8033. Deshalb ist die PLZ ein Text – als Zahl ginge auch die führende 0 von 04109 verloren.",
+      "quelle_aufgabe": "DD9 Übungsklausur B1"
+    },
+    {
+      "id": "SQL-DQ-007",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Gültigkeitsgrad PLZ",
+      "aufgabe": "Berechne den Gültigkeitsgrad der PLZ in Prozent (gueltigkeit_prozent): Anteil der fünfstelligen PLZ an allen Datensätzen.",
+      "schwierigkeit": 3,
+      "tags": [
+        "datenqualität",
+        "gültigkeit",
+        "case",
+        "kennzahl"
+      ],
+      "loesung": "SELECT SUM(CASE WHEN LENGTH(plz) = 5 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS gueltigkeit_prozent\nFROM kunde;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "gueltigkeit_prozent"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Zähle die gültigen Werte mit SUM(CASE WHEN … THEN 1 ELSE 0 END).",
+        "Teile durch COUNT(*) und nimm mal 100.0."
+      ],
+      "erklaerung": "Ergebnis: 90.0 – wie in DD9 C1 (c): 9 von 10 PLZ sind fünfstellig.",
+      "quelle_aufgabe": "DD9 Übungsklausur C1 (c)"
+    },
+    {
+      "id": "SQL-DQ-008",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 1",
+      "titel": "Wertebereich Umsatz",
+      "aufgabe": "Gib nr, name und umsatz aller Kunden mit einem Umsatz von 0 oder weniger aus.",
+      "schwierigkeit": 1,
+      "tags": [
+        "datenqualität",
+        "gültigkeit",
+        "where"
+      ],
+      "loesung": "SELECT nr, name, umsatz\nFROM kunde\nWHERE umsatz <= 0;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Muster „Wertebereichsverstoß“: WHERE wert <= 0."
+      ],
+      "erklaerung": "Ergebnis: 4 Weber e.K. −450.00. Vorbeugen lässt sich das mit CHECK (umsatz >= 0).",
+      "quelle_aufgabe": "DD1 SQL für Datenqualitätsprüfungen (3) / DD9 B1"
+    },
+    {
+      "id": "SQL-DQ-009",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Unplausible Geburtsdaten",
+      "aufgabe": "Gib nr, name und geburtsdatum aller Datensätze aus, deren Geburtsdatum unplausibel ist: der Platzhalter 1900-01-01 oder ein Datum in der Zukunft.",
+      "schwierigkeit": 2,
+      "tags": [
+        "datenqualität",
+        "plausibilität",
+        "where",
+        "datum"
+      ],
+      "loesung": "SELECT nr, name, geburtsdatum\nFROM kunde\nWHERE geburtsdatum = '1900-01-01'\n   OR geburtsdatum > CURRENT_DATE;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Platzhalter: geburtsdatum = '1900-01-01'.",
+        "Zukunft: geburtsdatum > CURRENT_DATE.",
+        "Eine der beiden Bedingungen reicht – OR."
+      ],
+      "erklaerung": "Ergebnis: 3 Fischer KG, 7 Meyer OHG (Platzhalter), 9 Klein AG (2035). Platzhalter sind gefährlicher als NULL – keine NULL-Prüfung findet sie.",
+      "quelle_aufgabe": "DD9 Übungsklausur B1 / B2"
+    },
+    {
+      "id": "SQL-DQ-010",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Ungültiges E-Mail-Format",
+      "aufgabe": "Gib nr, name und email aller Datensätze aus, deren E-Mail kein @ mit einem Punkt dahinter enthält. Leere E-Mails gehören nicht dazu.",
+      "schwierigkeit": 2,
+      "tags": [
+        "datenqualität",
+        "gültigkeit",
+        "like",
+        "null"
+      ],
+      "loesung": "SELECT nr, name, email\nFROM kunde\nWHERE email NOT LIKE '%@%.%';",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Muster: '%@%.%' = irgendwas, @, irgendwas, Punkt, irgendwas.",
+        "NOT LIKE findet die Abweichler.",
+        "NULL NOT LIKE … ist unbekannt – leere E-Mails fallen von selbst raus."
+      ],
+      "erklaerung": "Ergebnis: 4 Weber e.K. weber@mail. Formatprüfung = Gültigkeit, nicht Korrektheit: eine gültige Adresse kann trotzdem falsch sein.",
+      "quelle_aufgabe": "DD9 Übungsklausur B1"
+    },
+    {
+      "id": "SQL-DQ-011",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Verwaiste Bestellungen",
+      "aufgabe": "Finde alle Bestellungen (bestell_id, kunden_id), deren kunden_id in der Kundentabelle nicht existiert.",
+      "schwierigkeit": 2,
+      "tags": [
+        "datenqualität",
+        "referenzielle integrität",
+        "left join",
+        "is null"
+      ],
+      "loesung": "SELECT b.bestell_id, b.kunden_id\nFROM bestellung b\nLEFT JOIN kunde k ON b.kunden_id = k.kunden_id\nWHERE k.kunden_id IS NULL;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Die Bestellung ist die linke Tabelle – sie soll komplett erhalten bleiben.",
+        "Ohne passenden Kunden sind die Kundenspalten NULL.",
+        "Filtere auf k.kunden_id IS NULL."
+      ],
+      "erklaerung": "Ergebnis: 503 mit K-1099. Ein FOREIGN KEY auf kunde hätte diesen Datensatz verhindert.",
+      "quelle_aufgabe": "DD9 Teil 2.3 Tabellenübergreifende Analyse"
+    },
+    {
+      "id": "SQL-DQ-012",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Lieferung vor Bestellung",
+      "aufgabe": "Finde alle Bestellungen (bestell_id, bestelldatum, lieferdatum), bei denen das Lieferdatum vor dem Bestelldatum liegt.",
+      "schwierigkeit": 1,
+      "tags": [
+        "datenqualität",
+        "konsistenz",
+        "where",
+        "datum"
+      ],
+      "loesung": "SELECT bestell_id, bestelldatum, lieferdatum\nFROM bestellung\nWHERE lieferdatum < bestelldatum;",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Zwei Spalten derselben Zeile vergleichen.",
+        "ISO-Datumswerte lassen sich direkt mit < vergleichen."
+      ],
+      "erklaerung": "Ergebnis: 502 (bestellt 2026-04-01, geliefert 2026-03-28). Spaltenübergreifende Regel zur Konsistenz. Bestellung 505 ohne Lieferdatum fällt raus: NULL < … ist unbekannt.",
+      "quelle_aufgabe": "DD9 Teil 2.2 Spaltenübergreifende Analyse"
+    },
+    {
+      "id": "SQL-DQ-013",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Eindeutigkeitsgrad",
+      "aufgabe": "Berechne den Eindeutigkeitsgrad in Prozent (eindeutigkeit_prozent). Zwei Datensätze gelten als dieselbe Person, wenn plz und geburtsdatum gleich sind.",
+      "schwierigkeit": 3,
+      "tags": [
+        "datenqualität",
+        "eindeutigkeit",
+        "distinct",
+        "unterabfrage",
+        "kennzahl"
+      ],
+      "loesung": "SELECT (SELECT COUNT(*) FROM (SELECT DISTINCT plz, geburtsdatum FROM kunde) AS e) * 100.0 / COUNT(*) AS eindeutigkeit_prozent\nFROM kunde;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "eindeutigkeit_prozent"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Eindeutige Entitäten = verschiedene Kombinationen aus plz und geburtsdatum.",
+        "SELECT DISTINCT plz, geburtsdatum in einer Unterabfrage, darüber COUNT(*).",
+        "Teile durch alle Datensätze und nimm mal 100.0."
+      ],
+      "erklaerung": "Ergebnis: 80.0 – 8 eindeutige Kunden bei 10 Datensätzen, wie in DD9 C1 (b).",
+      "quelle_aufgabe": "DD9 Übungsklausur C1 (b)"
+    },
+    {
+      "id": "SQL-DQ-014",
+      "datensatz": "kundenimport",
+      "thema": "Deep Dive 9",
+      "titel": "Umsatz ohne Dubletten",
+      "aufgabe": "Wie stark verfälschen die Dubletten den Umsatz? Gib die Summe über alle Datensätze (umsatz_alle) und die Summe über verschiedene Kombinationen aus name, plz und umsatz (umsatz_ohne_exakte_dubletten) aus.",
+      "schwierigkeit": 3,
+      "tags": [
+        "datenqualität",
+        "eindeutigkeit",
+        "sum",
+        "distinct",
+        "unterabfrage"
+      ],
+      "loesung": "SELECT (SELECT SUM(umsatz) FROM kunde) AS umsatz_alle,\n       SUM(d.umsatz) AS umsatz_ohne_exakte_dubletten\nFROM (SELECT DISTINCT name, plz, umsatz FROM kunde) AS d;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "umsatz_alle",
+          "umsatz_ohne_exakte_dubletten"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Erst die Dubletten wegfiltern: SELECT DISTINCT name, plz, umsatz in einer Unterabfrage.",
+        "Über dieser Unterabfrage summierst du.",
+        "Die Gesamtsumme liefert eine zweite, skalare Unterabfrage."
+      ],
+      "erklaerung": "Ergebnis: 14680.50 gegen 13430.50 – Huber wird doppelt gezählt (+1250). Braun G.m.b.H. bleibt drin: unscharfe Dubletten findet DISTINCT nicht.",
+      "quelle_aufgabe": "DD9 Übungsklausur B1 (Konsequenz)"
+    }
+  ]
+}

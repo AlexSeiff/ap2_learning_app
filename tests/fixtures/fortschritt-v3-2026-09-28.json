@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "revision": 7,
+  "attempts": [{ "taskId": "01-A1", "date": "2026-09-25T10:00:00.000Z", "points": 3, "max": 6, "mode": "einzel" }],
+  "exams": [],
+  "cards": { "01-pf1": { "box": 2, "due": "2026-09-27", "reviews": 3, "last": "gewusst" } },
+  "journal": {
+    "01-A1": { "taskId": "01-A1", "addedAt": "2026-09-25", "stage": 0, "due": "2026-09-26", "lastPoints": 3, "max": 6 }
+  },
+  "lernziele": { "01-1": true },
+  "cardReviewDays": { "2026-09-26": 4, "2026-09-27": 2 }
+}

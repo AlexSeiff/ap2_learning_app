@@ -3,6 +3,7 @@
 
 import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic, WeekPlan } from './types';
 import { parseLernkarten } from './lernkarten';
+import { parseSqlUebungen } from './sqlUebungen';
 
 interface Line {
   text: string;
@@ -424,6 +425,8 @@ export function buildContent(files: SourceFile[]): Content {
     cardHints: [],
     materials: [],
     weeks: [],
+    sqlDatasets: [],
+    sqlExercises: [],
     issues: [],
   };
 
@@ -468,6 +471,14 @@ export function buildContent(files: SourceFile[]): Content {
     content.decks.push(...parsed.decks);
     content.flashcards.push(...parsed.cards);
     content.cardHints.push(...parsed.hints);
+    content.issues.push(...parsed.issues);
+  }
+
+  // SQL-Übungen (Übungsdatenbanken und Aufgaben für den SQL-Editor)
+  for (const f of files.filter((x) => /SQL_Uebungen.*\.json$/i.test(x.name))) {
+    const parsed = parseSqlUebungen(f.name, f.text, topicTitles);
+    content.sqlDatasets.push(...parsed.datasets);
+    content.sqlExercises.push(...parsed.exercises);
     content.issues.push(...parsed.issues);
   }
 

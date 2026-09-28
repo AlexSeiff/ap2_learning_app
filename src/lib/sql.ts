@@ -1,0 +1,85 @@
+// SQL-Übungen: reine Update-Funktionen und Selektoren für den Fortschritt (Progress.sql / Progress.sqlDays).
+// Wiederholung wie im Fehlerjournal (JOURNAL_INTERVALS): falsch oder Lösung gezeigt → morgen wieder,
+// richtig bei fälliger Wiederholung → nächste Stufe (3, dann 7 Tage), nach der letzten Stufe erledigt.
+
+import { JOURNAL_INTERVALS } from '../../shared/config';
+import type { Progress, SqlState } from '../../shared/progress';
+import { addDays, isDue, localDate } from './progress';
+
+/** Maximale Länge der gespeicherten Abfrage (lastQuery). */
+export const SQL_QUERY_MAX = 4000;
+
+export type SqlStatus = 'offen' | 'geloest' | 'faellig' | 'mit-loesung';
+
+const emptyState = (): SqlState => ({ attempts: 0, hintsUsed: 0 });
+
+const withState = (p: Progress, id: string, state: SqlState): Progress => ({ ...p, sql: { ...p.sql, [id]: state } });
+
+/** Setzt die Wiederholung auf Stufe 1 zurück (fällig morgen). */
+const restartRepetition = (s: SqlState, today: string): SqlState => ({ ...s, stage: 1, due: addDays(today, JOURNAL_INTERVALS[0]) });
+
+/** Nächste Wiederholungsstufe; nach der letzten Stufe ist die Übung erledigt (keine Stufe, kein Fälligkeitsdatum). */
+function advanceRepetition(s: SqlState, today: string): SqlState {
+  const { due: _due, stage: _stage, ...rest } = s;
+  const next = (s.stage ?? 1) + 1;
+  return next > JOURNAL_INTERVALS.length ? rest : { ...rest, stage: next, due: addDays(today, JOURNAL_INTERVALS[next - 1]) };
+}
+
+const truncateQuery = (query: string) => query.slice(0, SQL_QUERY_MAX);
+
+/**
+ * Speichert eine Prüfung („✓ Prüfen“). Zählt als Versuch und als Lerntag.
+ * Richtig ohne vorher gezeigte Lösung → gelöst (erstes Mal). Falsch → Wiederholung ab Stufe 1.
+ * Richtig bei fälliger Wiederholung → nächste Stufe; richtig vor dem Fälligkeitstag ändert die Wiederholung nicht.
+ */
+export function recordSqlCheck(p: Progress, id: string, ok: boolean, query: string, today = localDate()): Progress {
+  const prev = p.sql[id] ?? emptyState();
+  let next: SqlState = { ...prev, attempts: prev.attempts + 1, lastCheckedAt: today, lastQuery: truncateQuery(query) };
+  if (!ok) next = restartRepetition(next, today);
+  else {
+    if (!next.solutionShown && !next.solvedAt) next = { ...next, solvedAt: today };
+    if (next.stage !== undefined && next.due !== undefined && isDue(next.due, today)) next = advanceRepetition(next, today);
+  }
+  return { ...withState(p, id, next), sqlDays: { ...p.sqlDays, [today]: (p.sqlDays[today] ?? 0) + 1 } };
+}
+
+/** Ein weiterer Hinweis wurde aufgedeckt. */
+export function recordSqlHint(p: Progress, id: string): Progress {
+  const prev = p.sql[id] ?? emptyState();
+  return withState(p, id, { ...prev, hintsUsed: prev.hintsUsed + 1 });
+}
+
+/** Musterlösung angesehen: zählt danach als „mit Lösung“ und kommt morgen zur Wiederholung. */
+export function recordSolutionShown(p: Progress, id: string, today = localDate()): Progress {
+  const prev = p.sql[id] ?? emptyState();
+  return withState(p, id, restartRepetition({ ...prev, solutionShown: true }, today));
+}
+
+/** Merkt sich die aktuelle Abfrage (Entwurf), gekürzt auf SQL_QUERY_MAX Zeichen. */
+export function saveSqlQuery(p: Progress, id: string, query: string): Progress {
+  const prev = p.sql[id] ?? emptyState();
+  const lastQuery = truncateQuery(query);
+  if (prev.lastQuery === lastQuery) return p;
+  return withState(p, id, { ...prev, lastQuery });
+}
+
+/** Status für Liste und Filter. Eine fällige Wiederholung hat Vorrang vor gelöst / mit Lösung. */
+export function sqlStatus(state: SqlState | undefined, today = localDate()): SqlStatus {
+  if (!state) return 'offen';
+  if (state.due !== undefined && isDue(state.due, today)) return 'faellig';
+  if (state.solvedAt) return 'geloest';
+  if (state.solutionShown) return 'mit-loesung';
+  return 'offen';
+}
+
+/** Zusammenfassung für Übersicht und Liste: gelöst (ohne Lösung angesehen), Anzahl, fällige Wiederholungen. */
+export function sqlSummary(p: Progress, exerciseIds: string[], today = localDate()): { solved: number; total: number; due: number } {
+  let solved = 0;
+  let due = 0;
+  for (const id of exerciseIds) {
+    const state = p.sql[id];
+    if (state?.solvedAt) solved++;
+    if (sqlStatus(state, today) === 'faellig') due++;
+  }
+  return { solved, total: exerciseIds.length, due };
+}

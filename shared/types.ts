@@ -111,6 +111,58 @@ export interface WeekPlan {
   text: string;
 }
 
+/** Übungsdatenbank für den SQL-Editor (aus AP2_SQL_Uebungen.json, Feld „datensaetze"). */
+export interface SqlDataset {
+  id: string;
+  titel: string;
+  quelle: string;
+  beschreibung?: string;
+  /** SQL-Skript, das die Datenbank anlegt und befüllt (beginnt mit PRAGMA foreign_keys = ON). */
+  setup: string;
+  /** Optionales Zusatzskript nach `setup` mit geänderten/zusätzlichen Zeilen – gegen fest eingetippte Ergebnisse. */
+  variante?: string;
+  /** Deep Dive laut `quelle` (fehlt z. B. beim DataFit-Zusatzmaterial). */
+  topicId?: string;
+}
+
+/** Vergleichsregeln einer SQL-Übung – strukturgleich mit CompareOptions in src/sql/types.ts. */
+export interface SqlCompareOptions {
+  /** auto = streng, wenn die Musterlösung ein ORDER BY auf oberster Ebene hat, sonst egal. */
+  reihenfolge: 'auto' | 'streng' | 'egal';
+  /** Geforderte Spaltennamen (ohne Groß-/Kleinschreibung); sonst Vergleich nach Position. */
+  spaltennamen?: string[];
+  /** Toleranz für Zahlen. */
+  toleranz?: number;
+}
+
+/** SQL-Übung (aus AP2_SQL_Uebungen.json, Feld „uebungen"). Feldnamen wie in der Datei, nur camelCase. */
+export interface SqlExercise {
+  /** Stabil, z. B. „SQL-MH-008" – der Fortschritt hängt daran. */
+  id: string;
+  /** ID eines SqlDataset. */
+  datensatz: string;
+  /** Anzeigename wie „Deep Dive 1". */
+  thema: string;
+  /** Deep Dive laut `thema` (wie topicFromSource bei den Lernkarten). */
+  topicId?: string;
+  titel: string;
+  aufgabe: string;
+  /** 1 Basis · 2 Standard · 3 Transfer */
+  schwierigkeit: 1 | 2 | 3;
+  tags: string[];
+  loesung: string;
+  vergleich: SqlCompareOptions;
+  /** Bei INSERT/UPDATE/DELETE/CREATE: SELECT, das den Zustand danach prüft. */
+  pruefabfrage?: string;
+  /** Die Musterlösung darf 0 Zeilen liefern. */
+  leerErlaubt?: boolean;
+  /** Gestufte Hinweise, einer nach dem anderen. */
+  hinweise: string[];
+  erklaerung?: string;
+  /** Aufgabe auf dem Blatt, z. B. „DD1 Übungsklausur B8". */
+  quelleAufgabe?: string;
+}
+
 export interface ImportIssue {
   file: string;
   message: string;
@@ -126,5 +178,8 @@ export interface Content {
   cardHints: string[];
   materials: MaterialDoc[];
   weeks: WeekPlan[];
+  /** Übungsdatenbanken und -aufgaben des SQL-Editors (AP2_SQL_Uebungen.json). */
+  sqlDatasets: SqlDataset[];
+  sqlExercises: SqlExercise[];
   issues: ImportIssue[];
 }

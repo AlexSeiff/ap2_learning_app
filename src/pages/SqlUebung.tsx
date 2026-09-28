@@ -1,0 +1,426 @@
+// Einzelne SQL-Übung (/sql/uebung/:id): Ausprobieren, Prüfen (Ergebnisvergleich mit der Musterlösung),
+// Hinweise einzeln aufdecken, Lösung zeigen. Die letzte Abfrage wird im Fortschritt gespeichert.
+
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import type { SqlDataset, SqlExercise } from '../../shared/types';
+import { Markdown } from '../components/Markdown';
+import { Cell, ExecOutput, LintWarnings, ResultTable, SqlError, withCode } from '../components/ResultTable';
+import { SchemaBrowser } from '../components/SchemaBrowser';
+import { SqlEditor, type SqlEditorHandle } from '../components/SqlEditor';
+import { SqlTabs } from '../components/SqlTabs';
+import { useConfirm } from '../hooks/useConfirm';
+import { useSqlSession } from '../hooks/useSqlSession';
+import { recordSolutionShown, recordSqlCheck, recordSqlHint, saveSqlQuery, SQL_QUERY_MAX, sqlStatus } from '../lib/sql';
+import { useStore } from '../lib/store';
+import { compareResults, lastResultSet } from '../sql/checker';
+import { getSqlEngine } from '../sql/engine';
+import { hasBlockingWarning, lintSql } from '../sql/lint';
+import type { CompareVerdict, ExecResult, LintWarning, StatementResult } from '../sql/types';
+import { LEVEL_LABELS, stars, STATUS_LABELS } from './SqlUebungen';
+
+/** Verzögerung, bevor die Abfrage im Fortschritt gespeichert wird. */
+const SAVE_DELAY_MS = 800;
+/** Höchstens so viele Zeilen je Seite in der Unterschiede-Tabelle. */
+const DIFF_MAX = 50;
+
+const VARIANT_MESSAGE = 'Mit leicht geänderten Daten stimmt dein Ergebnis nicht – hast du Werte fest eingetippt?';
+
+type CheckOutcome =
+  | { kind: 'error'; error: string; user: ExecResult }
+  | { kind: 'data-error'; error: string }
+  | {
+      kind: 'verdict';
+      ok: boolean;
+      verdict: CompareVerdict;
+      /** Ergebnis stimmt, aber eine Dialekt-Warnung macht es in der Prüfung falsch. */
+      blocked: boolean;
+      variantFailed: boolean;
+      expectedColumns: string[];
+      userSet?: StatementResult;
+      ms: number;
+    };
+
+const EMPTY_SET: StatementResult = { sql: '', columns: [], rows: [], changes: 0 };
+
+/** Prüft eine Abfrage gegen die Musterlösung (je frische Datenbank), bei Datensätzen mit Variante zusätzlich darauf. */
+async function checkQuery(ex: SqlExercise, ds: SqlDataset, query: string): Promise<CheckOutcome> {
+  const engine = getSqlEngine();
+  const solutionSql = ex.pruefabfrage ?? ex.loesung;
+  const run = await engine.check(ds.setup, query, ex.loesung, ex.pruefabfrage);
+  if (!run.user.ok) return { kind: 'error', error: run.user.error, user: run.user };
+  const expected = run.solution.ok ? lastResultSet(run.solution.statements) : undefined;
+  if (!run.solution.ok || !expected) {
+    return { kind: 'data-error', error: run.solution.ok ? 'Die Musterlösung liefert keine Ergebnistabelle.' : run.solution.error };
+  }
+  const userSet = lastResultSet(run.user.statements);
+  const verdict = compareResults(userSet ?? EMPTY_SET, expected, ex.vergleich, solutionSql);
+  let variantFailed = false;
+  if (verdict.ok && ds.variante) {
+    // Gegen fest eingetippte Ergebnisse: dieselbe Prüfung auf leicht geänderten Daten.
+    const alt = await engine.check(`${ds.setup}\n${ds.variante}`, query, ex.loesung, ex.pruefabfrage);
+    const altExpected = alt.solution.ok ? lastResultSet(alt.solution.statements) : undefined;
+    if (altExpected) {
+      const altUser = alt.user.ok ? lastResultSet(alt.user.statements) : undefined;
+      variantFailed = !altUser || !compareResults(altUser, altExpected, ex.vergleich, solutionSql).ok;
+    }
+  }
+  return {
+    kind: 'verdict',
+    ok: verdict.ok && !variantFailed,
+    verdict,
+    blocked: false,
+    variantFailed,
+    expectedColumns: expected.columns,
+    userSet,
+    ms: run.user.ms,
+  };
+}
+
+export function SqlUebung() {
+  const { id = '' } = useParams();
+  // Neuer key je Übung: Editor, Hinweise und Ergebnis starten frisch.
+  return <SqlUebungView key={id} id={id} />;
+}
+
+function SqlUebungView({ id }: { id: string }) {
+  const { content, progress, update } = useStore();
+  const confirm = useConfirm();
+  const ex = content.sqlExercises.find((e) => e.id === id);
+  const ds = ex && content.sqlDatasets.find((d) => d.id === ex.datensatz);
+  const state = progress.sql[id];
+
+  const [query, setQuery] = useState(() => state?.lastQuery ?? '');
+  const [hintsShown, setHintsShown] = useState(() => Math.min(state?.hintsUsed ?? 0, ex?.hinweise.length ?? 0));
+  const [tryResult, setTryResult] = useState<ExecResult | null>(null);
+  const [warnings, setWarnings] = useState<LintWarning[]>([]);
+  const [outcome, setOutcome] = useState<CheckOutcome | null>(null);
+  const [showDiff, setShowDiff] = useState(false);
+  const [solutionOpen, setSolutionOpen] = useState(false);
+  const [busy, setBusy] = useState<'try' | 'check' | null>(null);
+  const editor = useRef<SqlEditorHandle>(null);
+  const session = useSqlSession(ds?.setup);
+
+  // Abfrage verzögert im Fortschritt merken (und beim Verlassen der Seite sofort).
+  const pendingSave = useRef<string | null>(null);
+  useEffect(() => {
+    const saved = progress.sql[id]?.lastQuery ?? '';
+    if (query.slice(0, SQL_QUERY_MAX) === saved) {
+      pendingSave.current = null;
+      return;
+    }
+    pendingSave.current = query;
+    const timer = setTimeout(() => {
+      pendingSave.current = null;
+      update((p) => saveSqlQuery(p, id, query));
+    }, SAVE_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [query, id, progress.sql, update]);
+  useEffect(
+    () => () => {
+      const q = pendingSave.current;
+      if (q !== null) update((p) => saveSqlQuery(p, id, q));
+    },
+    [id, update],
+  );
+
+  if (!ex || !ds) {
+    return (
+      <div className="page">
+        <SqlTabs />
+        <h1>Übung nicht gefunden</h1>
+        <p>
+          <Link to="/sql/uebungen">← Zur Übungsliste</Link>
+        </p>
+      </div>
+    );
+  }
+
+  const status = sqlStatus(state);
+  const idx = content.sqlExercises.indexOf(ex);
+  const after = [...content.sqlExercises.slice(idx + 1), ...content.sqlExercises.slice(0, idx)];
+  const next = after.find((e) => sqlStatus(progress.sql[e.id]) !== 'geloest') ?? after[0];
+
+  const tryIt = async () => {
+    if (!query.trim() || busy) return;
+    setBusy('try');
+    setOutcome(null);
+    setWarnings(lintSql(query, { columns: session.errorSchema.columns }));
+    try {
+      setTryResult(await session.execFresh(query));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const check = async () => {
+    if (busy || !query.trim()) return;
+    setBusy('check');
+    setTryResult(null);
+    setShowDiff(false);
+    const lint = lintSql(query, { columns: session.errorSchema.columns });
+    setWarnings(lint);
+    try {
+      const r = await checkQuery(ex, ds, query);
+      if (r.kind === 'data-error') {
+        setOutcome(r);
+        return;
+      }
+      if (r.kind === 'error') {
+        setOutcome(r);
+        update((p) => recordSqlCheck(p, id, false, query));
+        return;
+      }
+      const blocked = r.verdict.ok && hasBlockingWarning(lint);
+      const ok = r.ok && !blocked;
+      setOutcome({ ...r, ok, blocked });
+      update((p) => recordSqlCheck(p, id, ok, query));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const showHint = () => {
+    if (hintsShown >= ex.hinweise.length) return;
+    setHintsShown(hintsShown + 1);
+    // Nur neue Hinweise zählen – schon früher aufgedeckte stehen oben wieder da.
+    if (hintsShown + 1 > (state?.hintsUsed ?? 0)) update((p) => recordSqlHint(p, id));
+  };
+
+  const showSolution = async () => {
+    const ok = await confirm({
+      title: 'Lösung zeigen?',
+      message: 'Die Übung zählt dann als „mit Lösung“ statt „gelöst“ und kommt morgen zur Wiederholung.',
+      confirmLabel: '👁 Lösung zeigen',
+    });
+    if (!ok) return;
+    update((p) => recordSolutionShown(p, id));
+    setSolutionOpen(true);
+  };
+
+  const verdictBox = () => {
+    if (!outcome) return null;
+    if (outcome.kind === 'data-error') {
+      return (
+        <div className="card warn">
+          ⚠ Die Musterlösung lief nicht – das ist ein Fehler in den Übungsdaten, nicht bei dir.
+          <div className="mono small error-text">{outcome.error}</div>
+        </div>
+      );
+    }
+    if (outcome.kind === 'error') {
+      return (
+        <>
+          <p className="verdict bad">❌ Noch nicht: Deine Abfrage bricht mit einem Fehler ab.</p>
+          <SqlError error={outcome.error} schema={session.errorSchema} />
+        </>
+      );
+    }
+    const { verdict } = outcome;
+    const message = outcome.ok
+      ? `✅ ${verdict.message}`
+      : outcome.blocked
+        ? '❌ Noch nicht: Das Ergebnis stimmt, aber in der Prüfung wäre das ein Fehler (siehe Dialekt-Hinweis).'
+        : outcome.variantFailed
+          ? `❌ Noch nicht: ${VARIANT_MESSAGE}`
+          : `❌ Noch nicht: ${verdict.message}`;
+    const hasDiff = !outcome.ok && (verdict.missing.length > 0 || verdict.extra.length > 0);
+    return (
+      <div className={`card ${outcome.ok ? 'success' : 'verdict-fail'}`}>
+        <div className="verdict-row">
+          <p className={`verdict ${outcome.ok ? 'ok' : 'bad'}`}>{withCode(message)}</p>
+          {outcome.ok && next && (
+            <Link className="button" to={`/sql/uebung/${next.id}`}>
+              Weiter →
+            </Link>
+          )}
+          {hasDiff && (
+            <button type="button" className="secondary" aria-expanded={showDiff} onClick={() => setShowDiff((x) => !x)}>
+              Unterschiede {showDiff ? '▴' : '▾'}
+            </button>
+          )}
+        </div>
+        {hasDiff && showDiff && <DiffTable columns={outcome.expectedColumns} missing={verdict.missing} extra={verdict.extra} />}
+        {outcome.userSet && (
+          <details className="own-result" open={!outcome.ok && !hasDiff}>
+            <summary>Dein Ergebnis</summary>
+            <ResultTable columns={outcome.userSet.columns} rows={outcome.userSet.rows} ms={outcome.ms} />
+          </details>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="page sql-page">
+      <SqlTabs />
+      <p className="crumbs">
+        <Link to="/sql/uebungen">Übungen</Link> / {ex.thema}
+      </p>
+      <h1>{ex.titel}</h1>
+      <div className="task-card">
+        <div className="task-head">
+          <span className="task-code sql-code">{ex.id}</span>
+          <span className="badge" title={LEVEL_LABELS[ex.schwierigkeit]}>
+            {stars(ex.schwierigkeit)} {LEVEL_LABELS[ex.schwierigkeit]}
+          </span>
+          <span className="badge muted">{ex.thema}</span>
+          {status !== 'offen' && <span className="badge">{STATUS_LABELS[status]}</span>}
+          {ex.quelleAufgabe && <span className="muted small">{ex.quelleAufgabe}</span>}
+        </div>
+        <Markdown source={false}>{ex.aufgabe}</Markdown>
+        <p className="hint">
+          Datensatz: {ds.titel}
+          {state && state.attempts > 0 && ` · ${state.attempts} ${state.attempts === 1 ? 'Versuch' : 'Versuche'}`}
+        </p>
+      </div>
+
+      {session.error && <p className="card warn">⚠ {session.error}</p>}
+
+      <SchemaBrowser
+        tables={session.schema}
+        defaultOpen={false}
+        onInsert={(text) => editor.current?.insert(text)}
+        onShowTable={(t) => {
+          setOutcome(null);
+          setWarnings([]);
+          void session.execFresh(`SELECT * FROM ${t};`).then(setTryResult);
+        }}
+      />
+
+      <SqlEditor
+        ref={editor}
+        value={query}
+        onChange={setQuery}
+        onRun={() => void tryIt()}
+        onCheck={() => void check()}
+        schema={session.schema}
+      />
+      <div className="actions">
+        <button type="button" className="secondary" onClick={() => void tryIt()} disabled={!!busy || !session.ready || !query.trim()}>
+          ▶ Ausprobieren
+        </button>
+        <button type="button" onClick={() => void check()} disabled={!!busy || !query.trim()}>
+          ✓ Prüfen
+        </button>
+        {ex.hinweise.length > 0 && (
+          <button type="button" className="secondary" onClick={showHint} disabled={hintsShown >= ex.hinweise.length}>
+            💡 Hinweis {Math.min(hintsShown + 1, ex.hinweise.length)}/{ex.hinweise.length}
+          </button>
+        )}
+        <button type="button" className="secondary" onClick={() => void showSolution()} disabled={solutionOpen}>
+          👁 Lösung zeigen
+        </button>
+        {busy && <span className="muted small">{busy === 'check' ? 'prüft …' : 'läuft …'}</span>}
+      </div>
+      <p className="hint">
+        <kbd>Strg</kbd> + <kbd>Enter</kbd> = Ausprobieren · <kbd>Strg</kbd> + <kbd>Umschalt</kbd> + <kbd>Enter</kbd> = Prüfen. Nur „Prüfen“
+        zählt.
+      </p>
+
+      {hintsShown > 0 && (
+        <div className="card info">
+          <b>💡 Hinweise</b>
+          <ol className="hints">
+            {ex.hinweise.slice(0, hintsShown).map((h, i) => (
+              <li key={i}>{withCode(h)}</li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <LintWarnings warnings={warnings} exercise />
+      {verdictBox()}
+      {tryResult && <ExecOutput result={tryResult} schema={session.errorSchema} />}
+
+      {solutionOpen && (
+        <section className="card">
+          <h2>Musterlösung</h2>
+          <div className="solution-compare">
+            <div>
+              <h3>Musterlösung</h3>
+              <pre>
+                <code>{ex.loesung}</code>
+              </pre>
+            </div>
+            <div>
+              <h3>Deine Abfrage</h3>
+              {query.trim() ? (
+                <pre>
+                  <code>{query}</code>
+                </pre>
+              ) : (
+                <p className="muted">Noch leer.</p>
+              )}
+            </div>
+          </div>
+          {ex.erklaerung && (
+            <div className="solution">
+              <h4>Erklärung</h4>
+              <Markdown source={false}>{ex.erklaerung}</Markdown>
+            </div>
+          )}
+          <div className="actions">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                setOutcome(null);
+                setWarnings([]);
+                void session.execFresh(ex.loesung).then(setTryResult);
+              }}
+            >
+              ▶ Musterlösung ausführen
+            </button>
+            {next && (
+              <Link className="button" to={`/sql/uebung/${next.id}`}>
+                Weiter →
+              </Link>
+            )}
+          </div>
+          <p className="hint">Andere Schreibweisen sind genauso richtig, solange das Ergebnis stimmt – probier es mit „✓ Prüfen“ aus.</p>
+        </section>
+      )}
+    </div>
+  );
+}
+
+/** Unterschiede zur Musterlösung: fehlende Zeilen grün (sollten dabei sein), überzählige rot. */
+function DiffTable({ columns, missing, extra }: { columns: string[]; missing: StatementResult['rows']; extra: StatementResult['rows'] }) {
+  const rows = [
+    ...missing.slice(0, DIFF_MAX).map((row) => ({ row, kind: 'missing' as const })),
+    ...extra.slice(0, DIFF_MAX).map((row) => ({ row, kind: 'extra' as const })),
+  ];
+  const cut = missing.length > DIFF_MAX || extra.length > DIFF_MAX;
+  return (
+    <div className="sql-result diff">
+      <p className="small muted">
+        <span className="diff-key missing">fehlt</span> sollte in deinem Ergebnis stehen · <span className="diff-key extra">zu viel</span>{' '}
+        steht bei dir, gehört aber nicht dazu
+      </p>
+      <div className="result-scroll">
+        <table className="result-table">
+          <thead>
+            <tr>
+              <th />
+              {columns.map((c, i) => (
+                <th key={i}>{c}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ row, kind }, r) => (
+              <tr key={r} className={`diff-${kind}`}>
+                <td className="diff-mark">{kind === 'missing' ? '+ fehlt' : '− zu viel'}</td>
+                {row.map((v, c) => (
+                  <Cell key={c} value={v} />
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {cut && <p className="small muted">Nur die ersten {DIFF_MAX} Zeilen je Art.</p>}
+    </div>
+  );
+}

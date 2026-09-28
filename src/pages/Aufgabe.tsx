@@ -67,7 +67,7 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
         </p>
       )}
       {topic?.exam && <Attachments items={topic.exam.attachments} />}
-      {block?.intro && <Markdown>{block.intro}</Markdown>}
+      {block?.intro && <Markdown source={false}>{block.intro}</Markdown>}
 
       <div className="task-card">
         <TaskText task={task} showMeta />
