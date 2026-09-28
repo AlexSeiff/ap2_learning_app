@@ -1,7 +1,7 @@
 // CodeMirror-6-Editor für SQL: Hervorhebung, Autovervollständigung (Tabellen/Spalten des Datensatzes),
-// Strg/Cmd + Enter = Ausführen, Strg/Cmd + Umschalt + Enter = Prüfen. Wird nur auf den SQL-Seiten (lazy) geladen.
+// Tab = Vorschlag übernehmen, Strg/Cmd + Enter = Ausführen, Strg/Cmd + Umschalt + Enter = Prüfen. Wird nur auf den SQL-Seiten (lazy) geladen.
 
-import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
+import { acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { sql, SQLite, type SQLNamespace } from '@codemirror/lang-sql';
 import { bracketMatching, HighlightStyle, indentOnInput, syntaxHighlighting } from '@codemirror/language';
@@ -111,7 +111,15 @@ export function SqlEditor({ value, onChange, onRun, onCheck, schema, ariaLabel =
               },
             ]),
           ),
-          keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap, ...completionKeymap, indentWithTab]),
+          // Tab übernimmt einen offenen Vorschlag; ohne Vorschlagsliste rückt Tab wie gewohnt ein.
+          keymap.of([
+            { key: 'Tab', run: acceptCompletion },
+            ...closeBracketsKeymap,
+            ...defaultKeymap,
+            ...historyKeymap,
+            ...completionKeymap,
+            indentWithTab,
+          ]),
           language.current.of(sqlLanguage()),
           theme,
           EditorView.updateListener.of((u) => {
