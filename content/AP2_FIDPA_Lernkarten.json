@@ -4,7 +4,8 @@
     "pruefung": "IHK Abschlussprüfung Teil 2",
     "pruefungstermin": "2026-11-25",
     "erstellt_am": "2026-09-21",
-    "version": "1.0",
+    "aktualisiert_am": "2026-09-28",
+    "version": "1.1",
     "sprache": "de",
     "anzahl_decks": 24,
     "anzahl_karten": 407,
@@ -16,8 +17,8 @@
       "wissen": 216
     },
     "karten_nach_status": {
-      "behandelt": 286,
-      "offen": 121
+      "behandelt": 395,
+      "offen": 12
     },
     "karten_nach_schwierigkeit": {
       "1": 185,
@@ -3151,8 +3152,8 @@
       "id": "tec",
       "titel": "Datenformate, Schnittstellen, NoSQL & UML",
       "pruefungsbereich": "Sicherstellen der Datenqualität",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 15",
+      "status": "behandelt",
       "anzahl_karten": 17,
       "karten": [
         {
@@ -3471,8 +3472,8 @@
       "id": "ws1",
       "titel": "WiSo – Ausbildung & Arbeitsrecht",
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 13",
+      "status": "behandelt",
       "anzahl_karten": 24,
       "karten": [
         {
@@ -3730,8 +3731,8 @@
       "id": "ws2",
       "titel": "WiSo – Mitbestimmung & Tarifrecht",
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 13",
+      "status": "behandelt",
       "anzahl_karten": 14,
       "karten": [
         {
@@ -3882,8 +3883,8 @@
       "id": "ws3",
       "titel": "WiSo – Sozialversicherung & Entgelt",
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 14",
+      "status": "behandelt",
       "anzahl_karten": 13,
       "karten": [
         {
@@ -4023,8 +4024,8 @@
       "id": "ws4",
       "titel": "WiSo – Recht & Unternehmensformen",
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 14",
+      "status": "behandelt",
       "anzahl_karten": 20,
       "karten": [
         {
@@ -4234,8 +4235,8 @@
       "id": "ws5",
       "titel": "WiSo – Wirtschaftsordnung & Wirtschaftspolitik",
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 14",
+      "status": "behandelt",
       "anzahl_karten": 14,
       "karten": [
         {
@@ -4384,8 +4385,8 @@
       "id": "ws6",
       "titel": "WiSo – Arbeitsschutz & Nachhaltigkeit",
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
-      "quelle": "Themenliste (noch nicht vertieft)",
-      "status": "offen",
+      "quelle": "Deep Dive 14",
+      "status": "behandelt",
       "anzahl_karten": 7,
       "karten": [
         {

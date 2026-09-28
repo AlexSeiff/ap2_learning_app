@@ -61,7 +61,7 @@ Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen 
 | Bereich | Was es tut |
 |---|---|
 | **Übersicht** | Countdown zur Prüfung, Lernserie (Tage in Folge), aktuelle Lernplan-Woche, fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
-| **Lernen** | Theorie aller 12 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
+| **Lernen** | Theorie aller 15 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
 | **Karteikarten** | 407 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (24 Decks) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
 | **Einzelaufgaben** | Filter nach Thema, Block, Schwierigkeit, Status, Suche; Auswahl als Aufgaben-/Lösungsblatt exportieren |
