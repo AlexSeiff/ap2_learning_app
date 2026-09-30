@@ -4,6 +4,7 @@
 import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic } from './types';
 import { parseLernkarten } from './lernkarten';
 import { readPrueferfrage } from './prueferfragen';
+import { parseRechenUebungen, type RechenUebungPruefer } from './rechenUebungen';
 import { parseSqlUebungen } from './sqlUebungen';
 
 interface Line {
@@ -395,8 +396,13 @@ export interface SourceFile {
   text: string;
 }
 
+export interface BuildOptions {
+  /** Prüft Rechenübungen gegen ihre Vorlage (server/loadContent.ts übergibt src/rechnen/pruefen.ts). */
+  pruefeRechenUebung?: RechenUebungPruefer;
+}
+
 /** Baut den kompletten Inhaltsbestand aus allen Markdown-Dateien des Ordners. */
-export function buildContent(files: SourceFile[]): Content {
+export function buildContent(files: SourceFile[], options: BuildOptions = {}): Content {
   const byName = new Map(files.map((f) => [f.name, f]));
   const content: Content = {
     importedAt: new Date().toISOString(),
@@ -408,6 +414,7 @@ export function buildContent(files: SourceFile[]): Content {
     materials: [],
     sqlDatasets: [],
     sqlExercises: [],
+    rechenUebungen: [],
     issues: [],
   };
 
@@ -460,6 +467,13 @@ export function buildContent(files: SourceFile[]): Content {
     const parsed = parseSqlUebungen(f.name, f.text, topicTitles);
     content.sqlDatasets.push(...parsed.datasets);
     content.sqlExercises.push(...parsed.exercises);
+    content.issues.push(...parsed.issues);
+  }
+
+  // Rechenübungen (Vorlagen mit Zufallszahlen oder feste Aufgaben aus den Lernblättern)
+  for (const f of files.filter((x) => /Rechen_Uebungen.*\.json$/i.test(x.name))) {
+    const parsed = parseRechenUebungen(f.name, f.text, topicTitles, options.pruefeRechenUebung);
+    content.rechenUebungen.push(...parsed.exercises);
     content.issues.push(...parsed.issues);
   }
 

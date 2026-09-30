@@ -28,6 +28,18 @@ for (const d of c.sqlDatasets) {
 const byTopic = new Map<string, number>();
 for (const u of c.sqlExercises) byTopic.set(u.topicId ?? '–', (byTopic.get(u.topicId ?? '–') ?? 0) + 1);
 if (byTopic.size) console.log(`  je Deep Dive: ${[...byTopic].map(([t, n]) => `${t}: ${n}`).join(', ')}`);
+const rechnen = c.rechenUebungen;
+const mitVorlage = rechnen.filter((u) => u.vorlage);
+console.log(
+  `\nRechenübungen: ${rechnen.length} (${mitVorlage.length} mit Vorlage, davon ${mitVorlage.filter((u) => u.daten).length} mit festen Zahlen · ` +
+    `${rechnen.filter((u) => u.neueZahlen).length} mit „Neue Zahlen“)`,
+);
+const byVorlage = new Map<string, number>();
+for (const u of rechnen) byVorlage.set(u.vorlage ?? '(ohne)', (byVorlage.get(u.vorlage ?? '(ohne)') ?? 0) + 1);
+if (byVorlage.size) console.log(`  je Vorlage: ${[...byVorlage].map(([v, n]) => `${v}: ${n}`).join(', ')}`);
+const rechenByTopic = new Map<string, number>();
+for (const u of rechnen) rechenByTopic.set(u.topicId ?? '–', (rechenByTopic.get(u.topicId ?? '–') ?? 0) + 1);
+if (rechenByTopic.size) console.log(`  je Deep Dive: ${[...rechenByTopic].map(([t, n]) => `${t}: ${n}`).join(', ')}`);
 console.log(`\nMaterialien: ${c.materials.map((m) => m.title).join(', ')}`);
 console.log(`\nHinweise (${c.issues.length}):`);
 for (const i of c.issues) console.log(`  - ${i.file}: ${i.message}`);

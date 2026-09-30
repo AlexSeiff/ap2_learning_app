@@ -156,6 +156,58 @@ export interface SqlExercise {
   quelleAufgabe?: string;
 }
 
+/**
+ * Erwarteter Wert einer Rechenübung: Zahl, Text (z. B. Name oder kritischer Pfad) oder Zahlenliste (z. B. Ausreißer).
+ */
+export type RechenWert = number | string | number[];
+
+/** Ein Eingabefeld einer Rechenübung (aus AP2_Rechen_Uebungen.json, Feld „eingaben“). */
+export interface RechenEingabe {
+  /** ID eines Ergebnisses der Vorlage (siehe DOKUMENTATION § 4.4) bzw. frei wählbar bei Übungen ohne Vorlage. */
+  id: string;
+  /** Beschriftung; ohne Angabe die der Vorlage. */
+  label?: string;
+  /** Einheit, z. B. „min“, „%“, „€“; ohne Angabe die der Vorlage. */
+  einheit?: string;
+  /** Nachkommastellen; bestimmt die Toleranz (halbe Einheit der letzten Stelle). Ohne Angabe die der Vorlage. */
+  runden?: number;
+  /** Erlaubte Abweichung (überschreibt die aus `runden`). */
+  toleranz?: number;
+  /** Nur bei Übungen ohne Vorlage: der richtige Wert. */
+  loesung?: RechenWert;
+}
+
+/** Rechenübung (aus AP2_Rechen_Uebungen.json, Feld „uebungen“). */
+export interface RechenUebung {
+  /** Stabil, z. B. „RE-ST1-001“ – der Fortschritt hängt daran. */
+  id: string;
+  /** Anzeigename wie „Deep Dive 3“. */
+  thema: string;
+  /** Deep Dive laut `thema`. */
+  topicId?: string;
+  titel: string;
+  /** 1 Basis · 2 Standard · 3 Transfer */
+  schwierigkeit: 1 | 2 | 3;
+  tags: string[];
+  /** ID der Rechenvorlage (src/rechnen/vorlagen); fehlt bei Übungen mit fest angegebenen Lösungen. */
+  vorlage?: string;
+  /** Feste Daten für die Vorlage (z. B. die Zahlen aus dem Lernblatt). Fehlen sie, erzeugt die Vorlage die Zahlen. */
+  daten?: Record<string, unknown>;
+  /** Parameter für den Zufallsgenerator der Vorlage („🎲 Neue Zahlen“). */
+  params?: Record<string, unknown>;
+  /** „🎲 Neue Zahlen“ anbieten (Standard: ja, wenn es eine Vorlage gibt). */
+  neueZahlen: boolean;
+  /** Aufgabentext (Markdown); `{{name}}` wird durch Platzhalter der Vorlage ersetzt. */
+  aufgabe: string;
+  /** Leer = alle Ergebnisse der Vorlage in deren Reihenfolge. */
+  eingaben: RechenEingabe[];
+  hinweise: string[];
+  /** Zusätzliche Erklärung zur Lösung (Markdown mit Formeln). */
+  erklaerung?: string;
+  /** Aufgabe auf dem Blatt, z. B. „DD3 Übungsklausur C1“. */
+  quelleAufgabe?: string;
+}
+
 export interface ImportIssue {
   file: string;
   message: string;
@@ -173,5 +225,7 @@ export interface Content {
   /** Übungsdatenbanken und -aufgaben des SQL-Editors (AP2_SQL_Uebungen.json). */
   sqlDatasets: SqlDataset[];
   sqlExercises: SqlExercise[];
+  /** Rechenübungen (AP2_Rechen_Uebungen.json). */
+  rechenUebungen: RechenUebung[];
   issues: ImportIssue[];
 }

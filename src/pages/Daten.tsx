@@ -105,7 +105,7 @@ export function Daten() {
           Stand: {new Date(content.importedAt).toLocaleString('de-DE')} · {content.topics.length} Themen ·{' '}
           {tasks.filter((t) => !t.generated).length} Aufgaben aus Lernblättern ({tasks.filter((t) => !t.generated && t.solution).length} mit
           Musterlösung) · {tasks.filter((t) => t.generated).length} KI-Aufgaben · {content.flashcards.length} Karteikarten ·{' '}
-          {content.materials.length} Materialien
+          {content.sqlExercises.length} SQL-Übungen · {content.rechenUebungen.length} Rechenübungen · {content.materials.length} Materialien
         </p>
         {IS_STATIC ? (
           <p className="hint">

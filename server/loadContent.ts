@@ -13,14 +13,15 @@ export const SOURCE_DIR = resolve(process.env.LERN_QUELLE ?? join(import.meta.di
 export const CONTENT_DIR = resolve(import.meta.dirname, '..', 'content');
 
 /**
- * Dateiname eines Lernblatts (*.md außer Prompt_* und Lernplan_*), einer Lernkarten-JSON oder der SQL-Übungen-JSON?
+ * Dateiname eines Lernblatts (*.md außer Prompt_* und Lernplan_*), einer Lernkarten-JSON, der SQL- oder der Rechenübungen-JSON?
  * Der persönliche Lernplan mit Kalenderwochen gehört nicht in die App (sie wird von mehreren Leuten genutzt).
  */
 export function isContentFile(name: string): boolean {
   return (
     (name.toLowerCase().endsWith('.md') && !name.startsWith('Prompt_') && !name.startsWith('Lernplan_')) ||
     /Lernkarten.*\.json$/i.test(name) ||
-    /SQL_Uebungen.*\.json$/i.test(name)
+    /SQL_Uebungen.*\.json$/i.test(name) ||
+    /Rechen_Uebungen.*\.json$/i.test(name)
   );
 }
 
