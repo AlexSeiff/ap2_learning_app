@@ -1,17 +1,22 @@
 import { Link, useParams } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { useStore } from '../lib/store';
+import { cardPool } from '../lib/cards';
+import { TheoryMarkdown } from '../components/TheoryMarkdown';
 import type { Topic } from '../../shared/types';
 
 /** „Deep Dive 3“ oder „Zusatz“ für das ältere SQL-Blatt. */
 const topicLabel = (t: Topic) => (t.id === '00' ? 'Zusatz' : `Deep Dive ${t.number}`);
 
 export function Themen() {
-  const { content } = useStore();
+  const { content, progress } = useStore();
   return (
     <div className="page">
       <h1>Lernen</h1>
-      <p className="lead">Theorie aller Deep Dives – mit Prüferfragen, Lernziel-Check und direktem Sprung in Übung und Klausur.</p>
+      <p className="lead">
+        Theorie aller Deep Dives – mit {progress.settings.prueferfragen ? 'Prüferfragen, ' : ''}Lernziel-Check und direktem Sprung in Übung
+        und Klausur.
+      </p>
       <div className="grid">
         {content.topics.map((t) => (
           <Link key={t.id} to={`/lernen/${t.id}`} className="tile">
@@ -37,7 +42,7 @@ export function Thema() {
         <h1>Thema nicht gefunden</h1>
       </div>
     );
-  const cards = content.flashcards.filter((c) => c.topicId === topic.id).length;
+  const cards = cardPool(content.flashcards, progress.settings).filter((c) => c.topicId === topic.id).length;
 
   return (
     <div className="page with-toc">
@@ -92,7 +97,7 @@ export function Thema() {
         {topic.sections.map((s) => (
           <section key={s.id} id={s.id} className="theory">
             {s.level <= 1 ? <h2 className="part">{s.title}</h2> : s.level === 2 ? <h2>{s.title}</h2> : <h3>{s.title}</h3>}
-            <Markdown source={topic.file}>{s.markdown}</Markdown>
+            <TheoryMarkdown source={topic.file} markdown={s.markdown} prueferfragen={progress.settings.prueferfragen} />
           </section>
         ))}
         {!!topic.lernziele.length && (

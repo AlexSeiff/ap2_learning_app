@@ -49,6 +49,7 @@ lern-app/
 │  ├─ config.ts         constants: EXAM_MINUTES, NEW_PER_SESSION, JOURNAL_INTERVALS, CARD_INTERVALS, SAVE_DELAY_MS, DEV_PORT
 │  ├─ types.ts          content model (Topic, Task, Flashcard, Deck, Exam, SqlDataset, SqlExercise, Content …)
 │  ├─ parser.ts         Markdown sheet + solution parser (pure, line/regex based)
+│  ├─ prueferfragen.ts  Prüferfrage blocks: read, split and strip (pure)
 │  ├─ lernkarten.ts     flashcard JSON import (zod, ImportIssues)
 │  ├─ sqlUebungen.ts    SQL exercise JSON import (zod, ImportIssues)
 │  ├─ progress.ts       persisted progress: types, zod schema, checkProgressPut, migrateProgress
@@ -88,7 +89,8 @@ lern-app/
 | `Lernplan_*.md`, `Prompt_*.md` | **not read** (`isContentFile`), not synced – the personal study plan is not part of the app |
 
 - **Prüferfragen**: `> ❓ **Prüferfrage:** Frage` with the italic answer in the next quote line → `Flashcard{kind:'prueferfrage'}`.
-  They also remain inside the section Markdown, so they show up in the Lernen view.
+  They also remain inside the section Markdown, so they show up in the Lernen view. `shared/prueferfragen.ts` reads the block
+  (`readPrueferfrage`, used by the parser) and splits/strips it for the Lernen view (`splitPrueferfragen`, `stripPrueferfragen`).
 - **Fachgespräch**: numbered list under `## Fachgespräch…` → `Flashcard{kind:'fachgespraech'}`.
 - A trailing `(KW …)` in a sheet or section title is removed (`stripKw`); there is no calendar week in the data model any more.
   The sheets themselves no longer contain personal time references ("am Ende des Themas" instead of "am Ende von KW 31").
@@ -153,6 +155,12 @@ AI-generated tasks (`data/`) never go into the Pages build.
 - Sheet tasks are `offen`: self-assessment against the model solution; a points table becomes checkable criteria.
 - Optional AI grading (local app): points suggestion + feedback + missing aspects; the user can adjust.
 - IHK scale: 100–92 = 1 · 91–81 = 2 · 80–67 = 3 · 66–50 = 4 · 49–30 = 5 · 29–0 = 6.
+
+**Prüferfragen / Fachgespräch switched off** (`settings.prueferfragen` / `settings.fachgespraech`): `cardPool()` (`src/lib/cards.ts`) drops that
+`kind` everywhere cards are counted or learned – Karteikarten (pool, kind filter options, due/new counts, sessions, traps, deck table),
+Dashboard due count, topic stats (`topicStats`), the card button on Thema. A disabled `?art=` in the URL counts as "alle". `CardState` is kept,
+so turning it back on restores everything. In Lernen, `TheoryMarkdown` removes the `> ❓ **Prüferfrage:** …` blockquotes and the lead text
+drops the mention.
 
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
 print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top).

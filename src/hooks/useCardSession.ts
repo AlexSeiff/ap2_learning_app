@@ -2,22 +2,26 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Rating } from '../../shared/progress';
 import type { Flashcard } from '../../shared/types';
-import { filterCards, readCardFilter, withCardFilter, type CardFilter } from '../lib/cards';
+import { cardPool, filterCards, isKindEnabled, readCardFilter, withCardFilter, type CardFilter } from '../lib/cards';
 import { rateCard } from '../lib/progress';
 import { shuffle } from '../lib/shuffle';
 import { useStore } from '../lib/store';
 
 /** Filterzustand der Karteikarten-Seite – liegt in der URL, damit Links wie `?thema=03&typ=falle` funktionieren. */
 export function useCardFilters() {
-  const { content } = useStore();
+  const { content, progress } = useStore();
+  const { prueferfragen, fachgespraech } = progress.settings;
   const [params, setParams] = useSearchParams();
-  const f = readCardFilter(params);
+  const read = readCardFilter(params);
+  // Eine ausgeschaltete Kartenart im Link (?art=prueferfrage) zählt wie „alle“.
+  const f = isKindEnabled(read.art, { prueferfragen, fachgespraech }) ? read : { ...read, art: 'alle' };
   const set = (changes: Partial<CardFilter>) => setParams(withCardFilter(params, changes), { replace: true });
+  const pool = useMemo(() => cardPool(content.flashcards, { prueferfragen, fachgespraech }), [content, prueferfragen, fachgespraech]);
   const deck = useMemo(
-    () => filterCards(content.flashcards, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe }),
-    [content, f.thema, f.deck, f.art, f.typ, f.stufe],
+    () => filterCards(pool, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe }),
+    [pool, f.thema, f.deck, f.art, f.typ, f.stufe],
   );
-  return { f, set, deck };
+  return { f, set, deck, pool };
 }
 
 /** Eine Lernrunde: gemischte Kartenfolge, Umdrehen, Bewerten (Leitner) und Tastatur (Leertaste/Enter, 1 2 3). */

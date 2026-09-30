@@ -1,4 +1,5 @@
 import type { Content, Topic } from '../../shared/types';
+import { cardPool } from './cards';
 import { percent } from './grading';
 import { addDays, localDate } from './progress';
 import type { Progress } from '../../shared/progress';
@@ -32,6 +33,7 @@ export interface TopicStats {
 }
 
 export function topicStats(content: Content, progress: Progress): TopicStats[] {
+  const pool = cardPool(content.flashcards, progress.settings);
   return content.topics.map((topic) => {
     const exams = progress.exams.filter((e) => e.topicId === topic.id && e.total !== undefined);
     const examPcts = exams.map((e) => percent(e.total!, e.max));
@@ -41,7 +43,7 @@ export function topicStats(content: Content, progress: Progress): TopicStats[] {
       if (content.tasks[a.taskId]?.topicId === topic.id) lastByTask.set(a.taskId, a);
     }
     const last = [...lastByTask.values()];
-    const cards = content.flashcards.filter((c) => c.topicId === topic.id);
+    const cards = pool.filter((c) => c.topicId === topic.id);
     return {
       topic,
       bestExam: examPcts.length ? Math.max(...examPcts) : undefined,

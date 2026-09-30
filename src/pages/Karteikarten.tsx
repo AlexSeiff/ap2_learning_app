@@ -23,7 +23,7 @@ const KIND_LABELS: Record<Flashcard['kind'], string> = {
 export function Karteikarten() {
   const { content, progress, update } = useStore();
   const { settings } = progress;
-  const { f, set, deck } = useCardFilters();
+  const { f, set, deck, pool } = useCardFilters();
   const { session, index, card, flipped, done, start, end, flip, rate } = useCardSession();
 
   const due = deck.filter((c) => progress.cards[c.id] && isDue(progress.cards[c.id].due));
@@ -104,7 +104,7 @@ export function Karteikarten() {
     );
   }
 
-  const traps = content.flashcards.filter((c) => c.typ === 'falle' && (f.thema === 'alle' || c.topicId === f.thema));
+  const traps = pool.filter((c) => c.typ === 'falle' && (f.thema === 'alle' || c.topicId === f.thema));
   const known = (ids: Flashcard[]) => ids.filter((c) => (progress.cards[c.id]?.box ?? 0) >= 3).length;
 
   return (
@@ -144,8 +144,8 @@ export function Karteikarten() {
           <select value={f.art} onChange={(e) => set({ art: e.target.value })}>
             <option value="alle">Alle</option>
             <option value="lernkarte">Lernkarten</option>
-            <option value="prueferfrage">Prüferfragen</option>
-            <option value="fachgespraech">Fachgespräch-Fragen</option>
+            {settings.prueferfragen && <option value="prueferfrage">Prüferfragen</option>}
+            {settings.fachgespraech && <option value="fachgespraech">Fachgespräch-Fragen</option>}
           </select>
         </label>
         <label>
@@ -247,7 +247,7 @@ export function Karteikarten() {
               </thead>
               <tbody>
                 {content.decks.map((d) => {
-                  const cards = content.flashcards.filter((c) => c.deckId === d.id);
+                  const cards = pool.filter((c) => c.deckId === d.id);
                   const dueCount = cards.filter((c) => progress.cards[c.id] && isDue(progress.cards[c.id].due)).length;
                   return (
                     <tr key={d.id}>

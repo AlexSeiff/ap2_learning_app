@@ -3,6 +3,7 @@
 
 import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic } from './types';
 import { parseLernkarten } from './lernkarten';
+import { readPrueferfrage } from './prueferfragen';
 import { parseSqlUebungen } from './sqlUebungen';
 
 interface Line {
@@ -94,27 +95,10 @@ function stripItalics(s: string): string {
 export function parsePrueferfragen(lines: Line[], topicId: string): Flashcard[] {
   const cards: Flashcard[] = [];
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.inFence) continue;
-    const m = /^>\s*❓\s*\*\*Prüferfrage[^*]*?:\*\*\s*(.*)$/.exec(line.text);
-    if (!m) continue;
-    const question = [m[1]];
-    const answer: string[] = [];
-    let j = i + 1;
-    // Folgezeilen des Zitats: Frage läuft weiter, bis die kursive Antwort beginnt.
-    for (; j < lines.length && /^>/.test(lines[j].text); j++) {
-      const t = lines[j].text.replace(/^>\s?/, '');
-      if (answer.length || /^\s*\*(?!\*)/.test(t)) answer.push(t);
-      else question.push(t);
-    }
-    i = j - 1;
-    cards.push({
-      id: `${topicId}-pf${cards.length + 1}`,
-      topicId,
-      kind: 'prueferfrage',
-      question: question.join('\n').trim(),
-      answer: answer.length ? stripItalics(answer.join('\n')) : undefined,
-    });
+    const pf = readPrueferfrage(lines, i);
+    if (!pf) continue;
+    i = pf.end - 1;
+    cards.push({ id: `${topicId}-pf${cards.length + 1}`, topicId, kind: 'prueferfrage', question: pf.question, answer: pf.answer });
   }
   return cards;
 }

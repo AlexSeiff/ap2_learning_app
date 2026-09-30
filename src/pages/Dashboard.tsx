@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Welcome } from '../components/Welcome';
 import { formatPoints, ihkGrade } from '../lib/grading';
+import { cardPool } from '../lib/cards';
 import { isDue } from '../lib/progress';
 import { sqlSummary } from '../lib/sql';
 import { daysUntilExam, examTrends, formatIsoDate, studyStreak, topicStats } from '../lib/stats';
@@ -21,7 +22,7 @@ function Uebersicht() {
   const { examDate } = progress.settings;
   const days = daysUntilExam(examDate);
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
-  const dueCards = content.flashcards.filter((c) => {
+  const dueCards = cardPool(content.flashcards, progress.settings).filter((c) => {
     const s = progress.cards[c.id];
     return !s || isDue(s.due);
   }).length;

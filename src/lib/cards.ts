@@ -1,5 +1,6 @@
 // Karteikarten-Filter: reine Funktionen, der Zustand steht in der URL (?thema=…&deck=…).
 
+import type { Settings } from '../../shared/progress';
 import type { Flashcard } from '../../shared/types';
 
 export type CardFilter = { thema: string; deck: string; art: string; typ: string; stufe: string };
@@ -34,4 +35,22 @@ export function filterCards(cards: Flashcard[], f: CardFilter): Flashcard[] {
       (f.typ === 'alle' || c.typ === f.typ) &&
       (f.stufe === 'alle' || String(c.schwierigkeit) === f.stufe),
   );
+}
+
+/** Welche Kartenarten die Einstellungen zulassen (Prüferfragen und Fachgespräch lassen sich ausschalten). */
+export type CardKindSettings = Pick<Settings, 'prueferfragen' | 'fachgespraech'>;
+
+/** Ist diese Kartenart (bzw. der Filterwert „alle“) eingeschaltet? */
+export function isKindEnabled(kind: string, s: CardKindSettings): boolean {
+  if (kind === 'prueferfrage') return s.prueferfragen;
+  if (kind === 'fachgespraech') return s.fachgespraech;
+  return true;
+}
+
+/**
+ * Alle Karten, mit denen gelernt wird: ausgeschaltete Arten fallen weg. Ihr Lernstand (CardState) bleibt gespeichert –
+ * beim Einschalten ist alles wieder da. Übersicht, Themenstatistik und Karteikarten nutzen denselben Pool.
+ */
+export function cardPool<T extends Pick<Flashcard, 'kind'>>(cards: T[], s: CardKindSettings): T[] {
+  return cards.filter((c) => isKindEnabled(c.kind, s));
 }
