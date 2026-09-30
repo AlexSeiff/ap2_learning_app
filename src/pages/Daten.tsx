@@ -45,6 +45,7 @@ export function Daten() {
           `${merged.exams.length - progress.exams.length} Klausuren`,
           `${Object.keys(merged.cards).length - Object.keys(progress.cards).length} Karteikarten`,
           `${Object.keys(merged.sql).length - Object.keys(progress.sql).length} SQL-Übungen`,
+          `${Object.keys(merged.rechnen).length - Object.keys(progress.rechnen).length} Rechenübungen`,
         ].join(', ');
         const ok = await confirm({
           title: 'Sicherung zusammenführen?',

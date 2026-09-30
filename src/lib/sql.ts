@@ -2,9 +2,9 @@
 // Wiederholung wie im Fehlerjournal (JOURNAL_INTERVALS): falsch oder Lösung gezeigt → morgen wieder,
 // richtig bei fälliger Wiederholung → nächste Stufe (3, dann 7 Tage), nach der letzten Stufe erledigt.
 
-import { JOURNAL_INTERVALS } from '../../shared/config';
 import type { Progress, SqlState } from '../../shared/progress';
-import { addDays, isDue, localDate } from './progress';
+import { isDue, localDate } from './progress';
+import { nachPruefung, restartRepetition } from './wiederholung';
 
 /** Maximale Länge der gespeicherten Abfrage (lastQuery). */
 export const SQL_QUERY_MAX = 4000;
@@ -14,16 +14,6 @@ export type SqlStatus = 'offen' | 'geloest' | 'faellig' | 'mit-loesung';
 const emptyState = (): SqlState => ({ attempts: 0, hintsUsed: 0 });
 
 const withState = (p: Progress, id: string, state: SqlState): Progress => ({ ...p, sql: { ...p.sql, [id]: state } });
-
-/** Setzt die Wiederholung auf Stufe 1 zurück (fällig morgen). */
-const restartRepetition = (s: SqlState, today: string): SqlState => ({ ...s, stage: 1, due: addDays(today, JOURNAL_INTERVALS[0]) });
-
-/** Nächste Wiederholungsstufe; nach der letzten Stufe ist die Übung erledigt (keine Stufe, kein Fälligkeitsdatum). */
-function advanceRepetition(s: SqlState, today: string): SqlState {
-  const { due: _due, stage: _stage, ...rest } = s;
-  const next = (s.stage ?? 1) + 1;
-  return next > JOURNAL_INTERVALS.length ? rest : { ...rest, stage: next, due: addDays(today, JOURNAL_INTERVALS[next - 1]) };
-}
 
 const truncateQuery = (query: string) => query.slice(0, SQL_QUERY_MAX);
 
@@ -35,11 +25,8 @@ const truncateQuery = (query: string) => query.slice(0, SQL_QUERY_MAX);
 export function recordSqlCheck(p: Progress, id: string, ok: boolean, query: string, today = localDate()): Progress {
   const prev = p.sql[id] ?? emptyState();
   let next: SqlState = { ...prev, attempts: prev.attempts + 1, lastCheckedAt: today, lastQuery: truncateQuery(query) };
-  if (!ok) next = restartRepetition(next, today);
-  else {
-    if (!next.solutionShown && !next.solvedAt) next = { ...next, solvedAt: today };
-    if (next.stage !== undefined && next.due !== undefined && isDue(next.due, today)) next = advanceRepetition(next, today);
-  }
+  if (ok && !next.solutionShown && !next.solvedAt) next = { ...next, solvedAt: today };
+  next = nachPruefung(next, ok, today);
   return { ...withState(p, id, next), sqlDays: { ...p.sqlDays, [today]: (p.sqlDays[today] ?? 0) + 1 } };
 }
 

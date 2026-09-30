@@ -63,6 +63,24 @@ export type SqlState = {
   due?: string;
 };
 
+/** Stand einer Rechenübung (seit Version 6). Wiederholung wie bei den SQL-Übungen. */
+export type RechenState = {
+  /** Gezählte „Prüfen“-Klicks. */
+  attempts: number;
+  /** Erste richtige Prüfung (alle Eingaben richtig), ohne vorher die Lösung angesehen zu haben. */
+  solvedAt?: string;
+  lastCheckedAt?: string;
+  hintsUsed: number;
+  solutionShown?: boolean;
+  /** Wiederholungsstufe: 1 → nach 1 Tag, 2 → nach 3 Tagen, 3 → nach 7 Tagen (JOURNAL_INTERVALS). */
+  stage?: number;
+  due?: string;
+  /** Seed der zuletzt gezeigten Zufallszahlen („🎲 Neue Zahlen“); fehlt = die festen Zahlen der Übung. */
+  lastSeed?: number;
+  /** Zuletzt geprüfte Eingaben (Eingabe-ID → Text) zu diesen Zahlen, zum Wiederherstellen beim erneuten Öffnen. */
+  antworten?: Record<string, string>;
+};
+
 /**
  * Persönliche Einstellungen (seit Version 5). Sie stehen im Fortschritt, damit sie mit der Sicherung umziehen.
  * Das Farbschema bleibt im localStorage (gilt nur für das Gerät).
@@ -112,10 +130,14 @@ export type Progress = {
   sqlDays: Record<string, number>;
   /** Persönliche Einstellungen (seit Version 5, ältere Dateien: Standardwerte). */
   settings: Settings;
+  /** Stand der Rechenübungen je Übungs-ID (seit Version 6, ältere Dateien: leer). */
+  rechnen: Record<string, RechenState>;
+  /** Anzahl geprüfter Rechenübungen je lokalem Datum (YYYY-MM-DD), für die Lernserie (seit Version 6, ältere Dateien: leer). */
+  rechnenDays: Record<string, number>;
 };
 
 /** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
-export const PROGRESS_VERSION = 5;
+export const PROGRESS_VERSION = 6;
 
 export const emptyProgress = (): Progress => ({
   version: PROGRESS_VERSION,
@@ -129,6 +151,8 @@ export const emptyProgress = (): Progress => ({
   sql: {},
   sqlDays: {},
   settings: defaultSettings(),
+  rechnen: {},
+  rechnenDays: {},
 });
 
 type Raw = Record<string, unknown>;
@@ -210,6 +234,27 @@ function migrateSqlState(v: unknown): SqlState | undefined {
   };
 }
 
+/** Zeichen je gespeicherter Antwort einer Rechenübung (mehr braucht keine Zahl). */
+const ANTWORT_MAX = 200;
+
+function migrateRechenState(v: unknown): RechenState | undefined {
+  if (!isObject(v)) return undefined;
+  const { solvedAt, lastCheckedAt, solutionShown, stage, due, lastSeed, antworten, ...rest } = v;
+  const texte = filterRecord(antworten, (a) => (typeof a === 'string' ? a.slice(0, ANTWORT_MAX) : undefined));
+  return {
+    ...rest,
+    ...opt('solvedAt', solvedAt, typeof solvedAt === 'string'),
+    ...opt('lastCheckedAt', lastCheckedAt, typeof lastCheckedAt === 'string'),
+    ...opt('solutionShown', solutionShown, typeof solutionShown === 'boolean'),
+    ...opt('stage', stage, typeof stage === 'number'),
+    ...opt('due', due, typeof due === 'string'),
+    ...opt('lastSeed', lastSeed, typeof lastSeed === 'number' && Number.isInteger(lastSeed)),
+    ...opt('antworten', texte, isObject(antworten)),
+    attempts: num(v.attempts),
+    hintsUsed: num(v.hintsUsed),
+  };
+}
+
 /** Ist `v` ein gültiges Kalenderdatum im Format YYYY-MM-DD? */
 export function isIsoDate(v: unknown): v is string {
   if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
@@ -252,6 +297,8 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   3: (raw) => ({ ...raw, version: 4 }),
   // 4 → 5: Einstellungen (settings) mit Standardwerten; aufgefüllt wird unten in migrateProgress.
   4: (raw) => ({ ...raw, version: 5 }),
+  // 5 → 6: Rechenübungen (rechnen) und ihre Lerntage (rechnenDays); starten leer, aufgefüllt wird unten in migrateProgress.
+  5: (raw) => ({ ...raw, version: 6 }),
 };
 
 /**
@@ -280,6 +327,8 @@ export function migrateProgress(raw: unknown): Progress {
     sql: filterRecord(data.sql, migrateSqlState),
     sqlDays: filterRecord(data.sqlDays, dayCount),
     settings: migrateSettings(data.settings),
+    rechnen: filterRecord(data.rechnen, migrateRechenState),
+    rechnenDays: filterRecord(data.rechnenDays, dayCount),
   };
 }
 
@@ -332,6 +381,18 @@ export const SqlStateSchema = z.looseObject({
   due: z.string().optional(),
 });
 
+export const RechenStateSchema = z.looseObject({
+  attempts: z.number(),
+  solvedAt: z.string().optional(),
+  lastCheckedAt: z.string().optional(),
+  hintsUsed: z.number(),
+  solutionShown: z.boolean().optional(),
+  stage: z.number().optional(),
+  due: z.string().optional(),
+  lastSeed: z.number().int().optional(),
+  antworten: z.record(z.string(), z.string()).optional(),
+});
+
 export const SettingsSchema = z.looseObject({
   examDate: z.string().optional(),
   prueferfragen: z.boolean().optional(),
@@ -355,6 +416,8 @@ export const ProgressSchema = z.looseObject({
   sql: z.record(z.string(), SqlStateSchema).default({}),
   sqlDays: z.record(z.string(), z.number()).default({}),
   settings: SettingsSchema.optional(),
+  rechnen: z.record(z.string(), RechenStateSchema).default({}),
+  rechnenDays: z.record(z.string(), z.number()).default({}),
 });
 
 export type ProgressData = z.infer<typeof ProgressSchema>;

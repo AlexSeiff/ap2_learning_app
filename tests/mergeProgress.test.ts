@@ -33,7 +33,12 @@ describe('mergeProgress', () => {
   });
 
   it('gleiche Stände: kommt unverändert heraus', () => {
-    for (const name of ['fortschritt-v1-2026-09-22.json', 'fortschritt-v3-2026-09-28.json', 'fortschritt-v4-2026-09-30.json']) {
+    for (const name of [
+      'fortschritt-v1-2026-09-22.json',
+      'fortschritt-v3-2026-09-28.json',
+      'fortschritt-v4-2026-09-30.json',
+      'fortschritt-v5-2026-09-30.json',
+    ]) {
       const p = fixture(name);
       expect(mergeProgress(p, p), name).toEqual(p);
       expect(mergeProgress(p, emptyProgress()), name).toEqual(p);
@@ -119,6 +124,33 @@ describe('mergeProgress', () => {
     expect(mergeProgress(b, a).sql.s1).toEqual(merged.sql.s1);
   });
 
+  it('Rechenübungen: der Stand mit dem neueren lastCheckedAt (samt Seed und Antworten), gelöst bleibt gelöst', () => {
+    const a: Progress = {
+      ...emptyProgress(),
+      rechnen: {
+        r1: { attempts: 2, hintsUsed: 0, solvedAt: '2026-09-20', lastCheckedAt: '2026-09-20', lastSeed: 7, antworten: { mittel: '70' } },
+        r3: { attempts: 1, hintsUsed: 0, lastCheckedAt: '2026-09-28' },
+      },
+    };
+    const b: Progress = {
+      ...emptyProgress(),
+      rechnen: {
+        r1: { attempts: 1, hintsUsed: 2, solutionShown: true, lastCheckedAt: '2026-09-25', stage: 1, due: '2026-09-26', lastSeed: 99 },
+        r2: { attempts: 1, hintsUsed: 0, solvedAt: '2026-09-24' },
+        r3: { attempts: 4, hintsUsed: 1, lastCheckedAt: '2026-09-27' },
+      },
+    };
+    const merged = mergeProgress(a, b);
+    expect(merged.rechnen.r1).toEqual({ ...b.rechnen.r1, solvedAt: '2026-09-20' });
+    expect(merged.rechnen.r2).toEqual(b.rechnen.r2);
+    expect(merged.rechnen.r3).toEqual(a.rechnen.r3);
+    expect(mergeProgress(b, a).rechnen).toEqual(merged.rechnen);
+    // ohne lastCheckedAt auf beiden Seiten: mehr Prüfungen gewinnen
+    const x: Progress = { ...emptyProgress(), rechnen: { r: { attempts: 1, hintsUsed: 3 } } };
+    const y: Progress = { ...emptyProgress(), rechnen: { r: { attempts: 2, hintsUsed: 0 } } };
+    expect(mergeProgress(x, y).rechnen.r).toEqual(y.rechnen.r);
+  });
+
   it('Fehlerjournal: der Eintrag der Seite mit dem neueren Versuch – auch wenn die Stufe dort niedriger ist', () => {
     // Beide Geräte: A1 am 20. falsch. Handy: am 21. richtig (Stufe 1). PC: am 23. wieder falsch (Stufe 0).
     const start = withAttempts(emptyProgress(), attempt('01-A1', '2026-09-20', 0));
@@ -138,21 +170,32 @@ describe('mergeProgress', () => {
       lernziele: { 'l-1': true, 'l-2': false },
       cardReviewDays: { '2026-09-20': 5 },
       sqlDays: { '2026-09-21': 1 },
+      rechnenDays: { '2026-09-21': 3, '2026-09-23': 1 },
     };
     const b: Progress = {
       ...emptyProgress(),
       lernziele: { 'l-2': true, 'l-3': false },
       cardReviewDays: { '2026-09-20': 3, '2026-09-22': 4 },
       sqlDays: { '2026-09-21': 2 },
+      rechnenDays: { '2026-09-21': 2, '2026-09-24': 5 },
     };
     const merged = mergeProgress(a, b);
     expect(merged.lernziele).toEqual({ 'l-1': true, 'l-2': true, 'l-3': false });
     expect(merged.cardReviewDays).toEqual({ '2026-09-20': 5, '2026-09-22': 4 });
     expect(merged.sqlDays).toEqual({ '2026-09-21': 2 });
+    expect(merged.rechnenDays).toEqual({ '2026-09-21': 3, '2026-09-23': 1, '2026-09-24': 5 });
   });
 
   it('das Ergebnis ist gültiger Fortschritt im aktuellen Format', () => {
     const merged = mergeProgress(fixture('fortschritt-v3-2026-09-28.json'), fixture('fortschritt-v4-2026-09-30.json'));
     expect(migrateProgress(merged)).toEqual(merged);
+    const mitRechnen = mergeProgress(fixture('fortschritt-v5-2026-09-30.json'), {
+      ...emptyProgress(),
+      rechnen: { 'RE-ST1-001': { attempts: 1, hintsUsed: 0, solvedAt: '2026-09-30', lastCheckedAt: '2026-09-30' } },
+      rechnenDays: { '2026-09-30': 1 },
+    });
+    expect(mitRechnen.rechnen['RE-ST1-001'].solvedAt).toBe('2026-09-30');
+    expect(mitRechnen.settings).toEqual(fixture('fortschritt-v5-2026-09-30.json').settings);
+    expect(migrateProgress(mitRechnen)).toEqual(mitRechnen);
   });
 });

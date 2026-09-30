@@ -2,7 +2,7 @@
 // So lässt sich zwischen Handy und PC umziehen, ohne dass eine Seite verloren geht.
 // Beide Stände müssen schon migriert sein (migrateProgress bzw. parseBackup).
 
-import { PROGRESS_VERSION, type Attempt, type CardState, type ExamRun, type JournalEntry, type Progress, type SqlState } from './progress';
+import { PROGRESS_VERSION, type Attempt, type CardState, type ExamRun, type JournalEntry, type Progress } from './progress';
 
 /** Zeitpunkt als Zahl zum Vergleichen; fehlend oder ungültig = ganz früh. */
 const time = (v: string | undefined) => {
@@ -58,11 +58,14 @@ function mergeRecord<T>(a: Record<string, T>, b: Record<string, T>, pick: (x: T,
 /** Karteikarte: CardState hat kein Datum – mehr Wiederholungen heißt neuerer Stand, bei Gleichstand das spätere `due`. */
 const newerCard = (x: CardState, y: CardState) => (y.reviews > x.reviews || (y.reviews === x.reviews && y.due > x.due) ? y : x);
 
+/** Gemeinsame Felder von SQL- und Rechenübungen (SqlState, RechenState). */
+type UebungState = { attempts: number; hintsUsed: number; lastCheckedAt?: string; solvedAt?: string };
+
 /**
- * SQL-Übung: der Stand mit dem neueren `lastCheckedAt` (ohne: mehr Prüfungen, dann mehr Hinweise).
+ * SQL- oder Rechenübung: der Stand mit dem neueren `lastCheckedAt` (ohne: mehr Prüfungen, dann mehr Hinweise).
  * Gelöst bleibt gelöst: das frühere `solvedAt` beider Seiten bleibt erhalten.
  */
-function newerSql(x: SqlState, y: SqlState): SqlState {
+function newerUebung<T extends UebungState>(x: T, y: T): T {
   const tx = time(x.lastCheckedAt);
   const ty = time(y.lastCheckedAt);
   const winner = ty > tx || (ty === tx && (y.attempts > x.attempts || (y.attempts === x.attempts && y.hintsUsed > x.hintsUsed))) ? y : x;
@@ -82,10 +85,10 @@ function mergeDays(a: Record<string, number>, b: Record<string, number>): Record
  * - activeExam: die laufende Klausur dieses Browsers; nur wenn hier keine läuft, die aus der Sicherung.
  *   Ist sie in der Historie schon abgeschlossen, entfällt sie.
  * - cards: je Karte der Stand mit mehr Wiederholungen (dann späteres due).
- * - sql: je Übung der Stand mit dem neueren lastCheckedAt; solvedAt bleibt, wenn eine Seite gelöst hat.
+ * - sql, rechnen: je Übung der Stand mit dem neueren lastCheckedAt; solvedAt bleibt, wenn eine Seite gelöst hat.
  * - journal: je Aufgabe der Eintrag der Seite mit dem neueren Versuch zu dieser Aufgabe (dann höhere Stufe, dann späteres due).
  * - lernziele: abgehakt, wenn auf einer Seite abgehakt.
- * - cardReviewDays / sqlDays: je Tag das Maximum.
+ * - cardReviewDays / sqlDays / rechnenDays: je Tag das Maximum.
  * - settings, revision und unbekannte Felder: vom aktuellen Stand (Einstellungen gehören zu diesem Browser;
  *   die Revision muss zum Gespeicherten passen, sonst lehnt checkProgressPut das Speichern als veraltet ab).
  * Bei gleichen Ständen kommt der aktuelle Stand heraus (mergeProgress(p, p) ≈ p).
@@ -126,8 +129,10 @@ export function mergeProgress(current: Progress, incoming: Progress): Progress {
     journal: mergeRecord(current.journal, incoming.journal, newerJournal),
     lernziele: mergeRecord(current.lernziele, incoming.lernziele, (x, y) => x || y),
     cardReviewDays: mergeDays(current.cardReviewDays, incoming.cardReviewDays),
-    sql: mergeRecord(current.sql, incoming.sql, newerSql),
+    sql: mergeRecord(current.sql, incoming.sql, newerUebung),
     sqlDays: mergeDays(current.sqlDays, incoming.sqlDays),
+    rechnen: mergeRecord(current.rechnen, incoming.rechnen, newerUebung),
+    rechnenDays: mergeDays(current.rechnenDays, incoming.rechnenDays),
     settings: current.settings,
   };
 }
