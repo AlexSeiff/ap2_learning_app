@@ -33,9 +33,9 @@ Das ist dieselbe App als statische Seite – ohne Server:
 | | Lokale App (`npm run dev`) | Online-Version |
 |---|---|---|
 | Lernblätter | live aus dem Ordner `AP-2` | aus `lern-app/content/`, Stand des letzten Pushs |
-| Fortschritt | `lern-app/data/fortschritt.json` + Tagessicherung | im Browser (localStorage), nur auf diesem Gerät |
+| Fortschritt | `lern-app/data/fortschritt.json` + Tagessicherung | im Browser (localStorage) + Tagessicherung im Browser (IndexedDB), nur auf diesem Gerät |
 | Lernen, Karteikarten, Klausur, Einzelaufgaben, Fehlerjournal, Material | ✓ | ✓ |
-| Sicherung herunterladen / einspielen | ✓ | ✓ |
+| Sicherung herunterladen / zusammenführen / einspielen | ✓ | ✓ (plus Erinnerung auf der Übersicht) |
 | KI-Aufgaben, KI-Bewertung | ✓ (mit API-Schlüssel) | – „Nur in der lokalen App verfügbar“ |
 
 Der API-Schlüssel und die KI-Aufgaben aus `data/` kommen nie in die Online-Version.
@@ -44,9 +44,11 @@ Die Lernblätter (die Dateien in `content/`) sind damit öffentlich. Eine Lizenz
 **Datenschutz** (steht auch in der App unter *⚙️ Einstellungen*): kein Konto, kein Tracking, keine Cookies. Fortschritt und
 Einstellungen bleiben im Browser; von GitHub Pages werden nur die App und die Lerninhalte geladen, nichts von anderen Anbietern.
 
-**Fortschritt umziehen:** In der lokalen App *Daten & Import → ⬇ Sicherung herunterladen*, dann in der Online-Version
-*Daten & Import → ⬆ Sicherung einspielen* (andersherum genauso). Der eingespielte Stand ersetzt den dortigen komplett.
-Löschst du die Browserdaten, ist der Online-Fortschritt weg – also ab und zu eine Sicherung herunterladen.
+**Fortschritt umziehen:** In der lokalen App *Daten & Import → ⬇ Sicherung herunterladen* (Datei `ap2-lernapp-sicherung-JJJJ-MM-TT.json`),
+dann in der Online-Version *Daten & Import → 🔀 Sicherung zusammenführen* (beide Stände bleiben erhalten, z. B. Handy und PC) oder
+*⬆ Sicherung einspielen (ersetzen)* (ersetzt den dortigen Stand komplett). Andersherum genauso.
+Löschst du die Browserdaten, ist der Online-Fortschritt weg – auch die automatischen Tagessicherungen im Browser. Also ab und zu eine
+Sicherung herunterladen; die Übersicht erinnert dich daran.
 
 **Lernblätter aktualisieren:** Nach dem Bearbeiten der `.md`-Dateien oder der Lernkarten im Ordner `AP-2`:
 

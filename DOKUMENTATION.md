@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–2 done, September 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–3 done, September 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -28,7 +28,7 @@ One React UI, three ways to run it:
 |---|---|---|---|
 | API `/api/…` | `server/apiPlugin.ts` via `configureServer` | same middleware via `configurePreviewServer` | none; `src/lib/staticApi.ts` |
 | Learning sheets | live from `AP-2/`, page reloads on change | from `AP-2/`, cache cleared on change (F5) | `content/` → `content.json` in the build |
-| Progress | `data/fortschritt.json` + daily backups | like dev | `localStorage` of the browser |
+| Progress | `data/fortschritt.json` + daily backups | like dev | `localStorage` of the browser + daily backups in IndexedDB |
 | AI (`.env.local`) | yes | yes | never read, the key can't end up in the build |
 
 - `src/lib/api.ts` picks the data source by `import.meta.env.MODE` (`pages` → static API).
@@ -53,6 +53,7 @@ lern-app/
 │  ├─ lernkarten.ts     flashcard JSON import (zod, ImportIssues)
 │  ├─ sqlUebungen.ts    SQL exercise JSON import (zod, ImportIssues)
 │  ├─ progress.ts       persisted progress: types, zod schema, checkProgressPut, migrateProgress
+│  ├─ mergeProgress.ts  merge a backup into the current progress (Daten & Import → Zusammenführen)
 │  └─ api.ts            API contract: request schemas + response types per route
 ├─ server/            runs only inside Vite (dev/preview)
 │  ├─ apiPlugin.ts      route table + middleware for /api/*
@@ -67,10 +68,11 @@ lern-app/
 ├─ content/           copy of sheets + JSON for Pages and tests (committed, therefore public)
 ├─ src/
 │  ├─ pages/            one file per page, mostly rendering
-│  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useConfirm
+│  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useConfirm, useBackupDownload
 │  ├─ components/       AnswerInput, Markdown, TaskParts, ErrorBoundary, ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs
 │  ├─ lib/              pure logic (progress, grading, stats, cards, shuffle, examTimer, sheets, sql, sqlLinks)
-│  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts
+│  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
+│  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts
 │  └─ sql/              sqlWorker.ts, engine.ts, runner.ts, checker.ts, errors.ts, lint.ts, types.ts
 ├─ tests/             Vitest; fixtures/ with old progress formats and a mini sheet set
 └─ data/              fortschritt.json, generierte-aufgaben.json, backups/ (gitignored, local app only)
@@ -137,7 +139,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 
 | Route | Page | What it does |
 |---|---|---|
-| `/` | Dashboard | **first visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
+| `/` | Dashboard | Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
 | `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate |
 | `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
@@ -148,7 +150,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
-| `/daten` | Daten & Import | import report, re-import (local), backup download/upload, reset, newest daily backup (local) |
+| `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
 
 **Not affected by the Prüferfragen switch:** the *Prüferkommentar* in solutions (the scoring scheme; `Solution.kommentar`) is always shown
 (owner decision Q1; tested in `tests/prueferfragen.test.ts`).
@@ -192,7 +194,8 @@ type Settings = {
   prueferfragen: boolean;       // default true: Prüferfragen in flashcards and theory
   fachgespraech: boolean;       // default true: Fachgespräch questions as flashcards
   leichtModus: boolean;         // default false: remembered flashcard mode (phase 6)
-  backupReminderDays: number;   // default 7 (phase 3)
+  backupReminderDays: number;   // default 7: backup reminder after N days (Pages)
+  lastBackupDownloadAt?: string; // YYYY-MM-DD of the last downloaded backup (optional, no version bump, see below)
 };
 ```
 
@@ -200,12 +203,39 @@ type Settings = {
 - `checkProgressPut` validates with zod, rejects a strong drop in `attempts` unless `reset: true` (reset button, backup restore),
   and rejects a stale `revision` with 409. Same rules on the server and in `staticApi.ts`.
 - `migrateProgress(raw)` runs versioned `MIGRATIONS` (1→2 revision, 2→3 cardReviewDays, 3→4 sql/sqlDays, 4→5 settings) and fills missing fields.
-  `migrateSettings` fills defaults, drops an invalid `examDate` and keeps unknown fields.
+  `migrateSettings` fills defaults, drops an invalid `examDate`/`lastBackupDownloadAt` and keeps unknown fields.
+  `lastBackupDownloadAt` was added without a version bump: it is optional, `SettingsSchema` is a loose object with all fields optional
+  and `migrateSettings` already kept unknown fields, so every v5 file (old or new) is valid and nothing needs converting.
+  Adding a **required** field or changing a meaning still needs a version bump.
   Backup files are read with `parseBackup` (`src/lib/backup.ts`, used by Daten & Import and the welcome screen).
   **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`, one per version).
 - Settings are changed only through `withSettings` (`src/lib/settings.ts`). "Fortschritt zurücksetzen" keeps the settings. The theme stays in `localStorage` (per device).
 - Local app: atomic writes with retry, daily backup `data/backups/fortschritt-YYYY-MM-DD.json` (last 14 kept), broken file → `*.defekt-<ts>`.
-- Pages: `localStorage` key `ap2-fortschritt`; an unreadable value is moved to `ap2-fortschritt-defekt`. No automatic backups yet.
+- Pages: `localStorage` key `ap2-fortschritt`; an unreadable value is moved to `ap2-fortschritt-defekt`.
+- **Pages protection (phase 3):**
+  - `navigator.storage.persist()` once per page load after the first successful save (`persistentStorage.ts`, via `createStaticApi`);
+    *Daten & Import* shows "Speicher dauerhaft: ja/nein/unbekannt". Unsupported or throwing → ignored.
+  - **Daily backups in IndexedDB** (`browserBackups.ts`, DB `ap2-lernapp`, store `sicherungen`, key = date): before the first save of a day
+    the previously stored JSON (state at the start of the day) is copied, at most one per day, the last 7 kept (`planBackup`, pure).
+    Runs fire-and-forget and serialized after the `localStorage` write, so a missing/blocked IndexedDB never delays or breaks saving.
+    `staticApi.backups()` returns `{ newest, count, items }`, `readBackup(date)` the JSON; restore = `parseBackup` + `replaceProgress`.
+    The local app is unchanged (`data/backups/`; its `readBackup` rejects with 501).
+  - **Backup reminder** (`backupReminder.ts`, pure): Dashboard banner "Letzte Sicherung vor N Tagen – ⬇ jetzt herunterladen" when
+    `lastBackupDownloadAt` is at least `backupReminderDays` old and there is a learning day (`activityDays`) after it; without any download
+    it counts from the first learning day. "Später" hides it until reload. The number of days is adjustable on `/einstellungen` (Pages only).
+  - Downloads go through `useBackupDownload` (all modes): file `ap2-lernapp-sicherung-YYYY-MM-DD.json` (`backupFileName`), then
+    `settings.lastBackupDownloadAt = today`.
+- **Merge on import** (`shared/mergeProgress.ts`, `mergeProgress(current, incoming)`, pure, `tests/mergeProgress.test.ts`), both sides migrated:
+  - `attempts`: union, duplicate = same `taskId` + `date`, sorted by date (stable) → never fewer attempts than before.
+  - `exams`: union by `id`; in both → the more advanced run (finished > submitted > started, then later time); sorted by finish time.
+  - `activeExam`: this browser's running exam; the backup's only if none runs here; dropped if the merged history has it finished.
+  - `cards`: `CardState` has no date → more `reviews` wins, then later `due`.
+  - `sql`: newer `lastCheckedAt` wins (then more attempts/hints); the earliest `solvedAt` of both sides is kept.
+  - `journal`: entry of the side with the newer attempt for that task (from `attempts`); tie → higher `stage`, then later `due`.
+  - `lernziele`: true on either side wins. `cardReviewDays` / `sqlDays`: max per day (not the sum – shared history would count twice).
+  - `settings`, `revision`, unknown fields: from the current state. Keeping the current revision (the saver sends its own base revision anyway)
+    and never dropping attempts means the following normal PUT (no `reset`) passes `checkProgressPut`.
+  - UI: merge uses `update()` (normal save), replace uses `replaceProgress()` (`reset: true`). The welcome screen only replaces (nothing stored yet).
 - Saving is debounced (`SAVE_DELAY_MS`), flushed on `pagehide`; state updates are pure, persisting happens outside the updater.
 - Multiple tabs: after a 409 the tab stops saving and shows a reload banner. On Pages the `storage` event marks other tabs as stale.
 

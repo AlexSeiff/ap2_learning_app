@@ -74,7 +74,7 @@ The app must work for any FIDPA trainee, not only the owner.
     hidden behind "Antwort zeigen" (active recall instead of reading the answer directly).
 2.4 Not affected: *Prüferkommentar* in solutions (that is the scoring scheme). See open question Q1.
 
-## Phase 3 – Protect progress on Pages [C]
+## Phase 3 – Protect progress on Pages [C] ✅ done
 
 On Pages, progress exists only in one browser's `localStorage`. This is the biggest risk for every user.
 
@@ -88,6 +88,10 @@ On Pages, progress exists only in one browser's `localStorage`. This is the bigg
     per card/SQL/Rechnen state the one with the newer `lastReviewed`/`lastCheckedAt`, journal by newer stage, days maps summed per day with max().
     Pure `mergeProgress(a, b)` in `shared/progress.ts`, well tested. This lets users move between phone and PC without losing either side.
 3.5 Backup file name with date and app name: `ap2-lernapp-sicherung-2026-09-30.json`.
+
+Implementation notes: `lastBackupDownloadAt` is an optional field in `settings` (no version bump, see DOKUMENTATION § 6), so phase 5
+still migrates **v5 → v6**. `CardState` has no `lastReviewed`, so the card merge uses the review count; the journal merge uses the newest
+attempt per task. Details of all merge rules: DOKUMENTATION § 6.
 
 ## Phase 4 – Professional solutions for calculation tasks [U]
 
