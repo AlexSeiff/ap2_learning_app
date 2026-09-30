@@ -93,7 +93,7 @@ Implementation notes: `lastBackupDownloadAt` is an optional field in `settings` 
 still migrates **v5 → v6**. `CardState` has no `lastReviewed`, so the card merge uses the review count; the journal merge uses the newest
 attempt per task. Details of all merge rules: DOKUMENTATION § 6.
 
-## Phase 4 – Professional solutions for calculation tasks [U]
+## Phase 4 – Professional solutions for calculation tasks [U] (4.1–4.3 ✅ done)
 
 Today the solution sheets write formulas as plain text ("770 / 11 = **70,00 Minuten** *(3 P)*"). Goal: look like a printed textbook solution.
 
@@ -115,6 +115,11 @@ Today the solution sheets write formulas as plain text ("770 / 11 = **70,00 Minu
     - Arithmetisches Mittel: $\bar{x} = \frac{\sum x_i}{n} = \frac{770}{11} = \mathbf{70{,}00\ \text{min}}$ *(3 P)*
     ```
 4.5 **Formelsammlung** page (`/material/formeln`), generated from the formula definitions of phase 5 (one source of truth), grouped by topic.
+
+Implementation notes (4.1–4.3): `<Markdown math>` loads a lazy `MathMarkdown` chunk (Lernen, solutions, `/druck` solution sheet, Material).
+Stray `$` are escaped by the Pandoc rule before parsing (`escapeStrayDollars`); the content has no `$` today. Solution styling is done by the
+rehype plugins in `src/lib/loesungStil.ts` (result box only for bold number + unit after `=`/`→` or a bold equation ending in number + unit).
+`Rechenweg` + `shared/rechenweg.ts` (`RechenSchritt`) are ready for phase 5. Details: DOKUMENTATION § 5. Still open: 4.4 (needs the owner's OK) and 4.5.
 
 ## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U]
 

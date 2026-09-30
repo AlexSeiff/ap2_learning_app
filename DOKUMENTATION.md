@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–3 done, September 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–3 and 4.1–4.3 done, September 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -41,7 +41,8 @@ One React UI, three ways to run it:
 ## 3. Architecture
 
 Stack: React 19, Vite 8, TypeScript 7 (`@typescript/native` for `tsc`; TypeScript 6 under the name `typescript` for typescript-eslint),
-Vitest 5, React Router 7 (HashRouter), react-markdown + remark-gfm, zod 4, sql.js (SQLite/WASM), CodeMirror 6, `@anthropic-ai/sdk`.
+Vitest 5, React Router 7 (HashRouter), react-markdown + remark-gfm, remark-math + rehype-katex + KaTeX (formulas, lazy chunk), zod 4,
+sql.js (SQLite/WASM), CodeMirror 6, `@anthropic-ai/sdk`.
 
 ```
 lern-app/
@@ -54,6 +55,7 @@ lern-app/
 │  ├─ sqlUebungen.ts    SQL exercise JSON import (zod, ImportIssues)
 │  ├─ progress.ts       persisted progress: types, zod schema, checkProgressPut, migrateProgress
 │  ├─ mergeProgress.ts  merge a backup into the current progress (Daten & Import → Zusammenführen)
+│  ├─ rechenweg.ts      RechenSchritt type + German number formatting for worked solutions (Rechenweg, phase 5)
 │  └─ api.ts            API contract: request schemas + response types per route
 ├─ server/            runs only inside Vite (dev/preview)
 │  ├─ apiPlugin.ts      route table + middleware for /api/*
@@ -69,8 +71,9 @@ lern-app/
 ├─ src/
 │  ├─ pages/            one file per page, mostly rendering
 │  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useConfirm, useBackupDownload
-│  ├─ components/       AnswerInput, Markdown, TaskParts, ErrorBoundary, ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs
-│  ├─ lib/              pure logic (progress, grading, stats, cards, shuffle, examTimer, sheets, sql, sqlLinks)
+│  ├─ components/       AnswerInput, Markdown (+ MathMarkdown, markdownComponents), TheoryMarkdown, Rechenweg, TaskParts, ErrorBoundary,
+│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs
+│  ├─ lib/              pure logic (progress, grading, stats, cards, shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar)
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
 │  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts
 │  └─ sql/              sqlWorker.ts, engine.ts, runner.ts, checker.ts, errors.ts, lint.ts, types.ts
@@ -166,6 +169,36 @@ AI-generated tasks (`data/`) never go into the Pages build.
 Dashboard due count, topic stats (`topicStats`), the card button on Thema. A disabled `?art=` in the URL counts as "alle". `CardState` is kept,
 so turning it back on restores everything. In Lernen, `TheoryMarkdown` removes the `> ❓ **Prüferfrage:** …` blockquotes and the lead text
 drops the mention.
+
+### Markdown, formulas and solution styling (phase 4.1–4.3)
+
+- **`<Markdown>`** (react-markdown + GFM) is used everywhere. **`<Markdown math>`** additionally renders `$…$` / `$$…$$` with KaTeX
+  (remark-math + rehype-katex). That variant (`components/MathMarkdown.tsx`) is a **lazy chunk** with the KaTeX CSS and fonts
+  (bundled by Vite into `assets/` with relative URLs → works offline and on Pages); until it has loaded, the plain variant is shown.
+  Used in: Lernen (theory + Prüferfrage boxes), model solutions (`GradePanel`), the solution sheet on `/druck` and Material.
+  **Not** in task texts, exams, attachments and flashcards. KaTeX inherits the text colour (light/dark/print); long display formulas scroll.
+- **`$` safety** (`src/lib/mathDollar.ts`, `escapeStrayDollars`, tested): before the math variant parses, every `$` that can't delimit
+  a formula by the **Pandoc rule** is escaped to `\$` – the opening `$` needs a non-space right after it, the closing `$` a non-space
+  before it and no digit after it; the next `$` closes (like remark-math); a formula stays on one line; `$$`, fenced code and inline
+  code are left alone. So prices like `5 $ und 3 $` stay text. The sheets and JSON contain no `$` today (test in `tests/math.test.ts`).
+  Write formulas as `$x = 70$`, not `$ x $`.
+- **Solution styling** (`src/lib/loesungStil.ts`, rehype plugins, tested in `tests/loesungStil.test.ts`), no content change:
+  - `rehypeLoesung` (only `<Markdown loesung>`: model solution and solution sheet):
+    `*(3 P)*` / `*(je 1 P)*` → points badge (`span.punkte`), floated right when it ends a line (then a line break follows, like in the sheet);
+    longer point notes (`*(je 4 P: 1 P Formel, …)*`) → small muted `span.punkte-hinweis`.
+    **Result box** `span.ergebnis` "Ergebnis" – conservative: bold text that is a number with a unit (`%`, `€`, `min`, `Tage`, `T€`, `(Tage²)`,
+    up to three words, not `P`/`Punkte`) directly after `=`, `≈`, `→` or `⇒`, or a bold equation/label ending in `= number unit` or
+    `: number unit` (`**IQR = 70 − 40 = 30 Minuten**`, `**Projektdauer: 25 Tage**`). Never inside tables, headings, links, formulas or the
+    Prüferkommentar. Bold numbers without a unit (`**−5**`, `**Q1 = 40**`, `**0,98**`) stay plain bold. About 60 results are boxed in the current sheets.
+    A paragraph starting with `*Prüferkommentar: …*` (also inside a blockquote, as on the solution sheet) → callout `aside.pk-box`
+    "🧑‍🏫 Prüferkommentar"; `GradePanel` renders `Solution.kommentar` in the same box.
+  - `rehypeTabellen` (every `<Markdown>`): columns whose body cells are all numbers (German format, optional `Σ`, `%`, `€`, `P`; empty/`–` ignored)
+    get `class="num"` (right-aligned, tabular figures) unless the column has an explicit alignment; rows whose first cell starts with
+    `Σ`, `Summe`, `Gesamt` or `Insgesamt` get `class="sum-row"` (bold, top rule).
+- **Rechenweg** (`components/Rechenweg.tsx` + `shared/rechenweg.ts`): numbered steps, each `Formel` (KaTeX) → `Einsetzen` (KaTeX) →
+  `Ergebnis` (`formatErgebnis`: `Intl.NumberFormat('de-DE')`, fixed decimals from `runden`, typographic minus, unit with a space) plus a
+  rounding note (`rundungsHinweis`, only if the shown value is actually rounded). `latexZahl` formats numbers for LaTeX (`70{,}00`).
+  Not used on a page yet (phase 5 will); it imports KaTeX, so only use it in lazy-loaded pages.
 
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
 print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top).
