@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Welcome } from '../components/Welcome';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { isDue } from '../lib/progress';
 import { sqlSummary } from '../lib/sql';
@@ -8,6 +9,11 @@ import { useStore } from '../lib/store';
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
 
 export function Dashboard() {
+  const { firstVisit } = useStore();
+  return firstVisit ? <Welcome /> : <Uebersicht />;
+}
+
+function Uebersicht() {
   const { content, progress } = useStore();
   const stats = topicStats(content, progress);
   const trends = examTrends(content, progress);

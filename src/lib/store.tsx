@@ -15,6 +15,8 @@ interface Store {
   saveState: SaveState;
   /** Meldung des Servers, wenn das Speichern abgelehnt wurde (z. B. HTTP 400). */
   saveError: string | null;
+  /** Erster Besuch: noch kein gespeicherter Fortschritt (bis zur ersten Änderung) – dann zeigt die Übersicht die Willkommensseite. */
+  firstVisit: boolean;
 }
 
 const StoreContext = createContext<Store | null>(null);
@@ -32,6 +34,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<SaveState>('gespeichert');
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [firstVisit, setFirstVisit] = useState(false);
   // Immer der neueste Stand – auch wenn mehrere update()-Aufrufe vor dem nächsten Rendern kommen.
   const progressRef = useRef<Progress | null>(null);
   const [saver] = useState(() =>
@@ -52,6 +55,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     Promise.all([api.content(), api.progress(), api.aiStatus()])
       .then(([c, p, s]) => {
         setContent(c);
+        setFirstVisit(p === null || p === undefined);
         progressRef.current = migrateProgress(p);
         saver.setBaseRevision(progressRef.current.revision);
         setProgress(progressRef.current);
@@ -78,6 +82,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (next: Progress, reset = false) => {
       progressRef.current = next;
       setProgress(next);
+      setFirstVisit(false);
       saver.schedule(next, reset);
     },
     [saver],
@@ -106,7 +111,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider
-      value={{ content, progress, aiEnabled: ai.enabled, aiModel: ai.model, update, replaceProgress, reload, saveState, saveError }}
+      value={{
+        content,
+        progress,
+        aiEnabled: ai.enabled,
+        aiModel: ai.model,
+        update,
+        replaceProgress,
+        reload,
+        saveState,
+        saveError,
+        firstVisit,
+      }}
     >
       {children}
     </StoreContext.Provider>

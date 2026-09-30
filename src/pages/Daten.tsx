@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { emptyProgress, migrateProgress } from '../../shared/progress';
+import { emptyProgress } from '../../shared/progress';
 import { useConfirm } from '../hooks/useConfirm';
 import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
+import { parseBackup } from '../lib/backup';
 import { downloadText } from '../lib/sheets';
 import { localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
@@ -27,10 +28,7 @@ export function Daten() {
 
   const importBackup = async (file: File) => {
     try {
-      const raw: unknown = JSON.parse(await file.text());
-      // Auch ältere Sicherungen einspielen: migrateProgress ergänzt fehlende Felder. Nur Dateien ohne Versuchsliste sind keine Sicherung.
-      if (!raw || typeof raw !== 'object' || !Array.isArray((raw as { attempts?: unknown }).attempts))
-        throw new Error('Keine gültige Sicherungsdatei.');
+      const backup = parseBackup(await file.text());
       const ok = await confirm({
         title: 'Sicherung einspielen?',
         message: `Dein aktueller Fortschritt wird komplett durch die Sicherung „${file.name}“ ersetzt.`,
@@ -38,7 +36,7 @@ export function Daten() {
         danger: true,
       });
       if (!ok) return;
-      replaceProgress(migrateProgress(raw));
+      replaceProgress(backup);
       setMsg('Sicherung wiederhergestellt.');
     } catch (e) {
       setMsg(`Fehler: ${(e as Error).message}`);

@@ -397,3 +397,6 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 /* Einstellungen */
 .field { display: flex; flex-direction: column; gap: 3px; font-size: 0.85rem; color: var(--muted); }
 .field input, .field select { font-size: 1rem; color: var(--text); }
+.welcome { padding-left: 1.3em; }
+.welcome li { margin: 0.8em 0; }
+.welcome .field { margin-top: 8px; max-width: 260px; }
