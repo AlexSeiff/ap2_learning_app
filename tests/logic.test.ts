@@ -3,7 +3,7 @@ import type { Task } from '../shared/types';
 import { autoGrade, ihkGrade, parseGermanNumber } from '../src/lib/grading';
 import { emptyProgress } from '../shared/progress';
 import { addDays, rateCard, recordAttempt } from '../src/lib/progress';
-import { daysUntilExam } from '../src/lib/stats';
+import { daysUntilExam, formatIsoDate } from '../src/lib/stats';
 
 const T0 = '2026-09-21';
 const attempt = (points: number, max = 10) => ({ taskId: '01-A1', date: T0, points, max, mode: 'einzel' as const });
@@ -102,7 +102,19 @@ describe('Datum', () => {
   it('addDays über Monatsgrenzen', () => {
     expect(addDays('2026-09-28', 7)).toBe('2026-10-05');
   });
-  it('Countdown', () => {
-    expect(daysUntilExam(new Date(2026, 8, 21))).toBe(65);
+  it('Countdown zum eigenen Prüfungstermin', () => {
+    expect(daysUntilExam('2026-11-25', new Date(2026, 8, 21))).toBe(65);
+    expect(daysUntilExam('2026-11-25', new Date(2026, 10, 25, 23, 59))).toBe(0);
+    expect(daysUntilExam('2026-11-25', new Date(2026, 10, 26))).toBe(-1);
+    // Zeitumstellung Ende Oktober: trotzdem ganze Tage
+    expect(daysUntilExam('2026-11-01', new Date(2026, 9, 24, 12))).toBe(8);
+  });
+  it('ohne Prüfungstermin kein Countdown', () => {
+    expect(daysUntilExam(undefined)).toBeUndefined();
+    expect(daysUntilExam('')).toBeUndefined();
+    expect(daysUntilExam('25.11.2026')).toBeUndefined();
+  });
+  it('formatIsoDate', () => {
+    expect(formatIsoDate('2026-11-25')).toBe('25.11.2026');
   });
 });

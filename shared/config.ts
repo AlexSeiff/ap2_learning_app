@@ -1,7 +1,6 @@
 // Zentrale Einstellungen der Lern-App. Nur Werte, keine Logik – wird von Client, Server und vite.config.ts importiert.
 
-/** Datum der schriftlichen Prüfung AP2 (YYYY-MM-DD). */
-export const EXAM_DATE = '2026-11-25';
+// Der Prüfungstermin ist eine persönliche Einstellung (Progress.settings.examDate), kein fester Wert.
 
 /** Bearbeitungszeit einer Übungsklausur in Minuten. */
 export const EXAM_MINUTES = 90;

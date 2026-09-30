@@ -393,3 +393,7 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
   .sql-toolbar label, .sql-toolbar select { width: 100%; }
   .sql-status { min-width: 0; }
 }
+
+/* Einstellungen */
+.field { display: flex; flex-direction: column; gap: 3px; font-size: 0.85rem; color: var(--muted); }
+.field input, .field select { font-size: 1rem; color: var(--text); }

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { isDue } from '../lib/progress';
 import { sqlSummary } from '../lib/sql';
-import { daysUntilExam, examTrends, studyStreak, topicStats } from '../lib/stats';
+import { daysUntilExam, examTrends, formatIsoDate, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
@@ -12,7 +12,8 @@ export function Dashboard() {
   const stats = topicStats(content, progress);
   const trends = examTrends(content, progress);
   const streak = studyStreak(progress);
-  const days = daysUntilExam();
+  const { examDate } = progress.settings;
+  const days = daysUntilExam(examDate);
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
   const dueCards = content.flashcards.filter((c) => {
     const s = progress.cards[c.id];
@@ -33,10 +34,25 @@ export function Dashboard() {
     <div className="page">
       <h1>Übersicht</h1>
       <div className="kpis">
-        <div className="kpi">
-          <span className="kpi-value">{days > 0 ? days : days === 0 ? 'Heute!' : '–'}</span>
-          <span className="kpi-label">{days > 0 ? 'Tage bis zur AP2 (25.11.2026)' : 'Prüfungstag'}</span>
-        </div>
+        {days === undefined || !examDate ? (
+          <Link to="/einstellungen" className="kpi">
+            <span className="kpi-value">📅</span>
+            <span className="kpi-label">Prüfungstermin eintragen →</span>
+          </Link>
+        ) : (
+          <Link to="/einstellungen" className="kpi" title="Prüfungstermin ändern">
+            <span className="kpi-value">{days > 0 ? days : days === 0 ? 'Heute!' : '–'}</span>
+            <span className="kpi-label">
+              {days > 1
+                ? `Tage bis zur Prüfung (${formatIsoDate(examDate)})`
+                : days === 1
+                  ? `Tag bis zur Prüfung (${formatIsoDate(examDate)})`
+                  : days === 0
+                    ? 'Prüfungstag – viel Erfolg! 🍀'
+                    : `Prüfung am ${formatIsoDate(examDate)} vorbei · neuen Termin eintragen →`}
+            </span>
+          </Link>
+        )}
         <Link to="/fehlerjournal" className="kpi">
           <span className="kpi-value">{dueJournal}</span>
           <span className="kpi-label">Wiederholungen fällig</span>

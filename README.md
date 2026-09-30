@@ -1,6 +1,6 @@
 # AP2 Lern-App
 
-Lokale Lern-App für die **IHK-Abschlussprüfung Teil 2 – Fachinformatiker/-in Daten- und Prozessanalyse** (25.11.2026).
+Lokale Lern-App für die **IHK-Abschlussprüfung Teil 2 – Fachinformatiker/-in Daten- und Prozessanalyse**.
 Die App liest die Markdown-Lernblätter aus dem Ordner `AP-2` und macht daraus Übungen mit **getrennten Lösungsblättern**.
 
 ## Starten
@@ -60,7 +60,7 @@ Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen 
 
 | Bereich | Was es tut |
 |---|---|
-| **Übersicht** | Countdown zur Prüfung, Lernserie (Tage in Folge), fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
+| **Übersicht** | Countdown zu deinem Prüfungstermin (unter *Einstellungen* eintragen), Lernserie (Tage in Folge), fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
 | **Lernen** | Theorie aller 15 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
 | **Karteikarten** | 407 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (24 Decks) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
@@ -68,7 +68,7 @@ Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen 
 | **Fehlerjournal** | Jede Aufgabe unter voller Punktzahl kommt nach 1, 3 und 7 Tagen wieder |
 | **KI-Aufgaben** | Neue IHK-Aufgaben (MC, Lückentext, Zuordnung, Rechnen, offen) mit Musterlösung – nur mit API-Schlüssel |
 | **Material** | Lernzettel Kernthemen, Themenliste |
-| **Einstellungen** | Persönliche Einstellungen – sie stehen im Fortschritt und ziehen mit jeder Sicherung um |
+| **Einstellungen** | Eigener Prüfungstermin; persönliche Einstellungen – sie stehen im Fortschritt und ziehen mit jeder Sicherung um |
 | **Daten & Import** | Importbericht, Neu-Import, Fortschritt sichern/wiederherstellen/zurücksetzen |
 
 ### Getrennte Aufgaben- und Lösungsblätter (PDF)
@@ -199,7 +199,7 @@ Aufbau:
 ```
 lern-app/
 ├─ shared/        Code für Client, Server und Tests
-│  ├─ config.ts     Einstellungen: Prüfungsdatum, Klausurdauer, neue Karten je Runde, Intervalle, Speicherverzögerung, Port
+│  ├─ config.ts     feste Werte: Klausurdauer, neue Karten je Runde, Intervalle, Speicherverzögerung, Port
 │  ├─ progress.ts   gespeicherter Fortschritt: Typen, zod-Schema, Prüfung von PUT /api/progress, Migration
 │  ├─ api.ts        API-Vertrag: Request-Schemas und Antworttypen je Route (für apiPlugin.ts und src/lib/api.ts)
 │  ├─ types.ts      Inhaltsmodell (Thema, Aufgabe, Karteikarte, Klausur …)

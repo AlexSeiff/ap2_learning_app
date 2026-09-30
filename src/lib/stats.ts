@@ -2,13 +2,21 @@ import type { Content, Topic } from '../../shared/types';
 import { percent } from './grading';
 import { addDays, localDate } from './progress';
 import type { Progress } from '../../shared/progress';
-import { EXAM_DATE } from '../../shared/config';
+import { isIsoDate } from '../../shared/progress';
 
-export function daysUntilExam(today = new Date()): number {
-  const [y, m, d] = EXAM_DATE.split('-').map(Number);
+/** Tage bis zum eigenen Prüfungstermin (YYYY-MM-DD); 0 = heute, negativ = vorbei, undefined = keiner eingetragen. */
+export function daysUntilExam(examDate: string | undefined, today = new Date()): number | undefined {
+  if (!isIsoDate(examDate)) return undefined;
+  const [y, m, d] = examDate.split('-').map(Number);
   const exam = new Date(y, m - 1, d);
   const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   return Math.round((exam.getTime() - start.getTime()) / 86_400_000);
+}
+
+/** YYYY-MM-DD → „25.11.2026“ (ohne Zeitzonen-Verschiebung). */
+export function formatIsoDate(date: string): string {
+  const [y, m, d] = date.split('-');
+  return `${d}.${m}.${y}`;
 }
 
 export interface TopicStats {

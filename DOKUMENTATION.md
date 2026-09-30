@@ -46,7 +46,7 @@ Vitest 5, React Router 7 (HashRouter), react-markdown + remark-gfm, zod 4, sql.j
 ```
 lern-app/
 ├─ shared/            used by client, server and tests (no file-system access)
-│  ├─ config.ts         constants: EXAM_DATE, EXAM_MINUTES, NEW_PER_SESSION, JOURNAL_INTERVALS, CARD_INTERVALS, SAVE_DELAY_MS, DEV_PORT
+│  ├─ config.ts         constants: EXAM_MINUTES, NEW_PER_SESSION, JOURNAL_INTERVALS, CARD_INTERVALS, SAVE_DELAY_MS, DEV_PORT
 │  ├─ types.ts          content model (Topic, Task, Flashcard, Deck, Exam, SqlDataset, SqlExercise, Content …)
 │  ├─ parser.ts         Markdown sheet + solution parser (pure, line/regex based)
 │  ├─ lernkarten.ts     flashcard JSON import (zod, ImportIssues)
@@ -135,7 +135,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 
 | Route | Page | What it does |
 |---|---|---|
-| `/` | Dashboard | countdown to `EXAM_DATE`, study streak, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
+| `/` | Dashboard | countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen inline, ticking off learning goals |
 | `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate |
 | `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
@@ -145,7 +145,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
-| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`), see § 6 |
+| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date |
 | `/daten` | Daten & Import | import report, re-import (local), backup download/upload, reset, newest daily backup (local) |
 
 **Grading**
