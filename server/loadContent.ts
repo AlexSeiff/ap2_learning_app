@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { buildContent } from '../shared/parser';
 import type { Content } from '../shared/types';
+import { pruefeRechenUebung } from '../src/rechnen/pruefen';
 
 /** Ordner mit den Lernblättern: standardmäßig der Ordner oberhalb der App (AP-2). Der Dev-Server liest live von hier. */
 export const SOURCE_DIR = resolve(process.env.LERN_QUELLE ?? join(import.meta.dirname, '..', '..'));
@@ -39,5 +40,6 @@ export function listContentFiles(dir = SOURCE_DIR): string[] {
 
 export function loadContent(dir = SOURCE_DIR): Content {
   const files = listContentFiles(dir).map((name) => ({ name, text: readFileSync(join(dir, name), 'utf8') }));
-  return buildContent(files);
+  // Rechenübungen werden gegen ihre Vorlage geprüft (unbekannte Vorlage, falsche Daten, fehlende Eingaben → Importhinweis).
+  return buildContent(files, { pruefeRechenUebung });
 }
