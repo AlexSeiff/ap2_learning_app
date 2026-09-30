@@ -401,3 +401,11 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .welcome li { margin: 0.8em 0; }
 .welcome .field { margin-top: 8px; max-width: 260px; }
 .filters label.check { flex-direction: row; align-items: center; align-self: flex-end; gap: 6px; font-size: 0.9rem; color: var(--text); padding-bottom: 8px; cursor: pointer; }
+
+/* Prüferfragen in der Theorie */
+.pf-box { margin: 1em 0; padding: 0.7em 1em; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.pf-label { font-weight: 600; font-size: 0.92rem; }
+.pf-question p { margin: 0.3em 0; }
+.pf-answer > summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 0.92rem; margin-top: 0.3em; }
+.pf-answer[open] > summary { margin-bottom: 0.2em; }
+.pf-answer .md { border-top: 1px dashed var(--border); padding-top: 0.3em; }

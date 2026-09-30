@@ -138,7 +138,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | Route | Page | What it does |
 |---|---|---|
 | `/` | Dashboard | **first visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
-| `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen inline, ticking off learning goals |
+| `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
 | `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate |
 | `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
 | `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet |
