@@ -7,6 +7,7 @@ import { checkProgressPut } from '../../shared/progress';
 import type { Content } from '../../shared/types';
 import type { DataSource } from './api';
 import { ApiError } from './apiError';
+import { createPersistRequest } from './persistentStorage';
 
 /** Schlüssel des Fortschritts im localStorage. Inhalt: dasselbe JSON wie data/fortschritt.json. */
 export const PROGRESS_KEY = 'ap2-fortschritt';
@@ -57,7 +58,10 @@ export function createLocalProgressStore(storage: () => KeyValueStorage) {
   };
 }
 
-export function createStaticApi(store = createLocalProgressStore(() => localStorage)): DataSource {
+export function createStaticApi(
+  store = createLocalProgressStore(() => localStorage),
+  requestPersist: () => Promise<unknown> = createPersistRequest(),
+): DataSource {
   const aiUnavailable = () => Promise.reject(new ApiError(501, AI_UNAVAILABLE));
   return {
     content: async () => {
@@ -66,7 +70,12 @@ export function createStaticApi(store = createLocalProgressStore(() => localStor
       return (await res.json()) as Content;
     },
     progress: async () => store.read(),
-    saveProgress: async (p) => store.save(p),
+    saveProgress: async (p) => {
+      const result = store.save(p);
+      // Nach dem ersten Speichern um dauerhaften Speicher bitten (einmal pro Seitenaufruf, Fehler egal).
+      void requestPersist().catch(() => {});
+      return result;
+    },
     saveProgressOnUnload: (p) => {
       try {
         store.save(p);

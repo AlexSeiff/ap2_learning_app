@@ -4,6 +4,7 @@ import { useConfirm } from '../hooks/useConfirm';
 import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { parseBackup } from '../lib/backup';
 import { downloadText } from '../lib/sheets';
+import { isStoragePersisted } from '../lib/persistentStorage';
 import { localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
 
@@ -13,10 +14,13 @@ export function Daten() {
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [backups, setBackups] = useState<{ newest: string | null; count: number } | null>(null);
+  /** Pages: Ist der Browser-Speicher dauerhaft (navigator.storage.persisted)? undefined = unbekannt. */
+  const [persisted, setPersisted] = useState<boolean | undefined | null>(null);
 
   useEffect(() => {
     // Tagessicherungen gibt es nur in der lokalen App (data/backups/).
     if (!IS_STATIC) api.backups().then(setBackups, () => setBackups(null));
+    else isStoragePersisted().then(setPersisted);
   }, []);
 
   const tasks = Object.values(content.tasks);
@@ -131,6 +135,22 @@ export function Daten() {
           )}{' '}
           {progress.attempts.length} Versuche, {progress.exams.length} Klausuren, {Object.keys(progress.cards).length} gelernte Karten.
         </p>
+        {IS_STATIC && persisted !== null && (
+          <p className="hint">
+            💽 Speicher dauerhaft:{' '}
+            {persisted === true ? (
+              <b>ja</b>
+            ) : persisted === false ? (
+              <>
+                <b>nein</b> – der Browser darf die Daten bei Platzmangel oder nach längerer Pause löschen (Safari/iOS nach etwa 7 Tagen ohne
+                Besuch). Er wird nach dem Speichern gefragt; manche Browser sagen erst ja, wenn du die Seite öfter nutzt oder als
+                Lesezeichen speicherst.
+              </>
+            ) : (
+              <>unbekannt (dein Browser kann das nicht melden).</>
+            )}
+          </p>
+        )}
         {IS_STATIC && (
           <p className="hint">
             🗄 Hier gibt es keine automatische Tagessicherung. Lade ab und zu eine Sicherung herunter – Browserdaten löschen löscht auch den
