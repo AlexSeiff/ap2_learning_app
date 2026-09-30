@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { defaultSettings, PROGRESS_VERSION } from '../shared/progress';
-import { parseBackup } from '../src/lib/backup';
+import { backupFileName, parseBackup } from '../src/lib/backup';
 
 const fixture = (name: string) => readFileSync(join(import.meta.dirname, 'fixtures', name), 'utf8');
 
@@ -19,5 +19,9 @@ describe('parseBackup', () => {
   it('lehnt Dateien ohne Versuchsliste und kaputtes JSON mit deutscher Meldung ab', () => {
     expect(() => parseBackup('{ kaputt')).toThrow('kein gültiges JSON');
     for (const text of ['null', '[]', '{}', '{"attempts": 3}']) expect(() => parseBackup(text)).toThrow('Keine gültige Sicherungsdatei.');
+  });
+
+  it('Dateiname mit App-Name und Datum', () => {
+    expect(backupFileName('2026-09-30')).toBe('ap2-lernapp-sicherung-2026-09-30.json');
   });
 });

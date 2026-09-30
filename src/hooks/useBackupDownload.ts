@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { backupFileName } from '../lib/backup';
 import { localDate } from '../lib/progress';
 import { withSettings } from '../lib/settings';
 import { downloadText } from '../lib/sheets';
@@ -9,7 +10,7 @@ export function useBackupDownload(): () => void {
   const { progress, update } = useStore();
   return useCallback(() => {
     const today = localDate();
-    downloadText(`AP2_Fortschritt_${today}.json`, JSON.stringify(progress, null, 2), 'application/json');
+    downloadText(backupFileName(today), JSON.stringify(progress, null, 2), 'application/json');
     if (progress.settings.lastBackupDownloadAt !== today) update((p) => withSettings(p, { lastBackupDownloadAt: today }));
   }, [progress, update]);
 }
