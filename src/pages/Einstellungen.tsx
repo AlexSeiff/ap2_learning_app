@@ -50,6 +50,38 @@ export function Einstellungen() {
         )}
       </section>
 
+      <section className="card">
+        <h2>❓ Fragen aus den Lernblättern</h2>
+        <label className="choice">
+          <input
+            type="checkbox"
+            checked={settings.prueferfragen}
+            onChange={(e) => update((p) => withSettings(p, { prueferfragen: e.target.checked }))}
+          />
+          <span>
+            <b>❓ Prüferfragen einbeziehen</b>
+            <br />
+            <span className="hint">Die Prüferfragen aus der Theorie – im Lernen-Teil und als Karteikarten.</span>
+          </span>
+        </label>
+        <label className="choice">
+          <input
+            type="checkbox"
+            checked={settings.fachgespraech}
+            onChange={(e) => update((p) => withSettings(p, { fachgespraech: e.target.checked }))}
+          />
+          <span>
+            <b>🎤 Fachgespräch-Fragen einbeziehen</b>
+            <br />
+            <span className="hint">Die Fragen für das Fachgespräch am Ende jedes Lernblatts – als Karteikarten.</span>
+          </span>
+        </label>
+        <p className="hint">
+          Ausgeschaltet heißt nur ausgeblendet: Dein Lernstand dieser Karten bleibt erhalten und ist beim Einschalten wieder da. Der
+          Prüferkommentar in den Musterlösungen (das Punkteschema) bleibt immer sichtbar.
+        </p>
+      </section>
+
       <p className="hint">
         💾 Deine Einstellungen stehen in deinem Fortschritt ({IS_STATIC ? 'in diesem Browser' : 'lokal auf diesem Rechner'}) und ziehen mit
         jeder Sicherung um. Sichern und Einspielen: <Link to="/daten">Daten &amp; Import</Link>. Das Farbschema (🖥️ / 🌙 / ☀️ unten in der

@@ -2,6 +2,7 @@ import type { CardType, Flashcard } from '../../shared/types';
 import { Markdown } from '../components/Markdown';
 import { useCardFilters, useCardSession } from '../hooks/useCardSession';
 import { isDue } from '../lib/progress';
+import { withSettings } from '../lib/settings';
 import { useStore } from '../lib/store';
 import { NEW_PER_SESSION } from '../../shared/config';
 
@@ -20,7 +21,8 @@ const KIND_LABELS: Record<Flashcard['kind'], string> = {
 };
 
 export function Karteikarten() {
-  const { content, progress } = useStore();
+  const { content, progress, update } = useStore();
+  const { settings } = progress;
   const { f, set, deck } = useCardFilters();
   const { session, index, card, flipped, done, start, end, flip, rate } = useCardSession();
 
@@ -167,6 +169,22 @@ export function Karteikarten() {
               </option>
             ))}
           </select>
+        </label>
+        <label className="check" title="Auch unter ⚙️ Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
+          <input
+            type="checkbox"
+            checked={settings.prueferfragen}
+            onChange={(e) => update((p) => withSettings(p, { prueferfragen: e.target.checked }))}
+          />
+          ❓ Prüferfragen einbeziehen
+        </label>
+        <label className="check" title="Auch unter ⚙️ Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
+          <input
+            type="checkbox"
+            checked={settings.fachgespraech}
+            onChange={(e) => update((p) => withSettings(p, { fachgespraech: e.target.checked }))}
+          />
+          🎤 Fachgespräch einbeziehen
         </label>
       </div>
       <div className="kpis">
