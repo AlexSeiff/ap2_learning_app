@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import type { Components, ExtraProps } from 'react-markdown';
+import type { Components, ExtraProps, Options } from 'react-markdown';
 import { Link } from 'react-router-dom';
+import { rehypeLoesung, rehypeTabellen } from '../lib/loesungStil';
 import { datasetForSource, sqlEditorLink } from '../lib/sqlLinks';
 
 // Gemeinsame Bausteine für <Markdown> und die Formel-Variante (MathMarkdown, eigener Chunk).
@@ -64,4 +65,14 @@ export interface MarkdownProps {
   children: string;
   className?: string;
   source?: string | false;
+  /** Musterlösung: Punkte-Abzeichen, Ergebnis-Kasten, Prüferkommentar-Kasten (lib/loesungStil.ts). */
+  loesung?: boolean;
+}
+
+const tabellen: NonNullable<Options['rehypePlugins']> = [rehypeTabellen];
+const loesungPlugins: NonNullable<Options['rehypePlugins']> = [rehypeTabellen, rehypeLoesung];
+
+/** rehype-Plugins zur Gestaltung: Tabellen immer, Lösungs-Gestaltung nur mit `loesung`. */
+export function stylePlugins(loesung?: boolean): NonNullable<Options['rehypePlugins']> {
+  return loesung ? loesungPlugins : tabellen;
 }
