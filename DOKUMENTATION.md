@@ -145,7 +145,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
-| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date |
+| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download/upload, reset, newest daily backup (local) |
 
 **Grading**

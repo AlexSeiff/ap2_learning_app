@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { isIsoDate } from '../../shared/progress';
+import { Datenschutz } from '../components/Datenschutz';
 import { IS_STATIC } from '../lib/api';
 import { withSettings } from '../lib/settings';
 import { daysUntilExam } from '../lib/stats';
@@ -54,6 +55,8 @@ export function Einstellungen() {
         jeder Sicherung um. Sichern und Einspielen: <Link to="/daten">Daten &amp; Import</Link>. Das Farbschema (🖥️ / 🌙 / ☀️ unten in der
         Navigation) merkt sich jedes Gerät selbst.
       </p>
+
+      <Datenschutz />
     </div>
   );
 }

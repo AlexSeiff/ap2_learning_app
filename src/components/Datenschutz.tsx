@@ -1,0 +1,37 @@
+import { IS_STATIC } from '../lib/api';
+
+/** Kurzer Datenschutz-Hinweis (Einstellungen). Bewusst ohne Lizenzangabe – die legt der Betreiber fest. */
+export function Datenschutz() {
+  return (
+    <section className="card" id="datenschutz">
+      <h2>🔒 Datenschutz</h2>
+      <ul>
+        <li>Kein Konto, keine Anmeldung.</li>
+        <li>Kein Tracking, keine Statistik-Tools, keine Cookies, keine Werbung.</li>
+        {IS_STATIC ? (
+          <>
+            <li>
+              Dein Fortschritt und deine Einstellungen bleiben <b>nur in diesem Browser</b> (localStorage) und werden nirgendwohin
+              übertragen. Löschst du die Browserdaten, sind sie weg – lade deshalb ab und zu eine Sicherung herunter.
+            </li>
+            <li>
+              Geladen werden nur die App und die Lerninhalte von GitHub Pages – nichts von anderen Anbietern. Wie bei jeder Website sieht
+              der Hoster (GitHub) dabei technisch nötige Verbindungsdaten wie deine IP-Adresse.
+            </li>
+            <li>Die Lerninhalte sind öffentlich und für alle gleich; KI-Funktionen gibt es in dieser Version nicht.</li>
+          </>
+        ) : (
+          <>
+            <li>
+              Dein Fortschritt und deine Einstellungen liegen nur auf diesem Rechner (<code>lern-app/data/</code>).
+            </li>
+            <li>
+              Nur wenn du die KI-Funktionen mit deinem eigenen API-Schlüssel einschaltest, gehen die Aufgabe und deine Antwort an die
+              Claude-API von Anthropic.
+            </li>
+          </>
+        )}
+      </ul>
+    </section>
+  );
+}

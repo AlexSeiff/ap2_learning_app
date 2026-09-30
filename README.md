@@ -1,7 +1,8 @@
 # AP2 Lern-App
 
-Lokale Lern-App für die **IHK-Abschlussprüfung Teil 2 – Fachinformatiker/-in Daten- und Prozessanalyse**.
+Lern-App für die **IHK-Abschlussprüfung Teil 2 – Fachinformatiker/-in Daten- und Prozessanalyse**.
 Die App liest die Markdown-Lernblätter aus dem Ordner `AP-2` und macht daraus Übungen mit **getrennten Lösungsblättern**.
+Sie läuft lokal (mit Server) oder als [Online-Version](#online-version-github-pages) für alle, die sich auf die Prüfung vorbereiten.
 
 ## Starten
 
@@ -38,7 +39,10 @@ Das ist dieselbe App als statische Seite – ohne Server:
 | KI-Aufgaben, KI-Bewertung | ✓ (mit API-Schlüssel) | – „Nur in der lokalen App verfügbar“ |
 
 Der API-Schlüssel und die KI-Aufgaben aus `data/` kommen nie in die Online-Version.
-Die Lernblätter (die Dateien in `content/`) sind damit öffentlich.
+Die Lernblätter (die Dateien in `content/`) sind damit öffentlich. Eine Lizenz für die Inhalte ist noch nicht festgelegt.
+
+**Datenschutz** (steht auch in der App unter *⚙️ Einstellungen*): kein Konto, kein Tracking, keine Cookies. Fortschritt und
+Einstellungen bleiben im Browser; von GitHub Pages werden nur die App und die Lerninhalte geladen, nichts von anderen Anbietern.
 
 **Fortschritt umziehen:** In der lokalen App *Daten & Import → ⬇ Sicherung herunterladen*, dann in der Online-Version
 *Daten & Import → ⬆ Sicherung einspielen* (andersherum genauso). Der eingespielte Stand ersetzt den dortigen komplett.
