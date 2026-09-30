@@ -1,4 +1,4 @@
-# Deep Dive 9: Datenqualität sicherstellen (KW 37)
+# Deep Dive 9: Datenqualität sicherstellen
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -189,7 +189,7 @@ Der ETL-Lauf (→ Deep Dive 8) ist der zentrale Kontrollpunkt: Regelwerk anwende
 
 # Übungsklausur Datenqualität (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 37** am Stück, handschriftlich, mit Taschenrechner.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Taschenrechner.
 
 ## Anlage – Auszug aus der Kundentabelle (10 Datensätze)
 
@@ -255,7 +255,7 @@ Bearbeite die Klausur **am Ende von KW 37** am Stück, handschriftlich, mit Tasc
 
 ---
 
-## Lernziel-Check (Ende KW 37 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich nenne fünf Dimensionen mit je einer Prüf- und einer Sicherungsmaßnahme.
 - [ ] Ich unterscheide Gültigkeit und Korrektheit an einem Beispiel.

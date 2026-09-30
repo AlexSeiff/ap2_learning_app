@@ -126,7 +126,7 @@ c) PRODUKT (0,n) ── lagert in ── (0,n) LAGER · Chen: **m:n** *(2 P)*
 | Punkte | Note | Konsequenz |
 |---|---|---|
 | 92–100 | sehr gut | Thema sitzt – Normalisierung nur noch als Karteikarte pflegen |
-| 81–91 | gut | Fehlerthemen ins Fehlerjournal, in KW 32 eine neue breite Tabelle normalisieren |
+| 81–91 | gut | Fehlerthemen ins Fehlerjournal, in ein bis zwei Wochen eine neue breite Tabelle normalisieren |
 | < 81 | | Teil 2 + 3 des Lernzettels wiederholen, Klausur nach einer Woche neu schreiben |
 
 Ein Hinweis aus der Korrekturpraxis: Bei Normalisierungsaufgaben verlieren gute Kandidaten Punkte fast nie am Schema, sondern an **fehlenden Begründungen** (Abhängigkeiten nicht benannt) und **fehlenden Schlüsselkennzeichnungen**. Schreib beides immer explizit hin – das sind geschenkte Punkte auf dem Weg zur 1.

@@ -148,8 +148,8 @@ Argumentation mit der **1-10-100-Regel**: Einen Fehler bereits bei der Erfassung
 
 ---
 
-## Zwischenstand deines Lernplans
+## Zwischenstand
 
-Mit Deep Dive 9 ist die **Vertiefungsphase bis KW 37** abgedeckt. Es fehlen noch: DSGVO und IT-Sicherheit (KW 38) sowie Visualisierung und Pseudocode (KW 39). Danach beginnt ab KW 40 die Anwendungsphase mit Projektmanagement, WiSo und den ersten vollständigen Altklausuren.
+Mit Deep Dive 9 ist die **Vertiefung der Kernthemen** weitgehend abgedeckt. Es fehlen noch: DSGVO und IT-Sicherheit (Deep Dive 10) sowie Visualisierung und Pseudocode (Deep Dive 11). Danach folgt die Anwendung mit Projektmanagement, WiSo und den ersten vollständigen Altklausuren.
 
 Vergiss über dem schriftlichen Stoff nicht den **Projektantrag** – er ist mit 50 % der Gesamtnote der größte Einzelposten und die Frist deiner IHK liegt erfahrungsgemäß deutlich vor dem Prüfungstermin.

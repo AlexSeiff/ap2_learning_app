@@ -2,7 +2,6 @@
   "meta": {
     "titel": "AP2 Lernkarten – Fachinformatiker/-in Daten- und Prozessanalyse",
     "pruefung": "IHK Abschlussprüfung Teil 2",
-    "pruefungstermin": "2026-11-25",
     "erstellt_am": "2026-09-21",
     "aktualisiert_am": "2026-09-28",
     "version": "1.1",
@@ -3338,7 +3337,7 @@
       "id": "prj",
       "titel": "Projektarbeit, Präsentation & Fachgespräch",
       "pruefungsbereich": "Projektarbeit, Präsentation und Fachgespräch",
-      "quelle": "Themenliste und Lernplan (noch nicht vertieft)",
+      "quelle": "Themenliste (noch nicht vertieft)",
       "status": "offen",
       "anzahl_karten": 12,
       "karten": [

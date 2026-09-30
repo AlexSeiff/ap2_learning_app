@@ -182,8 +182,8 @@ Für die Projektdokumentation ist er unverzichtbar, weil er der einzige objektiv
 
 ---
 
-## Zwischenstand deines Lernplans
+## Zwischenstand
 
-Mit Deep Dive 12 sind die Phasen 1 und 2 vollständig abgedeckt, und die Anwendungsphase ist eröffnet. Es folgen laut Plan: **WiSo** (KW 41–42) sowie ab KW 42 die ersten **vollständigen Altklausuren unter Zeitbedingungen**.
+Mit Deep Dive 12 sind Grundlagen und Vertiefung vollständig abgedeckt, und die Anwendungsphase ist eröffnet. Es folgen: **WiSo** (Deep Dive 13 und 14) sowie die ersten **vollständigen Altklausuren unter Zeitbedingungen**.
 
 Ab hier verschiebt sich der Schwerpunkt vom Lernen zum **Prüfen unter Realbedingungen** – besorge dir rechtzeitig echte Altklausuren deiner Fachrichtung, denn kein Lernzettel ersetzt das Gefühl für Aufgabenstil und Zeitdruck.

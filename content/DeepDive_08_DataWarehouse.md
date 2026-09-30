@@ -1,4 +1,4 @@
-# Deep Dive 8: Data Warehouse & Big Data (KW 36)
+# Deep Dive 8: Data Warehouse & Big Data
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -230,7 +230,7 @@ Der Begriff **Lakehouse** bezeichnet Ansätze, die Flexibilität des Data Lake m
 
 # Übungsklausur Data Warehouse & Big Data (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 36** am Stück, handschriftlich.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich.
 
 ## Ausgangslage
 
@@ -289,7 +289,7 @@ Die Möbelhaus Nordholz GmbH betreibt acht Filialen und führt rund 500 Artikel.
 
 ---
 
-## Lernziel-Check (Ende KW 36 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich grenze OLTP und OLAP anhand von mindestens fünf Kriterien ab.
 - [ ] Ich nenne drei Gründe gegen Auswertungen direkt im operativen System.

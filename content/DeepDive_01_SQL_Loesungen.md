@@ -166,7 +166,7 @@ CREATE TABLE retoure (
 | Punkte | Note | Konsequenz |
 |---|---|---|
 | 92–100 | sehr gut | Thema sitzt – nur noch Karteikarten zur Auffrischung |
-| 81–91 | gut | Fehlerthemen ins Fehlerjournal, in KW 31 einmal nachlösen |
+| 81–91 | gut | Fehlerthemen ins Fehlerjournal, in ein bis zwei Wochen einmal nachlösen |
 | < 81 | | Teil 1/2 des Lernzettels wiederholen, Klausur nach 1 Woche komplett neu schreiben |
 
-Denk daran: Dein Ziel für die echten Klausuren liegt bei ~95 Punkten. Alles, was hier nicht auf Anhieb saß, ist ein Geschenk – gefunden im Juli statt im November.
+Denk daran: Dein Ziel für die echten Klausuren liegt bei ~95 Punkten. Alles, was hier nicht auf Anhieb saß, ist ein Geschenk – gefunden beim Üben statt in der Prüfung.

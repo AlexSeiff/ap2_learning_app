@@ -1,9 +1,9 @@
-# Deep-Dive-Lernzettel: SQL (KW 28–29)
+# Deep-Dive-Lernzettel: SQL
 ## AP2 Fachinformatiker/-in Daten- und Prozessanalyse
 
 **Prüfungsrelevanz:** SQL taucht in beiden schriftlichen Prüfungen auf – in „Sicherstellen der Datenqualität" fast immer (Daten bereitstellen, prüfen, auswerten), in „Durchführen einer Prozessanalyse" häufig zur Kennzahlenermittlung. Typische Aufgabenformen: Abfrage selbst schreiben, eine gegebene Abfrage erklären oder das Ergebnis angeben, Fehler in einer Abfrage finden, eine Tabelle per DDL anlegen.
 
-**So nutzt du diesen Lernzettel:** Abschnitt lesen → zugehörige Aufgaben *ohne* Musterlösung bearbeiten → vergleichen → Fehler ins Fehlerjournal. KW 28 = Abschnitte 1–2 + Aufgaben Teil A (W1–W2) und Teil B. KW 29 = Abschnitt 3–4 + Rest.
+**So nutzt du diesen Lernzettel:** Abschnitt lesen → zugehörige Aufgaben *ohne* Musterlösung bearbeiten → vergleichen → Fehler ins Fehlerjournal. Erste Lerneinheit = Abschnitte 1–2 + Aufgaben Teil A (W1–W2) und Teil B. Zweite Lerneinheit = Abschnitt 3–4 + Rest.
 
 ---
 
@@ -64,7 +64,7 @@ Alle Aufgaben beziehen sich auf dieses Schema (Primärschlüssel unterstrichen g
 
 ---
 
-## 2. KW 28 – SELECT, WHERE, ORDER BY, Aggregatfunktionen
+## 2. SELECT, WHERE, ORDER BY, Aggregatfunktionen
 
 ### 2.1 SELECT – Spalten auswählen
 
@@ -132,7 +132,7 @@ Ohne GROUP BY liefert eine Aggregatabfrage genau eine Ergebniszeile. Regel: In e
 
 ---
 
-## 3. KW 29 – GROUP BY, HAVING, JOINs, Unterabfragen, DML/DDL
+## 3. GROUP BY, HAVING, JOINs, Unterabfragen, DML/DDL
 
 ### 3.1 GROUP BY und HAVING
 
@@ -261,7 +261,7 @@ Bewertet wird die fachliche Logik. Ein vergessenes Semikolon oder Groß-/Kleinsc
 
 ## 5. Übungsklausur SQL – 100 Punkte, Richtzeit 90 Minuten
 
-*Alle Aufgaben beziehen sich auf die DataFit-Datenbank aus Abschnitt 1. Empfehlung: Teil A (W1–W2) + Teil B in KW 28, Rest in KW 29. Erst lösen, dann Abschnitt 6 aufschlagen.*
+*Alle Aufgaben beziehen sich auf die DataFit-Datenbank aus Abschnitt 1. Empfehlung: Teil A (W1–W2) + Teil B in der ersten Lerneinheit, Rest in der zweiten. Erst lösen, dann Abschnitt 6 aufschlagen.*
 
 ### Teil A – Wissensfragen (20 P)
 
@@ -504,4 +504,4 @@ INSERT INTO bestellposition VALUES
  (1006,105,10,1,89.99),(1007,105,11,2,34.90);
 ```
 
-**Zum Weiterüben:** sqlbolt.com (interaktives Tutorial), sql-practice.com (Aufgaben mit steigendem Schwierigkeitsgrad). Ziel bis Ende KW 29: Du schreibst C5 (Drei-Tabellen-Join mit Gruppierung und Filter) fehlerfrei aus dem Kopf – das ist exakt das Niveau, das in der Prüfung volle Punkte bringt.
+**Zum Weiterüben:** sqlbolt.com (interaktives Tutorial), sql-practice.com (Aufgaben mit steigendem Schwierigkeitsgrad). Ziel bis zum Ende des Themas: Du schreibst C5 (Drei-Tabellen-Join mit Gruppierung und Filter) fehlerfrei aus dem Kopf – das ist exakt das Niveau, das in der Prüfung volle Punkte bringt.

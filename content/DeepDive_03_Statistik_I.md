@@ -1,4 +1,4 @@
-# Deep Dive 3: Statistik I – Beschreibende Statistik (KW 31)
+# Deep Dive 3: Statistik I – Beschreibende Statistik
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -218,7 +218,7 @@ Häufungen exakt gleicher Werte (z. B. auffällig viele Datensätze mit Geburtsd
 
 # Übungsklausur Statistik I (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 31** am Stück, handschriftlich, mit Taschenrechner, ohne Unterlagen. Runde auf zwei Nachkommastellen. **Schreibe alle Rechenwege auf** – Teilpunkte gibt es nur für Nachvollziehbares.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Taschenrechner, ohne Unterlagen. Runde auf zwei Nachkommastellen. **Schreibe alle Rechenwege auf** – Teilpunkte gibt es nur für Nachvollziehbares.
 
 ## Anlage – Bearbeitungsdauer von 11 Reparaturaufträgen (in Minuten)
 
@@ -282,7 +282,7 @@ Von 50 Reklamationen entfallen: Transportschaden 18, Montagefehler 15, Falschlie
 
 ---
 
-## Lernziel-Check (Ende KW 31 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich ordne jedem Merkmal sicher das Skalenniveau zu und weiß, welche Kennzahlen jeweils zulässig sind.
 - [ ] Ich erstelle Häufigkeitstabellen mit relativer und kumulierter Häufigkeit fehlerfrei und kenne das Pareto-Prinzip.

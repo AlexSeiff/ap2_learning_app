@@ -29,6 +29,5 @@ const byTopic = new Map<string, number>();
 for (const u of c.sqlExercises) byTopic.set(u.topicId ?? '–', (byTopic.get(u.topicId ?? '–') ?? 0) + 1);
 if (byTopic.size) console.log(`  je Deep Dive: ${[...byTopic].map(([t, n]) => `${t}: ${n}`).join(', ')}`);
 console.log(`\nMaterialien: ${c.materials.map((m) => m.title).join(', ')}`);
-console.log(`Lernplan-Wochen: ${c.weeks.length}`);
 console.log(`\nHinweise (${c.issues.length}):`);
 for (const i of c.issues) console.log(`  - ${i.file}: ${i.message}`);

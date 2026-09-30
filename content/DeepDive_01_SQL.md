@@ -1,4 +1,4 @@
-# Deep Dive 1: SQL (KW 28–29)
+# Deep Dive 1: SQL
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -57,7 +57,7 @@ Beziehungen: kunde 1:n bestellung 1:n bestellposition n:1 produkt. Der Primärsc
 
 ---
 
-# Teil 1 – Grundlagen (KW 28)
+# Teil 1 – Grundlagen
 
 ## 1.1 SELECT: Projektion und Selektion
 
@@ -118,7 +118,7 @@ Beispiel zum Merken: Hat *kunde* 5 Zeilen und bei 2 Kunden ist `telefon` NULL, d
 
 ---
 
-# Teil 2 – Fortgeschritten (KW 29)
+# Teil 2 – Fortgeschritten
 
 ## 2.1 GROUP BY und HAVING
 
@@ -253,7 +253,7 @@ Damit kannst du im Fachgespräch souverän beantworten, **wie** du Datenqualitä
 
 # Übungsklausur SQL (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **nach KW 29** am Stück, handschriftlich, ohne Unterlagen – nur mit den Tabellen der Möbelhaus Nordholz GmbH von oben. Lösungen erst danach öffnen. Faustregel: 1 Punkt ≈ 1 Minute.
+Bearbeite die Klausur **nach Teil 2** am Stück, handschriftlich, ohne Unterlagen – nur mit den Tabellen der Möbelhaus Nordholz GmbH von oben. Lösungen erst danach öffnen. Faustregel: 1 Punkt ≈ 1 Minute.
 
 ## Block A – Wissen und Fehleranalyse (19 P)
 
@@ -315,7 +315,7 @@ ORDER BY guenstigster DESC;
 
 ---
 
-## Lernziel-Check (am Ende von KW 29 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich kann Projektion/Selektion, WHERE-Operatoren, LIKE, BETWEEN, IN und IS NULL sicher anwenden.
 - [ ] Ich kenne das NULL-Verhalten aller Aggregatfunktionen.

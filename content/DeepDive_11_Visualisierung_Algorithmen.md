@@ -1,4 +1,4 @@
-# Deep Dive 11: Datenvisualisierung & Algorithmen (KW 39)
+# Deep Dive 11: Datenvisualisierung & Algorithmen
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -204,7 +204,7 @@ Der letzte Punkt ist der fachlich wichtigste für deine Fachrichtung: **Ein fehl
 
 # Übungsklausur Visualisierung & Algorithmen (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 39** am Stück, handschriftlich, mit Lineal.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Lineal.
 
 ## Block A – Diagrammwahl (20 P)
 
@@ -277,7 +277,7 @@ AUSGABE max, anzahl
 
 ---
 
-## Lernziel-Check (Ende KW 39 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich wähle den Diagrammtyp begründet nach der Aussageabsicht.
 - [ ] Ich kenne die Grenzen des Kreisdiagramms und die Regel zum Nullpunkt bei Balken.

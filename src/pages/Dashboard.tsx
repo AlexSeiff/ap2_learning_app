@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Markdown } from '../components/Markdown';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { isDue } from '../lib/progress';
 import { sqlSummary } from '../lib/sql';
-import { daysUntilExam, examTrends, isoWeek, studyStreak, topicStats } from '../lib/stats';
+import { daysUntilExam, examTrends, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
@@ -14,8 +13,6 @@ export function Dashboard() {
   const trends = examTrends(content, progress);
   const streak = studyStreak(progress);
   const days = daysUntilExam();
-  const kw = isoWeek();
-  const week = content.weeks.find((w) => w.kw === kw) ?? content.weeks.find((w) => w.kw > kw);
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
   const dueCards = content.flashcards.filter((c) => {
     const s = progress.cards[c.id];
@@ -76,16 +73,6 @@ export function Dashboard() {
         </div>
       </div>
 
-      {week && (
-        <section className="card">
-          <h2>
-            Lernplan {week.kw === kw ? 'diese Woche' : 'als Nächstes'}: {week.label}
-          </h2>
-          <Markdown>{week.text}</Markdown>
-          <Link to="/material/lernplan">Ganzen Lernplan öffnen →</Link>
-        </section>
-      )}
-
       {!!weakest.length && (
         <section className="card">
           <h2>Schwächste Themen</h2>
@@ -109,7 +96,6 @@ export function Dashboard() {
             <thead>
               <tr>
                 <th>Thema</th>
-                <th>KW</th>
                 <th>Klausur (bestes)</th>
                 <th>Ø Aufgaben</th>
                 <th>Karten sicher</th>
@@ -125,7 +111,6 @@ export function Dashboard() {
                       {s.topic.id === '00' ? '＋' : s.topic.number}. {s.topic.title}
                     </Link>
                   </td>
-                  <td className="muted">{s.topic.week?.replace('KW ', '') ?? ''}</td>
                   <td>
                     <Bar value={s.bestExam} />
                   </td>

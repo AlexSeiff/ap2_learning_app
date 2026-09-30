@@ -90,7 +90,6 @@ export interface Topic {
   id: string;
   number: number;
   title: string;
-  week?: string;
   file: string;
   solutionFile?: string;
   sections: Section[];
@@ -103,12 +102,6 @@ export interface MaterialDoc {
   title: string;
   file: string;
   markdown: string;
-}
-
-export interface WeekPlan {
-  kw: number;
-  label: string;
-  text: string;
 }
 
 /** Übungsdatenbank für den SQL-Editor (aus AP2_SQL_Uebungen.json, Feld „datensaetze"). */
@@ -177,7 +170,6 @@ export interface Content {
   /** Lernhinweise aus der Lernkarten-Datei (meta.hinweise). */
   cardHints: string[];
   materials: MaterialDoc[];
-  weeks: WeekPlan[];
   /** Übungsdatenbanken und -aufgaben des SQL-Editors (AP2_SQL_Uebungen.json). */
   sqlDatasets: SqlDataset[];
   sqlExercises: SqlExercise[];

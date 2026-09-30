@@ -1,4 +1,4 @@
-# Deep Dive 10: Datenschutz (DSGVO) & IT-Sicherheit (KW 38)
+# Deep Dive 10: Datenschutz (DSGVO) & IT-Sicherheit
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -194,7 +194,7 @@ SQL-Injection ist für deine Fachrichtung die relevanteste: Wer Daten aus Eingab
 
 # Übungsklausur Datenschutz & IT-Sicherheit (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 38** am Stück, handschriftlich.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich.
 
 ## Ausgangslage
 
@@ -257,7 +257,7 @@ Das Unternehmen sichert sonntags vollständig (800 GB) und montags bis samstags 
 
 ---
 
-## Lernziel-Check (Ende KW 38 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich definiere personenbezogene Daten und erkenne den Personenbezug auch bei IDs und IP-Adressen.
 - [ ] Ich nenne fünf Grundsätze nach Art. 5 und vier Rechtsgrundlagen nach Art. 6 mit Beispielen.

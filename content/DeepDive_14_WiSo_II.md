@@ -1,4 +1,4 @@
-# Deep Dive 14: WiSo II – Sozialversicherung, Recht, Unternehmen & Wirtschaft (KW 42)
+# Deep Dive 14: WiSo II – Sozialversicherung, Recht, Unternehmen & Wirtschaft
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -316,7 +316,7 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 
 # Übungsklausur WiSo II (100 Punkte, 60 Minuten)
 
-25 gebundene Aufgaben à 4 Punkte. Bei Mehrfachauswahl zählt nur die vollständig richtige Lösung. Bearbeite die Klausur **am Ende von KW 42** am Stück.
+25 gebundene Aufgaben à 4 Punkte. Bei Mehrfachauswahl zählt nur die vollständig richtige Lösung. Bearbeite die Klausur **am Ende des Themas** am Stück.
 
 Die Aufgaben sind hier nach Themen in Blöcke gegliedert; in der PDF-Fassung sind sie von 1 bis 25 durchnummeriert (A1–A8 = Aufgaben 1–8, B1–B9 = 9–17, C1–C2 = 18–19, D1–D6 = 20–25).
 
@@ -466,7 +466,7 @@ a) Löschversuch unternehmen · b) Brand melden · c) Ruhe bewahren · d) in Sic
 
 ---
 
-## Lernziel-Check (Ende KW 42 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich nenne die fünf Sozialversicherungszweige mit Trägern, Finanzierung und Leistungen.
 - [ ] Ich berechne den SV-Arbeitnehmeranteil inklusive Zusatzbeitrag und Kinderlosenzuschlag.

@@ -1,4 +1,4 @@
-# Deep Dive 2: Datenmodellierung & Normalisierung (KW 30)
+# Deep Dive 2: Datenmodellierung & Normalisierung
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -147,7 +147,7 @@ In *bestellung* gilt: bestell_id → kunden_id → kundenname, kundenort. Kunden
 
 ## Denormalisierung – die DPA-Perspektive
 
-Im **operativen System (OLTP)** wird bis zur 3. NF normalisiert: Konsistenz und Redundanzfreiheit haben Vorrang. Im **Data Warehouse** wird bewusst denormalisiert (Star-Schema, → KW 36): wenige Joins, schnelle Lesezugriffe, verständliche Struktur für Analysten. Beides ist richtig – **im jeweiligen Kontext**. Diese Abwägung ist eine typische Beurteilungsaufgabe für DPA-Prüflinge.
+Im **operativen System (OLTP)** wird bis zur 3. NF normalisiert: Konsistenz und Redundanzfreiheit haben Vorrang. Im **Data Warehouse** wird bewusst denormalisiert (Star-Schema, → Deep Dive 8): wenige Joins, schnelle Lesezugriffe, verständliche Struktur für Analysten. Beides ist richtig – **im jeweiligen Kontext**. Diese Abwägung ist eine typische Beurteilungsaufgabe für DPA-Prüflinge.
 
 ---
 
@@ -165,7 +165,7 @@ Im **operativen System (OLTP)** wird bis zur 3. NF normalisiert: Konsistenz und 
 
 # Übungsklausur Datenmodellierung (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 30** am Stück, handschriftlich, ohne Unterlagen. Lösungen erst danach öffnen.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, ohne Unterlagen. Lösungen erst danach öffnen.
 
 ## Anlage 1 – Export „auftrags_export" (Reparaturservice des Möbelhauses)
 
@@ -226,7 +226,7 @@ c) Ein Produkt lagert in mehreren Lagern, ein Lager führt viele Produkte; beide
 
 ---
 
-## Lernziel-Check (Ende KW 30 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich kann ER-Diagramme in Chen-, Min-Max- und Krähenfußnotation lesen und die Notationen ineinander übersetzen – inklusive der „Seitenwechsel-Falle".
 - [ ] Ich kenne die vier Transformationsregeln ins Relationenmodell und setze Fremdschlüssel immer auf die richtige Seite.

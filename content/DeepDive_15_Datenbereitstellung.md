@@ -1,11 +1,11 @@
-# Deep Dive 15: Datenbereitstellung – Formate, Schnittstellen, NoSQL & UML (KW 43)
+# Deep Dive 15: Datenbereitstellung – Formate, Schnittstellen, NoSQL & UML
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
 
 ## Prüfungsrelevanz
 
-Die Verordnung nennt im Prüfungsbereich **„Sicherstellen der Datenqualität“** ausdrücklich: Daten **identifizieren, klassifizieren und bereitstellen** sowie **Zugriff und Verfügbarkeit gewährleisten**. Dieser Deep Dive schließt damit die letzte inhaltliche Lücke vor der Simulationsphase – ideal direkt vor der Altklausur „Datenqualität“ in KW 43.
+Die Verordnung nennt im Prüfungsbereich **„Sicherstellen der Datenqualität“** ausdrücklich: Daten **identifizieren, klassifizieren und bereitstellen** sowie **Zugriff und Verfügbarkeit gewährleisten**. Dieser Deep Dive schließt damit die letzte inhaltliche Lücke vor der Simulationsphase – ideal direkt vor einer Altklausur zum Bereich „Datenqualität“.
 
 Typische Aufgaben: Datenarten und Schutzklassen zuordnen, CSV-Importprobleme erkennen, **JSON erstellen oder korrigieren**, eine **REST-Schnittstelle** entwerfen und beurteilen, eine Datenbankart begründet auswählen, Transaktionsprobleme erklären, UML-Multiplizitäten lesen.
 
@@ -258,7 +258,7 @@ Startknoten (gefüllter Kreis), Aktionen (abgerundete Rechtecke), Entscheidungen
 
 # Übungsklausur Datenbereitstellung (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **in KW 43 vor der Altklausur „Datenqualität“** am Stück, handschriftlich.
+Bearbeite die Klausur **vor einer Altklausur zum Bereich „Datenqualität“** am Stück, handschriftlich.
 
 ## Ausgangslage
 
@@ -339,7 +339,7 @@ b) Im Import erscheint „MÃ¼nchen“ statt „München“ und „KÃ¶ln“ s
 
 ---
 
-## Lernziel-Check (KW 43 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich ordne Daten nach Strukturierungsgrad und Schutzklasse zu und begründe Maßnahmen.
 - [ ] Ich kenne die Datentyp-Fallen bei Geldbeträgen, Datumsangaben und Postleitzahlen.

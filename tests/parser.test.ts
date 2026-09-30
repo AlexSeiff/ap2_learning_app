@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildContent, parseCriteria, parseLernplan, parseSolutions, parseTopic, toLines } from '../shared/parser';
+import { buildContent, parseCriteria, parseSolutions, parseTopic, stripKw, toLines } from '../shared/parser';
 import { loadContent } from '../server/loadContent';
 
 // Kleine Lernblatt-Fixtures im Format der echten Blätter – so bricht das Bearbeiten eines Lernblatts keine Formattests.
@@ -11,10 +11,11 @@ const content = loadContent(FIXTURES);
 const topic = content.topics.find((t) => t.id === '01')!;
 
 describe('Lernblatt-Format (tests/fixtures/inhalt)', () => {
-  it('liest Titel, Kalenderwoche und Lösungsdatei ohne Importhinweise', () => {
+  it('liest Titel (ohne Kalenderwoche) und Lösungsdatei ohne Importhinweise', () => {
     expect(content.issues).toEqual([]);
     expect(content.topics.map((t) => t.id)).toEqual(['01']);
-    expect(topic).toMatchObject({ number: 1, title: 'SQL', week: 'KW 28–29', solutionFile: 'DeepDive_01_SQL_Loesungen.md' });
+    expect(topic).toMatchObject({ number: 1, title: 'SQL', solutionFile: 'DeepDive_01_SQL_Loesungen.md' });
+    expect(topic).not.toHaveProperty('week');
   });
 
   it('zerlegt die Theorie in Abschnitte, Überschriften in Codeblöcken zählen nicht', () => {
@@ -135,7 +136,7 @@ describe('Älteres Format mit integrierten Lösungen (Deep_Dive_SQL_*.md)', () =
     const c = buildContent([{ name: 'Deep_Dive_SQL_KW28_29.md', text: legacy }]);
     expect(c.issues).toEqual([]);
     const t = c.topics[0];
-    expect(t).toMatchObject({ id: '00', title: 'SQL (Zusatzmaterial DataFit)', week: 'KW 28–29' });
+    expect(t).toMatchObject({ id: '00', title: 'SQL (Zusatzmaterial DataFit)' });
     expect(t.exam!.attachments[0].title).toMatch(/Beispieldatenbank/);
     expect(c.tasks['00-W1'].markdown).toBe('Erläutern Sie WHERE und HAVING.\nMit Beispiel.');
     expect(c.tasks['00-C7'].solution?.markdown).toMatch(/Aggregatbedingung/);
@@ -190,11 +191,27 @@ describe('Robustheit', () => {
     ]);
   });
 
-  it('parseLernplan versteht Wochen mit und ohne Datum', () => {
-    const weeks = parseLernplan('- **KW 30 (20.–26.7.)** – Datenmodellierung\n- **KW 48:** Prüfungstag');
-    expect(weeks).toEqual([
-      { kw: 30, label: 'KW 30 (20.–26.7.)', text: 'Datenmodellierung' },
-      { kw: 48, label: 'KW 48', text: 'Prüfungstag' },
+  it('stripKw entfernt eine Kalenderwoche am Titelende, sonst nichts', () => {
+    expect(stripKw('SQL (KW 28–29)')).toBe('SQL');
+    expect(stripKw('Teil 1 – Grundlagen (KW 28)')).toBe('Teil 1 – Grundlagen');
+    expect(stripKw('Datenschutz (DSGVO) & IT-Sicherheit (kw 38) ')).toBe('Datenschutz (DSGVO) & IT-Sicherheit');
+    expect(stripKw('Datenschutz (DSGVO) & IT-Sicherheit')).toBe('Datenschutz (DSGVO) & IT-Sicherheit');
+    expect(stripKw('KW-Test (Kwartal)')).toBe('KW-Test (Kwartal)');
+  });
+
+  it('Lernplan-Dateien sind kein Material mehr', () => {
+    const c = buildContent([{ name: 'Lernplan_Juli_bis_November.md', text: '- **KW 30:** Datenmodellierung' }]);
+    expect(c.materials).toEqual([]);
+    expect(c).not.toHaveProperty('weeks');
+  });
+
+  it('Titel und Abschnitte aus älteren Blättern verlieren die Kalenderwoche', () => {
+    const sheet = '# Deep Dive 97: Test (KW 5)\n\n# Teil 1 – Grundlagen (KW 5)\n\n## 1.1 A\n\nText\n';
+    const { topic: t } = parseTopic('97', 'DeepDive_97_Test.md', sheet);
+    expect(t.title).toBe('Test');
+    expect(t.sections.map((s) => [s.id, s.title])).toEqual([
+      ['97-teil-1-grundlagen', 'Teil 1 – Grundlagen'],
+      ['97-1-1-a', '1.1 A'],
     ]);
   });
 });

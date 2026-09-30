@@ -157,4 +157,4 @@ Folge: Das Modell erreicht im Test nahezu perfekte Werte, hat aber nichts Verwer
 
 **Ein Hinweis zum Weiterarbeiten:** Die Blöcke A und B sind zugleich eine Generalprobe für dein **Fachgespräch**. Formuliere die Antworten aus A1 einmal so, als würdest du dem Prüfungsausschuss dein eigenes Projekt erklären – wenn das flüssig gelingt, hast du die wichtigste Vorbereitung für den mündlichen Teil bereits geleistet.
 
-In **Deep Dive 7 (KW 35)** folgt der zweite Teil: Modellgüte mit Train/Test-Split, Kreuzvalidierung, Overfitting sowie Konfusionsmatrix mit Accuracy, Precision, Recall und F1 – dort wird gerechnet.
+In **Deep Dive 7** folgt der zweite Teil: Modellgüte mit Train/Test-Split, Kreuzvalidierung, Overfitting sowie Konfusionsmatrix mit Accuracy, Precision, Recall und F1 – dort wird gerechnet.

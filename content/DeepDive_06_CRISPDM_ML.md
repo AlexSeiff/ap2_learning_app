@@ -1,4 +1,4 @@
-# Deep Dive 6: CRISP-DM & Machine Learning (KW 34)
+# Deep Dive 6: CRISP-DM & Machine Learning
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -247,7 +247,7 @@ Diese Phase entscheidet über die Qualität des Ergebnisses – „Garbage in, g
 
 # Übungsklausur CRISP-DM & Machine Learning (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 34** am Stück, handschriftlich, mit Taschenrechner. Runde auf zwei Nachkommastellen.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Taschenrechner. Runde auf zwei Nachkommastellen.
 
 ## Ausgangslage
 
@@ -321,7 +321,7 @@ Zehn Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe):
 
 ---
 
-## Lernziel-Check (Ende KW 34 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich nenne die sechs CRISP-DM-Phasen in der richtigen Reihenfolge und ordne meinem Projekt konkrete Tätigkeiten zu.
 - [ ] Ich kann begründen, warum der Prozess iterativ ist, und zwei typische Rücksprünge nennen.

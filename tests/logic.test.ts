@@ -3,7 +3,7 @@ import type { Task } from '../shared/types';
 import { autoGrade, ihkGrade, parseGermanNumber } from '../src/lib/grading';
 import { emptyProgress } from '../shared/progress';
 import { addDays, rateCard, recordAttempt } from '../src/lib/progress';
-import { daysUntilExam, isoWeek } from '../src/lib/stats';
+import { daysUntilExam } from '../src/lib/stats';
 
 const T0 = '2026-09-21';
 const attempt = (points: number, max = 10) => ({ taskId: '01-A1', date: T0, points, max, mode: 'einzel' as const });
@@ -102,9 +102,7 @@ describe('Datum', () => {
   it('addDays über Monatsgrenzen', () => {
     expect(addDays('2026-09-28', 7)).toBe('2026-10-05');
   });
-  it('Countdown und Kalenderwoche', () => {
+  it('Countdown', () => {
     expect(daysUntilExam(new Date(2026, 8, 21))).toBe(65);
-    expect(isoWeek(new Date(2026, 8, 21))).toBe(39);
-    expect(isoWeek(new Date(2026, 10, 25))).toBe(48);
   });
 });

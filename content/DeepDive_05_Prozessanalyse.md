@@ -1,4 +1,4 @@
-# Deep Dive 5: Prozessanalyse & Prozessmodellierung (KW 33)
+# Deep Dive 5: Prozessanalyse & Prozessmodellierung
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -270,7 +270,7 @@ Ein Event Log mit dem Feld *Resource* enthält **personenbezogene Daten** und er
 
 # Übungsklausur Prozessanalyse (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 33** am Stück, handschriftlich, mit Lineal für die Diagramme.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Lineal für die Diagramme.
 
 ## Anlage 1 – Prozessbeschreibung Reparaturservice
 
@@ -352,7 +352,7 @@ Weitere Daten: 200 Aufträge im Betrachtungsmonat, davon 24 mit erforderlicher N
 
 ---
 
-## Lernziel-Check (Ende KW 33 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich unterscheide Kern-, Unterstützungs- und Führungsprozesse und nenne vier Methoden der Ist-Aufnahme mit Vor- und Nachteilen.
 - [ ] Ich modelliere einen beschriebenen Prozess vollständig in BPMN 2.0 – mit Pools, Lanes, XOR/AND, beschrifteten Pfaden und Nachrichtenflüssen.
@@ -368,4 +368,4 @@ Weitere Daten: 200 Aufträge im Betrachtungsmonat, davon 24 mit erforderlicher N
 
 ## Ausblick
 
-Damit hast du die Grundlagen beider schriftlicher Prüfungsbereiche abgedeckt. **Wichtiger Hinweis zum Zeitplan:** Laut deinem Lernplan ist KW 33 auch die Woche, in der du die Frist deiner IHK für den **Projektantrag** prüfen und den Antrag einreichen solltest. Die Projektarbeit zählt 50 % – kein schriftlicher Prüfungsbereich kann das ausgleichen.
+Damit hast du die Grundlagen beider schriftlicher Prüfungsbereiche abgedeckt. **Wichtiger Hinweis zum Zeitplan:** Prüf spätestens jetzt die Frist deiner IHK für den **Projektantrag** und reich den Antrag rechtzeitig ein. Die Projektarbeit zählt 50 % – kein schriftlicher Prüfungsbereich kann das ausgleichen.

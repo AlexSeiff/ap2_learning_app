@@ -1,4 +1,4 @@
-# Deep Dive 13: WiSo I – Ausbildung, Arbeitsrecht & Mitbestimmung (KW 41)
+# Deep Dive 13: WiSo I – Ausbildung, Arbeitsrecht & Mitbestimmung
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -88,7 +88,7 @@ Seit 2020 gilt die Freistellungsregel **für alle Auszubildenden**, nicht nur f�
 
 Zusätzlich darf vor einem Berufsschulunterricht, der **vor 9 Uhr** beginnt, nicht beschäftigt werden.
 
-**Für dich:** Deine schriftliche AP2 ist am **Mittwoch, 25.11.2026**. Am **Dienstag, 24.11.2026**, bist du nach § 15 Abs. 2 Nr. 5 BBiG freizustellen – der Tag wird dir als voller Ausbildungstag angerechnet. Stimm das frühzeitig mit deinem Ausbilder ab und plan den Tag bewusst als ruhigen Wiederholungstag ein.
+**Für dich:** Findet deine schriftliche AP2 zum Beispiel an einem **Mittwoch** statt, bist du am **Dienstag davor** nach § 15 Abs. 2 Nr. 5 BBiG freizustellen – der Tag wird dir als voller Ausbildungstag angerechnet. Stimm das frühzeitig mit deinem Ausbilder ab und plan den Tag bewusst als ruhigen Wiederholungstag ein.
 
 ---
 
@@ -298,7 +298,7 @@ Grundgesetz → Gesetze und Verordnungen → **Tarifvertrag → Betriebsvereinba
 
 # Übungsklausur WiSo I (100 Punkte, 60 Minuten)
 
-25 gebundene Aufgaben à 4 Punkte. Bei Auswahlaufgaben die Ziffer(n) der richtigen Antwort(en) notieren; bei Mehrfachauswahl zählt nur die vollständig richtige Lösung. Bearbeite die Klausur **am Ende von KW 41** am Stück, ohne Unterlagen. Grundlage ist das Szenario oben.
+25 gebundene Aufgaben à 4 Punkte. Bei Auswahlaufgaben die Ziffer(n) der richtigen Antwort(en) notieren; bei Mehrfachauswahl zählt nur die vollständig richtige Lösung. Bearbeite die Klausur **am Ende des Themas** am Stück, ohne Unterlagen. Grundlage ist das Szenario oben.
 
 Die Aufgaben sind hier nach Themen in Blöcke gegliedert; in der PDF-Fassung sind sie von 1 bis 25 durchnummeriert (A1–A7 = Aufgaben 1–7, B1–B5 = 8–12, C1–C6 = 13–18, D1–D4 = 19–22, E1–E3 = 23–25).
 
@@ -447,7 +447,7 @@ a) Urabstimmung über den Streik · b) Tarifverhandlungen · c) Streik · d) Sch
 
 ---
 
-## Lernziel-Check (Ende KW 41 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich kenne die Beteiligten der dualen Ausbildung und ihre Aufgaben.
 - [ ] Ich nenne die nichtigen Vereinbarungen nach § 12 BBiG.

@@ -108,4 +108,4 @@ Häufiger Fehler: Kirchensteuer vom Bruttolohn statt von der Lohnsteuer berechne
 | 81–91 | gut | Prüfe, ob die Punkte eher im Sozialversicherungs- oder im Rechtsteil fehlten |
 | < 81 | | Teil 1 und 2 wiederholen, Klausur nach einer Woche neu schreiben |
 
-**Nächster Schritt laut Lernplan:** Ab jetzt geht es in die Simulationsphase. Ergänze die beiden WiSo-Deep-Dives um mindestens eine **echte WiSo-Altklausur unter Zeitbedingungen** – die Aufgabenformulierungen der IHK haben einen eigenen Stil, an den man sich gewöhnen muss.
+**Nächster Schritt:** Ab jetzt geht es in die Simulationsphase. Ergänze die beiden WiSo-Deep-Dives um mindestens eine **echte WiSo-Altklausur unter Zeitbedingungen** – die Aufgabenformulierungen der IHK haben einen eigenen Stil, an den man sich gewöhnen muss.

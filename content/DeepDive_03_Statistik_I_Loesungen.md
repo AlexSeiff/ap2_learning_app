@@ -162,7 +162,7 @@ Bezug: Betroffen sind die Dimensionen **Vollständigkeit** (fehlende Werte getar
 | Punkte | Note | Konsequenz |
 |---|---|---|
 | 92–100 | sehr gut | Rechenwege sitzen – wöchentlich eine Aufgabe zur Auffrischung |
-| 81–91 | gut | Fehlerthemen ins Fehlerjournal, in KW 33 gezielt nachrechnen |
+| 81–91 | gut | Fehlerthemen ins Fehlerjournal, in ein bis zwei Wochen gezielt nachrechnen |
 | < 81 | | Teil 3–5 des Lernzettels wiederholen, Klausur nach einer Woche neu schreiben |
 
 Zwei Hinweise aus der Korrekturpraxis: Erstens gehen die meisten Punkte nicht beim Rechnen verloren, sondern bei **Einheiten, Sortierung und fehlenden Begründungen**. Zweitens sind die Beurteilungsaufgaben (Block F) für die 1 entscheidend – rechnen können viele, argumentieren wenige.

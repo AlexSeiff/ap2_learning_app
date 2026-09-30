@@ -1,5 +1,5 @@
 # AP2 Fachinformatiker/-in Daten- und Prozessanalyse
-## Themenliste mit Beispielfragen (Prüfung: 25.11.2026)
+## Themenliste mit Beispielfragen
 
 ---
 

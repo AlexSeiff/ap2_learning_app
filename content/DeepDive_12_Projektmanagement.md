@@ -1,11 +1,11 @@
-# Deep Dive 12: Projektmanagement & Wirtschaftlichkeit (KW 40)
+# Deep Dive 12: Projektmanagement & Wirtschaftlichkeit
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
 
 ## Prüfungsrelevanz
 
-Dieser Deep Dive eröffnet die **Anwendungsphase** deines Lernplans und ist doppelt wertvoll: Er deckt einen großen Teil des Prüfungsbereichs **„Durchführen einer Prozessanalyse"** ab (Wirtschaftlichkeitskontrolle, Projektplanung) – und er ist zugleich das **Handwerkszeug für deine eigene Projektarbeit**, die 50 % der Gesamtnote ausmacht.
+Dieser Deep Dive eröffnet die **Anwendungsphase** und ist doppelt wertvoll: Er deckt einen großen Teil des Prüfungsbereichs **„Durchführen einer Prozessanalyse"** ab (Wirtschaftlichkeitskontrolle, Projektplanung) – und er ist zugleich das **Handwerkszeug für deine eigene Projektarbeit**, die 50 % der Gesamtnote ausmacht.
 
 Typische Aufgaben: Lasten- und Pflichtenheft abgrenzen, Vorgehensmodelle vergleichen, **Netzplan berechnen** (kritischer Pfad, Puffer), **Nutzwertanalyse** durchführen, **Amortisation und Break-even** berechnen, Risiken bewerten.
 
@@ -187,7 +187,7 @@ Anbieter B gewinnt – aber nur um 0,10 Punkte. **Genau das gehört in die Beurt
 
 # Übungsklausur Projektmanagement & Wirtschaftlichkeit (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 40** am Stück, handschriftlich, mit Taschenrechner und Lineal.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Taschenrechner und Lineal.
 
 ## Ausgangslage
 
@@ -266,7 +266,7 @@ b) *Beurteilen* Sie das Ergebnis kritisch. (4 P)
 
 ---
 
-## Lernziel-Check (Ende KW 40 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich nenne die Projektmerkmale und grenze Projekt von Routineaufgabe ab.
 - [ ] Ich unterscheide Lasten- und Pflichtenheft sowie funktionale und nicht-funktionale Anforderungen.

@@ -1,4 +1,4 @@
-# Deep Dive 7: Modellgüte & Modellbewertung (KW 35)
+# Deep Dive 7: Modellgüte & Modellbewertung
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -181,7 +181,7 @@ Die Modellgüte ist kein einmaliger Abnahmewert. Durch **Model Drift** (→ Deep
 
 # Übungsklausur Modellgüte (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 35** am Stück, handschriftlich, mit Taschenrechner. Runde auf zwei Nachkommastellen.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Taschenrechner. Runde auf zwei Nachkommastellen.
 
 ## Anlage – Testergebnis des Reklamationsmodells
 
@@ -248,7 +248,7 @@ Ein übersehener Reklamationsfall kostet durchschnittlich 120 €, eine unnötig
 
 ---
 
-## Lernziel-Check (Ende KW 35 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich erkläre Train/Test-Split, Kreuzvalidierung und die Regel der Testdatenunabhängigkeit.
 - [ ] Ich unterscheide Overfitting und Underfitting anhand der Gütewerte und nenne Gegenmaßnahmen.

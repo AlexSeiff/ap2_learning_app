@@ -83,14 +83,15 @@ lern-app/
 |---|---|
 | `DeepDive_NN_Thema.md` | `Topic`: theory sections (`# Teil …`, `## 1.1 …`), `lernziele` (`- [ ]` under `## Lernziel-Check…`), flashcards from Prüferfragen and Fachgespräch, `Exam` from `# Übungsklausur …` with blocks `## Block A – Titel (19 P)` and tasks `**A1 (6 P):** …`, attachments (Anlagen) |
 | `DeepDive_NN_Thema_Loesungen.md` | `Solution` per task (`**A1 (6 P):**`), `kommentar` from `*Prüferkommentar: …*`, `criteria` from a points table `| Element | P |` |
-| `Deep_Dive_SQL_KW28_29.md` | extra topic, solutions inside the sheet |
+| `Deep_Dive_SQL_KW28_29.md` | extra topic (id `00`), solutions inside the sheet; keep the file name (SQL links depend on it) |
 | `Lernzettel_Kernthemen.md`, `AP2_Themenliste_und_Beispielfragen.md` | `MaterialDoc` (Material page) |
-| `Lernplan_Juli_bis_November.md` | `MaterialDoc` + `WeekPlan[]` (Dashboard card), **to be removed, see ROADMAP** |
+| `Lernplan_*.md`, `Prompt_*.md` | **not read** (`isContentFile`), not synced – the personal study plan is not part of the app |
 
 - **Prüferfragen**: `> ❓ **Prüferfrage:** Frage` with the italic answer in the next quote line → `Flashcard{kind:'prueferfrage'}`.
   They also remain inside the section Markdown, so they show up in the Lernen view.
 - **Fachgespräch**: numbered list under `## Fachgespräch…` → `Flashcard{kind:'fachgespraech'}`.
-- `Topic.week` comes from `(KW 31)` in the sheet title.
+- A trailing `(KW …)` in a sheet or section title is removed (`stripKw`); there is no calendar week in the data model any more.
+  The sheets themselves no longer contain personal time references ("am Ende des Themas" instead of "am Ende von KW 31").
 - Problems (task without solution etc.) are collected as `ImportIssue`s and shown on *Daten & Import* / `npm run import-report`.
 
 ### 4.2 Flashcards `AP2_FIDPA_Lernkarten.json`
@@ -134,7 +135,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 
 | Route | Page | What it does |
 |---|---|---|
-| `/` | Dashboard | countdown to `EXAM_DATE`, study streak, current Lernplan week, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
+| `/` | Dashboard | countdown to `EXAM_DATE`, study streak, due journal items/cards, SQL KPI, average exam score + IHK grade, progress and exam trend per topic, weakest topics |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen inline, ticking off learning goals |
 | `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate |
 | `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
@@ -143,7 +144,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/sql`, `/sql/uebungen`, `/sql/uebung/:id` | SQL-Editor | free mode + exercises (see § 7) |
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
-| `/material`, `/material/:docId` | Material | cheat sheet, topic list, study plan |
+| `/material`, `/material/:docId` | Material | cheat sheet, topic list |
 | `/daten` | Daten & Import | import report, re-import (local), backup download/upload, reset, newest daily backup (local) |
 
 **Grading**

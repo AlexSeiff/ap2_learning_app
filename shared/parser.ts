@@ -1,7 +1,7 @@
 // Parser für die Markdown-Lernblätter (DeepDive_NN_*.md) und ihre Lösungsdateien (*_Loesungen.md).
 // Reine Funktionen ohne Dateisystemzugriff, damit Server und Tests sie gleichermaßen nutzen können.
 
-import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic, WeekPlan } from './types';
+import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic } from './types';
 import { parseLernkarten } from './lernkarten';
 import { parseSqlUebungen } from './sqlUebungen';
 
@@ -34,6 +34,14 @@ function heading(line: Line): { level: number; title: string } | null {
   if (line.inFence) return null;
   const m = HEADING.exec(line.text);
   return m ? { level: m[1].length, title: m[2].trim() } : null;
+}
+
+/**
+ * Entfernt eine persönliche Zeitangabe am Ende eines Titels, z. B. „SQL (KW 28–29)“ → „SQL“.
+ * Ältere Lernblätter hatten sie aus einem Lernplan mit Kalenderwochen; angezeigt wird sie nicht mehr.
+ */
+export function stripKw(title: string): string {
+  return title.replace(/\s*\(\s*KW\b[^)]*\)\s*$/i, '').trim();
 }
 
 export function parseNumber(s: string): number {
@@ -282,9 +290,9 @@ export function parseTopic(id: string, file: string, markdown: string, solutionF
   const lines = toLines(markdown);
   const titleLine = lines.find((l) => heading(l)?.level === 1);
   const rawTitle = titleLine ? heading(titleLine)!.title : file;
-  const tm = /^(?:Deep[- ]Dive(?:-Lernzettel)?\s*(\d+)?\s*:\s*)?(.*?)(?:\s*\((KW[^)]*)\))?$/.exec(rawTitle)!;
+  const tm = /^(?:Deep[- ]Dive(?:-Lernzettel)?\s*(\d+)?\s*:\s*)?(.*)$/.exec(rawTitle)!;
   const number = tm[1] ? Number(tm[1]) : Number(id);
-  const title = tm[2].trim() || rawTitle;
+  const title = stripKw(tm[2]) || stripKw(rawTitle);
 
   // Bereiche bestimmen: Theorie | Klausur | Anhang (Fachgespräch, Lernziele, Musterlösungen …)
   let examStart = -1;
@@ -324,8 +332,8 @@ export function parseTopic(id: string, file: string, markdown: string, solutionF
     }
     if (!part.title) continue;
     const section: Section = {
-      id: `${id}-${slugify(part.title)}`,
-      title: part.title,
+      id: `${id}-${slugify(stripKw(part.title))}`,
+      title: stripKw(part.title),
       level: part.level,
       markdown: trimBlock(part.body.map((l) => l.text)),
     };
@@ -389,7 +397,6 @@ export function parseTopic(id: string, file: string, markdown: string, solutionF
     id,
     number,
     title,
-    week: tm[3],
     file,
     solutionFile,
     sections,
@@ -397,15 +404,6 @@ export function parseTopic(id: string, file: string, markdown: string, solutionF
     lernziele,
   };
   return { topic, tasks, flashcards, issues };
-}
-
-export function parseLernplan(markdown: string): WeekPlan[] {
-  const weeks: WeekPlan[] = [];
-  for (const line of markdown.replace(/\r/g, '').split('\n')) {
-    const m = /^[-*]\s+\*\*(KW\s*(\d+)[^*]*?):?\*\*:?\s*[–-]?\s*(.*)$/.exec(line);
-    if (m) weeks.push({ kw: Number(m[2]), label: m[1].replace(/:$/, '').trim(), text: m[3].trim() });
-  }
-  return weeks;
 }
 
 export interface SourceFile {
@@ -424,7 +422,6 @@ export function buildContent(files: SourceFile[]): Content {
     decks: [],
     cardHints: [],
     materials: [],
-    weeks: [],
     sqlDatasets: [],
     sqlExercises: [],
     issues: [],
@@ -485,13 +482,11 @@ export function buildContent(files: SourceFile[]): Content {
   const materialFiles: [RegExp, string][] = [
     [/^Lernzettel_Kernthemen\.md$/, 'Lernzettel Kernthemen'],
     [/^AP2_Themenliste.*\.md$/, 'Themenliste & Beispielfragen'],
-    [/^Lernplan.*\.md$/, 'Lernplan'],
   ];
   for (const [re, title] of materialFiles) {
     const f = files.find((x) => re.test(x.name));
     if (!f) continue;
     content.materials.push({ id: slugify(title), title, file: f.name, markdown: f.text.replace(/\r\n?/g, '\n') });
-    if (title === 'Lernplan') content.weeks = parseLernplan(f.text);
   }
 
   return content;

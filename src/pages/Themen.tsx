@@ -1,6 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { useStore } from '../lib/store';
+import type { Topic } from '../../shared/types';
+
+/** „Deep Dive 3“ oder „Zusatz“ für das ältere SQL-Blatt. */
+const topicLabel = (t: Topic) => (t.id === '00' ? 'Zusatz' : `Deep Dive ${t.number}`);
 
 export function Themen() {
   const { content } = useStore();
@@ -14,7 +18,7 @@ export function Themen() {
             <span className="tile-num">{t.id === '00' ? '＋' : t.number}</span>
             <span className="tile-title">{t.title}</span>
             <span className="tile-meta">
-              {t.week ?? 'Zusatz'} · {t.sections.length} Abschnitte
+              {topicLabel(t)} · {t.sections.length} Abschnitte
             </span>
           </Link>
         ))}
@@ -67,7 +71,7 @@ export function Thema() {
       </aside>
       <article>
         <p className="crumbs">
-          <Link to="/lernen">Lernen</Link> / {topic.week ?? 'Zusatz'}
+          <Link to="/lernen">Lernen</Link> / {topicLabel(topic)}
         </p>
         <h1>{topic.title}</h1>
         <div className="actions">

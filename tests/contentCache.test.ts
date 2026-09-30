@@ -16,7 +16,6 @@ function content(): Content {
     decks: [],
     cardHints: [],
     materials: [],
-    weeks: [],
     sqlDatasets: [],
     sqlExercises: [],
     issues: [],
@@ -72,6 +71,7 @@ describe('isContentSource', () => {
     expect(isContentFile('lernkarten-extra.json')).toBe(true);
     expect(isContentFile('AP2_SQL_Uebungen.json')).toBe(true);
     expect(isContentFile('bild.png')).toBe(false);
+    expect(isContentFile('Lernplan_Juli_bis_November.md')).toBe(false);
   });
 });
 

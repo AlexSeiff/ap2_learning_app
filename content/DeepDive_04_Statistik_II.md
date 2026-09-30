@@ -1,4 +1,4 @@
-# Deep Dive 4: Statistik II – Zusammenhänge und Prognosen (KW 32)
+# Deep Dive 4: Statistik II – Zusammenhänge und Prognosen
 ## Lernzettel mit Übungsklausur im IHK-Stil – FIDPA AP2
 
 ---
@@ -165,7 +165,7 @@ Zusätzlich unterscheiden: **Prozentpunkte vs. Prozent.** Steigt eine Fehlerquot
 
 # Teil 4 – Vom Zusammenhang zum Modell
 
-Hier schließt sich der Kreis zur Datenanalyse (Vertiefung folgt in KW 34/35):
+Hier schließt sich der Kreis zur Datenanalyse (Vertiefung folgt in Deep Dive 6 und 7):
 
 | Fragestellung | Verfahren |
 |---|---|
@@ -174,7 +174,7 @@ Hier schließt sich der Kreis zur Datenanalyse (Vertiefung folgt in KW 34/35):
 | Wie sagt man eine **Kategorie** vorher (ja/nein)? | Klassifikation |
 | Welche Gruppen gibt es in den Daten? | Clustering |
 
-Die lineare Regression ist damit das einfachste **überwachte Lernverfahren** – sie lernt aus Beispielen mit bekannter Zielgröße. Alle Prinzipien, die du hier lernst (Modellgüte, Residuen, Extrapolationsgrenzen, Overfitting bei zu wenigen Daten), gelten in KW 35 genauso für komplexere Verfahren.
+Die lineare Regression ist damit das einfachste **überwachte Lernverfahren** – sie lernt aus Beispielen mit bekannter Zielgröße. Alle Prinzipien, die du hier lernst (Modellgüte, Residuen, Extrapolationsgrenzen, Overfitting bei zu wenigen Daten), gelten in Deep Dive 7 genauso für komplexere Verfahren.
 
 ---
 
@@ -193,7 +193,7 @@ Die lineare Regression ist damit das einfachste **überwachte Lernverfahren** �
 
 # Übungsklausur Statistik II (100 Punkte, 90 Minuten)
 
-Bearbeite die Klausur **am Ende von KW 32** am Stück, handschriftlich, mit Taschenrechner. Runde auf zwei Nachkommastellen und **schreibe alle Zwischenschritte auf**.
+Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Taschenrechner. Runde auf zwei Nachkommastellen und **schreibe alle Zwischenschritte auf**.
 
 ## Anlage 1 – Schulungsstunden und Fehlerquote
 
@@ -267,7 +267,7 @@ Monatsumsatz in T€: 120, 138, 126, 150, 144, 168, 156, 180
 
 ---
 
-## Lernziel-Check (Ende KW 32 alles mit Ja beantworten)
+## Lernziel-Check (am Ende des Themas alles mit Ja beantworten)
 
 - [ ] Ich lese Richtung, Stärke, Form und Ausreißer aus einem Streudiagramm ab.
 - [ ] Ich berechne r über S<sub>xy</sub>, S<sub>xx</sub> und S<sub>yy</sub> sicher und tabellarisch.
