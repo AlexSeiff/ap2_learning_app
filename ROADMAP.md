@@ -1,0 +1,255 @@
+# AP2 Lern-App – Roadmap (implementation plan)
+
+> Hand this file to a coding agent (e.g. Claude Code) started in `lern-app/`. Read `DOKUMENTATION.md` first: it describes the current
+> app, its data model and the rules (§ 10) that stay valid. Target: the **GitHub Pages version**, which is used by **several people**.
+> Written against commit `06d77e7` (30.09.2026).
+>
+> Origin of each item: **[U]** = requested by the owner · **[C]** = proposed by Claude.
+
+## Working rules
+
+- Work phase by phase. Each phase ends with a green `npm test`, `typecheck`, `lint`, `format:check`, `build`, `build:pages`, plus a
+  manual check with `npx vite preview --mode pages`. One commit per numbered item.
+- **Progress safety:** every change to `Progress` bumps `PROGRESS_VERSION`, adds a migration step and extends `tests/progress.test.ts`.
+  Existing browser data and old backup files must still load.
+- **Multi-user:** nothing personal in code, UI or defaults (names, exam dates, study-plan weeks). Per-user preferences are stored per browser.
+- UI text German (du, short, emoji). New content formats get a zod parser with `ImportIssue`s like `lernkarten.ts` / `sqlUebungen.ts`.
+- Content files in `AP-2/` are only edited when the item says so, and then only after the owner has confirmed.
+
+---
+
+## Phase 0 – Housekeeping
+
+0.1 **Electron work in progress.** The working tree has uncommitted desktop-app changes (`electron/`, `src/lib/desktopApi.ts`,
+    `shared/desktop.ts`, changes in `staticApi.ts`, `store.tsx`, `App.tsx`, `Daten.tsx`, `package.json` …). Ask the owner, then either commit them
+    on a branch `desktop` or commit them to `main` after checking that `build:pages` still works. Don't start phase 1 on a dirty tree.
+0.2 Delete `IMPROVEMENTS_PROMPT.md` and `SQL_EDITOR_PLAN.md` if they still exist. They are merged into `DOKUMENTATION.md`.
+    Link `DOKUMENTATION.md` and `ROADMAP.md` from `README.md`.
+
+## Phase 1 – Make the app general-purpose [U]
+
+The app must work for any FIDPA trainee, not only the owner.
+
+1.1 **Remove the study plan (Lernplan with dates).**
+- Parser: drop `parseLernplan`, `WeekPlan`, `Content.weeks`, the `Lernplan` material mapping and the `Topic.week` extraction
+  (`(KW 31)` in the title). Strip a trailing `(KW …)` from displayed topic titles.
+- Dashboard: remove the "Lernplan diese Woche" card and the KW column. Themen/Thema: replace `t.week ?? 'Zusatz'` with the Deep Dive number or "Zusatz".
+- `server/report.ts`: remove the weeks line. `syncContent`: stop copying `Lernplan_*.md`; delete `content/Lernplan_Juli_bis_November.md`.
+- Tests: update parser/fixture tests.
+- **Content cleanup (needs the owner's OK, edits `AP-2/`):** the sheets contain personal time references
+  ("(KW 31)" in titles, "am Ende von KW 31", "Lernziel-Check (Ende KW 31 …)"). Propose a list of replacements
+  (e.g. "am Ende des Themas") and apply after confirmation, then `npm run sync-content`.
+1.2 **Exam date as a per-user setting.** Remove the hard-coded `EXAM_DATE` from `shared/config.ts`. New setting "Mein Prüfungstermin"
+    (optional date). Countdown KPI only when set; otherwise a KPI "Prüfungstermin eintragen →" linking to the settings.
+    The label reads "Tage bis zur Prüfung (25.11.2026)" with the user's date.
+1.3 **Settings infrastructure.** New `Progress.settings` (migration **v4 → v5**), so settings are part of the backup:
+    ```ts
+    settings: {
+      examDate?: string;            // YYYY-MM-DD
+      prueferfragen: boolean;       // default true   (phase 2)
+      fachgespraech: boolean;       // default true   (phase 2)
+      leichtModus: boolean;         // default false  (phase 6, remembered last choice)
+      backupReminderDays: number;   // default 7      (phase 3)
+    }
+    ```
+    Theme stays in `localStorage` as today. New page **`/einstellungen` "⚙️ Einstellungen"** (nav item near the bottom). *Daten & Import* stays for backup/import.
+1.4 **Welcome screen on first visit** (no progress stored yet): 3 short points: what the app is, "dein Fortschritt bleibt nur in diesem
+    Browser – lade ab und zu eine Sicherung herunter", optional exam date. Buttons "Los geht's" and "Sicherung einspielen".
+1.5 **Neutral wording.** Check the README, `package.json` (`author`), the `<title>`/meta description and the UI for personal references.
+    Add a short **Datenschutz-Hinweis** (footer or settings): no account, no tracking, no cookies, all data stays in the browser;
+    only the content is loaded from GitHub Pages. The content in `content/` is public; the owner decides the license (ask).
+
+## Phase 2 – Turn off Prüferfragen [U]
+
+2.1 Settings `prueferfragen` and `fachgespraech` (phase 1.3), each with a switch on `/einstellungen` and a quick switch on the Karteikarten
+    filter bar ("❓ Prüferfragen einbeziehen").
+2.2 **When off:**
+- Karteikarten: cards of that `kind` are excluded from the pool, the kind filter options, "fällig"/"neu" counts, session building and
+  the Dashboard/Nav due counts. Keep their `CardState` (turning it back on restores everything).
+- Lernen: `> ❓ **Prüferfrage:** …` blockquotes (question + answer line) are hidden in the theory view. Implement as a pure function
+  `stripPrueferfragen(markdown)` in `shared/` (tested with the fixture sheet), applied in `Thema` before rendering. Also hide the
+  "Prüferfragen" mention in the Themen lead text.
+- Stats that count cards (topic progress) must use the same filtered pool, so percentages don't drop when the setting changes.
+2.3 **Better when on [C]:** in Lernen, show Prüferfragen as a collapsible "❓ Prüferfrage – erst selbst überlegen" box with the answer
+    hidden behind "Antwort zeigen" (active recall instead of reading the answer directly).
+2.4 Not affected: *Prüferkommentar* in solutions (that is the scoring scheme). See open question Q1.
+
+## Phase 3 – Protect progress on Pages [C]
+
+On Pages, progress exists only in one browser's `localStorage`. This is the biggest risk for every user.
+
+3.1 `navigator.storage.persist()` once after the first save (ignore if unsupported). Show the result on *Daten & Import*
+    ("Speicher dauerhaft: ja/nein"). Background: Safari/iOS deletes script-written storage after ~7 days without a visit.
+3.2 **Automatic backups in IndexedDB**: at most one per day, keep the last 7 (like `data/backups/` locally). Implement `backups()` in
+    `staticApi.ts`, list them on *Daten & Import* with "Wiederherstellen". Pure rotation logic with tests; IndexedDB wrapped in try/catch.
+3.3 **Backup reminder**: store `lastBackupDownloadAt` (in settings or localStorage). Banner on the Dashboard after `backupReminderDays`
+    with at least one learning day since: "Letzte Sicherung vor 9 Tagen – ⬇ jetzt herunterladen".
+3.4 **Merge on import** (instead of only replace): "Zusammenführen" vs. "Ersetzen". Merge = union of attempts/exams (dedupe by id/date),
+    per card/SQL/Rechnen state the one with the newer `lastReviewed`/`lastCheckedAt`, journal by newer stage, days maps summed per day with max().
+    Pure `mergeProgress(a, b)` in `shared/progress.ts`, well tested. This lets users move between phone and PC without losing either side.
+3.5 Backup file name with date and app name: `ap2-lernapp-sicherung-2026-09-30.json`.
+
+## Phase 4 – Professional solutions for calculation tasks [U]
+
+Today the solution sheets write formulas as plain text ("770 / 11 = **70,00 Minuten** *(3 P)*"). Goal: look like a printed textbook solution.
+
+4.1 **Math rendering**: add `remark-math` + `rehype-katex` (+ `katex` CSS/fonts bundled by Vite, so it works offline and on Pages).
+    Load them only in the Markdown component variant used for Lernen/solutions/Rechnen (lazy chunk), so the main bundle doesn't grow much.
+    Check print (`/druck`) and dark mode.
+4.2 **Solution styling** in `Markdown.tsx`/CSS (no content change needed):
+- `*(3 P)*` → small point badge on the right of the line.
+- Final results (bold numbers with a unit) → highlighted result box "Ergebnis".
+- `*Prüferkommentar: …*` → callout box "🧑‍🏫 Prüferkommentar".
+- Tables: numeric columns right-aligned with tabular numbers, sum rows bold with a top rule.
+4.3 **Rechenweg component** for structured solutions (used by phase 5, optionally in sheets): numbered steps, each step
+    `Formel` (KaTeX) → `Einsetzen` (KaTeX with numbers) → `Ergebnis` (German number format `Intl.NumberFormat('de-DE')`, unit, rounding note).
+4.4 **Content conversion (owner's OK, edits `AP-2/`):** convert the formulas in the calculation solutions to `$…$` LaTeX. Affected sheets
+    (tasks with "Berechnen"): 03 Statistik I (7), 04 Statistik II (9), 05 Prozessanalyse (6), 06 CRISP-DM/ML (5), 07 Modellgüte (5),
+    09 Datenqualität (4), 12 Projektmanagement (6), 11 Visualisierung/Algorithmen (2), 10 (1). Do it sheet by sheet; the parser smoke
+    test must stay green. Example target:
+    ```markdown
+    - Arithmetisches Mittel: $\bar{x} = \frac{\sum x_i}{n} = \frac{770}{11} = \mathbf{70{,}00\ \text{min}}$ *(3 P)*
+    ```
+4.5 **Formelsammlung** page (`/material/formeln`), generated from the formula definitions of phase 5 (one source of truth), grouped by topic.
+
+## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U]
+
+5.1 **Content file `AP-2/AP2_Rechen_Uebungen.json`** (synced like the SQL file; `isContentFile()` matches `*Rechen_Uebungen*.json`),
+    parser `shared/rechenUebungen.ts` (zod, ImportIssues), `Content.rechenUebungen`.
+    ```jsonc
+    {
+      "meta": { "version": "1.0" },
+      "uebungen": [ {
+        "id": "RE-ST1-004",                 // stable, progress is keyed by it
+        "thema": "Deep Dive 3",             // → topicId
+        "titel": "Mittelwert, Median, Modus",
+        "schwierigkeit": 1,                 // 1 Basis · 2 Standard · 3 Transfer
+        "tags": ["lagemaße"],
+        "vorlage": "lagemasse",             // generator template (5.2); omit for a fixed exercise
+        "daten": { "werte": [35, 40, 40, 45, 50, 55, 60, 65, 70, 90, 220] },  // fixed data or generator parameters
+        "aufgabe": "Berechne für die Reparaturdauern {{werte}} (Minuten) Mittelwert, Median und Modus.",
+        "eingaben": [
+          { "id": "mittel", "label": "Arithmetisches Mittel", "einheit": "min", "runden": 2 },
+          { "id": "median", "label": "Median", "einheit": "min", "runden": 2 },
+          { "id": "modus", "label": "Modus", "einheit": "min" }
+        ],
+        "hinweise": ["Zuerst sortieren.", "n ist ungerade → mittlerer Wert."],
+        "quelleAufgabe": "DD3 Übungsklausur C1"
+      } ]
+    }
+    ```
+5.2 **Generator templates** (`src/rechnen/vorlagen/*.ts`, pure): each template has `erzeuge(seed, params)` → concrete data,
+    `loese(data)` → expected values + `schritte` (for the Rechenweg, phase 4.3) + `fehlerbilder`. A seeded PRNG makes every "Neue Zahlen"
+    click reproducible. Fixed exercises (`daten` given) use the same `loese()`. Templates to cover (from the sheets):
+    - **Statistik I:** Mittelwert/Median/Modus, Spannweite, Quartile + IQR + 1,5-IQR outliers (**use the sheet's quartile convention**),
+      Varianz/Standardabweichung (σ² ÷ n vs. s² ÷ (n−1), the exercise states which), Variationskoeffizient, relative/cumulative frequencies, Pareto.
+    - **Statistik II:** Pearson r, R², linear regression (a, b, forecast, residuals), moving average, percentage change.
+    - **Modellgüte / CRISP-DM:** confusion matrix → Accuracy, Precision, Recall, F1, Spezifität; error costs; trivial model; MAE, RMSE, R².
+    - **Prozessanalyse:** Bearbeitungs-/Liege-/Durchlaufzeit, Wertschöpfungsanteil, Fehlerquote, First Pass Yield, Nacharbeitskosten, Amortisation.
+    - **Datenqualität:** Vollständigkeits-, Eindeutigkeits-, Gültigkeitsgrad.
+    - **Projektmanagement:** Netzplan FAZ/FEZ/SAZ/SEZ, Gesamt-/freier Puffer, kritischer Pfad (table input), Amortisation, ROI, Break-even.
+    - Check WiSo I/II and DD15 for further calculations (e.g. Zinsen, Kalkulation, Speicherbedarf) and add them if present.
+5.3 **Checking**: every input separately; accept German decimal comma and dot, spaces, optional unit; tolerance derived from `runden`
+    (half a unit of the last digit) or explicit `toleranz`. **Fehlerbilder**: typical wrong values are recognised and explained,
+    e.g. median without sorting, ÷ n instead of ÷ (n−1), Precision/Recall swapped, percentage change relative to the wrong base.
+    ("Du hast durch n geteilt – bei einer Stichprobe teilt man durch n − 1.")
+5.4 **UI** (lazy routes `/rechnen`, `/rechnen/:id`, nav "📐 Rechenübungen" with due badge): list with filters in the URL (topic, difficulty,
+    tag, status) and progress bar, like `SqlUebungen`. Exercise page: task, data table, inputs, "✓ Prüfen", graded hints,
+    "🎲 Neue Zahlen" (generated exercises), "👁 Lösung zeigen" (confirm) → Rechenweg with KaTeX, your values next to the correct ones.
+    Optional calculator-free notice: "Rechne auf Papier, trage nur Ergebnisse ein."
+5.5 **Progress** (migration **v5 → v6**): `rechnen: Record<id, RechenState>` (attempts, solvedAt, hintsUsed, solutionShown, stage, due,
+    lastSeed) and `rechnenDays` for the streak. Repetition like SQL (`JOURNAL_INTERVALS`). Dashboard KPI "Rechenübungen x/y gelöst".
+5.6 **Tests**: every template's `loese()` reproduces the numbers in the sheet solutions (smoke test against `content/`: e.g. DD3 C1 → 70,00 / 55 / 40;
+    DD7 B2 values), property tests over many seeds (no NaN, no division by zero, results in range), checker/Fehlerbild tests.
+5.7 **Starting content**: every "Berechnen" task of the sheets as a fixed exercise + at least one generated variant per template (~60 exercises).
+    Write the JSON in `AP-2/` (owner's OK), then sync.
+
+## Phase 6 – Leicht-Modus: 4 answers, 1 correct [U]
+
+6.1 **Where it makes sense:** flashcards of `typ` wissen, abgrenzung, falle and rechnung; Prüferfragen with a short answer;
+    Rechenübungen (distractors = typical wrong results from `fehlerbilder`, very useful for learning).
+    **Not** for: open exam tasks, Fachgespräch questions, `anwendung` cards with long answers, SQL writing
+    (optional later: "Welche Abfrage liefert …?" with 4 queries).
+6.2 **Distractors must be written, not guessed.** Long card answers make automatic distractors poor. Extend the flashcard format
+    (optional, backwards compatible):
+    ```json
+    { "id": "SQL-001", "frage": "…", "antwort": "…",
+      "mc": { "richtig": "kurze richtige Antwort", "falsch": ["…", "…", "…"], "erklaerung": "optional, warum die anderen falsch sind" } }
+    ```
+    Validation: exactly 3 distinct `falsch`, none equal to `richtig`. Rechenübungen use their `fehlerbilder`.
+6.3 **Authoring helper** (local only, owner runs it): `npm run mc-entwurf -- --deck sql` uses the Claude API (key from `.env.local`)
+    to propose `mc` blocks into `data/mc-entwurf.json` for review; a second command merges accepted entries into `AP-2/AP2_FIDPA_Lernkarten.json`.
+    Nothing is generated at runtime, so Pages stays static and all users see the same reviewed questions.
+6.4 **Fallback** (optional, marked "automatisch"): for cards without `mc` and with an answer ≤ 120 characters, use 3 answers of other cards
+    from the same deck and typ. A setting can disable this.
+6.5 **UI**: on Karteikarten a mode switch "Aufdecken | 🟢 Leicht (4 Antworten)" (remembered in settings). Filters only offer cards that support
+    the chosen mode and show how many do. Options shuffled (Fisher–Yates), keys 1–4, immediate feedback with the correct answer, the full
+    `antwort` and `erklaerung`. Rechenübungen get the same switch ("Ergebnis auswählen" instead of typing).
+6.6 **Effect on Leitner boxes** (recognition is easier than recall): correct in Leicht-Modus moves a card up **at most to box 2**; wrong → box 1.
+    A card only reaches boxes 3–5 in the normal mode. The Dashboard hint: "Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten."
+    Store `leicht` answers in `cardReviewDays` too (streak). No schema change needed beyond settings, unless per-card stats are added.
+6.7 Tests: option building (exactly 4, correct one included, no duplicates), box cap, filter counts.
+
+## Phase 7 – Mobile and offline [C]
+
+7.1 **PWA** with `vite-plugin-pwa`: manifest (name "AP2 Lern-App", icons from `build/icon.png`, `start_url: './'`, `display: standalone`),
+    precache of the app shell, `content.json`, KaTeX fonts and `sql-wasm.wasm`. Update flow for all users: toast "Neue Version verfügbar – neu laden".
+    Only in the `pages` mode build.
+7.2 **Mobile navigation** below 600 px: bottom bar with Übersicht, Lernen, Karteikarten, Üben (menu: Klausur, Einzelaufgaben, SQL, Rechnen),
+    Mehr (Fehlerjournal, Material, Einstellungen, Daten). Currently 11 links wrap into a block above every page.
+7.3 Touch: swipe left/right on flashcards for rating is optional; buttons large enough (≥ 44 px).
+7.4 **Hide "KI-Aufgaben" on Pages** (like the desktop branch does), unless 7.5 is done.
+7.5 **Optional: KI with your own key on Pages.** Per-user API key in the settings (stored only in that browser, clearly marked opt-in,
+    with a cost/security note); calls Anthropic directly from the browser (`anthropic-dangerous-direct-browser-access` header).
+    Generated tasks stored per browser. Only do this if the owner wants it (Q3).
+
+## Phase 8 – More learning effect [C]
+
+Ordered by expected benefit per effort:
+
+8.1 **"Heute lernen" (adaptive daily session)** replaces the removed study plan: one button on the Dashboard builds a ~20-minute mixed
+    round from what is due: journal items, due cards, 1–2 SQL or Rechenübungen, one task from the weakest topic. Interleaving different
+    topics improves retention. Pure planner function with tests.
+8.2 **Answer before revealing**: an optional text field on flashcards ("Deine Antwort"), shown next to the model answer when flipped.
+    Writing things down improves recall more than thinking "I knew that".
+8.3 **Confidence before checking**: in exams/tasks ask "Wie sicher bist du?" (1–3) before submitting; show calibration on the Dashboard
+    ("Bei 'sicher' lagst du in 64 % richtig"). Reveals false confidence before the exam.
+8.4 **Operatoren-Trainer**: the IHK operators (nennen, beschreiben, erläutern, beurteilen, berechnen …) with what each requires and how many
+    points it typically gives; highlight operators in task texts with a tooltip. Many points are lost by answering the wrong operator.
+8.5 **Mixed mock exam**: a 90-minute exam assembled across topics like the real AP2 (blocks weighted by the topic list), not only per Deep Dive.
+8.6 **Faded worked examples** for Rechenübungen: first time all steps shown, then one step missing, then only the result, based on the stage.
+8.7 **Error categories in the Fehlerjournal**: after self-assessment choose why ("Begriff verwechselt", "Formel falsch", "Rechenfehler",
+    "Operator nicht beachtet", "Zeit"). The Dashboard shows the most common category.
+8.8 **Global search** (`Strg+K`): terms across sheets, cards and exercises, jump to the section.
+8.9 **Glossary** built from `wissen` cards and bold terms in the sheets.
+
+---
+
+## Review of earlier suggestions for multi-user use
+
+| Suggestion | Fits multi-user Pages? | Decision |
+|---|---|---|
+| `navigator.storage.persist()` | Yes, per browser | Phase 3.1 |
+| Automatic backups in IndexedDB | Yes, per browser | Phase 3.2 |
+| Backup reminder | Yes | Phase 3.3 |
+| PWA / offline | Yes; needs an update toast so users get new content | Phase 7.1 |
+| Mobile bottom navigation | Yes | Phase 7.2 |
+| Hide KI on Pages | Yes | Phase 7.4 |
+| Sync via private GitHub Gist | **No for most users**: needs a GitHub account and a personal access token, too technical | Replaced by **merge on import** (3.4); Gist only as an optional power-user feature later |
+| KI with own API key | Only opt-in: each user pays with their own key, and the key sits in the browser | Phase 7.5, only if the owner wants it |
+| Commit the Electron branch before pushing | Owner-only housekeeping | Phase 0.1 |
+| Hard-coded exam date / Lernplan / KW | **No**, personal | Removed in phase 1 |
+
+## Open questions for the owner
+
+- **Q1:** Should "Prüferfragen ausschalten" also cover the *Fachgespräch* questions (separate switch planned) or the *Prüferkommentar* in solutions?
+- **Q2:** Is it OK to edit the sheets in `AP-2/` for phase 1.1 (remove KW references) and 4.4 (LaTeX formulas)? Alternative: leave the sheets
+  unchanged and only improve the rendering (4.2) and the new Rechenübungen.
+- **Q3:** KI on Pages with each user's own key (7.5): yes or no?
+- **Q4:** License/visibility of the content in `content/` now that others use the app (e.g. CC BY-NC 4.0)?
+- **Q5:** Leicht-Modus box cap (6.6): OK, or should Leicht answers not affect the Leitner boxes at all?
+
+## Suggested order
+
+Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8.
+Phases 1–3 are small (about 1 day together) and make the app safe for other users; 5 and 6 are the largest (mostly content writing).

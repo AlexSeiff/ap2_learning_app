@@ -4,3 +4,6 @@ data
 .env.local
 tsconfig.tsbuildinfo
 *.defekt-*
+dist-desktop
+dist-electron
+release

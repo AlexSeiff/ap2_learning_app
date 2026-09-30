@@ -148,6 +148,9 @@ Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein an
 
 ## Entwicklung
 
+Technische Dokumentation (Aufbau, Datenmodell, Regeln für Änderungen): [`DOKUMENTATION.md`](DOKUMENTATION.md).
+Geplante Änderungen: [`ROADMAP.md`](ROADMAP.md).
+
 ```bash
 npm run dev           # Dev-Server mit lokaler API auf http://localhost:5178 (das startet auch Lern-App starten.cmd)
 npm start             # bauen (tsc + vite build) und die gebaute App mit lokaler API per vite preview auf Port 5178 starten
