@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import type { BackupInfo } from '../../shared/api';
 import { emptyProgress } from '../../shared/progress';
+import { useBackupDownload } from '../hooks/useBackupDownload';
 import { useConfirm } from '../hooks/useConfirm';
 import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
 import { parseBackup } from '../lib/backup';
-import { downloadText } from '../lib/sheets';
 import { isStoragePersisted } from '../lib/persistentStorage';
-import { localDate } from '../lib/progress';
 import { formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 export function Daten() {
   const { content, progress, reload, replaceProgress, aiEnabled, aiModel } = useStore();
   const confirm = useConfirm();
+  const downloadBackup = useBackupDownload();
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [backups, setBackups] = useState<BackupInfo | null>(null);
@@ -228,11 +228,7 @@ export function Daten() {
           </p>
         )}
         <div className="actions">
-          <button
-            type="button"
-            className="secondary"
-            onClick={() => downloadText(`AP2_Fortschritt_${localDate()}.json`, JSON.stringify(progress, null, 2), 'application/json')}
-          >
+          <button type="button" className="secondary" onClick={downloadBackup}>
             ⬇ Sicherung herunterladen
           </button>
           <button type="button" className="secondary" onClick={() => fileRef.current?.click()}>

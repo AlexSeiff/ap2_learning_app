@@ -78,6 +78,11 @@ export type Settings = {
   leichtModus: boolean;
   /** Nach wie vielen Tagen ohne heruntergeladene Sicherung erinnert wird. */
   backupReminderDays: number;
+  /**
+   * Tag (YYYY-MM-DD) der letzten heruntergeladenen Sicherung, für die Erinnerung auf der Übersicht; fehlt, solange keine geladen wurde.
+   * Optional und in Version 5 schon zulässig (SettingsSchema ist offen, migrateSettings behält es) – daher keine neue Version.
+   */
+  lastBackupDownloadAt?: string;
 };
 
 export const defaultSettings = (): Settings => ({ prueferfragen: true, fachgespraech: true, leichtModus: false, backupReminderDays: 7 });
@@ -217,12 +222,13 @@ export function isIsoDate(v: unknown): v is string {
 export function migrateSettings(v: unknown): Settings {
   const d = defaultSettings();
   if (!isObject(v)) return d;
-  const { examDate, ...rest } = v;
+  const { examDate, lastBackupDownloadAt, ...rest } = v;
   const bool = (x: unknown, fallback: boolean) => (typeof x === 'boolean' ? x : fallback);
   const days = v.backupReminderDays;
   return {
     ...rest,
     ...opt('examDate', examDate, isIsoDate(examDate)),
+    ...opt('lastBackupDownloadAt', lastBackupDownloadAt, isIsoDate(lastBackupDownloadAt)),
     prueferfragen: bool(v.prueferfragen, d.prueferfragen),
     fachgespraech: bool(v.fachgespraech, d.fachgespraech),
     leichtModus: bool(v.leichtModus, d.leichtModus),
@@ -332,6 +338,7 @@ export const SettingsSchema = z.looseObject({
   fachgespraech: z.boolean().optional(),
   leichtModus: z.boolean().optional(),
   backupReminderDays: z.number().optional(),
+  lastBackupDownloadAt: z.string().optional(),
 });
 
 export const ProgressSchema = z.looseObject({

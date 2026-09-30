@@ -205,6 +205,10 @@ describe('migrateProgress', () => {
       zukunft: 1,
     });
     expect(migrateSettings({ examDate: '2026-02-30', backupReminderDays: 2.5 })).toEqual(defaultSettings());
+    // lastBackupDownloadAt (optional, ohne neue Version): gültiges Datum bleibt, alles andere fällt weg
+    expect(migrateSettings({ lastBackupDownloadAt: '2026-09-30' })).toEqual({ ...defaultSettings(), lastBackupDownloadAt: '2026-09-30' });
+    for (const bad of ['30.09.2026', 42, null]) expect(migrateSettings({ lastBackupDownloadAt: bad })).toEqual(defaultSettings());
+    expect(ProgressSchema.safeParse({ version: 5, attempts: [], settings: { lastBackupDownloadAt: '2026-09-30' } }).success).toBe(true);
     for (const raw of [undefined, null, 'x', []]) expect(migrateSettings(raw)).toEqual(defaultSettings());
     const migrated = migrateProgress({ version: 5, attempts: [], settings: { examDate: '2026-11-25', prueferfragen: false } });
     expect(migrated.settings).toEqual({ ...defaultSettings(), examDate: '2026-11-25', prueferfragen: false });

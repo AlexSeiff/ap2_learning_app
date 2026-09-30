@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Welcome } from '../components/Welcome';
+import { useBackupDownload } from '../hooks/useBackupDownload';
+import { IS_STATIC } from '../lib/api';
+import { backupReminder } from '../lib/backupReminder';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { cardPool } from '../lib/cards';
 import { isDue } from '../lib/progress';
@@ -40,6 +44,7 @@ function Uebersicht() {
   return (
     <div className="page">
       <h1>Übersicht</h1>
+      <BackupBanner />
       <div className="kpis">
         {days === undefined || !examDate ? (
           <Link to="/einstellungen" className="kpi">
@@ -263,5 +268,28 @@ function Delta({ value }: { value?: number }) {
       {rounded > 0 ? '▲ +' : '▼ −'}
       {Math.abs(rounded)} %-Pkt.
     </span>
+  );
+}
+
+/** Pages-Version: Erinnerung, eine Sicherung herunterzuladen (nach settings.backupReminderDays mit mindestens einem Lerntag seitdem). */
+function BackupBanner() {
+  const { progress } = useStore();
+  const downloadBackup = useBackupDownload();
+  const [later, setLater] = useState(false);
+  const reminder = IS_STATIC && !later ? backupReminder(progress) : undefined;
+  if (!reminder) return null;
+  return (
+    <div className="card warn actions" role="status">
+      <span>
+        💾 {reminder.lastDownload ? `Letzte Sicherung vor ${reminder.daysSince} Tagen` : 'Du hast noch keine Sicherung heruntergeladen'} –
+        dein Fortschritt liegt nur in diesem Browser.
+      </span>
+      <button type="button" onClick={downloadBackup}>
+        ⬇ jetzt herunterladen
+      </button>
+      <button type="button" className="ghost" onClick={() => setLater(true)}>
+        Später
+      </button>
+    </div>
   );
 }

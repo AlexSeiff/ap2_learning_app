@@ -3,7 +3,7 @@ import { isIsoDate } from '../../shared/progress';
 import { Datenschutz } from '../components/Datenschutz';
 import { IS_STATIC } from '../lib/api';
 import { withSettings } from '../lib/settings';
-import { daysUntilExam } from '../lib/stats';
+import { daysUntilExam, formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 export function Einstellungen() {
@@ -81,6 +81,29 @@ export function Einstellungen() {
           Prüferkommentar in den Musterlösungen (das Punkteschema) bleibt immer sichtbar.
         </p>
       </section>
+
+      {IS_STATIC && (
+        <section className="card">
+          <h2>💾 Erinnerung an die Sicherung</h2>
+          <p>Die Übersicht erinnert dich, eine Sicherung herunterzuladen, wenn die letzte so alt ist und du seitdem gelernt hast.</p>
+          <label className="field">
+            Erinnern nach … Tagen
+            <input
+              type="number"
+              min={1}
+              max={365}
+              value={settings.backupReminderDays}
+              onChange={(e) => {
+                const days = Number(e.target.value);
+                if (Number.isInteger(days) && days >= 1 && days <= 365) update((p) => withSettings(p, { backupReminderDays: days }));
+              }}
+            />
+          </label>
+          {settings.lastBackupDownloadAt && (
+            <p className="hint">Letzte heruntergeladene Sicherung: {formatIsoDate(settings.lastBackupDownloadAt)}.</p>
+          )}
+        </section>
+      )}
 
       <p className="hint">
         💾 Deine Einstellungen stehen in deinem Fortschritt ({IS_STATIC ? 'in diesem Browser' : 'lokal auf diesem Rechner'}) und ziehen mit
