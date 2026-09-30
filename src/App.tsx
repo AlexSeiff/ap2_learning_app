@@ -10,6 +10,7 @@ import { Aufgaben } from './pages/Aufgaben';
 import { Daten } from './pages/Daten';
 import { Dashboard } from './pages/Dashboard';
 import { Druck } from './pages/Druck';
+import { Einstellungen } from './pages/Einstellungen';
 import { Fehlerjournal } from './pages/Fehlerjournal';
 import { Generator } from './pages/Generator';
 import { Karteikarten } from './pages/Karteikarten';
@@ -70,6 +71,7 @@ function Nav() {
       {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
       {link('/generator', 'KI-Aufgaben')}
       {link('/material', 'Material')}
+      {link('/einstellungen', '⚙️ Einstellungen')}
       {link('/daten', 'Daten & Import')}
       <div className="sidebar-foot">
         <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>
@@ -145,6 +147,7 @@ export function App() {
                       <Route path="/generator" element={<Generator />} />
                       <Route path="/material" element={<Material />} />
                       <Route path="/material/:docId" element={<Material />} />
+                      <Route path="/einstellungen" element={<Einstellungen />} />
                       <Route path="/daten" element={<Daten />} />
                       <Route
                         path="*"

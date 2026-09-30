@@ -63,6 +63,25 @@ export type SqlState = {
   due?: string;
 };
 
+/**
+ * Persönliche Einstellungen (seit Version 5). Sie stehen im Fortschritt, damit sie mit der Sicherung umziehen.
+ * Das Farbschema bleibt im localStorage (gilt nur für das Gerät).
+ */
+export type Settings = {
+  /** Eigener Prüfungstermin (YYYY-MM-DD) für den Countdown; fehlt, solange keiner eingetragen ist. */
+  examDate?: string;
+  /** Prüferfragen aus den Lernblättern in Karteikarten und Theorie zeigen. */
+  prueferfragen: boolean;
+  /** Fachgespräch-Fragen aus den Lernblättern als Karteikarten zeigen. */
+  fachgespraech: boolean;
+  /** Zuletzt gewählter Karteikarten-Modus „Leicht“ (4 Antworten). */
+  leichtModus: boolean;
+  /** Nach wie vielen Tagen ohne heruntergeladene Sicherung erinnert wird. */
+  backupReminderDays: number;
+};
+
+export const defaultSettings = (): Settings => ({ prueferfragen: true, fachgespraech: true, leichtModus: false, backupReminderDays: 7 });
+
 export type Progress = {
   version: typeof PROGRESS_VERSION;
   /**
@@ -86,10 +105,12 @@ export type Progress = {
   sql: Record<string, SqlState>;
   /** Anzahl geprüfter SQL-Übungen je lokalem Datum (YYYY-MM-DD), für die Lernserie (seit Version 4, ältere Dateien: leer). */
   sqlDays: Record<string, number>;
+  /** Persönliche Einstellungen (seit Version 5, ältere Dateien: Standardwerte). */
+  settings: Settings;
 };
 
 /** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
-export const PROGRESS_VERSION = 4;
+export const PROGRESS_VERSION = 5;
 
 export const emptyProgress = (): Progress => ({
   version: PROGRESS_VERSION,
@@ -102,6 +123,7 @@ export const emptyProgress = (): Progress => ({
   cardReviewDays: {},
   sql: {},
   sqlDays: {},
+  settings: defaultSettings(),
 });
 
 type Raw = Record<string, unknown>;
@@ -183,6 +205,31 @@ function migrateSqlState(v: unknown): SqlState | undefined {
   };
 }
 
+/** Ist `v` ein gültiges Kalenderdatum im Format YYYY-MM-DD? */
+export function isIsoDate(v: unknown): v is string {
+  if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
+}
+
+/** Einstellungen tolerant übernehmen: falsche Typen → Standardwert, unbekannte Felder bleiben erhalten. */
+export function migrateSettings(v: unknown): Settings {
+  const d = defaultSettings();
+  if (!isObject(v)) return d;
+  const { examDate, ...rest } = v;
+  const bool = (x: unknown, fallback: boolean) => (typeof x === 'boolean' ? x : fallback);
+  const days = v.backupReminderDays;
+  return {
+    ...rest,
+    ...opt('examDate', examDate, isIsoDate(examDate)),
+    prueferfragen: bool(v.prueferfragen, d.prueferfragen),
+    fachgespraech: bool(v.fachgespraech, d.fachgespraech),
+    leichtModus: bool(v.leichtModus, d.leichtModus),
+    backupReminderDays: typeof days === 'number' && Number.isInteger(days) && days >= 1 ? days : d.backupReminderDays,
+  };
+}
+
 /** Zähler je Tag: nur nicht-negative Zahlen übernehmen. */
 const dayCount = (v: unknown) => (typeof v === 'number' && v >= 0 ? v : undefined);
 
@@ -197,6 +244,8 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   2: (raw) => ({ ...raw, version: 3 }),
   // 3 → 4: SQL-Übungen (sql) und ihre Lerntage (sqlDays); starten leer, aufgefüllt wird unten in migrateProgress.
   3: (raw) => ({ ...raw, version: 4 }),
+  // 4 → 5: Einstellungen (settings) mit Standardwerten; aufgefüllt wird unten in migrateProgress.
+  4: (raw) => ({ ...raw, version: 5 }),
 };
 
 /**
@@ -224,6 +273,7 @@ export function migrateProgress(raw: unknown): Progress {
     cardReviewDays: filterRecord(data.cardReviewDays, dayCount),
     sql: filterRecord(data.sql, migrateSqlState),
     sqlDays: filterRecord(data.sqlDays, dayCount),
+    settings: migrateSettings(data.settings),
   };
 }
 
@@ -276,6 +326,14 @@ export const SqlStateSchema = z.looseObject({
   due: z.string().optional(),
 });
 
+export const SettingsSchema = z.looseObject({
+  examDate: z.string().optional(),
+  prueferfragen: z.boolean().optional(),
+  fachgespraech: z.boolean().optional(),
+  leichtModus: z.boolean().optional(),
+  backupReminderDays: z.number().optional(),
+});
+
 export const ProgressSchema = z.looseObject({
   version: z.number().int().min(1),
   // Optional, damit Dateien von vor Version 2 gültig bleiben (fehlend = 0).
@@ -289,6 +347,7 @@ export const ProgressSchema = z.looseObject({
   cardReviewDays: z.record(z.string(), z.number()).default({}),
   sql: z.record(z.string(), SqlStateSchema).default({}),
   sqlDays: z.record(z.string(), z.number()).default({}),
+  settings: SettingsSchema.optional(),
 });
 
 export type ProgressData = z.infer<typeof ProgressSchema>;

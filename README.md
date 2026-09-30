@@ -68,6 +68,7 @@ Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen 
 | **Fehlerjournal** | Jede Aufgabe unter voller Punktzahl kommt nach 1, 3 und 7 Tagen wieder |
 | **KI-Aufgaben** | Neue IHK-Aufgaben (MC, Lückentext, Zuordnung, Rechnen, offen) mit Musterlösung – nur mit API-Schlüssel |
 | **Material** | Lernzettel Kernthemen, Themenliste |
+| **Einstellungen** | Persönliche Einstellungen – sie stehen im Fortschritt und ziehen mit jeder Sicherung um |
 | **Daten & Import** | Importbericht, Neu-Import, Fortschritt sichern/wiederherstellen/zurücksetzen |
 
 ### Getrennte Aufgaben- und Lösungsblätter (PDF)
@@ -138,7 +139,7 @@ Importbericht im Terminal: `npm run import-report`
 
 Alles bleibt lokal:
 
-- `lern-app/data/fortschritt.json` – Versuche, Klausuren, Karteikarten, Fehlerjournal, Lernziele, Karteikarten-Lerntage (für die Lernserie)
+- `lern-app/data/fortschritt.json` – Versuche, Klausuren, Karteikarten, Fehlerjournal, Lernziele, Karteikarten-Lerntage (für die Lernserie), SQL-Übungen und deine Einstellungen
 - `lern-app/data/generierte-aufgaben.json` – KI-Aufgaben
 
 Sicherung: *Daten & Import → Sicherung herunterladen*. Zusätzlich legt die App beim ersten Speichern eines Tages automatisch `lern-app/data/backups/fortschritt-JJJJ-MM-TT.json` an (die letzten 14 Tage bleiben erhalten; die Seite *Daten & Import* zeigt die neueste).
@@ -187,8 +188,8 @@ lesen `ANTHROPIC_MODEL` und `LERN_QUELLE` beim Import. Der Pages-Build liest die
 `AP-2` – so bauen GitHub Actions und dein Rechner dasselbe.
 
 **Gespeicherter Fortschritt** (`shared/progress.ts`): Typen, zod-Schema, `checkProgressPut` (Server lehnt ungültige Daten, einen starken
-Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 3
-(1 → 2: `revision`, 2 → 3: `cardReviewDays`). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
+Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 5
+(1 → 2: `revision`, 2 → 3: `cardReviewDays`, 3 → 4: SQL-Übungen, 4 → 5: `settings`). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
 ergänzen und die Migrationstests in `tests/progress.test.ts` anpassen – sie laden unter anderem eine Kopie der echten Datei aus
 `tests/fixtures/`. Geschrieben wird atomar (Temp-Datei + Umbenennen, mit Wiederholung, falls OneDrive die Datei sperrt), vorher entsteht
 die Tagessicherung in `data/backups/`.

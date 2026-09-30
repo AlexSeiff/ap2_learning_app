@@ -145,6 +145,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
+| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`), see § 6 |
 | `/daten` | Daten & Import | import report, re-import (local), backup download/upload, reset, newest daily backup (local) |
 
 **Grading**
@@ -158,11 +159,11 @@ print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the 
 
 ## 6. Progress (persisted data)
 
-Defined in `shared/progress.ts`, **`PROGRESS_VERSION = 4`**.
+Defined in `shared/progress.ts`, **`PROGRESS_VERSION = 5`**.
 
 ```ts
 type Progress = {
-  version: 4;
+  version: 5;
   revision: number;                        // bumped on every save; stale tab → 409 (v2)
   attempts: Attempt[];                     // task attempts (taskId, points, max, date, answer)
   exams: ExamRun[]; activeExam?: ExamRun;
@@ -172,14 +173,25 @@ type Progress = {
   cardReviewDays: Record<string, number>;  // YYYY-MM-DD → count, for the streak (v3)
   sql: Record<string, SqlState>;           // attempts, solvedAt, hintsUsed, solutionShown, lastQuery, stage, due (v4)
   sqlDays: Record<string, number>;         // for the streak (v4)
+  settings: Settings;                      // per-user settings, part of the backup (v5)
+};
+
+type Settings = {
+  examDate?: string;            // YYYY-MM-DD, own exam date for the countdown (unset = no countdown)
+  prueferfragen: boolean;       // default true: Prüferfragen in flashcards and theory
+  fachgespraech: boolean;       // default true: Fachgespräch questions as flashcards
+  leichtModus: boolean;         // default false: remembered flashcard mode (phase 6)
+  backupReminderDays: number;   // default 7 (phase 3)
 };
 ```
 
 **Safety rules (all implemented, keep them):**
 - `checkProgressPut` validates with zod, rejects a strong drop in `attempts` unless `reset: true` (reset button, backup restore),
   and rejects a stale `revision` with 409. Same rules on the server and in `staticApi.ts`.
-- `migrateProgress(raw)` runs versioned `MIGRATIONS` (1→2 revision, 2→3 cardReviewDays, 3→4 sql/sqlDays) and fills missing fields.
-  **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`).
+- `migrateProgress(raw)` runs versioned `MIGRATIONS` (1→2 revision, 2→3 cardReviewDays, 3→4 sql/sqlDays, 4→5 settings) and fills missing fields.
+  `migrateSettings` fills defaults, drops an invalid `examDate` and keeps unknown fields.
+  **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`, one per version).
+- Settings are changed only through `withSettings` (`src/lib/settings.ts`). "Fortschritt zurücksetzen" keeps the settings. The theme stays in `localStorage` (per device).
 - Local app: atomic writes with retry, daily backup `data/backups/fortschritt-YYYY-MM-DD.json` (last 14 kept), broken file → `*.defekt-<ts>`.
 - Pages: `localStorage` key `ap2-fortschritt`; an unreadable value is moved to `ap2-fortschritt-defekt`. No automatic backups yet.
 - Saving is debounced (`SAVE_DELAY_MS`), flushed on `pagehide`; state updates are pure, persisting happens outside the updater.

@@ -3,9 +3,11 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   checkProgressPut,
+  defaultSettings,
   emptyProgress,
   isSuspiciousAttemptDrop,
   migrateProgress,
+  migrateSettings,
   PROGRESS_VERSION,
   ProgressPutSchema,
   ProgressSchema,
@@ -126,9 +128,17 @@ describe('migrateProgress', () => {
   it('übernimmt den aktuellen Stand (Kopie von data/fortschritt.json vom 22.09.2026) ohne Verlust', () => {
     const raw = fixture('fortschritt-v1-2026-09-22.json');
     const migrated = migrateProgress(raw);
-    // Einzige Änderungen: aktuelle Version, Revisionszähler 0 (Version 2), leere Karteikarten-Lerntage (Version 3)
-    // und leere SQL-Übungen (Version 4).
-    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, revision: 0, cardReviewDays: {}, sql: {}, sqlDays: {} });
+    // Einzige Änderungen: aktuelle Version, Revisionszähler 0 (Version 2), leere Karteikarten-Lerntage (Version 3),
+    // leere SQL-Übungen (Version 4) und Standard-Einstellungen (Version 5).
+    expect(migrated).toEqual({
+      ...raw,
+      version: PROGRESS_VERSION,
+      revision: 0,
+      cardReviewDays: {},
+      sql: {},
+      sqlDays: {},
+      settings: defaultSettings(),
+    });
     expect(migrated.attempts).toHaveLength(16);
     expect(migrated.exams).toHaveLength(1);
     expect(Object.keys(migrated.cards)).toHaveLength(8);
@@ -165,11 +175,46 @@ describe('migrateProgress', () => {
   it('Version 3 → 4: ergänzt leere SQL-Übungen und SQL-Lerntage, sonst bleibt alles gleich', () => {
     const raw = fixture('fortschritt-v3-2026-09-28.json');
     const migrated = migrateProgress(raw);
-    expect(PROGRESS_VERSION).toBe(4);
-    expect(migrated).toEqual({ ...raw, version: 4, sql: {}, sqlDays: {} });
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, sql: {}, sqlDays: {}, settings: defaultSettings() });
     expect(migrated.revision).toBe(7);
     expect(migrated.cardReviewDays).toEqual({ '2026-09-26': 4, '2026-09-27': 2 });
     expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+  });
+
+  it('Version 4 → 5: ergänzt Standard-Einstellungen, sonst bleibt alles gleich', () => {
+    const raw = fixture('fortschritt-v4-2026-09-30.json');
+    const migrated = migrateProgress(raw);
+    expect(PROGRESS_VERSION).toBe(5);
+    expect(migrated).toEqual({ ...raw, version: 5, settings: defaultSettings() });
+    expect(migrated.settings).toEqual({ prueferfragen: true, fachgespraech: true, leichtModus: false, backupReminderDays: 7 });
+    expect(migrated.settings).not.toHaveProperty('examDate');
+    expect(migrated.revision).toBe(12);
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+    // Erstes Speichern nach dem Update: Revision passt, nichts geht verloren.
+    const r = checkProgressPut(migrated, raw);
+    expect(r).toMatchObject({ ok: true, progress: { version: 5, revision: 13, settings: defaultSettings() } });
+    if (r.ok) expect(r.progress.sql).toEqual(raw.sql);
+  });
+
+  it('übernimmt Einstellungen tolerant: falsche Typen → Standardwert, unbekannte Felder bleiben', () => {
+    expect(
+      migrateSettings({ examDate: '2027-05-12', prueferfragen: false, fachgespraech: false, leichtModus: true, backupReminderDays: 14 }),
+    ).toEqual({ examDate: '2027-05-12', prueferfragen: false, fachgespraech: false, leichtModus: true, backupReminderDays: 14 });
+    expect(migrateSettings({ examDate: '25.11.2026', prueferfragen: 'nein', backupReminderDays: 0, zukunft: 1 })).toEqual({
+      ...defaultSettings(),
+      zukunft: 1,
+    });
+    expect(migrateSettings({ examDate: '2026-02-30', backupReminderDays: 2.5 })).toEqual(defaultSettings());
+    for (const raw of [undefined, null, 'x', []]) expect(migrateSettings(raw)).toEqual(defaultSettings());
+    const migrated = migrateProgress({ version: 5, attempts: [], settings: { examDate: '2026-11-25', prueferfragen: false } });
+    expect(migrated.settings).toEqual({ ...defaultSettings(), examDate: '2026-11-25', prueferfragen: false });
+    expect(migrateProgress(migrated)).toEqual(migrated);
+  });
+
+  it('Schema: settings ist optional (ältere Dateien) und wird geprüft', () => {
+    expect(ProgressSchema.safeParse({ version: 4, attempts: [] }).success).toBe(true);
+    expect(ProgressSchema.safeParse({ version: 5, attempts: [], settings: { prueferfragen: 'ja' } }).success).toBe(false);
+    expect(ProgressSchema.safeParse({ version: 5, attempts: [], settings: 'x' }).success).toBe(false);
   });
 
   it('übernimmt SQL-Stände tolerant: falsche Typen fallen weg, unbekannte Felder bleiben', () => {

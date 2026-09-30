@@ -178,12 +178,13 @@ export function Daten() {
             onClick={async () => {
               const ok = await confirm({
                 title: 'Fortschritt zurücksetzen?',
-                message: 'Wirklich den GESAMTEN Lernfortschritt löschen? Lade vorher am besten eine Sicherung herunter.',
+                message:
+                  'Wirklich den GESAMTEN Lernfortschritt löschen? Deine Einstellungen bleiben erhalten. Lade vorher am besten eine Sicherung herunter.',
                 confirmLabel: '🗑️ Alles löschen',
                 danger: true,
               });
               if (!ok) return;
-              replaceProgress(emptyProgress());
+              replaceProgress({ ...emptyProgress(), settings: progress.settings });
               setMsg('Fortschritt zurückgesetzt.');
             }}
           >
