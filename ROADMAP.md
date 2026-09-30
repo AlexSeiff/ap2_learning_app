@@ -26,7 +26,7 @@
 0.2 Delete `IMPROVEMENTS_PROMPT.md` and `SQL_EDITOR_PLAN.md` if they still exist. They are merged into `DOKUMENTATION.md`.
     Link `DOKUMENTATION.md` and `ROADMAP.md` from `README.md`.
 
-## Phase 1 – Make the app general-purpose [U]
+## Phase 1 – Make the app general-purpose [U] ✅ done
 
 The app must work for any FIDPA trainee, not only the owner.
 
@@ -59,7 +59,7 @@ The app must work for any FIDPA trainee, not only the owner.
     Add a short **Datenschutz-Hinweis** (footer or settings): no account, no tracking, no cookies, all data stays in the browser;
     only the content is loaded from GitHub Pages. The content in `content/` is public; the owner decides the license (ask).
 
-## Phase 2 – Turn off Prüferfragen [U]
+## Phase 2 – Turn off Prüferfragen [U] ✅ done
 
 2.1 Settings `prueferfragen` and `fachgespraech` (phase 1.3), each with a switch on `/einstellungen` and a quick switch on the Karteikarten
     filter bar ("❓ Prüferfragen einbeziehen").
@@ -242,11 +242,12 @@ Ordered by expected benefit per effort:
 
 ## Open questions for the owner
 
-- **Q1:** Should "Prüferfragen ausschalten" also cover the *Fachgespräch* questions (separate switch planned) or the *Prüferkommentar* in solutions?
-- **Q2:** Is it OK to edit the sheets in `AP-2/` for phase 1.1 (remove KW references) and 4.4 (LaTeX formulas)? Alternative: leave the sheets
+- **Q1 (decided):** ~~Should "Prüferfragen ausschalten" also cover the *Fachgespräch* questions or the *Prüferkommentar* in solutions?~~
+  Separate switches for Prüferfragen and Fachgespräch; the Prüferkommentar is never hidden.
+- **Q2 (decided for 1.1):** editing the sheets was approved for 1.1 (KW references replaced). Still open for 4.4. Is it OK to edit the sheets in `AP-2/` for phase 1.1 (remove KW references) and 4.4 (LaTeX formulas)? Alternative: leave the sheets
   unchanged and only improve the rendering (4.2) and the new Rechenübungen.
 - **Q3:** KI on Pages with each user's own key (7.5): yes or no?
-- **Q4:** License/visibility of the content in `content/` now that others use the app (e.g. CC BY-NC 4.0)?
+- **Q4 (open):** No license is claimed yet (the Datenschutz-Hinweis doesn't mention one). License/visibility of the content in `content/` now that others use the app (e.g. CC BY-NC 4.0)?
 - **Q5:** Leicht-Modus box cap (6.6): OK, or should Leicht answers not affect the Leitner boxes at all?
 
 ## Suggested order

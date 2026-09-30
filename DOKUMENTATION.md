@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: commit `06d77e7`, September 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–2 done, September 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -149,6 +149,9 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download/upload, reset, newest daily backup (local) |
+
+**Not affected by the Prüferfragen switch:** the *Prüferkommentar* in solutions (the scoring scheme; `Solution.kommentar`) is always shown
+(owner decision Q1; tested in `tests/prueferfragen.test.ts`).
 
 **Grading**
 - Automatic: MC, Lückentext, Zuordnung, numeric (`rechnen`, with tolerance). These types currently only exist for AI-generated tasks.
