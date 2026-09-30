@@ -1,0 +1,454 @@
+{
+  "meta": {
+    "version": "1.0",
+    "hinweise": [
+      "Startset: je Vorlage mindestens eine feste Übung mit den Zahlen aus den Musterlösungen der Deep Dives.",
+      "Format und Vorlagen: lern-app/DOKUMENTATION.md § 4.4. IDs nie ändern – der Fortschritt hängt daran."
+    ]
+  },
+  "uebungen": [
+    {
+      "id": "RE-ST1-001",
+      "thema": "Deep Dive 3",
+      "titel": "Mittelwert, Median und Modus",
+      "schwierigkeit": 1,
+      "tags": ["lagemaße", "median"],
+      "vorlage": "lagemasse",
+      "daten": { "werte": [60, 40, 220, 45, 35, 90, 55, 40, 70, 50, 65], "einheit": "min" },
+      "aufgabe": "Bearbeitungsdauer von {{n}} Reparaturaufträgen (in Minuten): {{werte}}.\n\nBerechne arithmetisches Mittel, Median und Modus. Runde auf zwei Nachkommastellen.",
+      "eingaben": ["mittel", "median", "modus"],
+      "hinweise": [
+        "Sortiere die Werte zuerst aufsteigend.",
+        "n = {{n}}: Ist n ungerade, steht der Median an Position (n + 1) / 2.",
+        "Der Modus ist der Wert, der am häufigsten vorkommt."
+      ],
+      "quelleAufgabe": "DD3 Übungsklausur C1"
+    },
+    {
+      "id": "RE-ST1-002",
+      "thema": "Deep Dive 3",
+      "titel": "Gewichtetes Mittel",
+      "schwierigkeit": 1,
+      "tags": ["lagemaße", "gewichtetes mittel"],
+      "vorlage": "gewichtetes-mittel",
+      "daten": { "gruppen": [{ "anzahl": 4, "wert": 45 }, { "anzahl": 6, "wert": 70 }], "einheit": "min" },
+      "aufgabe": "Die Werkstatt meldet für den Folgemonat: {{anzahl1}} Aufträge à {{wert1}} Minuten und {{anzahl2}} Aufträge à {{wert2}} Minuten.\n\nBerechne die durchschnittliche Bearbeitungsdauer.",
+      "eingaben": ["mittel"],
+      "quelleAufgabe": "DD3 Übungsklausur C3"
+    },
+    {
+      "id": "RE-ST1-003",
+      "thema": "Deep Dive 3",
+      "titel": "Quartile, IQR und Ausreißer",
+      "schwierigkeit": 2,
+      "tags": ["quartile", "boxplot", "ausreißer"],
+      "vorlage": "quartile",
+      "daten": { "werte": [60, 40, 220, 45, 35, 90, 55, 40, 70, 50, 65], "einheit": "min" },
+      "aufgabe": "Bearbeitungsdauer von {{n}} Reparaturaufträgen (in Minuten): {{werte}}.\n\nBestimme Q1, Q3 und den Interquartilsabstand (Konvention des Lernblatts: Position = n · p, aufrunden). Prüfe dann mit der 1,5-IQR-Regel auf Ausreißer und gib an, wo der obere Whisker endet.",
+      "eingaben": ["q1", "q3", "iqr", "zaunUnten", "zaunOben", "ausreisser", "whiskerOben"],
+      "quelleAufgabe": "DD3 Übungsklausur E1–E3"
+    },
+    {
+      "id": "RE-ST1-004",
+      "thema": "Deep Dive 3",
+      "titel": "Varianz und Standardabweichung",
+      "schwierigkeit": 2,
+      "tags": ["streuung", "varianz"],
+      "vorlage": "varianz",
+      "daten": { "werte": [2, 4, 5, 6, 8], "art": "grundgesamtheit", "einheit": "Tage" },
+      "aufgabe": "Durchlaufzeiten von {{n}} Aufträgen (in Tagen): {{werte}}.\n\nBerechne Varianz und Standardabweichung **{{artLang}}**.",
+      "eingaben": ["mittel", "saq", "varianz", "stdabw"],
+      "quelleAufgabe": "DD3 Übungsklausur D2"
+    },
+    {
+      "id": "RE-ST1-005",
+      "thema": "Deep Dive 3",
+      "titel": "Variationskoeffizient",
+      "schwierigkeit": 1,
+      "tags": ["streuung", "variationskoeffizient"],
+      "vorlage": "variationskoeffizient",
+      "daten": {
+        "gruppen": [
+          { "name": "Filiale Nord", "mittel": 50, "stdabw": 5 },
+          { "name": "Filiale Süd", "mittel": 100, "stdabw": 8 }
+        ],
+        "einheit": "min"
+      },
+      "aufgabe": "{{name1}}: x̄ = {{mittel1}} min, σ = {{stdabw1}} min. {{name2}}: x̄ = {{mittel2}} min, σ = {{stdabw2}} min.\n\nBerechne jeweils den Variationskoeffizienten und gib an, welche Filiale gleichmäßiger arbeitet.",
+      "quelleAufgabe": "DD3 Übungsklausur D3"
+    },
+    {
+      "id": "RE-ST1-006",
+      "thema": "Deep Dive 3",
+      "titel": "Häufigkeitstabelle und Pareto",
+      "schwierigkeit": 2,
+      "tags": ["häufigkeiten", "pareto"],
+      "vorlage": "haeufigkeiten",
+      "daten": {
+        "kategorien": [
+          { "name": "Transportschaden", "h": 18 },
+          { "name": "Montagefehler", "h": 15 },
+          { "name": "Falschlieferung", "h": 9 },
+          { "name": "Materialfehler", "h": 6 },
+          { "name": "Sonstiges", "h": 2 }
+        ]
+      },
+      "aufgabe": "Von {{n}} Reklamationen entfallen: {{kategorien}}.\n\nErstelle die Häufigkeitstabelle **absteigend sortiert** mit relativer und kumulierter relativer Häufigkeit (in %, eine Nachkommastelle). Wie viele Fehlerarten braucht man mindestens, um {{schwelle}} % der Reklamationen abzudecken?",
+      "quelleAufgabe": "DD3 Übungsklausur B1/B2"
+    },
+    {
+      "id": "RE-ST2-001",
+      "thema": "Deep Dive 4",
+      "titel": "Korrelationskoeffizient nach Pearson",
+      "schwierigkeit": 2,
+      "tags": ["korrelation"],
+      "vorlage": "korrelation",
+      "daten": { "x": [2, 4, 6, 8, 10, 12], "y": [9, 8.5, 7.5, 6.5, 5.5, 5], "xName": "x: Schulungsstunden", "yName": "y: Fehlerquote in %" },
+      "aufgabe": "Für {{n}} Montageteams wurden Schulungsstunden (x) und Fehlerquote in % (y) erfasst (Tabelle).\n\nBerechne die Mittelwerte, Sxy, Sxx, Syy und den Korrelationskoeffizienten r.",
+      "quelleAufgabe": "DD4 Übungsklausur A2"
+    },
+    {
+      "id": "RE-ST2-002",
+      "thema": "Deep Dive 4",
+      "titel": "Regressionsgerade und Prognose",
+      "schwierigkeit": 2,
+      "tags": ["regression", "prognose"],
+      "vorlage": "regression",
+      "daten": { "x": [1, 2, 3, 4, 5], "y": [30, 40, 42, 52, 56], "prognose": [6, 20], "xName": "Werbebudget x (T€)", "yName": "Umsatz y (T€)", "einheitY": "T€" },
+      "aufgabe": "Werbebudget und Umsatz von {{n}} Monaten in T€ (Tabelle).\n\nErmittle die Regressionsgerade ŷ = a + b · x und berechne den prognostizierten Umsatz für ein Werbebudget von {{prognoseX1}} T€ und {{prognoseX2}} T€.",
+      "eingaben": ["b", "a", "prognose1", "prognose2"],
+      "quelleAufgabe": "DD4 Übungsklausur C1/C3"
+    },
+    {
+      "id": "RE-ST2-003",
+      "thema": "Deep Dive 4",
+      "titel": "Gleitender Durchschnitt",
+      "schwierigkeit": 1,
+      "tags": ["zeitreihen", "gleitender durchschnitt"],
+      "vorlage": "gleitender-durchschnitt",
+      "daten": { "werte": [120, 138, 126, 150, 144, 168, 156, 180], "k": 3, "anzahl": 4, "einheit": "T€" },
+      "aufgabe": "Monatsumsatz in T€: {{werte}}.\n\nBerechne den gleitenden {{k}}-Perioden-Durchschnitt für die ersten {{anzahl}} möglichen Werte.",
+      "quelleAufgabe": "DD4 Übungsklausur E1"
+    },
+    {
+      "id": "RE-ST2-004",
+      "thema": "Deep Dive 4",
+      "titel": "Prozentuale Veränderung",
+      "schwierigkeit": 1,
+      "tags": ["prozent", "veränderung"],
+      "vorlage": "prozent-veraenderung",
+      "daten": { "alt": 120, "neu": 138, "einheit": "T€" },
+      "aufgabe": "Der Monatsumsatz steigt von {{alt}} T€ auf {{neu}} T€.\n\nBerechne die absolute und die prozentuale Veränderung.",
+      "eingaben": ["differenz", "prozent"],
+      "quelleAufgabe": "DD4 Übungsklausur E2"
+    },
+    {
+      "id": "RE-MG-001",
+      "thema": "Deep Dive 7",
+      "titel": "Gütemaße aus der Konfusionsmatrix",
+      "schwierigkeit": 2,
+      "tags": ["konfusionsmatrix", "precision", "recall"],
+      "vorlage": "konfusionsmatrix",
+      "daten": { "tp": 90, "fp": 60, "fn": 10, "tn": 840, "positiv": "Reklamation" },
+      "aufgabe": "Testergebnis des Reklamationsmodells: {{n}} Aufträge, davon {{positive}} tatsächlich reklamiert (Konfusionsmatrix).\n\nBerechne Accuracy, Precision, Recall, F1-Maß und Spezifität (in %).",
+      "quelleAufgabe": "DD7 Übungsklausur B2"
+    },
+    {
+      "id": "RE-MG-002",
+      "thema": "Deep Dive 7",
+      "titel": "Triviales Modell und Fehlerkosten",
+      "schwierigkeit": 2,
+      "tags": ["konfusionsmatrix", "fehlerkosten", "accuracy-paradox"],
+      "vorlage": "konfusionsmatrix",
+      "daten": { "tp": 90, "fp": 60, "fn": 10, "tn": 840, "kostenFN": 120, "kostenFP": 15, "positiv": "Reklamation" },
+      "aufgabe": "Konfusionsmatrix wie in der Tabelle. Ein triviales Modell sagt für **jeden** Auftrag „keine Reklamation“ voraus.\n\nBerechne Accuracy und Recall des trivialen Modells. Ein übersehener Reklamationsfall kostet {{kostenFN}} €, eine unnötige Vorabprüfung {{kostenFP}} €: Berechne die Fehlerkosten des Modells und des trivialen Modells.",
+      "eingaben": ["trivialAccuracy", "trivialRecall", "kostenModell", "kostenTrivial"],
+      "quelleAufgabe": "DD7 Übungsklausur B3/D1"
+    },
+    {
+      "id": "RE-MG-003",
+      "thema": "Deep Dive 7",
+      "titel": "MAE und RMSE",
+      "schwierigkeit": 1,
+      "tags": ["regressionsgüte", "mae", "rmse"],
+      "vorlage": "regressionsguete",
+      "daten": { "y": [100, 120, 90, 130, 110], "yDach": [90, 126, 84, 132, 108], "einheit": "T€" },
+      "aufgabe": "Tatsächliche Werte y und Prognosen ŷ (in T€) stehen in der Tabelle.\n\nBerechne MAE und RMSE.",
+      "quelleAufgabe": "DD7 Übungsklausur E1"
+    },
+    {
+      "id": "RE-ML-001",
+      "thema": "Deep Dive 6",
+      "titel": "Support, Konfidenz und Lift",
+      "schwierigkeit": 2,
+      "tags": ["assoziationsanalyse", "lift"],
+      "vorlage": "assoziation",
+      "daten": {
+        "transaktionen": [["S", "B", "M"], ["S", "B"], ["S", "B"], ["S", "B", "L"], ["S", "M"], ["B", "M"], ["M", "L"], ["B", "M"], ["L"], ["L"]],
+        "wenn": ["S"],
+        "dann": ["B"]
+      },
+      "aufgabe": "{{n}} Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe) stehen in der Tabelle.\n\nBerechne für die Regel **{{regel}}** Support, Konfidenz und Lift.",
+      "quelleAufgabe": "DD6 Übungsklausur D2"
+    },
+    {
+      "id": "RE-ML-002",
+      "thema": "Deep Dive 6",
+      "titel": "k-Means: erste Iteration",
+      "schwierigkeit": 3,
+      "tags": ["clustering", "k-means"],
+      "vorlage": "kmeans",
+      "daten": { "punkte": [[2, 2], [3, 1], [1, 3], [7, 8], [8, 7], [9, 9]], "zentren": [[4, 4], [6, 6]] },
+      "aufgabe": "Kunden: {{punkte}}. Startzentren: {{zentren}}, k = {{k}}.\n\nBerechne die euklidischen Abstände aller Punkte zu beiden Zentren, ordne die Punkte zu und bestimme die neuen Clusterzentren.",
+      "quelleAufgabe": "DD6 Übungsklausur C2"
+    },
+    {
+      "id": "RE-PA-001",
+      "thema": "Deep Dive 5",
+      "titel": "Durchlaufzeit und Wertschöpfungsanteil",
+      "schwierigkeit": 1,
+      "tags": ["prozesskennzahlen", "durchlaufzeit"],
+      "vorlage": "durchlaufzeit",
+      "daten": {
+        "schritte": [
+          { "name": "Auftrag erfassen", "bearbeitung": 0.25, "liege": 3.5 },
+          { "name": "Kostenvoranschlag/Disposition", "bearbeitung": 0.25, "liege": 16 },
+          { "name": "Reparatur durchführen", "bearbeitung": 0.75, "liege": 9 },
+          { "name": "Rechnung stellen", "bearbeitung": 0.25, "liege": 0 }
+        ],
+        "einheit": "h"
+      },
+      "aufgabe": "Zeitaufnahme des Reparaturservice (Mittelwerte je Auftrag, siehe Tabelle).\n\nBerechne Gesamtbearbeitungszeit, Gesamtliegezeit, Durchlaufzeit und den Wertschöpfungsanteil.",
+      "quelleAufgabe": "DD5 Übungsklausur C1/C2"
+    },
+    {
+      "id": "RE-PA-002",
+      "thema": "Deep Dive 5",
+      "titel": "Fehlerquote, First Pass Yield, Nacharbeitskosten",
+      "schwierigkeit": 1,
+      "tags": ["prozesskennzahlen", "fehlerquote", "first pass yield"],
+      "vorlage": "fehlerquote",
+      "daten": { "gesamt": 200, "fehler": 24, "nacharbeitJe": 0.75, "kostensatz": 60 },
+      "aufgabe": "{{gesamt}} Aufträge im Monat, davon {{fehler}} mit Nacharbeit. Jede Nacharbeit kostet {{nacharbeitJe}} h Werkstattzeit, Kostensatz {{kostensatz}} €/h.\n\nBerechne Fehlerquote, First Pass Yield, die monatlichen Nacharbeitskosten und den Zuschlag je Auftrag.",
+      "quelleAufgabe": "DD5 Übungsklausur C3/C4"
+    },
+    {
+      "id": "RE-PA-003",
+      "thema": "Deep Dive 5",
+      "titel": "Amortisation eines Auftragssystems",
+      "schwierigkeit": 2,
+      "tags": ["wirtschaftlichkeit", "amortisation"],
+      "vorlage": "amortisation",
+      "daten": { "investition": 18000, "auftraege": 2400, "minutenJeAuftrag": 5, "kostensatz": 60 },
+      "aufgabe": "Ein digitales Auftragssystem kostet einmalig {{investition}} €. Es spart je Auftrag {{minutenJeAuftrag}} Minuten Bearbeitungszeit. {{auftraege}} Aufträge im Jahr, Kostensatz {{kostensatz}} €/h.\n\nBerechne die Zeitersparnis pro Jahr, die jährliche Einsparung und die Amortisationszeit.",
+      "eingaben": ["stunden", "einsparung", "amortisation"],
+      "quelleAufgabe": "DD5 Übungsklausur D2"
+    },
+    {
+      "id": "RE-DQ-001",
+      "thema": "Deep Dive 9",
+      "titel": "Datenqualitäts-Kennzahlen",
+      "schwierigkeit": 1,
+      "tags": ["datenqualität", "kennzahlen"],
+      "vorlage": "qualitaetsgrad",
+      "daten": {
+        "kennzahlen": [
+          { "id": "email", "name": "Vollständigkeitsgrad E-Mail", "gut": 7, "gesamt": 10 },
+          { "id": "eindeutig", "name": "Eindeutigkeitsgrad der Kunden", "gut": 8, "gesamt": 10 },
+          { "id": "plz", "name": "Gültigkeitsgrad PLZ", "gut": 9, "gesamt": 10 },
+          { "id": "geburt", "name": "Anteil plausibler Geburtsdaten", "gut": 7, "gesamt": 10 }
+        ]
+      },
+      "aufgabe": "Kundentabelle mit {{gesamt}} Datensätzen: {{schlecht_email}} E-Mail-Felder sind leer, {{schlecht_eindeutig}} Datensätze sind Dubletten, {{schlecht_plz}} PLZ sind nicht fünfstellig, {{schlecht_geburt}} Geburtsdaten sind unplausibel.\n\nBerechne Vollständigkeitsgrad E-Mail, Eindeutigkeitsgrad, Gültigkeitsgrad PLZ und den Anteil plausibler Geburtsdaten.",
+      "quelleAufgabe": "DD9 Übungsklausur C1"
+    },
+    {
+      "id": "RE-PM-001",
+      "thema": "Deep Dive 12",
+      "titel": "Netzplan: Vorwärts- und Rückwärtsrechnung",
+      "schwierigkeit": 3,
+      "tags": ["netzplan", "kritischer pfad", "puffer"],
+      "vorlage": "netzplan",
+      "daten": {
+        "vorgaenge": [
+          { "id": "A", "name": "Anforderungsanalyse", "dauer": 5, "vorgaenger": [] },
+          { "id": "B", "name": "Datenmodell entwerfen", "dauer": 4, "vorgaenger": ["A"] },
+          { "id": "C", "name": "Datenquellen anbinden", "dauer": 6, "vorgaenger": ["A"] },
+          { "id": "D", "name": "ETL-Strecke entwickeln", "dauer": 8, "vorgaenger": ["B", "C"] },
+          { "id": "E", "name": "Dashboard entwerfen", "dauer": 3, "vorgaenger": ["B"] },
+          { "id": "F", "name": "Test", "dauer": 4, "vorgaenger": ["D", "E"] },
+          { "id": "G", "name": "Dokumentation", "dauer": 2, "vorgaenger": ["F"] }
+        ],
+        "einheit": "Tage"
+      },
+      "aufgabe": "Vorgänge des Reporting-Projekts siehe Tabelle. Projektstart ist Tag 0.\n\nBerechne für alle Vorgänge FAZ, FEZ, SAZ, SEZ, Gesamtpuffer und freien Puffer. Bestimme die Projektdauer und den kritischen Pfad.",
+      "quelleAufgabe": "DD12 Übungsklausur C1–C3"
+    },
+    {
+      "id": "RE-PM-002",
+      "thema": "Deep Dive 12",
+      "titel": "Amortisation und ROI",
+      "schwierigkeit": 1,
+      "tags": ["wirtschaftlichkeit", "amortisation", "roi"],
+      "vorlage": "amortisation",
+      "daten": { "investition": 45000, "einsparung": 18000, "nutzungsdauer": 5 },
+      "aufgabe": "Das Reporting-System kostet einmalig {{investition}} € und spart jährlich {{einsparung}} €. Geplante Nutzungsdauer: {{nutzungsdauer}} Jahre.\n\nBerechne die Amortisationszeit und den ROI über die gesamte Nutzungsdauer.",
+      "eingaben": ["amortisation", "roi"],
+      "quelleAufgabe": "DD12 Übungsklausur D1"
+    },
+    {
+      "id": "RE-PM-003",
+      "thema": "Deep Dive 12",
+      "titel": "Nutzwertanalyse",
+      "schwierigkeit": 2,
+      "tags": ["nutzwertanalyse", "entscheidung"],
+      "vorlage": "nutzwert",
+      "daten": {
+        "kriterien": [
+          { "name": "Funktionsumfang", "gewicht": 40 },
+          { "name": "Kosten", "gewicht": 30 },
+          { "name": "Integrationsfähigkeit", "gewicht": 20 },
+          { "name": "Support", "gewicht": 10 }
+        ],
+        "alternativen": [
+          { "name": "Anbieter A", "punkte": [8, 5, 9, 7] },
+          { "name": "Anbieter B", "punkte": [6, 9, 7, 8] }
+        ]
+      },
+      "aufgabe": "Zwei Anbieter stehen zur Auswahl (Gewichte und Punkte 1–10 siehe Tabelle).\n\nBerechne alle Teilnutzen und die Nutzwerte. Welcher Anbieter liegt vorn?",
+      "quelleAufgabe": "DD12 Übungsklausur D2"
+    },
+    {
+      "id": "RE-PM-004",
+      "thema": "Deep Dive 12",
+      "titel": "Break-even-Menge",
+      "schwierigkeit": 1,
+      "tags": ["wirtschaftlichkeit", "break-even"],
+      "vorlage": "break-even",
+      "daten": { "fixkosten": 24000, "preis": 80, "variabel": 50 },
+      "aufgabe": "Fixkosten {{fixkosten}} € pro Jahr, Verkaufspreis {{preis}} €, variable Stückkosten {{variabel}} €.\n\nBerechne den Deckungsbeitrag je Stück und die Break-even-Menge.",
+      "quelleAufgabe": "DD12 Übungsklausur D3"
+    },
+    {
+      "id": "RE-PM-005",
+      "thema": "Deep Dive 12",
+      "titel": "Risikobewertung",
+      "schwierigkeit": 1,
+      "tags": ["risikomanagement"],
+      "vorlage": "risiko",
+      "daten": {
+        "risiken": [
+          { "name": "Der externe Dienstleister fällt aus", "w": 2, "s": 5 },
+          { "name": "Datenqualität der Quellsysteme schlechter als erwartet", "w": 4, "s": 4 },
+          { "name": "Fachbereich hat keine Zeit für Abstimmungen", "w": 3, "s": 3 }
+        ]
+      },
+      "aufgabe": "Bewerte die Risiken aus der Tabelle (Eintrittswahrscheinlichkeit W und Schadensausmaß S, Skala 1–5) mit einer Risikozahl.",
+      "eingaben": ["rpz1", "rpz2", "rpz3", "hoechstes"],
+      "quelleAufgabe": "DD12 Übungsklausur E1"
+    },
+    {
+      "id": "RE-WI-001",
+      "thema": "Deep Dive 14",
+      "titel": "Arbeitnehmeranteil zur Sozialversicherung",
+      "schwierigkeit": 2,
+      "tags": ["wiso", "sozialversicherung"],
+      "vorlage": "sozialversicherung",
+      "daten": { "brutto": 1200, "zusatzbeitrag": 2.9, "kinderlos": true },
+      "aufgabe": "Bruttovergütung {{brutto}} €, Zusatzbeitrag der Krankenkasse {{zusatzbeitrag}} %, {{kinderlos}}. Beitragssätze: KV 14,6 % + Zusatzbeitrag · PV 3,6 % (Zuschlag für Kinderlose ab 23: 0,6 %, trägt der AN allein) · RV 18,6 % · ALV 2,6 %.\n\nWie hoch ist der Arbeitnehmeranteil zur Sozialversicherung?",
+      "eingaben": ["sv"],
+      "quelleAufgabe": "DD14 Übungsklausur A4"
+    },
+    {
+      "id": "RE-WI-002",
+      "thema": "Deep Dive 14",
+      "titel": "Vom Brutto zum Netto",
+      "schwierigkeit": 2,
+      "tags": ["wiso", "nettoentgelt", "sozialversicherung"],
+      "vorlage": "sozialversicherung",
+      "daten": { "brutto": 3200, "zusatzbeitrag": 2.9, "kinderlos": false, "lohnsteuer": 205, "kirchensteuersatz": 9 },
+      "aufgabe": "Bruttoentgelt {{brutto}} € ({{kinderlos}}), Zusatzbeitrag {{zusatzbeitrag}} %. Die Lohnsteuer beträgt laut Tabelle {{lohnsteuer}} €, Kirchensteuersatz {{kirchensteuersatz}} %, kein Solidaritätszuschlag. Beitragssätze wie im Lernblatt.\n\nBerechne SV-Arbeitnehmeranteil, Kirchensteuer und Nettoentgelt.",
+      "eingaben": ["sv", "kirchensteuer", "netto"],
+      "quelleAufgabe": "DD14 Übungsklausur A5"
+    },
+    {
+      "id": "RE-WI-003",
+      "thema": "Deep Dive 14",
+      "titel": "Minijob-Grenze",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "minijob"],
+      "vorlage": "minijob",
+      "daten": { "grenze": 603, "stundenlohn": 13.9 },
+      "aufgabe": "Die Minijob-Grenze beträgt {{grenze}} € im Monat, der Stundenlohn {{stundenlohn}} €.\n\nWie viele volle Stunden darf die Aushilfe höchstens im Monat arbeiten, ohne die Grenze zu überschreiten?",
+      "eingaben": ["stunden"],
+      "quelleAufgabe": "DD14 Übungsklausur A6"
+    },
+    {
+      "id": "RE-WI-004",
+      "thema": "Deep Dive 14",
+      "titel": "Gleichgewichtspreis",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "markt"],
+      "vorlage": "gleichgewicht",
+      "daten": {
+        "zeilen": [
+          { "preis": 10, "nachfrage": 900, "angebot": 300 },
+          { "preis": 12, "nachfrage": 800, "angebot": 500 },
+          { "preis": 14, "nachfrage": 650, "angebot": 650 },
+          { "preis": 16, "nachfrage": 500, "angebot": 800 },
+          { "preis": 18, "nachfrage": 350, "angebot": 950 }
+        ]
+      },
+      "aufgabe": "Angebot und Nachfrage auf einem Markt stehen in der Tabelle.\n\nWie hoch ist der Gleichgewichtspreis?",
+      "eingaben": ["preis"],
+      "quelleAufgabe": "DD14 Übungsklausur D2"
+    },
+    {
+      "id": "RE-WI-005",
+      "thema": "Deep Dive 14",
+      "titel": "Inflationsrate",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "inflation", "prozent"],
+      "vorlage": "prozent-veraenderung",
+      "daten": { "alt": 120, "neu": 123 },
+      "aufgabe": "Der Verbraucherpreisindex steigt von {{alt}} auf {{neu}}.\n\nWie hoch ist die Inflationsrate in Prozent (zwei Nachkommastellen)?",
+      "eingaben": [{ "id": "prozent", "label": "Inflationsrate" }],
+      "hinweise": ["Inflationsrate = (VPI neu − VPI alt) / VPI alt · 100 %.", "Die Differenz der Indexpunkte allein ist nicht die Inflationsrate."],
+      "quelleAufgabe": "DD14 Übungsklausur D3"
+    },
+    {
+      "id": "RE-WI-006",
+      "thema": "Deep Dive 13",
+      "titel": "Arbeitszeit mit Berufsschultag",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "jugendarbeitsschutz"],
+      "aufgabe": "Ein 17-jähriger Auszubildender hat eine regelmäßige Wochenarbeitszeit von 40 Stunden. Einmal pro Woche hat er einen Berufsschultag mit mehr als fünf Unterrichtsstunden à 45 Minuten.\n\nWie viele Stunden darf er in dieser Woche höchstens noch im Betrieb beschäftigt werden?",
+      "eingaben": [{ "id": "stunden", "label": "Stunden im Betrieb", "einheit": "Stunden", "loesung": 32 }],
+      "hinweise": ["Ein solcher Berufsschultag wird für Jugendliche mit 8 Stunden angerechnet.", "40 − 8 = ?"],
+      "erklaerung": "Nach dem JArbSchG wird ein Berufsschultag mit mehr als fünf Unterrichtsstunden (à 45 Minuten) einmal pro Woche mit **8 Stunden** angerechnet; an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. $40 - 8 = 32$ Stunden.",
+      "quelleAufgabe": "DD13 Übungsklausur B2"
+    },
+    {
+      "id": "RE-IT-001",
+      "thema": "Deep Dive 10",
+      "titel": "Inkrementelle und differenzielle Sicherung",
+      "schwierigkeit": 2,
+      "tags": ["datensicherung", "backup"],
+      "vorlage": "datensicherung",
+      "daten": { "voll": 800, "aenderung": 40, "tage": 3, "einheit": "GB" },
+      "aufgabe": "Sonntags wird vollständig gesichert ({{voll}} {{einheit}}), an den Folgetagen täglich; das tägliche Änderungsvolumen beträgt {{aenderung}} {{einheit}}. Der Ausfall tritt nach {{tage}} täglichen Sicherungen ein.\n\nBerechne für beide Verfahren das gesamte Sicherungsvolumen und die Anzahl der für die Wiederherstellung benötigten Medien.",
+      "quelleAufgabe": "DD10 Übungsklausur E1"
+    },
+    {
+      "id": "RE-IT-002",
+      "thema": "Deep Dive 10",
+      "titel": "Maximaler Datenverlust und RPO",
+      "schwierigkeit": 1,
+      "tags": ["datensicherung", "rpo"],
+      "vorlage": "rpo",
+      "daten": { "sicherungUm": 23, "ausfallUm": 14, "rpo": 4 },
+      "aufgabe": "Die Sicherung läuft täglich um {{sicherungUm}} Uhr. Der Ausfall tritt am nächsten Tag um {{ausfallUm}} Uhr ein. Vorgabe: RPO {{rpo}} Stunden.\n\nBestimme den maximalen Datenverlust und ob die RPO eingehalten wird.",
+      "quelleAufgabe": "DD10 Übungsklausur E3"
+    }
+  ]
+}

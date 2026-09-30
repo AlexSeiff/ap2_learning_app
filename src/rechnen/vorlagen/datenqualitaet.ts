@@ -29,16 +29,19 @@ export const qualitaetsgrad = vorlage({
       { id: 'eindeutigkeit', name: 'Eindeutigkeitsgrad', gut: 0, gesamt: 0 },
       { id: 'gueltigkeit', name: 'Gültigkeitsgrad', gut: 0, gesamt: 0 },
     ];
-    const gesamt = vorbild ? vorbild.kennzahlen[0].gesamt : z.wahl([10, 20, 40, 50, 80, 120, 200, 250, 400, 500]);
+    // Haben alle Kennzahlen dieselbe Bezugsgröße (z. B. 10 Datensätze), bleibt das so – der Aufgabentext nennt sie dann nur einmal.
+    const gemeinsam = !vorbild || vorbild.kennzahlen.every((k) => k.gesamt === vorbild.kennzahlen[0].gesamt);
+    const neu = (g: number) => Math.max(4, Math.round(g * (0.5 + z.zahl() * 2)));
+    const gesamt = vorbild ? neu(vorbild.kennzahlen[0].gesamt) : z.wahl([10, 20, 40, 50, 80, 120, 200, 250, 400, 500]);
     return {
       kennzahlen: basis.map((k) => {
-        const g = vorbild ? Math.max(1, Math.round(k.gesamt * (0.8 + z.zahl() * 0.4))) : gesamt;
+        const g = gemeinsam ? gesamt : neu(k.gesamt);
         return { ...k, gesamt: g, gut: Math.round(g * (0.6 + z.zahl() * 0.39)) };
       }),
     };
   },
   platzhalter: (d) => {
-    const p: Record<string, string> = {};
+    const p: Record<string, string> = { gesamt: fz(d.kennzahlen[0].gesamt) };
     for (const k of d.kennzahlen) {
       p[`name_${k.id}`] = k.name;
       p[`gut_${k.id}`] = fz(k.gut);
