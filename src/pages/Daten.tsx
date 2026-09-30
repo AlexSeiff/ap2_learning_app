@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { BackupInfo } from '../../shared/api';
+import { mergeProgress } from '../../shared/mergeProgress';
 import { emptyProgress } from '../../shared/progress';
 import { useBackupDownload } from '../hooks/useBackupDownload';
 import { useConfirm } from '../hooks/useConfirm';
@@ -10,11 +11,13 @@ import { formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 export function Daten() {
-  const { content, progress, reload, replaceProgress, aiEnabled, aiModel } = useStore();
+  const { content, progress, reload, update, replaceProgress, aiEnabled, aiModel } = useStore();
   const confirm = useConfirm();
   const downloadBackup = useBackupDownload();
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  /** Was mit der gewählten Datei passiert: zusammenführen oder ersetzen. */
+  const importMode = useRef<'merge' | 'replace'>('merge');
   const [backups, setBackups] = useState<BackupInfo | null>(null);
   /** Pages: Ist der Browser-Speicher dauerhaft (navigator.storage.persisted)? undefined = unbekannt. */
   const [persisted, setPersisted] = useState<boolean | undefined | null>(null);
@@ -32,13 +35,33 @@ export function Daten() {
     setMsg(`Neu importiert: ${new Date().toLocaleTimeString('de-DE')}`);
   };
 
-  const importBackup = async (file: File) => {
+  const importBackup = async (file: File, mode: 'merge' | 'replace') => {
     try {
       const backup = parseBackup(await file.text());
+      if (mode === 'merge') {
+        const merged = mergeProgress(progress, backup);
+        const added = [
+          `${merged.attempts.length - progress.attempts.length} Versuche`,
+          `${merged.exams.length - progress.exams.length} Klausuren`,
+          `${Object.keys(merged.cards).length - Object.keys(progress.cards).length} Karteikarten`,
+          `${Object.keys(merged.sql).length - Object.keys(progress.sql).length} SQL-Übungen`,
+        ].join(', ');
+        const ok = await confirm({
+          title: 'Sicherung zusammenführen?',
+          message:
+            `Die Sicherung „${file.name}“ wird mit deinem Fortschritt zusammengeführt – nichts geht verloren. ` +
+            `Neu dazu: ${added}. Bei Karten, Übungen und dem Fehlerjournal gilt jeweils der neuere Stand. Deine Einstellungen bleiben.`,
+          confirmLabel: '🔀 Zusammenführen',
+        });
+        if (!ok) return;
+        update((p) => mergeProgress(p, backup));
+        setMsg(`Sicherung zusammengeführt (neu: ${added}).`);
+        return;
+      }
       const ok = await confirm({
         title: 'Sicherung einspielen?',
-        message: `Dein aktueller Fortschritt wird komplett durch die Sicherung „${file.name}“ ersetzt.`,
-        confirmLabel: '⬆ Einspielen',
+        message: `Dein aktueller Fortschritt wird komplett durch die Sicherung „${file.name}“ ersetzt (auch die Einstellungen).`,
+        confirmLabel: '⬆ Ersetzen',
         danger: true,
       });
       if (!ok) return;
@@ -47,6 +70,11 @@ export function Daten() {
     } catch (e) {
       setMsg(`Fehler: ${(e as Error).message}`);
     }
+  };
+
+  const pickFile = (mode: 'merge' | 'replace') => {
+    importMode.current = mode;
+    fileRef.current?.click();
   };
 
   const restoreBrowserBackup = async (date: string) => {
@@ -175,8 +203,8 @@ export function Daten() {
             <p className="hint">
               🗄 Automatische Tagessicherung im Browser (IndexedDB): beim ersten Speichern eines Tages wird der Stand vom Tagesbeginn
               gesichert, die letzten 7 Tage bleiben. Sie liegt im selben Browser – gegen „Browserdaten löschen“ hilft nur eine
-              heruntergeladene Sicherung. Umziehen aus der lokalen App: dort „Sicherung herunterladen“, hier „Sicherung einspielen“ (und
-              umgekehrt).
+              heruntergeladene Sicherung. Umziehen aus der lokalen App oder zwischen Handy und PC: dort „Sicherung herunterladen“, hier
+              „Sicherung zusammenführen“ (beide Stände bleiben) oder „einspielen“ (ersetzt).
             </p>
             {backups?.items?.length ? (
               <div className="table-wrap">
@@ -231,15 +259,32 @@ export function Daten() {
           <button type="button" className="secondary" onClick={downloadBackup}>
             ⬇ Sicherung herunterladen
           </button>
-          <button type="button" className="secondary" onClick={() => fileRef.current?.click()}>
-            ⬆ Sicherung einspielen
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => pickFile('merge')}
+            title="Sicherung mit dem Fortschritt hier vereinen – z. B. zwischen Handy und PC"
+          >
+            🔀 Sicherung zusammenführen
+          </button>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => pickFile('replace')}
+            title="Fortschritt komplett durch die Sicherung ersetzen"
+          >
+            ⬆ Sicherung einspielen (ersetzen)
           </button>
           <input
             ref={fileRef}
             type="file"
             accept="application/json"
             hidden
-            onChange={(e) => e.target.files?.[0] && importBackup(e.target.files[0])}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = ''; // dieselbe Datei später noch einmal wählbar
+              if (file) importBackup(file, importMode.current);
+            }}
           />
           <button
             type="button"
