@@ -7,7 +7,9 @@ import { checkProgressPut } from '../../shared/progress';
 import type { Content } from '../../shared/types';
 import type { DataSource } from './api';
 import { ApiError } from './apiError';
+import { createBrowserBackups, openIndexedDbBackups, type BrowserBackups } from './browserBackups';
 import { createPersistRequest } from './persistentStorage';
+import { localDate } from './progress';
 
 /** Schlüssel des Fortschritts im localStorage. Inhalt: dasselbe JSON wie data/fortschritt.json. */
 export const PROGRESS_KEY = 'ap2-fortschritt';
@@ -32,6 +34,14 @@ export function createLocalProgressStore(storage: () => KeyValueStorage) {
   }
 
   return {
+    /** Gespeicherter Stand als Text (für die Tagessicherung) oder null. */
+    readText(): string | null {
+      try {
+        return storage().getItem(PROGRESS_KEY);
+      } catch {
+        return null;
+      }
+    },
     /** Gespeicherter Stand oder null (noch nichts gespeichert oder localStorage nicht verfügbar). */
     read(): unknown {
       try {
@@ -61,6 +71,7 @@ export function createLocalProgressStore(storage: () => KeyValueStorage) {
 export function createStaticApi(
   store = createLocalProgressStore(() => localStorage),
   requestPersist: () => Promise<unknown> = createPersistRequest(),
+  backups: BrowserBackups = createBrowserBackups(() => openIndexedDbBackups()),
 ): DataSource {
   const aiUnavailable = () => Promise.reject(new ApiError(501, AI_UNAVAILABLE));
   return {
@@ -71,7 +82,11 @@ export function createStaticApi(
     },
     progress: async () => store.read(),
     saveProgress: async (p) => {
+      const before = store.readText();
       const result = store.save(p);
+      // Tagessicherung: den überschriebenen Stand (vom Tagesbeginn) ins IndexedDB, höchstens einmal pro Tag.
+      // Nicht abwarten – ein hängendes IndexedDB darf das Speichern nicht aufhalten; Fehler werden dort verschluckt.
+      void backups.backupBeforeSave(before, localDate());
       // Nach dem ersten Speichern um dauerhaften Speicher bitten (einmal pro Seitenaufruf, Fehler egal).
       void requestPersist().catch(() => {});
       return result;
@@ -83,8 +98,8 @@ export function createStaticApi(
         // Beim Schließen lässt sich kein Fehler mehr anzeigen.
       }
     },
-    // Keine automatischen Tagessicherungen im Browser.
-    backups: async () => ({ newest: null, count: 0 }),
+    backups: () => backups.info(),
+    readBackup: (date) => backups.read(date),
     aiStatus: async () => ({ enabled: false, model: '' }),
     generate: aiUnavailable,
     grade: aiUnavailable,

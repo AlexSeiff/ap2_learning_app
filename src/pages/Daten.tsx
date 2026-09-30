@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import type { BackupInfo } from '../../shared/api';
 import { emptyProgress } from '../../shared/progress';
 import { useConfirm } from '../hooks/useConfirm';
 import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
@@ -6,6 +7,7 @@ import { parseBackup } from '../lib/backup';
 import { downloadText } from '../lib/sheets';
 import { isStoragePersisted } from '../lib/persistentStorage';
 import { localDate } from '../lib/progress';
+import { formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
 
 export function Daten() {
@@ -13,14 +15,14 @@ export function Daten() {
   const confirm = useConfirm();
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [backups, setBackups] = useState<{ newest: string | null; count: number } | null>(null);
+  const [backups, setBackups] = useState<BackupInfo | null>(null);
   /** Pages: Ist der Browser-Speicher dauerhaft (navigator.storage.persisted)? undefined = unbekannt. */
   const [persisted, setPersisted] = useState<boolean | undefined | null>(null);
 
   useEffect(() => {
-    // Tagessicherungen gibt es nur in der lokalen App (data/backups/).
-    if (!IS_STATIC) api.backups().then(setBackups, () => setBackups(null));
-    else isStoragePersisted().then(setPersisted);
+    // Tagessicherungen: lokal in data/backups/, online im IndexedDB des Browsers.
+    api.backups().then(setBackups, () => setBackups(null));
+    if (IS_STATIC) isStoragePersisted().then(setPersisted);
   }, []);
 
   const tasks = Object.values(content.tasks);
@@ -42,6 +44,23 @@ export function Daten() {
       if (!ok) return;
       replaceProgress(backup);
       setMsg('Sicherung wiederhergestellt.');
+    } catch (e) {
+      setMsg(`Fehler: ${(e as Error).message}`);
+    }
+  };
+
+  const restoreBrowserBackup = async (date: string) => {
+    try {
+      const backup = parseBackup(await api.readBackup(date));
+      const ok = await confirm({
+        title: 'Tagessicherung wiederherstellen?',
+        message: `Dein aktueller Fortschritt wird komplett durch den Stand vom ${formatIsoDate(date)} ersetzt. Lade den jetzigen Stand zur Sicherheit vorher herunter.`,
+        confirmLabel: '↩ Wiederherstellen',
+        danger: true,
+      });
+      if (!ok) return;
+      replaceProgress(backup);
+      setMsg(`Tagessicherung vom ${formatIsoDate(date)} wiederhergestellt.`);
     } catch (e) {
       setMsg(`Fehler: ${(e as Error).message}`);
     }
@@ -152,12 +171,48 @@ export function Daten() {
           </p>
         )}
         {IS_STATIC && (
-          <p className="hint">
-            🗄 Hier gibt es keine automatische Tagessicherung. Lade ab und zu eine Sicherung herunter – Browserdaten löschen löscht auch den
-            Fortschritt. Umziehen aus der lokalen App: dort „Sicherung herunterladen“, hier „Sicherung einspielen“ (und umgekehrt).
-          </p>
+          <>
+            <p className="hint">
+              🗄 Automatische Tagessicherung im Browser (IndexedDB): beim ersten Speichern eines Tages wird der Stand vom Tagesbeginn
+              gesichert, die letzten 7 Tage bleiben. Sie liegt im selben Browser – gegen „Browserdaten löschen“ hilft nur eine
+              heruntergeladene Sicherung. Umziehen aus der lokalen App: dort „Sicherung herunterladen“, hier „Sicherung einspielen“ (und
+              umgekehrt).
+            </p>
+            {backups?.items?.length ? (
+              <div className="table-wrap">
+                <table className="stats">
+                  <thead>
+                    <tr>
+                      <th>Tagessicherung</th>
+                      <th>Versuche</th>
+                      <th>Karten</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {backups.items.map((b) => (
+                      <tr key={b.date}>
+                        <td>{formatIsoDate(b.date)}</td>
+                        <td>{b.attempts}</td>
+                        <td>{b.cards}</td>
+                        <td>
+                          <button type="button" className="secondary small" onClick={() => restoreBrowserBackup(b.date)}>
+                            ↩ Wiederherstellen
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="hint">
+                Noch keine Tagessicherung in diesem Browser – die erste entsteht beim ersten Speichern an einem neuen Tag.
+              </p>
+            )}
+          </>
         )}
-        {backups && (
+        {backups && !IS_STATIC && (
           <p className="hint">
             {backups.newest ? (
               <>

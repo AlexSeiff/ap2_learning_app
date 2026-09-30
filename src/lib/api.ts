@@ -21,6 +21,8 @@ export interface DataSource {
   /** Letztes Speichern beim Schließen des Tabs – muss das Entladen der Seite überleben. */
   saveProgressOnUnload(p: SaveProgressRequest): void;
   backups(): Promise<ApiResponses['GET /api/progress/backups']>;
+  /** JSON-Text einer Tagessicherung im Browser (nur Pages; die lokale App hat ihre Sicherungen als Dateien in data/backups/). */
+  readBackup(date: string): Promise<string>;
   aiStatus(): Promise<ApiResponses['GET /api/ai/status']>;
   generate(topicId: string, count: number, types: TaskType[]): Promise<ApiResponses['POST /api/ai/generate']>;
   grade(taskId: string, answer: string): Promise<ApiResponses['POST /api/ai/grade']>;
@@ -50,6 +52,8 @@ const serverApi: DataSource = {
     fetch('/api/progress', { method: 'PUT', body: JSON.stringify(p), keepalive: true, headers: { 'Content-Type': 'application/json' } });
   },
   backups: () => request('GET', '/api/progress/backups'),
+  readBackup: () =>
+    Promise.reject(new ApiError(501, 'In der lokalen App liegen die Sicherungen in lern-app/data/backups/ – dort „Sicherung einspielen“.')),
   aiStatus: () => request('GET', '/api/ai/status'),
   generate: (topicId, count, types) => request('POST', '/api/ai/generate', { topicId, count, types } satisfies GenerateRequest),
   grade: (taskId, answer) => request('POST', '/api/ai/grade', { taskId, answer } satisfies GradeRequest),

@@ -65,6 +65,18 @@ export interface BackupInfo {
   /** Datum der neuesten Tagessicherung (YYYY-MM-DD) oder null. */
   newest: string | null;
   count: number;
+  /** Nur die Pages-Version: die Sicherungen im Browser (IndexedDB), neueste zuerst – zum Wiederherstellen. */
+  items?: BackupItem[];
+}
+
+/** Eine Tagessicherung im Browser (Pages-Version). */
+export interface BackupItem {
+  /** Tag der Sicherung (YYYY-MM-DD); sie enthält den Stand vor dem ersten Speichern an diesem Tag. */
+  date: string;
+  /** Zeitpunkt der Sicherung (ISO). */
+  savedAt: string;
+  attempts: number;
+  cards: number;
 }
 
 /** GET /api/ai/status */
