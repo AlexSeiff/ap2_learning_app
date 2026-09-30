@@ -13,7 +13,9 @@ export function Material() {
         <p className="crumbs">
           <Link to="/material">Material</Link> / {doc.file}
         </p>
-        <Markdown source={doc.file}>{doc.markdown}</Markdown>
+        <Markdown math source={doc.file}>
+          {doc.markdown}
+        </Markdown>
       </div>
     );
   }

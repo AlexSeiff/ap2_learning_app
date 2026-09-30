@@ -95,7 +95,9 @@ export function Druck() {
             return (
               <div key={t.id} className="sheet-task">
                 <h3>{taskLabel(t)}</h3>
-                <Markdown source={false}>{kind === 'aufgaben' ? taskMarkdown(t, rights) : solutionMarkdown(t)}</Markdown>
+                <Markdown math={kind === 'loesungen'} source={false}>
+                  {kind === 'aufgaben' ? taskMarkdown(t, rights) : solutionMarkdown(t)}
+                </Markdown>
                 {kind === 'aufgaben' && t.type === 'offen' && (
                   <div className="write-space" style={{ height: `${Math.min(22, 3 + t.points * 1.1)}em` }} />
                 )}

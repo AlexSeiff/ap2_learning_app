@@ -85,7 +85,7 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
     <div className="grade-panel">
       <div className="solution">
         <h4>Musterlösung</h4>
-        <Markdown source={task.topicId}>
+        <Markdown math source={task.topicId}>
           {solutionMarkdown({ ...task, solution: task.solution && { ...task.solution, kommentar: undefined } })}
         </Markdown>
         {task.solution?.kommentar && (

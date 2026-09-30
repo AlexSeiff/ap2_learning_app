@@ -8,12 +8,17 @@ type Prueferfrage = Extract<TheorySegment, { type: 'prueferfrage' }>;
  * Sind die Prüferfragen ausgeschaltet, fallen ihre Zitatblöcke (Frage und Antwort) ganz weg.
  */
 export function TheoryMarkdown({ markdown, source, prueferfragen }: { markdown: string; source?: string; prueferfragen: boolean }) {
-  if (!prueferfragen) return <Markdown source={source}>{stripPrueferfragen(markdown)}</Markdown>;
+  if (!prueferfragen)
+    return (
+      <Markdown math source={source}>
+        {stripPrueferfragen(markdown)}
+      </Markdown>
+    );
   return (
     <>
       {splitPrueferfragen(markdown).map((s, i) =>
         s.type === 'text' ? (
-          <Markdown key={i} source={source}>
+          <Markdown key={i} math source={source}>
             {s.markdown}
           </Markdown>
         ) : (
@@ -30,11 +35,13 @@ function PrueferfrageBox({ pf }: { pf: Prueferfrage }) {
       <div className="pf-label">
         ❓ {pf.label} – <span className="muted">erst selbst überlegen</span>
       </div>
-      <Markdown className="pf-question">{pf.question}</Markdown>
+      <Markdown math className="pf-question">
+        {pf.question}
+      </Markdown>
       {pf.answer ? (
         <details className="pf-answer">
           <summary>👁 Antwort zeigen</summary>
-          <Markdown>{pf.answer}</Markdown>
+          <Markdown math>{pf.answer}</Markdown>
         </details>
       ) : (
         <p className="hint">Keine Musterantwort im Lernblatt – beantworte die Frage laut und prüf dich am Text oben.</p>
