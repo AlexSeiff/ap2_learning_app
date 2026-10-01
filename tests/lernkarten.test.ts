@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { answerToMarkdown, parseLernkarten, topicFromSource } from '../shared/lernkarten';
+import { answerToMarkdown, parseLernkarten, pruefeMc, topicFromSource } from '../shared/lernkarten';
 import { loadContent } from '../server/loadContent';
 
 // Fixture im Format von AP2_FIDPA_Lernkarten.json (3 Decks, 7 Karten) – die echte Datei prüft inhalte.smoke.test.ts grob.
@@ -106,5 +106,52 @@ describe('Hilfsfunktionen', () => {
       'Karte A-2: unbekannter Typ „quatsch".',
       'Deck „d": 2 Karten importiert, laut Datei 3.',
     ]);
+  });
+});
+
+describe('Block „mc“ für den Leicht-Modus (ROADMAP 6.2)', () => {
+  const topics = new Map<string, string>();
+  const parse = (mc: unknown) =>
+    parseLernkarten(
+      'x.json',
+      JSON.stringify({
+        decks: [{ id: 'd', titel: 'D', karten: [{ id: 'D-1', frage: 'F', antwort: 'lange Antwort', typ: 'wissen', mc }] }],
+      }),
+      topics,
+    );
+
+  it('übernimmt einen gültigen Block (getrimmt, Erklärung optional)', () => {
+    const r = parse({ richtig: ' Spalten ', falsch: ['Zeilen', 'Tabellen', 'Schlüssel'], erklaerung: 'Weil …' });
+    expect(r.issues).toEqual([]);
+    expect(r.cards[0].mc).toEqual({ richtig: 'Spalten', falsch: ['Zeilen', 'Tabellen', 'Schlüssel'], erklaerung: 'Weil …' });
+    expect(parse({ richtig: 'a', falsch: ['b', 'c', 'd'] }).cards[0].mc).toEqual({ richtig: 'a', falsch: ['b', 'c', 'd'] });
+  });
+
+  it('Karten ohne Block bleiben wie bisher', () => {
+    const r = parse(undefined);
+    expect(r.issues).toEqual([]);
+    expect(r.cards[0]).not.toHaveProperty('mc');
+  });
+
+  it.each([
+    [{ richtig: 'a', falsch: ['b', 'c'] }, /genau 3/],
+    [{ richtig: 'a', falsch: ['b', 'c', 'd', 'e'] }, /genau 3/],
+    [{ richtig: 'a', falsch: ['b', 'B.', 'd'] }, /doppelt/],
+    [{ richtig: 'Spalten', falsch: ['spalten', 'c', 'd'] }, /gleich der richtigen/],
+    [{ richtig: '', falsch: ['b', 'c', 'd'] }, /richtig/],
+    [{ falsch: ['b', 'c', 'd'] }, /richtig/],
+    ['kein Objekt', /./],
+  ])('meldet einen ungültigen Block als ImportIssue, die Karte bleibt nutzbar (%#)', (mc, msg) => {
+    const r = parse(mc);
+    expect(r.cards.map((c) => c.id)).toEqual(['D-1']);
+    expect(r.cards[0]).not.toHaveProperty('mc');
+    expect(r.issues).toHaveLength(1);
+    expect(r.issues[0].message).toMatch(/^Karte D-1: Block „mc“ ignoriert/);
+    expect(r.issues[0].message).toMatch(msg);
+  });
+
+  it('pruefeMc liefert den bereinigten Block oder eine Meldung', () => {
+    expect(pruefeMc({ richtig: 'a', falsch: ['b', 'c', 'd'], extra: 1 })).toEqual({ mc: { richtig: 'a', falsch: ['b', 'c', 'd'] } });
+    expect(pruefeMc(null).fehler).toBeTruthy();
   });
 });

@@ -9,6 +9,14 @@ export interface Section {
 
 export type CardType = 'wissen' | 'abgrenzung' | 'rechnung' | 'anwendung' | 'falle';
 
+/** Geschriebene Auswahlantworten einer Lernkarte für den Leicht-Modus (ROADMAP 6.2): 1 richtige, genau 3 falsche. */
+export interface KartenMc {
+  richtig: string;
+  falsch: [string, string, string];
+  /** Optional: warum die anderen Antworten falsch sind (Markdown). */
+  erklaerung?: string;
+}
+
 export interface Flashcard {
   id: string;
   /** Deep Dive, zu dem die Karte gehört (fehlt bei Decks ohne eigenen Deep Dive, z. B. WiSo). */
@@ -21,6 +29,8 @@ export interface Flashcard {
   typ?: CardType;
   schwierigkeit?: number;
   tags?: string[];
+  /** Geprüfter Block „mc“ aus der Datei (Leicht-Modus); fehlt er, kann der Leicht-Modus automatische Antworten nutzen. */
+  mc?: KartenMc;
 }
 
 export interface Deck {

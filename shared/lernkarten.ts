@@ -1,6 +1,7 @@
-// Import der Lernkarten-Datei (z. B. AP2_FIDPA_Lernkarten.json) mit Decks, Kartentyp, Schwierigkeit und Tags.
+// Import der Lernkarten-Datei (z. B. AP2_FIDPA_Lernkarten.json) mit Decks, Kartentyp, Schwierigkeit, Tags und optionalem Block „mc“ (Leicht-Modus).
 
-import type { CardType, Deck, Flashcard, ImportIssue } from './types';
+import { z } from 'zod';
+import type { CardType, Deck, Flashcard, ImportIssue, KartenMc } from './types';
 
 const CARD_TYPES: CardType[] = ['wissen', 'abgrenzung', 'rechnung', 'anwendung', 'falle'];
 
@@ -11,6 +12,7 @@ interface RawCard {
   typ?: unknown;
   schwierigkeit?: unknown;
   tags?: unknown;
+  mc?: unknown;
 }
 
 interface RawDeck {
@@ -21,6 +23,44 @@ interface RawDeck {
   status?: unknown;
   anzahl_karten?: unknown;
   karten?: unknown;
+}
+
+/** Vergleichsform für „gleiche Antwort“: ohne Groß-/Kleinschreibung, Mehrfach-Leerzeichen und Schlusspunkt. */
+export const mcNorm = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[.\s]+$/, '')
+    .trim();
+
+const McText = z.string().trim().min(1, 'leerer Text');
+
+/**
+ * Optionaler Block „mc“ einer Lernkarte (Leicht-Modus, ROADMAP 6.2): genau 3 verschiedene falsche Antworten,
+ * keine davon gleich der richtigen. Auch die Entwürfe von `npm run mc-entwurf` werden damit geprüft.
+ */
+export const KartenMcSchema = z
+  .object({
+    richtig: McText,
+    falsch: z.array(McText).length(3, 'genau 3 falsche Antworten nötig'),
+    erklaerung: z.string().trim().min(1).optional(),
+  })
+  .superRefine((mc, ctx) => {
+    const r = mcNorm(mc.richtig);
+    const f = mc.falsch.map(mcNorm);
+    if (new Set(f).size !== f.length) ctx.addIssue({ code: 'custom', path: ['falsch'], message: 'falsche Antworten doppelt' });
+    if (f.includes(r)) ctx.addIssue({ code: 'custom', path: ['falsch'], message: 'eine falsche Antwort ist gleich der richtigen' });
+  });
+
+/** Prüft einen mc-Block; liefert den bereinigten Block oder eine deutsche Fehlermeldung. */
+export function pruefeMc(raw: unknown): { mc: KartenMc; fehler?: undefined } | { mc?: undefined; fehler: string } {
+  const r = KartenMcSchema.safeParse(raw);
+  if (r.success) {
+    const { richtig, falsch, erklaerung } = r.data;
+    return { mc: { richtig, falsch: [falsch[0], falsch[1], falsch[2]], ...(erklaerung ? { erklaerung } : {}) } };
+  }
+  const i = r.error.issues[0];
+  return { fehler: `${i.path.length ? `${i.path.join('.')}: ` : ''}${i.message}` };
 }
 
 export interface ParsedCards {
@@ -112,6 +152,9 @@ export function parseLernkarten(fileName: string, json: string, topics: Map<stri
       seen.add(id);
       const typ = CARD_TYPES.includes(k.typ as CardType) ? (k.typ as CardType) : undefined;
       if (k.typ !== undefined && !typ) issues.push({ file: fileName, message: `Karte ${id}: unbekannter Typ „${String(k.typ)}".` });
+      // Ein fehlerhafter mc-Block wird gemeldet, die Karte bleibt (ohne Leicht-Antworten) nutzbar.
+      const mc = k.mc === undefined ? undefined : pruefeMc(k.mc);
+      if (mc?.fehler) issues.push({ file: fileName, message: `Karte ${id}: Block „mc“ ignoriert (${mc.fehler}).` });
       cards.push({
         id,
         topicId,
@@ -122,6 +165,7 @@ export function parseLernkarten(fileName: string, json: string, topics: Map<stri
         typ,
         schwierigkeit: typeof k.schwierigkeit === 'number' ? k.schwierigkeit : undefined,
         tags: Array.isArray(k.tags) ? k.tags.map(String) : [],
+        ...(mc?.mc ? { mc: mc.mc } : {}),
       });
     }
     if (typeof raw.anzahl_karten === 'number' && raw.anzahl_karten !== cards.length) {
