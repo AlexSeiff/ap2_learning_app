@@ -3,6 +3,7 @@
 
 import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { baueGlossar, glossarSuchEintraege } from '../lib/glossar';
 import { useStore } from '../lib/store';
 import { baueSuchIndex, suche, SUCH_ART } from '../lib/suche';
 
@@ -10,7 +11,10 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
   const { content, progress } = useStore();
   const navigate = useNavigate();
   const { prueferfragen, fachgespraech } = progress.settings;
-  const index = useMemo(() => baueSuchIndex(content, { prueferfragen, fachgespraech }), [content, prueferfragen, fachgespraech]);
+  const index = useMemo(
+    () => baueSuchIndex(content, { prueferfragen, fachgespraech }, glossarSuchEintraege(baueGlossar(content))),
+    [content, prueferfragen, fachgespraech],
+  );
   const [anfrage, setAnfrage] = useState('');
   const [aktiv, setAktiv] = useState(0);
   const treffer = useMemo(() => suche(index, anfrage), [index, anfrage]);
@@ -84,8 +88,8 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
         {anfrage.trim().length >= 2 && !treffer.length && <p className="muted suche-leer">Keine Treffer für „{anfrage.trim()}“.</p>}
         {anfrage.trim().length < 2 && (
           <p className="muted suche-leer">
-            Durchsucht Lernblätter, Karteikarten, Aufgaben, SQL- und Rechenübungen, Formeln und Operatoren. Umlaute egal: „Pruefung“ findet
-            „Prüfung“.
+            Durchsucht Lernblätter, Glossar, Karteikarten, Aufgaben, SQL- und Rechenübungen, Formeln und Operatoren. Umlaute egal:
+            „Pruefung“ findet „Prüfung“.
           </p>
         )}
         <ul className="suche-liste" role="listbox" id={listId} ref={listRef} aria-label="Treffer">

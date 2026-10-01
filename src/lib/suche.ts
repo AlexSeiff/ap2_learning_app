@@ -13,7 +13,10 @@ import type { Settings } from '../../shared/progress';
 import type { Content } from '../../shared/types';
 import { FORMELN, THEMA_NAMEN } from '../rechnen/formeln';
 import { cardPool } from './cards';
+import { normalisiere } from './normalisiere';
 import { OPERATOREN } from './operatoren';
+
+export { normalisiere };
 
 export type SuchArt = 'glossar' | 'abschnitt' | 'formel' | 'operator' | 'material' | 'karte' | 'aufgabe' | 'sql' | 'rechnen';
 
@@ -47,20 +50,6 @@ export interface SuchTreffer {
   punkte: number;
   /** Textausschnitt um den ersten Treffer (leer, wenn das Suchwort nur im Titel steht). */
   ausschnitt: string;
-}
-
-/** Deutschfreundliche Normalisierung für Index und Suchtext (siehe oben). */
-export function normalisiere(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/ß/g, 'ss')
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/ae/g, 'a')
-    .replace(/oe/g, 'o')
-    .replace(/ue/g, 'u')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
 }
 
 /** Markdown/LaTeX → Klartext für die Suche (grob, aber robust). */

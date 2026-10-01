@@ -609,3 +609,17 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .bn-suche { display: flex; width: 100%; min-height: 48px; align-items: center; background: transparent; color: var(--text); border: none; padding: 8px 12px; font-weight: 500; border-radius: 8px; }
 .bn-suche:hover { background: var(--surface-2); }
 @media print { .suche-overlay { display: none; } }
+
+/* Glossar (8.9) */
+.glossar-filter { display: flex; align-items: center; gap: 10px; margin: 8px 0 12px; }
+.glossar-filter input { max-width: 320px; width: 100%; }
+.glossar-abc { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: 2px 4px; padding: 6px 0; background: var(--bg); border-bottom: 1px solid var(--border); }
+.glossar-abc a, .glossar-abc span { display: inline-block; min-width: 1.7em; text-align: center; padding: 2px 4px; border-radius: 6px; font-weight: 600; }
+.glossar-abc a:hover { background: var(--accent-soft); text-decoration: none; }
+.glossar-gruppe h2 { border-bottom: 2px solid var(--border); padding-bottom: 4px; scroll-margin-top: 48px; }
+.glossar-gruppe dl { margin: 0; }
+.glossar-eintrag { padding: 8px 0; border-bottom: 1px solid var(--border); scroll-margin-top: 48px; }
+.glossar-eintrag dt { font-weight: 700; }
+.glossar-eintrag dd { margin: 2px 0 0; }
+.glossar-def p { margin: 0.2em 0; }
+.glossar-quellen { margin: 4px 0 0; color: var(--muted); }

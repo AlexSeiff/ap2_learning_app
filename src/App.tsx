@@ -36,6 +36,8 @@ const Heute = lazy(() => import('./pages/Heute').then((m) => ({ default: m.Heute
 const Operatoren = lazy(() => import('./pages/Operatoren').then((m) => ({ default: m.Operatoren })));
 // Formelsammlung lazy: zieht KaTeX nach.
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
+// Glossar lazy: baut den Index der Begriffe erst beim Öffnen.
+const Glossar = lazy(() => import('./pages/Glossar').then((m) => ({ default: m.Glossar })));
 // Globale Suche lazy: Index und Dialog laden erst beim ersten Öffnen (Strg+K oder „🔎 Suchen“).
 const SucheDialog = lazy(() => import('./components/SucheDialog').then((m) => ({ default: m.SucheDialog })));
 
@@ -223,6 +225,7 @@ function Layout() {
                       <Route path="/material" element={<Material />} />
                       <Route path="/material/formeln" element={<Formelsammlung />} />
                       <Route path="/material/operatoren" element={<Operatoren />} />
+                      <Route path="/material/glossar" element={<Glossar />} />
                       <Route path="/material/:docId" element={<Material />} />
                       <Route path="/einstellungen" element={<Einstellungen />} />
                       <Route path="/daten" element={<Daten />} />

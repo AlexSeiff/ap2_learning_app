@@ -28,6 +28,10 @@ export function Material() {
           <span className="tile-title">📏 Formelsammlung</span>
           <span className="tile-meta">alle Formeln der Rechenübungen, nach Thema – druckbar</span>
         </Link>
+        <Link to="/material/glossar" className="tile">
+          <span className="tile-title">📚 Glossar</span>
+          <span className="tile-meta">Fachbegriffe von A bis Z – aus Karten und Lernblättern</span>
+        </Link>
         <Link to="/material/operatoren" className="tile">
           <span className="tile-title">🗣️ Operatoren-Trainer</span>
           <span className="tile-meta">nennen, erläutern, beurteilen … – was verlangt wird, mit Quiz</span>
