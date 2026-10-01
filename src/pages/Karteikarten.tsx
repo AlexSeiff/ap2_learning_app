@@ -1,7 +1,9 @@
 import type { CardType, Flashcard } from '../../shared/types';
+import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
 import { useCardFilters, useCardSession } from '../hooks/useCardSession';
-import { isDue } from '../lib/progress';
+import { leichtZahlen } from '../lib/leicht';
+import { isDue, LEICHT_MAX_BOX } from '../lib/progress';
 import { withSettings } from '../lib/settings';
 import { useStore } from '../lib/store';
 import { NEW_PER_SESSION } from '../../shared/config';
@@ -23,11 +25,82 @@ const KIND_LABELS: Record<Flashcard['kind'], string> = {
 export function Karteikarten() {
   const { content, progress, update } = useStore();
   const { settings } = progress;
-  const { f, set, deck, pool } = useCardFilters();
-  const { session, index, card, flipped, done, start, end, flip, rate } = useCardSession();
+  const { f, set, deck, alle, pool, leicht, leichtModus } = useCardFilters();
+  const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next } = useCardSession();
+  const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
 
   const due = deck.filter((c) => progress.cards[c.id] && isDue(progress.cards[c.id].due));
   const fresh = deck.filter((c) => !progress.cards[c.id]);
+
+  if (session && card && runde) {
+    const topic = content.topics.find((t) => t.id === card.topicId);
+    const cardDeck = content.decks.find((d) => d.id === card.deckId);
+    const fertig = runde.gewaehlt !== null;
+    const richtig = fertig && runde.optionen[runde.gewaehlt!].richtig;
+    return (
+      <div className="page narrow">
+        <div className="session-head">
+          <button type="button" className="ghost" onClick={end}>
+            ← Beenden
+          </button>
+          <span>
+            🟢 Leicht · Karte {index + 1} / {session.length}
+          </span>
+        </div>
+        <div className={`flashcard leicht ${card.typ === 'falle' ? 'trap' : ''}`}>
+          <div className="fc-meta">
+            <span>
+              {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
+            </span>
+            {card.typ && <span className={`badge typ-${card.typ}`}>{CARD_TYPE_LABELS[card.typ]}</span>}
+            {runde.karte.art === 'automatisch' && (
+              <span
+                className="badge auto"
+                title="Die falschen Antworten stammen von anderen Karten dieses Decks – nicht von Hand geschrieben."
+              >
+                🤖 automatisch
+              </span>
+            )}
+            <span className="muted small">{card.id}</span>
+          </div>
+          <Markdown className="fc-question">{card.question}</Markdown>
+          <LeichtOptionen optionen={runde.optionen} gewaehlt={runde.gewaehlt} onWaehle={waehle} tasten label="Antworten" />
+          {fertig && (
+            <div className="fc-answer leicht-feedback" role="status">
+              <p className={`verdict ${richtig ? 'ok' : 'bad'}`}>
+                {richtig
+                  ? `✅ Richtig! Die Karte kommt höchstens in Fach ${LEICHT_MAX_BOX}.`
+                  : '❌ Leider falsch – die Karte kommt in dieser Runde noch einmal.'}
+              </p>
+              {card.answer && (
+                <>
+                  <h4>Ganze Antwort</h4>
+                  <Markdown>{card.answer}</Markdown>
+                </>
+              )}
+              {runde.karte.erklaerung && (
+                <>
+                  <h4>Warum die anderen falsch sind</h4>
+                  <Markdown>{runde.karte.erklaerung}</Markdown>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+        {fertig ? (
+          <div className="actions">
+            <button type="button" onClick={next} autoFocus>
+              Weiter → <kbd>Enter</kbd>
+            </button>
+          </div>
+        ) : (
+          <p className="hint">
+            Wähle die richtige Antwort: klicken oder <kbd>1</kbd>–<kbd>4</kbd>.
+          </p>
+        )}
+      </div>
+    );
+  }
 
   if (session && card) {
     const topic = content.topics.find((t) => t.id === card.topicId);
@@ -104,7 +177,12 @@ export function Karteikarten() {
     );
   }
 
-  const traps = pool.filter((c) => c.typ === 'falle' && (f.thema === 'alle' || c.topicId === f.thema));
+  const traps = pool.filter(
+    (c) => c.typ === 'falle' && (f.thema === 'alle' || c.topicId === f.thema) && (!leichtModus || leicht.has(c.id)),
+  );
+  const lz = leichtZahlen(alle, leicht);
+  const typLeicht = (typ: string) => pool.filter((c) => c.typ === typ && leicht.has(c.id)).length;
+  const setMode = (an: boolean) => update((p) => withSettings(p, { leichtModus: an }));
   const known = (ids: Flashcard[]) => ids.filter((c) => (progress.cards[c.id]?.box ?? 0) >= 3).length;
 
   return (
@@ -114,6 +192,21 @@ export function Karteikarten() {
         <div className="card success">
           Runde beendet: ✓ {done.gewusst} gewusst · ~ {done.unsicher} unsicher · ✗ {done.nicht} nicht gewusst
         </div>
+      )}
+      <div className="mode-switch" role="group" aria-label="Modus">
+        <button type="button" aria-pressed={!leichtModus} onClick={() => setMode(false)}>
+          🃏 Aufdecken
+        </button>
+        <button type="button" aria-pressed={leichtModus} onClick={() => setMode(true)}>
+          🟢 Leicht (4 Antworten)
+        </button>
+      </div>
+      {leichtModus && (
+        <p className="hint">
+          🟢 {lz.mc + lz.automatisch} von {lz.gesamt} Karten dieser Auswahl haben 4 Antworten
+          {lz.automatisch > 0 && ` (${lz.automatisch} davon 🤖 automatisch aus anderen Karten des Decks)`}. Leicht-Modus ist zum Einstieg –
+          für die Prüfung frei antworten: Mit 4 Antworten kommt eine Karte höchstens in Fach {LEICHT_MAX_BOX}.
+        </p>
       )}
       <div className="filters">
         <label>
@@ -145,7 +238,7 @@ export function Karteikarten() {
             <option value="alle">Alle</option>
             <option value="lernkarte">Lernkarten</option>
             {settings.prueferfragen && <option value="prueferfrage">Prüferfragen</option>}
-            {settings.fachgespraech && <option value="fachgespraech">Fachgespräch-Fragen</option>}
+            {settings.fachgespraech && !leichtModus && <option value="fachgespraech">Fachgespräch-Fragen</option>}
           </select>
         </label>
         <label>
@@ -155,6 +248,7 @@ export function Karteikarten() {
             {Object.entries(CARD_TYPE_LABELS).map(([k, v]) => (
               <option key={k} value={k}>
                 {v}
+                {leichtModus ? ` (${typLeicht(k)} mit 4 Antworten)` : ''}
               </option>
             ))}
           </select>
@@ -204,17 +298,21 @@ export function Karteikarten() {
         </div>
       </div>
       <div className="actions">
-        <button type="button" disabled={!due.length && !fresh.length} onClick={() => start([...due, ...fresh.slice(0, NEW_PER_SESSION)])}>
+        <button
+          type="button"
+          disabled={!due.length && !fresh.length}
+          onClick={() => startRunde([...due, ...fresh.slice(0, NEW_PER_SESSION)])}
+        >
           Lernen starten ({due.length + Math.min(fresh.length, NEW_PER_SESSION)})
         </button>
-        <button type="button" className="secondary" disabled={!deck.length} onClick={() => start(deck)}>
+        <button type="button" className="secondary" disabled={!deck.length} onClick={() => startRunde(deck)}>
           Alle {deck.length} durchgehen
         </button>
         {traps.length > 0 && (
           <button
             type="button"
             className="secondary"
-            onClick={() => start(traps)}
+            onClick={() => startRunde(traps)}
             title="Typische Prüfungsfehler – vor jeder Übungsklausur wiederholen"
           >
             ⚠️ Fallen wiederholen ({traps.length})
@@ -247,7 +345,7 @@ export function Karteikarten() {
               </thead>
               <tbody>
                 {content.decks.map((d) => {
-                  const cards = pool.filter((c) => c.deckId === d.id);
+                  const cards = pool.filter((c) => c.deckId === d.id && (!leichtModus || leicht.has(c.id)));
                   const dueCount = cards.filter((c) => progress.cards[c.id] && isDue(progress.cards[c.id].due)).length;
                   return (
                     <tr key={d.id}>
@@ -279,7 +377,8 @@ export function Karteikarten() {
 
       <p className="hint">
         Leitner-System mit 5 Fächern: „Gewusst" schiebt die Karte ein Fach weiter (Abstände 1 · 3 · 7 · 14 · 30 Tage), „Nicht gewusst"
-        zurück in Fach 1. Tastatur: <kbd>Leertaste</kbd> umdrehen, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> bewerten.
+        zurück in Fach 1. Tastatur: <kbd>Leertaste</kbd> umdrehen, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> bewerten. Im Leicht-Modus wählst
+        du mit <kbd>1</kbd>–<kbd>4</kbd>; richtig bringt die Karte höchstens in Fach {LEICHT_MAX_BOX}, falsch zurück in Fach 1.
       </p>
     </div>
   );
