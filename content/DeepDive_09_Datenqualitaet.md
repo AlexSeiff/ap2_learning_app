@@ -90,7 +90,7 @@ HAVING COUNT(*) > 1;
 
 Ohne Messung keine Steuerung. Die Grundform ist immer gleich:
 
-**Qualitätsgrad = korrekte Datensätze / geprüfte Datensätze · 100**
+**Qualitätsgrad:** $\text{Qualitätsgrad} = \dfrac{\text{korrekte Datensätze}}{\text{geprüfte Datensätze}} \cdot 100$
 
 | Kennzahl | Formel |
 |---|---|

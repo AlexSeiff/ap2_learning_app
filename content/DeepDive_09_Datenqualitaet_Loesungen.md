@@ -53,19 +53,19 @@ Gefährlicher als ein leeres Feld ist er, weil er **wie ein echter Wert aussieht
 **C1 (12 P):** *(je Teilaufgabe 3 P: 1 P Ansatz, 1 P Rechnung, 1 P Ergebnis)*
 
 (a) **Vollständigkeitsgrad E-Mail:** 3 von 10 Feldern leer (Datensätze 2, 7, 10)
-7 / 10 · 100 = **70,00 %**
+$\frac{\text{gefüllte Felder}}{\text{alle Felder}} \cdot 100 = \frac{7}{10} \cdot 100$ = **70,00 %**
 
 (b) **Eindeutigkeitsgrad:** 10 Datensätze, darunter zwei Dublettenpaare (1/6 und 5/8) → 8 eindeutige Kunden
-8 / 10 · 100 = **80,00 %**
+$\frac{\text{eindeutige Kunden}}{\text{Datensätze}} \cdot 100 = \frac{8}{10} \cdot 100$ = **80,00 %**
 
 (c) **Gültigkeitsgrad PLZ:** 1 von 10 nicht fünfstellig (Datensatz 3)
-9 / 10 · 100 = **90,00 %**
+$\frac{\text{gültige Werte}}{\text{alle Werte}} \cdot 100 = \frac{9}{10} \cdot 100$ = **90,00 %**
 
 (d) **Anteil plausibler Geburtsdaten:** 3 unplausibel (zweimal 01.01.1900, einmal Zukunftsdatum)
-7 / 10 · 100 = **70,00 %**
+$\frac{7}{10} \cdot 100$ = **70,00 %**
 
 **C2 (4 P):**
-57 gefüllte von 60 Pflichtzellen: 57 / 60 · 100 = **95,00 %** *(2 P)*
+57 gefüllte von 60 Pflichtzellen: $\frac{57}{60} \cdot 100$ = **95,00 %** *(2 P)*
 
 Erläuterung: Die Kennzahl bezieht sich auf **alle Zellen über sechs Felder**, während C1 (a) nur das **eine** besonders lückenhafte Feld betrachtet. Die drei fehlenden Werte verteilen sich rechnerisch über 60 Zellen und fallen dadurch kaum ins Gewicht. Eine hohe Gesamtvollständigkeit kann also erhebliche Lücken in einzelnen, fachlich wichtigen Feldern verdecken – deshalb muss die **Bezugsgröße** stets angegeben und zusätzlich je Feld gemessen werden. *(2 P)*
 

@@ -34,7 +34,7 @@ Besserer Vorschlag *(2 P)*: Ein **waagerechtes Balkendiagramm, absteigend nach U
 
 **B1 (12 P):**
 
-**a) (4 P):** Gesamtwachstum = (5,10 − 4,80) / 4,80 · 100 = 0,30 / 4,80 · 100 = **6,25 %**
+**a) (4 P):** Gesamtwachstum: $\frac{5{,}10 - 4{,}80}{4{,}80} \cdot 100 = \frac{0{,}30}{4{,}80} \cdot 100$ = **6,25 %**
 Zwischenschritte: 4,80 → 4,95 entspricht +3,13 %, 4,95 → 5,10 entspricht +3,03 %.
 
 **b) (4 P):** Da die Achse bei 4,70 Mio. € beginnt, werden nur die Beträge oberhalb dieser Grenze dargestellt: 0,10 / 0,25 / 0,40 Mio. €. Die sichtbaren Säulenhöhen verhalten sich dadurch wie **1 : 2,5 : 4** – der Eindruck einer Vervierfachung entsteht, obwohl der Umsatz tatsächlich nur um 6,25 % gestiegen ist. Bei Säulen- und Balkendiagrammen codiert die Länge den Wert; ein fehlender Nullpunkt macht die Darstellung deshalb sachlich falsch.

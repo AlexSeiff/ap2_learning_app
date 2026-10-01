@@ -131,11 +131,11 @@ Wirksamste Gegenmaßnahme: **parametrisierte Abfragen (Prepared Statements)**. D
 **E1 (6 P):**
 
 **Inkrementell** (jeweils Änderungen seit der letzten Sicherung): *(3 P)*
-- Volumen: 800 GB (So) + 40 + 40 + 40 GB (Mo–Mi) = **920 GB**
+- Volumen: $800\ \text{GB (So)} + 40 + 40 + 40\ \text{GB (Mo–Mi)}$ = **920 GB**
 - Wiederherstellung: Vollsicherung **und alle** inkrementellen Sicherungen → **4 Medien**
 
 **Differenziell** (jeweils Änderungen seit der Vollsicherung): *(3 P)*
-- Volumen: 800 GB + 40 (Mo) + 80 (Di) + 120 (Mi) = **1.040 GB**
+- Volumen: $800\ \text{GB} + 40\ \text{(Mo)} + 80\ \text{(Di)} + 120\ \text{(Mi)}$ = **1.040 GB**
 - Wiederherstellung: Vollsicherung + **letzte** differenzielle Sicherung → **2 Medien**
 
 **E2 (3 P):**
