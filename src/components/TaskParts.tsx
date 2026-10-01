@@ -19,7 +19,9 @@ export function TaskText({ task, showMeta }: { task: Task; showMeta?: boolean })
         {showMeta && <span className={`badge diff-${difficulty(task.points)}`}>{difficulty(task.points)}</span>}
         {task.generated && <span className="badge ai">KI</span>}
       </div>
-      <Markdown source={false}>{task.type === 'lueckentext' ? numberBlanks(task.markdown) : task.markdown}</Markdown>
+      <Markdown source={false} operatoren>
+        {task.type === 'lueckentext' ? numberBlanks(task.markdown) : task.markdown}
+      </Markdown>
     </div>
   );
 }

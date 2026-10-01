@@ -32,6 +32,8 @@ const RechenUebungen = lazy(() => import('./pages/RechenUebungen').then((m) => (
 const RechenUebung = lazy(() => import('./pages/RechenUebung').then((m) => ({ default: m.RechenUebung })));
 // „Heute lernen“ lazy: der Planer braucht nur diese Seite.
 const Heute = lazy(() => import('./pages/Heute').then((m) => ({ default: m.Heute })));
+// Operatoren-Trainer lazy: Quiz und Tabelle braucht nur diese Seite.
+const Operatoren = lazy(() => import('./pages/Operatoren').then((m) => ({ default: m.Operatoren })));
 // Formelsammlung lazy: zieht KaTeX nach.
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
 
@@ -178,6 +180,7 @@ export function App() {
                       <Route path="/generator" element={IS_STATIC ? <Navigate to="/" replace /> : <Generator />} />
                       <Route path="/material" element={<Material />} />
                       <Route path="/material/formeln" element={<Formelsammlung />} />
+                      <Route path="/material/operatoren" element={<Operatoren />} />
                       <Route path="/material/:docId" element={<Material />} />
                       <Route path="/einstellungen" element={<Einstellungen />} />
                       <Route path="/daten" element={<Daten />} />

@@ -22,11 +22,11 @@ export function Markdown({ math, ...props }: MarkdownProps & { math?: boolean })
   );
 }
 
-function PlainMarkdown({ children, className, source, loesung }: MarkdownProps) {
+function PlainMarkdown({ children, className, source, loesung, operatoren }: MarkdownProps) {
   const components = useMarkdownComponents(source);
   return (
     <div className={`md ${className ?? ''}`}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={stylePlugins(loesung)} components={components}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={stylePlugins(loesung, operatoren)} components={components}>
         {children}
       </ReactMarkdown>
     </div>

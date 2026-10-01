@@ -28,6 +28,10 @@ export function Material() {
           <span className="tile-title">📏 Formelsammlung</span>
           <span className="tile-meta">alle Formeln der Rechenübungen, nach Thema – druckbar</span>
         </Link>
+        <Link to="/material/operatoren" className="tile">
+          <span className="tile-title">🗣️ Operatoren-Trainer</span>
+          <span className="tile-meta">nennen, erläutern, beurteilen … – was verlangt wird, mit Quiz</span>
+        </Link>
         {content.materials.map((m) => (
           <Link key={m.id} to={`/material/${m.id}`} className="tile">
             <span className="tile-title">{m.title}</span>
