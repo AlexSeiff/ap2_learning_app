@@ -43,7 +43,9 @@ export const assoziation = vorlage({
       );
       const mit = (xs: string[]) => transaktionen.filter((t) => xs.every((a) => t.includes(a))).length;
       const beide = mit([...w, ...d]);
-      if ((beide > 0 && mit(w) < n && mit(d) < n) || versuch > 200) {
+      // Jeder Artikel kommt mindestens einmal vor, damit z. B. „Support(L)“ auch bei neuen Zahlen gefragt werden kann.
+      const vollstaendig = alle.every((a) => mit([a]) > 0);
+      if ((beide > 0 && mit(w) < n && mit(d) < n && vollstaendig) || versuch > 200) {
         if (beide === 0) transaktionen[0] = [...new Set([...w, ...d])];
         return { transaktionen, wenn: w, dann: d };
       }

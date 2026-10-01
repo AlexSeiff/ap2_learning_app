@@ -181,6 +181,15 @@ describe('Modellgüte (DD7) und CRISP-DM (DD6)', () => {
     expect(r(w.lift)).toBe(1.33);
   });
 
+  it('Assoziation: neue Zahlen enthalten jeden Artikel des Vorbilds (Einzelsupport bleibt abfragbar)', () => {
+    const v = VORLAGEN.assoziation;
+    const vorbild = v.schema.parse({ transaktionen: [['S', 'B', 'M'], ['S', 'B'], ['M', 'L'], ['L']], wenn: ['S'], dann: ['B'] });
+    for (let seed = 1; seed <= 300; seed++) {
+      const werte = v.loese(v.schema.parse(v.erzeuge(seed, {}, vorbild))).werte;
+      for (const a of ['S', 'B', 'M', 'L']) expect(werte, `Seed ${seed}`).toHaveProperty([`support_${a}`]);
+    }
+  });
+
   it('C2 k-Means: Abstände 2,83 / 5,66 …, Zentren (2|2) und (8|8)', () => {
     const w = loese('kmeans', {
       punkte: [
