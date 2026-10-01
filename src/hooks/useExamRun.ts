@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { EXAM_MINUTES } from '../../shared/config';
 import type { ExamRun, Sicherheit } from '../../shared/progress';
 import type { Task } from '../../shared/types';
+import { klausurFuer } from '../lib/mischKlausur';
 import { finishExam, submitExam } from '../lib/progress';
 import { useStore } from '../lib/store';
 
@@ -18,11 +19,13 @@ function useNow(active: boolean) {
 /**
  * Ablauf einer Übungsklausur: starten, beantworten, abgeben (auch automatisch bei Zeitablauf),
  * bewerten und abschließen. Rückfragen (useConfirm) und Navigation bleiben in der Seite.
+ * `topicId` ist die ID eines Deep Dives oder einer gemischten Probeklausur („mix-…“, ROADMAP 8.5) – sie steht in ExamRun.topicId.
  */
 export function useExamRun(topicId: string | undefined) {
   const { content, progress, update } = useStore();
-  const topic = content.topics.find((t) => t.id === topicId);
-  const exam = topic?.exam;
+  const quelle = useMemo(() => klausurFuer(content, topicId), [content, topicId]);
+  const topic = quelle?.topic;
+  const exam = quelle?.exam;
   const tasks: Task[] = exam ? exam.blocks.flatMap((b) => b.taskIds.map((id) => content.tasks[id])).filter(Boolean) : [];
   const run = progress.activeExam?.topicId === topicId ? progress.activeExam : undefined;
   const otherRun = progress.activeExam && !run ? progress.activeExam : undefined;
@@ -38,12 +41,12 @@ export function useExamRun(topicId: string | undefined) {
   }, [run, remaining, update]);
 
   const start = () => {
-    if (!topic || !exam) return;
+    if (!quelle || !exam) return;
     update((p) => ({
       ...p,
       activeExam: {
         id: `ex-${Date.now().toString(36)}`,
-        topicId: topic.id,
+        topicId: quelle.id,
         startedAt: new Date().toISOString(),
         answers: {},
         scores: {},
@@ -91,6 +94,7 @@ export function useExamRun(topicId: string | undefined) {
   const sum = run ? tasks.reduce((s, t) => s + (run.scores[t.id] ?? 0), 0) : 0;
 
   return {
+    quelle,
     topic,
     exam,
     tasks,

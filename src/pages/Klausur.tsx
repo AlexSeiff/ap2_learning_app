@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { ExamRun } from '../../shared/progress';
-import type { Topic } from '../../shared/types';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
 import { SicherheitWahl } from '../components/SicherheitWahl';
@@ -10,25 +9,54 @@ import { useExamRun } from '../hooks/useExamRun';
 import { formatRemaining, timerAnnouncement } from '../lib/examTimer';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
 import { sicherheitLabel } from '../lib/kalibrierung';
+import { blockGruppen, istMischId, klausurName, MISCH_BEREICHE, type MischBereich, mischId, parseMischId } from '../lib/mischKlausur';
 import { useStore } from '../lib/store';
+import { neuerSeed } from '../rechnen/zufall';
 import { EXAM_MINUTES } from '../../shared/config';
+
+/** Link zu einer neu gemischten Probeklausur (neuer Seed bei jedem Klick). */
+export function useNeueMischKlausur() {
+  const navigate = useNavigate();
+  return (bereich: MischBereich) => navigate(`/klausur/${mischId(bereich, neuerSeed())}`);
+}
 
 export function KlausurAuswahl() {
   const { content, progress } = useStore();
+  const neueMisch = useNeueMischKlausur();
   const active = progress.activeExam;
-  const activeTopic = active && content.topics.find((t) => t.id === active.topicId);
+  const activeKnown = active && (istMischId(active.topicId) || content.topics.some((t) => t.id === active.topicId));
+  const mischRuns = progress.exams.filter((e) => istMischId(e.topicId) && e.total !== undefined && e.max > 0);
+  const mischBest = mischRuns.length ? Math.max(...mischRuns.map((e) => percent(e.total!, e.max))) : undefined;
   return (
     <div className="page">
       <h1>Übungsklausur</h1>
       <p className="lead">
         90 Minuten, 100 Punkte, ohne Unterlagen – wie in der IHK-Prüfung. Die Musterlösungen bleiben gesperrt, bis du abgibst.
       </p>
-      {activeTopic && (
+      {active && activeKnown && (
         <div className="card warn">
-          Laufende Klausur: <b>{activeTopic.title}</b> ({active.submittedAt ? 'abgegeben, Bewertung offen' : 'in Bearbeitung'}) –{' '}
-          <Link to={`/klausur/${activeTopic.id}`}>fortsetzen →</Link>
+          Laufende Klausur: <b>{klausurName(content, active.topicId)}</b> (
+          {active.submittedAt ? 'abgegeben, Bewertung offen' : 'in Bearbeitung'}) –{' '}
+          <Link to={`/klausur/${active.topicId}`}>fortsetzen →</Link>
         </div>
       )}
+      <section className="card misch-start">
+        <h2>🎲 Gemischte Probeklausur</h2>
+        <p>
+          Wie die echte AP2: Aufgaben aus mehreren Deep Dives, gewichtet nach der Themenliste – 90 Minuten, 100 Punkte. Jedes Mal neu
+          gemischt.
+          {mischRuns.length > 0 &&
+            ` Bisher ${mischRuns.length}× geschrieben · bestes ${Math.round(mischBest!)} % (Note ${ihkGrade(mischBest!).note}).`}
+        </p>
+        <div className="actions">
+          {MISCH_BEREICHE.map((b) => (
+            <button key={b.id} type="button" className={b.id === 'gemischt' ? '' : 'secondary'} onClick={() => neueMisch(b.id)}>
+              🎲 {b.id === 'gemischt' ? 'Gemischte Probeklausur' : b.kurz}
+            </button>
+          ))}
+        </div>
+      </section>
+      <h2>Je Deep Dive</h2>
       <div className="grid">
         {content.topics
           .filter((t) => t.exam)
@@ -56,7 +84,9 @@ export function Klausur() {
   const { topicId } = useParams();
   const navigate = useNavigate();
   const { content, aiEnabled } = useStore();
+  const neueMisch = useNeueMischKlausur();
   const {
+    quelle,
     topic,
     exam,
     tasks,
@@ -78,15 +108,17 @@ export function Klausur() {
   } = useExamRun(topicId);
   const confirm = useConfirm();
 
-  if (!topic || !exam)
+  if (!quelle || !exam)
     return (
       <div className="page">
         <h1>Keine Klausur für dieses Thema</h1>
+        <Link to="/klausur">← Zur Auswahl</Link>
       </div>
     );
 
-  if (result) return <ExamResult topic={topic} run={result} />;
-  const traps = content.flashcards.filter((c) => c.topicId === topic.id && c.typ === 'falle').length;
+  if (result) return <ExamResult titel={topic?.title ?? exam.title} misch={!topic} run={result} />;
+  const traps = topic ? content.flashcards.filter((c) => c.topicId === topic.id && c.typ === 'falle').length : 0;
+  const misch = parseMischId(quelle.id);
 
   if (!run) {
     return (
@@ -95,10 +127,17 @@ export function Klausur() {
           <Link to="/klausur">Übungsklausur</Link>
         </p>
         <h1>{exam.title}</h1>
-        <p className="lead">
-          Deep Dive {topic.number}: {topic.title}
-        </p>
+        <p className="lead">{quelle.untertitel}</p>
         {exam.intro && <Markdown source={false}>{exam.intro}</Markdown>}
+        {misch && (
+          <div className="mode-switch" role="group" aria-label="Prüfungsbereich">
+            {MISCH_BEREICHE.map((b) => (
+              <button key={b.id} type="button" aria-pressed={b.id === misch.bereich} onClick={() => neueMisch(b.id)}>
+                {b.kurz}
+              </button>
+            ))}
+          </div>
+        )}
         <ul className="plain">
           {exam.blocks.map((b) => (
             <li key={b.letter}>
@@ -106,9 +145,19 @@ export function Klausur() {
               <span className="muted">
                 ({formatPoints(b.points)} P, {b.taskIds.length} Aufgaben)
               </span>
+              {quelle.misch && (
+                <ul className="plain small muted misch-quellen">
+                  {blockGruppen(b).map((g) => (
+                    <li key={g.taskIds[0]}>
+                      {g.quelle} ({g.taskIds.map((id) => content.tasks[id]?.code).join(', ')})
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
+        {quelle.misch && <p className="muted small">Summe: {formatPoints(exam.totalPoints)} Punkte.</p>}
         {otherRun && <p className="card warn">Es läuft noch eine andere Klausur. Beim Start hier wird sie verworfen.</p>}
         <div className="actions">
           <button
@@ -128,7 +177,12 @@ export function Klausur() {
           >
             ▶ Klausur starten ({EXAM_MINUTES} min)
           </button>
-          {traps > 0 && (
+          {misch && (
+            <button type="button" className="secondary" onClick={() => neueMisch(misch.bereich)}>
+              🎲 Neu mischen
+            </button>
+          )}
+          {topic && traps > 0 && (
             <Link
               className="button secondary"
               to={`/karteikarten?thema=${topic.id}&typ=falle`}
@@ -137,10 +191,10 @@ export function Klausur() {
               ⚠️ {traps} Fallen-Karten vorher
             </Link>
           )}
-          <Link className="button secondary" to={`/druck?art=aufgaben&thema=${topic.id}`}>
+          <Link className="button secondary" to={`/druck?art=aufgaben&thema=${quelle.id}`}>
             🖨️ Aufgabenblatt (PDF)
           </Link>
-          <Link className="button secondary" to={`/druck?art=loesungen&thema=${topic.id}`}>
+          <Link className="button secondary" to={`/druck?art=loesungen&thema=${quelle.id}`}>
             🖨️ Lösungsblatt (PDF)
           </Link>
         </div>
@@ -239,7 +293,7 @@ export function Klausur() {
         <div className="card info">
           <b>Lösungsblatt freigeschaltet.</b> Vergleiche jede Antwort mit der Musterlösung und vergib Punkte wie ein Prüfer – Kriterien
           abhaken{aiEnabled ? ', Punkte eintragen oder die KI-Bewertung nutzen.' : ' oder Punkte eintragen.'}{' '}
-          <Link to={`/druck?art=loesungen&thema=${topic.id}`}>Lösungsblatt drucken</Link>
+          <Link to={`/druck?art=loesungen&thema=${quelle.id}`}>Lösungsblatt drucken</Link>
         </div>
       )}
 
@@ -250,30 +304,37 @@ export function Klausur() {
           <h2>
             Block {b.letter} – {b.title} <span className="muted">({formatPoints(b.points)} P)</span>
           </h2>
-          {b.intro && <Markdown source={false}>{b.intro}</Markdown>}
-          {b.taskIds.map((id) => {
-            const task = content.tasks[id];
-            if (!task) return null;
-            return (
-              <div key={id} className={`task-card ${submitted ? 'review' : ''}`}>
-                <TaskText task={task} />
-                <AnswerInput task={task} value={run.answers[id]} onChange={(v) => setAnswer(id, v)} disabled={submitted} />
-                {!submitted ? (
-                  <SicherheitWahl value={run.sicherheit?.[id]} onChange={(s) => setSicherheit(id, s)} />
-                ) : (
-                  run.sicherheit?.[id] && <p className="muted small">Deine Einschätzung: {sicherheitLabel(run.sicherheit[id])}</p>
-                )}
-                {submitted && <GradePanel task={task} answer={run.answers[id]} points={run.scores[id]} onPoints={(v) => setScore(id, v)} />}
-              </div>
-            );
-          })}
+          {blockGruppen(b).map((g) => (
+            <div key={g.taskIds[0]} className="exam-gruppe">
+              {g.quelle && <h3 className="exam-quelle">{g.quelle}</h3>}
+              {g.intro && <Markdown source={false}>{g.intro}</Markdown>}
+              {g.taskIds.map((id) => {
+                const task = content.tasks[id];
+                if (!task) return null;
+                return (
+                  <div key={id} className={`task-card ${submitted ? 'review' : ''}`}>
+                    <TaskText task={task} />
+                    <AnswerInput task={task} value={run.answers[id]} onChange={(v) => setAnswer(id, v)} disabled={submitted} />
+                    {!submitted ? (
+                      <SicherheitWahl value={run.sicherheit?.[id]} onChange={(s) => setSicherheit(id, s)} />
+                    ) : (
+                      run.sicherheit?.[id] && <p className="muted small">Deine Einschätzung: {sicherheitLabel(run.sicherheit[id])}</p>
+                    )}
+                    {submitted && (
+                      <GradePanel task={task} answer={run.answers[id]} points={run.scores[id]} onPoints={(v) => setScore(id, v)} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </section>
       ))}
     </div>
   );
 }
 
-function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
+function ExamResult({ titel, misch, run }: { titel: string; misch: boolean; run: ExamRun }) {
   const { content } = useStore();
   const total = run.total ?? 0;
   const pct = percent(total, run.max);
@@ -283,7 +344,7 @@ function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
     .filter((x) => x.task && x.pts < x.task.points);
   return (
     <div className="page narrow">
-      <h1>Ergebnis: {topic.title}</h1>
+      <h1>Ergebnis: {titel}</h1>
       <div className={`result grade-${grade.note}`}>
         <span className="result-points">
           {formatPoints(total)} / {formatPoints(run.max)} P
@@ -294,7 +355,9 @@ function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
       </div>
       <p>
         {pct >= 92
-          ? 'Stark – das Thema sitzt auf Einser-Niveau.'
+          ? misch
+            ? 'Stark – quer über die Themen auf Einser-Niveau.'
+            : 'Stark – das Thema sitzt auf Einser-Niveau.'
           : `Bis zur 1 fehlen dir ${formatPoints(Math.max(0, Math.ceil(0.92 * run.max) - total))} Punkte.`}{' '}
         {lost.length > 0 &&
           `${lost.length} Aufgaben unter voller Punktzahl wurden ins Fehlerjournal übernommen (Wiederholung morgen, dann nach 3 und 7 Tagen).`}
@@ -303,7 +366,8 @@ function ExamResult({ topic, run }: { topic: Topic; run: ExamRun }) {
         <ul className="plain">
           {lost.map(({ task, pts }) => (
             <li key={task.id}>
-              <Link to={`/aufgabe/${task.id}`}>{task.code}</Link> – {formatPoints(pts)} / {formatPoints(task.points)} P
+              <Link to={`/aufgabe/${task.id}`}>{misch ? `${klausurName(content, task.topicId)} · ${task.code}` : task.code}</Link> –{' '}
+              {formatPoints(pts)} / {formatPoints(task.points)} P
             </li>
           ))}
         </ul>

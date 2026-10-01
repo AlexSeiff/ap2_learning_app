@@ -9,6 +9,7 @@ import { formatPoints, ihkGrade } from '../lib/grading';
 import { cardPool } from '../lib/cards';
 import { istFertig } from '../lib/heuteSitzung';
 import { kalibrierung } from '../lib/kalibrierung';
+import { klausurName } from '../lib/mischKlausur';
 import { isDue } from '../lib/progress';
 import { rechenSummary } from '../lib/rechnen';
 import { sqlSummary } from '../lib/sql';
@@ -238,11 +239,10 @@ function Uebersicht() {
               .slice(-5)
               .reverse()
               .map((e) => {
-                const t = content.topics.find((x) => x.id === e.topicId);
                 const p = (e.total! / e.max) * 100;
                 return (
                   <li key={e.id}>
-                    {new Date(e.finishedAt ?? e.startedAt).toLocaleDateString('de-DE')} · {t?.title} ·{' '}
+                    {new Date(e.finishedAt ?? e.startedAt).toLocaleDateString('de-DE')} · {klausurName(content, e.topicId)} ·{' '}
                     <b>
                       {formatPoints(e.total!)} / {formatPoints(e.max)} P
                     </b>{' '}

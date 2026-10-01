@@ -2,6 +2,7 @@
 
 import type { Content, Section, Task } from '../../shared/types';
 import { formatPoints } from './grading';
+import { klausurFuer, type MischKlausur, parseMischId } from './mischKlausur';
 import { localDate } from './progress';
 
 export type SheetKind = 'aufgaben' | 'loesungen';
@@ -34,8 +35,26 @@ function safeName(s: string): string {
     .replace(/^_|_$/g, '');
 }
 
-/** Blatt für eine komplette Übungsklausur eines Themas. */
+/** Blatt für eine komplette Übungsklausur eines Themas oder eine gemischte Probeklausur („mix-…“, ROADMAP 8.5). */
 export function examSheet(content: Content, topicId: string, kind: SheetKind): Sheet | null {
+  const misch = parseMischId(topicId) && klausurFuer(content, topicId);
+  if (misch) {
+    const exam = misch.exam as MischKlausur;
+    return {
+      title: exam.title.replace(/^🎲\s*/, ''),
+      subtitle: misch.untertitel,
+      fileBase: `${kind === 'aufgaben' ? 'Aufgabenblatt' : 'Loesungsblatt'}_Probeklausur_${exam.bereich}_${exam.seed}_${localDate()}`,
+      attachments: exam.attachments,
+      groups: exam.blocks.flatMap((b) =>
+        b.gruppen.map((g, i) => ({
+          heading: `${i === 0 ? `Block ${b.letter} – ${b.title} (${formatPoints(b.points)} P) · ` : ''}${g.quelle}`,
+          intro: g.intro,
+          tasks: g.taskIds.map((id) => content.tasks[id]).filter(Boolean),
+        })),
+      ),
+      totalPoints: exam.totalPoints,
+    };
+  }
   const topic = content.topics.find((t) => t.id === topicId);
   if (!topic?.exam) return null;
   const groups = topic.exam.blocks.map((b) => ({
