@@ -194,7 +194,7 @@ Implementation notes (5.1–5.7):
   (Drei-Zeiten-Schätzung, DD12 3.1); `assoziation` now keeps every article in "Neue Zahlen". Skipped as non-calculations: DD13 lookups
   (Pausen, Betriebsratsgröße, Günstigkeitsprinzip) and Kündigungstermine. More than the planned ~60 because the theory examples were added too.
 
-## Phase 6 – Leicht-Modus: 4 answers, 1 correct [U]
+## Phase 6 – Leicht-Modus: 4 answers, 1 correct [U] ✅ done
 
 6.1 **Where it makes sense:** flashcards of `typ` wissen, abgrenzung, falle and rechnung; Prüferfragen with a short answer;
     Rechenübungen (distractors = typical wrong results from `fehlerbilder`, very useful for learning).
@@ -219,6 +219,19 @@ Implementation notes (5.1–5.7):
     A card only reaches boxes 3–5 in the normal mode. The Dashboard hint: "Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten."
     Store `leicht` answers in `cardReviewDays` too (streak). No schema change needed beyond settings, unless per-card stats are added.
 6.7 Tests: option building (exactly 4, correct one included, no duplicates), box cap, filter counts.
+
+Implementation notes (6.1–6.7, details: DOKUMENTATION § 4.2 and § 5 "Leicht-Modus"):
+- 6.2: zod `KartenMcSchema` / `pruefeMc` in `shared/lernkarten.ts`; an invalid block → ImportIssue, the card stays without `mc`. No card has `mc` yet.
+- 6.3: `npm run mc-entwurf -- --deck <id> [--max 30] [--anwendung]` → `data/mc-entwurf.json`; `npm run mc-uebernehmen [-- --probe]` merges entries
+  with `"status": "angenommen"` (pure logic `server/mcWerkzeug.ts`, tested with a mock client; the API was never called, the content file is unchanged).
+- 6.4: **200 instead of 120 characters** – with 120 only 4 of 407 cards qualify. Now 193 cards support Leicht (wissen 109, falle 37, rechnung 24,
+  abgrenzung 19, Prüferfragen 4), all "automatisch". Wrong answers: same deck, same typ first (other typs of the deck fill up), similar length.
+  Setting `leichtAutomatisch` (optional, missing = on, no version bump – like `lastBackupDownloadAt`).
+- 6.5: one setting `leichtModus` for flashcards and Rechenübungen. Rechenübungen: all 85 exercises selectable; missing Fehlerbilder are filled
+  with nearby values (369 of 408 inputs need at least one), marked on the page; `nutzwert`/`risiko` got Fehlerbilder for their text result.
+  Decision: a Leicht round counts as a learning day and a wrong one restarts the repetition, but it is no attempt and never "gelöst" –
+  solved only by typing (no `RechenState` change, `PROGRESS_VERSION` stays 6).
+- 6.6: Q5 decided by the owner: box cap 2 (`rateCardLeicht`); a card in box 3–5 is not moved down by a correct Leicht answer.
 
 ## Phase 7 – Mobile and offline [C]
 
@@ -278,7 +291,7 @@ Ordered by expected benefit per effort:
   unchanged and only improve the rendering (4.2) and the new Rechenübungen.
 - **Q3:** KI on Pages with each user's own key (7.5): yes or no?
 - **Q4 (open):** No license is claimed yet (the Datenschutz-Hinweis doesn't mention one). License/visibility of the content in `content/` now that others use the app (e.g. CC BY-NC 4.0)?
-- **Q5:** Leicht-Modus box cap (6.6): OK, or should Leicht answers not affect the Leitner boxes at all?
+- **Q5 (decided):** ~~Leicht-Modus box cap (6.6): OK, or should Leicht answers not affect the Leitner boxes at all?~~ Box cap: correct → at most box 2, wrong → box 1.
 
 ## Suggested order
 

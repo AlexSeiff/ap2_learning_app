@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3 and 5.1–5.7 done, October 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3, 5 and 6 done, October 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -66,6 +66,7 @@ lern-app/
 │  ├─ loadContent.ts    reads AP-2/*.md, *Lernkarten*.json, *SQL_Uebungen*.json, *Rechen_Uebungen*.json → buildContent()
 │  │                    (Rechenübungen are checked against their template here → ImportIssues; content.json for Pages is built the same way)
 │  ├─ ai.ts             Claude: generateTasks(), gradeAnswer() with structured output
+│  ├─ mcWerkzeug.ts     pure logic of npm run mc-entwurf / mc-uebernehmen (mcEntwurf.ts, mcUebernehmen.ts, mcEntwurfPfade.ts, ladeEnv.ts)
 │  ├─ pagesPlugin.ts    emits content.json for the Pages build
 │  ├─ report.ts         npm run import-report
 │  └─ syncContent.ts    npm run sync-content (AP-2 → content/)
@@ -75,7 +76,7 @@ lern-app/
 │  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useRechenUebung, useConfirm, useBackupDownload
 │  ├─ components/       AnswerInput, Markdown (+ MathMarkdown, markdownComponents), TheoryMarkdown, Rechenweg, TaskParts, ErrorBoundary,
 │  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs
-│  ├─ lib/              pure logic (progress, grading, stats, cards, shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar,
+│  ├─ lib/              pure logic (progress, grading, stats, cards, leicht + leichtRechnen (Leicht-Modus), shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar,
 │  │                    rechnen (RechenState updates/selectors), wiederholung (repetition stages, SQL + Rechnen), uebungLabels)
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
 │  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts
@@ -277,7 +278,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 |---|---|---|
 | `/` | Dashboard | Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, Rechenübungen KPI ("x/y gelöst", due repetitions), average exam score + IHK grade, progress and exam trend per topic, weakest topics |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
-| `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate |
+| `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below) |
 | `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
 | `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet |
 | `/druck` | Druck | print view (task sheet or solution sheet, same numbering) → "Als PDF speichern"; also Markdown download |
@@ -286,7 +287,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
-| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
+| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
 
 **Not affected by the Prüferfragen switch:** the *Prüferkommentar* in solutions (the scoring scheme; `Solution.kommentar`) is always shown
@@ -351,6 +352,43 @@ drops the mention.
   wrong base for a percentage change) and general ones (share instead of percent, sign, rounded too early). Fehlerbilder that are not
   distinguishable from the right value after rounding are dropped by `LoesungsBau.fehler`.
 
+### Leicht-Modus: 4 Antworten, 1 richtig (phase 6)
+
+One setting `settings.leichtModus` (the remembered mode) for flashcards and Rechenübungen. Recognition is easier than recall, so the
+mode is meant as an entry point; the Dashboard shows "🟢 Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten." while it is on.
+
+- **Which cards** (`src/lib/leicht.ts`, `leichtKarten`, pure): a card with an `mc` block (§ 4.2) always (except Fachgespräch questions);
+  otherwise, if `settings.leichtAutomatisch` is not `false`, **automatic** answers: Lernkarten of typ wissen/abgrenzung/falle/rechnung and
+  Prüferfragen whose answer as option text (`optionText`: one line, no code fences/bold) has at most **`LEICHT_AUTO_MAX` = 200 characters**.
+  The three wrong answers are answers of other cards of the same deck (Prüferfragen: same topic): same typ first, then closest length,
+  a pool of up to 6 from which each round draws 3; only same-typ cards if there are at least 3, otherwise other cards of the deck fill up.
+  Equal answers (`mcNorm`) count once and never as wrong answers; fewer than 3 distinct → the card is not offered. Never: Fachgespräch,
+  `anwendung` without `mc`.
+  - **Deviation from the roadmap (120 characters):** with 120 only 4 of 407 cards would qualify (median answer length ~200), with 200 it is
+    **193 cards**: wissen 109, falle 37, rechnung 24, abgrenzung 19, Prüferfragen 4 (content October 2026, no card has `mc` yet).
+- **Karteikarten**: mode switch "🃏 Aufdecken | 🟢 Leicht (4 Antworten)". In Leicht, `useCardFilters` restricts `deck` (and the trap button,
+  deck table, due/new counts) to supported cards and the page shows "🟢 x von y Karten dieser Auswahl haben 4 Antworten (z davon 🤖 automatisch)";
+  the kind filter drops Fachgespräch, the typ filter shows the count per typ. Round (`useCardSession` with a `LeichtKarte` map): options
+  `kartenOptionen` (correct + 3 wrong, Fisher–Yates; the rng is seeded per round and position so re-renders keep the order), keys 1–4 or click,
+  immediate feedback (correct green, chosen wrong red), then the full `antwort` and the `mc.erklaerung`; "Weiter →" / Enter. Automatic cards
+  carry the badge "🤖 automatisch". A wrong card comes back in the same round. Component `components/LeichtOptionen.tsx`.
+- **Leitner boxes** (`rateCardLeicht` in `src/lib/progress.ts`, owner decision Q5): correct → one box up but at most to box
+  `LEICHT_MAX_BOX` = 2 (a card already in box 3–5 stays there, due by its box interval); wrong → box 1, due today. Each answer counts in
+  `cardReviewDays` (streak). Boxes 3–5 are only reached in the normal mode. No change to `CardState`.
+- **Rechenübungen** ("✏️ Eintippen | 🟢 Ergebnis auswählen", `src/lib/leichtRechnen.ts`, `rechenAuswahl` / `rechenOptionen`, pure): per input the
+  right value + up to 3 Fehlerbilder of the template, deduplicated after formatting with the input's rounding (`formatWert`), shuffled. Fewer
+  than 3 distinct Fehlerbilder → filled with **nearby values** (`naheWerte`: × 0.5 … × 2 and ±1/2/5/10 units of the last digit, same sign,
+  percent stays ≤ 100; lists: without one value, "keine", shifted; critical path: one activity left out; ja ↔ nein); the page says how many
+  answers are such nearby values. Numbers and lists always get 4 answers, text results 2–4. An exercise is offered only if every input has
+  ≥ 2 answers – today **all 85** (408 inputs, 399 with 4 answers; 369 inputs needed nearby values, most of them for templates with few
+  Fehlerbilder per field such as `netzplan`, `kmeans`). The templates `nutzwert` and `risiko` got Fehlerbilder for their text result
+  (every other alternative/risk, highest by W + S) for this. Keys 1–4 apply to the first unanswered input; feedback per input with the
+  Fehlerbild explanation of a chosen wrong value. Tests check that the checker accepts the right option and rejects every wrong one.
+- **Rechenübung progress decision** (`recordRechenLeicht`, no schema change): a finished Leicht round counts as a learning day (`rechnenDays`)
+  and sets `lastCheckedAt` (merge), but is **not** an attempt and **never** sets `solvedAt` – an exercise is solved only by typing. A round
+  with a wrong choice restarts the repetition (due tomorrow, like a wrong check); a right round changes nothing else. Because the right
+  values were visible, the result card offers "✏️ Mit neuen Zahlen eintippen" (template exercises).
+
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
 print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top).
 
@@ -393,6 +431,7 @@ type Settings = {
   leichtModus: boolean;         // default false: remembered flashcard mode (phase 6)
   backupReminderDays: number;   // default 7: backup reminder after N days (Pages)
   lastBackupDownloadAt?: string; // YYYY-MM-DD of the last downloaded backup (optional, no version bump, see below)
+  leichtAutomatisch?: boolean;   // Leicht-Modus: automatic answers for cards without mc; missing = on (optional, no version bump, phase 6)
 };
 ```
 
@@ -403,6 +442,8 @@ type Settings = {
   `migrateSettings` fills defaults, drops an invalid `examDate`/`lastBackupDownloadAt` and keeps unknown fields.
   `lastBackupDownloadAt` was added without a version bump: it is optional, `SettingsSchema` is a loose object with all fields optional
   and `migrateSettings` already kept unknown fields, so every v5 file (old or new) is valid and nothing needs converting.
+  `leichtAutomatisch` (phase 6.4) was added the same way (optional boolean, missing = on, a wrong type is dropped): every v6 file stays valid,
+  so `PROGRESS_VERSION` stays **6**. Phase 6 needed no other format change (Leicht answers use the existing `CardState`/`RechenState` fields).
   Adding a **required** field or changing a meaning still needs a version bump.
   Backup files are read with `parseBackup` (`src/lib/backup.ts`, used by Daten & Import and the welcome screen).
   **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`, one per version).
@@ -494,6 +535,10 @@ npm run build && npm run build:pages
   and recognises every Fehlerbild), `rechenChecker.test.ts`, `rechenUebungen.test.ts` (parser), `rechnenProgress.test.ts`,
   `rechenInhalte.smoke.test.ts` (content/: no ImportIssues, 100 seeds per exercise, fixed exercises match the numbers of the sheet solutions)
   and `rechnenSeiten.test.ts` (server-side render of both pages for every exercise).
+- Leicht-Modus: `leicht.test.ts` (card selection, option building: exactly 4, correct one included, no duplicates, shuffled; all real cards;
+  filter counts), `logic.test.ts` (box cap), `leichtRechnen.test.ts` (Rechnen options incl. every exercise of `content/` with several seeds,
+  checker agrees; progress), `leichtSeiten.test.ts` (render of Karteikarten and every Rechenübung in Leicht), `lernkarten.test.ts` (`mc` block),
+  `mcWerkzeug.test.ts` (authoring helper with a mock client).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)

@@ -68,13 +68,14 @@ Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen 
 |---|---|
 | **Übersicht** | Beim ersten Besuch eine kurze Willkommensseite; danach Countdown zu deinem Prüfungstermin (unter *Einstellungen* eintragen), Lernserie (Tage in Folge), fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
 | **Lernen** | Theorie aller 15 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
-| **Karteikarten** | 407 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (24 Decks) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten) |
+| **Karteikarten** | 407 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (24 Decks) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten); **🟢 Leicht-Modus** mit 4 Antworten zum Einstieg (Tasten `1`–`4`, richtig bringt eine Karte höchstens in Fach 2) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
 | **Einzelaufgaben** | Filter nach Thema, Block, Schwierigkeit, Status, Suche; Auswahl als Aufgaben-/Lösungsblatt exportieren |
 | **Fehlerjournal** | Jede Aufgabe unter voller Punktzahl kommt nach 1, 3 und 7 Tagen wieder |
 | **KI-Aufgaben** | Neue IHK-Aufgaben (MC, Lückentext, Zuordnung, Rechnen, offen) mit Musterlösung – nur mit API-Schlüssel |
 | **Material** | Lernzettel Kernthemen, Themenliste |
-| **Einstellungen** | Eigener Prüfungstermin; persönliche Einstellungen – sie stehen im Fortschritt und ziehen mit jeder Sicherung um |
+| **Rechenübungen** | 85 Rechenaufgaben aus den Lernblättern mit automatischer Prüfung, typischen Fehlern, Hinweisen, Rechenweg und „🎲 Neue Zahlen“; im Leicht-Modus „🟢 Ergebnis auswählen“ (gelöst zählt nur Eintippen) |
+| **Einstellungen** | Eigener Prüfungstermin; Leicht-Modus mit oder ohne automatische Antworten; persönliche Einstellungen – sie stehen im Fortschritt und ziehen mit jeder Sicherung um |
 | **Daten & Import** | Importbericht, Neu-Import, Fortschritt sichern/wiederherstellen/zurücksetzen |
 
 ### Getrennte Aufgaben- und Lösungsblätter (PDF)
