@@ -36,13 +36,19 @@ Das ist dieselbe App als statische Seite – ohne Server:
 | Fortschritt | `lern-app/data/fortschritt.json` + Tagessicherung | im Browser (localStorage) + Tagessicherung im Browser (IndexedDB), nur auf diesem Gerät |
 | Lernen, Karteikarten, Klausur, Einzelaufgaben, Fehlerjournal, Material | ✓ | ✓ |
 | Sicherung herunterladen / zusammenführen / einspielen | ✓ | ✓ (plus Erinnerung auf der Übersicht) |
-| KI-Aufgaben, KI-Bewertung | ✓ (mit API-Schlüssel) | – „Nur in der lokalen App verfügbar“ |
+| KI-Aufgaben, KI-Bewertung | ✓ (mit API-Schlüssel) | – (gibt es dort nicht, Menüpunkt und Knöpfe fehlen) |
+| Installieren, offline lernen | – | ✓ (App installierbar, läuft nach dem ersten Besuch auch ohne Internet) |
 
 Der API-Schlüssel und die KI-Aufgaben aus `data/` kommen nie in die Online-Version.
 Die Lernblätter (die Dateien in `content/`) sind damit öffentlich. Eine Lizenz für die Inhalte ist noch nicht festgelegt.
 
 **Datenschutz** (steht auch in der App unter *⚙️ Einstellungen*): kein Konto, kein Tracking, keine Cookies. Fortschritt und
 Einstellungen bleiben im Browser; von GitHub Pages werden nur die App und die Lerninhalte geladen, nichts von anderen Anbietern.
+
+**Auf dem Handy:** Unter 600 px Breite gibt es unten eine Leiste (Übersicht, Lernen, Karteikarten, Üben, Mehr). Im Browsermenü
+„Zum Startbildschirm hinzufügen“ bzw. „App installieren“ wählen – dann startet die App wie eine normale App und funktioniert auch
+offline (Lernblätter, SQL-Editor, Formeln). Nach einem neuen Push erscheint unten der Hinweis **„🔄 Neue Version verfügbar – neu laden?“**;
+erst nach „↻ Neu laden“ siehst du neue Inhalte. Wer „Später“ wählt, bekommt die neue Version, sobald alle Tabs der App geschlossen waren.
 
 **Fortschritt umziehen:** In der lokalen App *Daten & Import → ⬇ Sicherung herunterladen* (Datei `ap2-lernapp-sicherung-JJJJ-MM-TT.json`),
 dann in der Online-Version *Daten & Import → 🔀 Sicherung zusammenführen* (beide Stände bleiben erhalten, z. B. Handy und PC) oder
@@ -58,7 +64,9 @@ git add content && git commit -m "Lernblätter aktualisiert" && git push
 ```
 
 Jeder Push auf `main` baut und veröffentlicht die Seite automatisch (`.github/workflows/pages.yml`: Tests, `npm run build:pages`, Deployment).
-Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`; ansehen mit `npx vite preview --mode pages`.
+Selbst bauen: `npm run build:pages` erzeugt `dist/` mit `content.json`, `sw.js` (Service Worker) und `manifest.webmanifest`; ansehen mit
+`npx vite preview --mode pages`. Achtung: Der Service Worker speichert die Seite im Browser – nach einem neuen Build einmal neu laden und im
+Hinweis „↻ Neu laden“ klicken (oder in den Entwicklertools *Application → Service Workers → Unregister*).
 
 **Einmalig einrichten:** Auf GitHub im Repository *Settings → Pages → Build and deployment → Source: „GitHub Actions“* wählen.
 

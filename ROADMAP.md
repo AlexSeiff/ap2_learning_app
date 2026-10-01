@@ -233,7 +233,7 @@ Implementation notes (6.1–6.7, details: DOKUMENTATION § 4.2 and § 5 "Leicht-
   solved only by typing (no `RechenState` change, `PROGRESS_VERSION` stays 6).
 - 6.6: Q5 decided by the owner: box cap 2 (`rateCardLeicht`); a card in box 3–5 is not moved down by a correct Leicht answer.
 
-## Phase 7 – Mobile and offline [C]
+## Phase 7 – Mobile and offline [C] ✅ done (7.1–7.4; 7.5 nicht umgesetzt)
 
 7.1 **PWA** with `vite-plugin-pwa`: manifest (name "AP2 Lern-App", icons from `build/icon.png`, `start_url: './'`, `display: standalone`),
     precache of the app shell, `content.json`, KaTeX fonts and `sql-wasm.wasm`. Update flow for all users: toast "Neue Version verfügbar – neu laden".
@@ -242,9 +242,22 @@ Implementation notes (6.1–6.7, details: DOKUMENTATION § 4.2 and § 5 "Leicht-
     Mehr (Fehlerjournal, Material, Einstellungen, Daten). Currently 11 links wrap into a block above every page.
 7.3 Touch: swipe left/right on flashcards for rating is optional; buttons large enough (≥ 44 px).
 7.4 **Hide "KI-Aufgaben" on Pages** (like the desktop branch does), unless 7.5 is done.
-7.5 **Optional: KI with your own key on Pages.** Per-user API key in the settings (stored only in that browser, clearly marked opt-in,
+7.5 **nicht umgesetzt (Entscheidung Q3).** ~~**Optional: KI with your own key on Pages.** Per-user API key in the settings (stored only in that browser, clearly marked opt-in,
     with a cost/security note); calls Anthropic directly from the browser (`anthropic-dangerous-direct-browser-access` header).
-    Generated tasks stored per browser. Only do this if the owner wants it (Q3).
+    Generated tasks stored per browser. Only do this if the owner wants it (Q3).~~
+
+Implementation notes (7.1–7.4, details: DOKUMENTATION § 5 "Mobile" and "PWA", § 8):
+- 7.1: `vite-plugin-pwa` (generateSW) only in `--mode pages` (`server/pwaPlugin.ts`); registration with `workbox-window` in `src/lib/pwa.ts`
+  (own code instead of `virtual:pwa-register`, so dev/preview/build need no stub). `registerType: 'prompt'`: a new version (also a changed
+  `content.json`) waits until the user clicks "↻ Neu laden" in the toast; an open app checks for a new `sw.js` hourly and on returning to the tab.
+  Precache: 45 entries, ~3.5 MB (app shell, all lazy chunks, `content.json`, `sql-wasm.wasm`, KaTeX woff2 only). Icons 192/512/maskable 512 +
+  apple-touch-icon generated once from `desktop:build/icon.png` with Windows System.Drawing and committed (no image dependency).
+  Checked in headless Edge: worker active, update toast after a rebuild, offline start incl. SQL (WASM) and KaTeX fonts.
+- 7.2: bottom bar `components/MobileNav.tsx` below 600 px (Übersicht, Lernen, Karteikarten, Üben menu, Mehr menu incl. theme and save state);
+  due badges summed on the menu buttons; disclosure buttons with `aria-expanded`, Escape/outside tap closes, focus handling. 600–899 px and
+  desktop unchanged. Also fixed horizontal overflow on narrow screens (filters, theory grid).
+- 7.3: 44 px minimum height for buttons, selects and inputs below 600 px (small helper buttons excepted). Swipe on flashcards not done (optional).
+- 7.4: no AI UI on Pages: nav item (sidebar + Mehr), `/generator` → redirect to `/`, KI-Bewertung button, "Quelle" filter, KI section on Daten.
 
 ## Phase 8 – More learning effect [C]
 
@@ -279,7 +292,7 @@ Ordered by expected benefit per effort:
 | Mobile bottom navigation | Yes | Phase 7.2 |
 | Hide KI on Pages | Yes | Phase 7.4 |
 | Sync via private GitHub Gist | **No for most users**: needs a GitHub account and a personal access token, too technical | Replaced by **merge on import** (3.4); Gist only as an optional power-user feature later |
-| KI with own API key | Only opt-in: each user pays with their own key, and the key sits in the browser | Phase 7.5, only if the owner wants it |
+| KI with own API key | Only opt-in: each user pays with their own key, and the key sits in the browser | Not done (Q3: no AI on Pages) |
 | Commit the Electron branch before pushing | Owner-only housekeeping | Phase 0.1 |
 | Hard-coded exam date / Lernplan / KW | **No**, personal | Removed in phase 1 |
 
@@ -289,11 +302,11 @@ Ordered by expected benefit per effort:
   Separate switches for Prüferfragen and Fachgespräch; the Prüferkommentar is never hidden.
 - **Q2 (decided for 1.1):** editing the sheets was approved for 1.1 (KW references replaced). Still open for 4.4. Is it OK to edit the sheets in `AP-2/` for phase 1.1 (remove KW references) and 4.4 (LaTeX formulas)? Alternative: leave the sheets
   unchanged and only improve the rendering (4.2) and the new Rechenübungen.
-- **Q3:** KI on Pages with each user's own key (7.5): yes or no?
+- **Q3 (decided):** ~~KI on Pages with each user's own key (7.5): yes or no?~~ No – Pages has no AI (7.4), 7.5 is not done.
 - **Q4 (open):** No license is claimed yet (the Datenschutz-Hinweis doesn't mention one). License/visibility of the content in `content/` now that others use the app (e.g. CC BY-NC 4.0)?
 - **Q5 (decided):** ~~Leicht-Modus box cap (6.6): OK, or should Leicht answers not affect the Leitner boxes at all?~~ Box cap: correct → at most box 2, wrong → box 1.
 
 ## Suggested order
 
-Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8.
+Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (Done up to 7; next: 4.4/4.5, then 8.)
 Phases 1–3 are small (about 1 day together) and make the app safe for other users; 5 and 6 are the largest (mostly content writing).

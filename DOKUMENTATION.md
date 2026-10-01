@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3, 5 and 6 done, October 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3, 5, 6 and 7.1–7.4 done, October 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -12,7 +12,8 @@
 A learning app for the IHK exam **Abschlussprüfung Teil 2 – Fachinformatiker/-in Daten- und Prozessanalyse (FIDPA)**.
 It turns German Markdown learning sheets ("Deep Dives") and a flashcard JSON into interactive exercises: theory, flashcards,
 timed practice exams with **separate solution sheets**, single tasks, an error journal with spaced repetition, a browser SQL editor
-with auto-checked exercises, auto-checked calculation exercises (Rechenübungen) with new numbers on demand, and optional AI-generated tasks.
+with auto-checked exercises, auto-checked calculation exercises (Rechenübungen) with new numbers on demand, and optional AI-generated tasks
+(local app only). The Pages version is an installable PWA that works offline.
 
 **Conventions**
 - All UI text is German, informal *du*, short sentences, emoji in nav and buttons.
@@ -29,7 +30,8 @@ One React UI, three ways to run it:
 | API `/api/…` | `server/apiPlugin.ts` via `configureServer` | same middleware via `configurePreviewServer` | none; `src/lib/staticApi.ts` |
 | Learning sheets | live from `AP-2/`, page reloads on change | from `AP-2/`, cache cleared on change (F5) | `content/` → `content.json` in the build |
 | Progress | `data/fortschritt.json` + daily backups | like dev | `localStorage` of the browser + daily backups in IndexedDB |
-| AI (`.env.local`) | yes | yes | never read, the key can't end up in the build |
+| AI (`.env.local`) | yes | yes | never read, the key can't end up in the build; no AI UI at all (§ 8) |
+| Service worker / PWA | no | no | yes (`server/pwaPlugin.ts`, § 5 "PWA") |
 
 - `src/lib/api.ts` picks the data source by `import.meta.env.MODE` (`pages` → static API).
 - Public URL: **https://alexseiff.github.io/ap2_learning_app/** (HashRouter, `base: './'`).
@@ -68,18 +70,21 @@ lern-app/
 │  ├─ ai.ts             Claude: generateTasks(), gradeAnswer() with structured output
 │  ├─ mcWerkzeug.ts     pure logic of npm run mc-entwurf / mc-uebernehmen (mcEntwurf.ts, mcUebernehmen.ts, mcEntwurfPfade.ts, ladeEnv.ts)
 │  ├─ pagesPlugin.ts    emits content.json for the Pages build
+│  ├─ pwaPlugin.ts      vite-plugin-pwa options (manifest, precache) for the Pages build (PWA_OPTIONS, tested)
 │  ├─ report.ts         npm run import-report
 │  └─ syncContent.ts    npm run sync-content (AP-2 → content/)
 ├─ content/           copy of sheets + JSON for Pages and tests (committed, therefore public)
+├─ public/icons/      PWA icons (192, 512, maskable 512, apple-touch-icon 180), generated once from the desktop icon
 ├─ src/
 │  ├─ pages/            one file per page, mostly rendering
 │  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useRechenUebung, useConfirm, useBackupDownload
 │  ├─ components/       AnswerInput, Markdown (+ MathMarkdown, markdownComponents), TheoryMarkdown, Rechenweg, TaskParts, ErrorBoundary,
-│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs
+│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs, MobileNav (bottom bar < 600 px), UpdateHinweis (PWA toast)
 │  ├─ lib/              pure logic (progress, grading, stats, cards, leicht + leichtRechnen (Leicht-Modus), shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar,
 │  │                    rechnen (RechenState updates/selectors), wiederholung (repetition stages, SQL + Rechnen), uebungLabels)
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
-│  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts
+│  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts, pwa.ts (service worker registration),
+│  │                    navigation.ts (bottom bar groups, pure)
 │  ├─ rechnen/          Rechenübungen (pure, no React): typen.ts, zufall.ts (seeded PRNG), hilfen.ts (statistics helpers, LoesungsBau,
 │  │                    vorlage()), vorlagen/*.ts (28 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
 │  │                    checker.ts (input checking + Fehlerbilder)
@@ -285,7 +290,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/sql`, `/sql/uebungen`, `/sql/uebung/:id` | SQL-Editor | free mode + exercises (see § 7) |
 | `/rechnen`, `/rechnen/:id` | Rechenübungen | list with filters in the URL (Thema, Schwierigkeit, Tag, Status), progress bar, "Nächste offene"; exercise page (see below) |
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
-| `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only |
+| `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only (Pages: no nav item, the route redirects to `/`) |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
@@ -390,7 +395,51 @@ mode is meant as an entry point; the Dashboard shows "🟢 Leicht-Modus ist zum 
   values were visible, the result card offers "✏️ Mit neuen Zahlen eintippen" (template exercises).
 
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
-print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top).
+print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top) and below 600 px (bottom bar, see below).
+
+### Mobile (phase 7.2, 7.3)
+
+- **Below 600 px** the sidebar is hidden and `components/MobileNav.tsx` shows a fixed **bottom bar** with five places: 🏠 Übersicht,
+  📖 Lernen, 🃏 Karteikarten, ✏️ **Üben** (menu: Übungsklausur, Einzelaufgaben, SQL-Editor, Rechenübungen) and ☰ **Mehr** (menu: Fehlerjournal,
+  KI-Aufgaben (local app only), Material, Einstellungen, Daten & Import, theme toggle, save state). Both are always rendered; CSS decides which
+  is visible, so the desktop sidebar (≥ 900 px) and the wrapped row (600–899 px) are unchanged.
+- Groups and path matching are pure (`src/lib/navigation.ts`: `UEBEN_ZIELE`, `MEHR_ZIELE`, `aktiveGruppe`, `badgeSumme`, tested): the place of the
+  current route is highlighted (`/aufgabe/:id` belongs to Üben, `/material/:docId` to Mehr). **Due badges**: a menu button shows the sum of
+  its entries (Üben = SQL + Rechnen, Mehr = Fehlerjournal), each menu entry its own badge (screen readers get ", n fällig").
+- Accessibility: the menu buttons are `<button aria-expanded aria-controls>` (disclosure pattern, not `role=menu`); opening focuses the first entry,
+  **Escape** closes and returns focus to the button, tapping outside or choosing an entry closes it, a route change closes it too
+  (the open state remembers the path it was opened on). `main` gets bottom padding so the bar never hides content; the PWA toast sits above it.
+- **Touch targets** (7.3, below 600 px): buttons, `.button` links, selects and inputs at least 44 px high (except the small helper buttons
+  `.small`, schema browser and query history; table inputs of Rechenübungen 36 px), larger checkboxes/radios, more padding for choices, tabs and
+  `<summary>`. Filters wrap into two columns instead of overflowing, theory pages no longer overflow horizontally, and filter checkboxes are no
+  longer 160 px wide (also fixed on desktop). Swiping on flashcards (optional in the roadmap) is not implemented.
+
+### PWA (phase 7.1, Pages only)
+
+- `vite-plugin-pwa` (devDependency, Workbox **generateSW**; `workbox-window` as dependency) is added **only in `--mode pages`**
+  (`server/pwaPlugin.ts`, `PWA_OPTIONS`). `npm run dev`, `npm start` and `npm run build` never produce or register a service worker
+  (`dist/` of `npm run build` has no `sw.js` and no manifest; only an unused 6 kB `workbox-window` chunk is emitted there).
+- **Manifest** `manifest.webmanifest`: name "AP2 Lern-App", short name "AP2 Lernen", `id`/`start_url`/`scope` `./` (relative, works under
+  `/ap2_learning_app/` with the HashRouter), `display: standalone`, theme colour = `--accent`. Icons in `public/icons/`: `icon-192.png`,
+  `icon-512.png`, `icon-maskable-512.png` (icon at 80 % on a blue gradient, inside the maskable safe zone) and `apple-touch-icon.png` (180 px,
+  linked in `index.html`). They were generated once from `build/icon.png` of the `desktop` branch (512 × 512) with Windows System.Drawing
+  (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
+- **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
+  (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every
+  current browser uses woff2). Today **45 entries, about 3.5 MB**. `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
+  Navigations fall back to the cached `index.html`, so the app starts offline after the first visit (SQL editor and formulas included).
+- **Updates** (`registerType: 'prompt'`, no `skipWaiting`/`clientsClaim`): every precached file has a revision hash in `sw.js`, so any change
+  (also only `content.json` after `npm run sync-content`) changes `sw.js`. The browser installs the new worker, which then **waits**.
+  `src/lib/pwa.ts` registers `sw.js` with `workbox-window` after `load` and sets `updateState` on `waiting` (also when a worker from an earlier
+  visit is already waiting); `components/UpdateHinweis.tsx` shows the toast **"🔄 Neue Version verfügbar – neu laden?"** with "↻ Neu laden"
+  (sends `SKIP_WAITING`, reloads on `controlling`, fallback reload after 3 s) and "Später". Nothing reloads by itself (an exam in progress
+  is never interrupted); after "Später" the new version takes over once all tabs of the app were closed. Because the HashRouter never
+  navigates, an open app also asks for a new `sw.js` every hour and when the tab becomes visible again (at most every 10 minutes).
+  Progress is unaffected (the service worker doesn't touch localStorage/IndexedDB; the saver flushes on `pagehide` before the reload).
+- Checked in a headless Edge against `npx vite preview --mode pages`: worker active with 45 cache entries, toast after a rebuild, "Neu laden"
+  activates the new build; offline reload of `/sql` runs queries (WASM) and the Rechenweg renders KaTeX with the cached fonts.
+- **Testing locally:** the worker caches the preview origin (`localhost:<port>`). After a new `build:pages` reload once and click
+  "↻ Neu laden", or unregister it in the dev tools (Application → Service Workers).
 
 ## 6. Progress (persisted data)
 
@@ -511,10 +560,15 @@ hidden in task texts and exams (`source={false}`), so the editor doesn't reveal 
 
 ## 8. AI (local app only)
 
+- **Pages has no AI** (owner decision Q3, roadmap 7.4): no "KI-Aufgaben" nav item (sidebar and Mehr menu), `/generator` redirects to `/`,
+  no "🤖 KI-Bewertung" button in `GradePanel`, no "Quelle" filter on Einzelaufgaben (`?quelle=` is ignored), no KI section or KI task count
+  on Daten & Import, and the Klausur hint doesn't mention AI grading. Tested in `tests/pagesOhneKi.test.ts` (MODE stubbed to `pages`).
+  AI with a per-user API key in the browser (roadmap 7.5) is **not** implemented.
+
 - `ANTHROPIC_API_KEY` (and optional `ANTHROPIC_MODEL`, default `claude-sonnet-5`) in `lern-app/.env.local`. The key stays in Node.
 - `POST /api/ai/generate` (topicId, count 1–10, types) → tasks with `generated: true`, stored in `data/generierte-aufgaben.json`, deletable.
 - `POST /api/ai/grade` (taskId, answer) → `{ points, feedback, missing }`.
-- Pages: every AI call rejects with 501 "Nur in der lokalen App verfügbar".
+- Pages: the static API still rejects every AI call with 501 "Nur in der lokalen App verfügbar" (nothing in the UI calls it any more).
 
 ## 9. Quality gates
 
@@ -539,12 +593,16 @@ npm run build && npm run build:pages
   filter counts), `logic.test.ts` (box cap), `leichtRechnen.test.ts` (Rechnen options incl. every exercise of `content/` with several seeds,
   checker agrees; progress), `leichtSeiten.test.ts` (render of Karteikarten and every Rechenübung in Leicht), `lernkarten.test.ts` (`mc` block),
   `mcWerkzeug.test.ts` (authoring helper with a mock client).
+- Phase 7: `pwa.test.ts` (manifest paths relative, icons exist in the declared size, precache patterns, prompt update; update state),
+  `navigation.test.ts` (bottom bar groups, badges, render), `pagesOhneKi.test.ts` (no AI UI in the Pages build).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)
 
 1. **Never lose progress.** Schema change ⇒ migration + test with the old fixtures. Old backups must still import.
 2. **Never break Pages.** Check `npm run build:pages` + `npx vite preview --mode pages` for anything touching loading, paths, WASM or storage.
+   A broken service worker hits every user: keep `registerType: 'prompt'` and relative paths, and check that `sw.js`, `manifest.webmanifest`
+   and every precached URL answer 200. A new file type the app loads at runtime must be added to `globPatterns`, or it is missing offline.
 3. **Multi-user on Pages:** no personal data, dates or names in code or UI; per-user settings go into progress (so they are in the backup)
    or `localStorage`; no server, no tracking.
 4. Keep content read-only in the app; content changes go through `AP-2/` + `npm run sync-content`.
