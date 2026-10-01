@@ -144,7 +144,7 @@ Ohne Kennzahlen keine belegbare Optimierung – und ohne Soll-Ist-Vergleich kein
 
 ## 3.1 Zeitkennzahlen
 
-**Durchlaufzeit (DLZ)** = Bearbeitungszeit + Liegezeit + Transportzeit + Rüstzeit
+**Durchlaufzeit (DLZ):** $\text{DLZ} = \text{Bearbeitungszeit} + \text{Liegezeit} + \text{Transportzeit} + \text{Rüstzeit}$
 Gesamtzeit vom Prozessstart bis zum Prozessende.
 
 **Bearbeitungszeit** = Zeit echter Wertschöpfung
@@ -152,11 +152,11 @@ Gesamtzeit vom Prozessstart bis zum Prozessende.
 
 **Die wichtigste Kennzahl der Prozessoptimierung:**
 
-Wertschöpfungsanteil (Flussgrad) = Bearbeitungszeit / Durchlaufzeit · 100
+Wertschöpfungsanteil (Flussgrad) $= \frac{\text{Bearbeitungszeit}}{\text{Durchlaufzeit}} \cdot 100$
 
 In der Praxis liegt dieser Anteil oft unter 10 %. Das bedeutet: **Der Hebel liegt fast immer bei den Liegezeiten, nicht bei der Beschleunigung der Bearbeitung.** Wer in einer Klausur vorschlägt, „die Techniker sollen schneller arbeiten", hat die Aufgabe nicht verstanden.
 
-Beispiel Möbelhaus: Bearbeitungszeit 1,5 h, Liegezeit 28,5 h → DLZ = 30 h → Wertschöpfungsanteil = 1,5/30 = **5 %**. In 95 % der Zeit passiert mit dem Auftrag nichts.
+Beispiel Möbelhaus: Bearbeitungszeit 1,5 h, Liegezeit 28,5 h → DLZ = 30 h → Wertschöpfungsanteil $= \frac{1{,}5}{30}$ = **5 %**. In 95 % der Zeit passiert mit dem Auftrag nichts.
 
 ## 3.2 Qualitäts- und Kostenkennzahlen
 
@@ -171,7 +171,7 @@ Beispiel Möbelhaus: Bearbeitungszeit 1,5 h, Liegezeit 28,5 h → DLZ = 30 h →
 
 ## 3.3 Wirtschaftlichkeit einer Optimierung
 
-**Amortisationszeit = Investition / jährliche Einsparung**
+**Amortisationszeit:** $\text{Amortisationszeit} = \dfrac{\text{Investition}}{\text{jährliche Einsparung}}$
 
 Rechenschema, das du auswendig können solltest:
 1. Zeitersparnis je Fall × Fallzahl pro Jahr = eingesparte Stunden

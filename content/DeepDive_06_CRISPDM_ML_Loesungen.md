@@ -77,8 +77,8 @@ Für die Reklamationsvorhersage ist die **Klassifikation** geeignet, da die Ziel
 | P6(9\|9) | √(25+25) = √50 = 7,07 | √(9+9) = √18 = 4,24 | **Z2** |
 
 Neue Zentren:
-- Z1 = ((2+3+1)/3 | (2+1+3)/3) = (6/3 | 6/3) = **(2 | 2)**
-- Z2 = ((7+8+9)/3 | (8+7+9)/3) = (24/3 | 24/3) = **(8 | 8)**
+- $Z_1 = \left(\frac{2+3+1}{3} \,\middle|\, \frac{2+1+3}{3}\right) = \left(\frac{6}{3} \,\middle|\, \frac{6}{3}\right)$ = **(2 | 2)**
+- $Z_2 = \left(\frac{7+8+9}{3} \,\middle|\, \frac{8+7+9}{3}\right) = \left(\frac{24}{3} \,\middle|\, \frac{24}{3}\right)$ = **(8 | 8)**
 
 *Prüferkommentar: 6 P für die Abstandsberechnungen (je Punkt 1 P), 2 P für die vollständige Zuordnung, 2 P für die beiden neuen Zentren. Wer mit quadrierten Abständen ohne Wurzel arbeitet, erhält volle Punktzahl, sofern die Vorgehensweise benannt wird – für den Vergleich ist die Wurzel nicht nötig. Häufigster Fehler: neue Zentren als Median statt als arithmetisches Mittel berechnet.*
 
@@ -94,17 +94,17 @@ Lösung: **Skalierung** beider Merkmale vor der Analyse – Normalisierung auf d
 ## Block D – Assoziationsanalyse (20 P)
 
 **D1 (4 P):** *(je 1 P)*
-- Support(S) = 5/10 = **50 %** (T1, T2, T3, T4, T5)
-- Support(B) = 6/10 = **60 %** (T1, T2, T3, T4, T6, T8)
-- Support(M) = 5/10 = **50 %** (T1, T5, T6, T7, T8)
-- Support(L) = 4/10 = **40 %** (T4, T7, T9, T10)
+- $\text{Support}(S) = \frac{5}{10}$ = **50 %** (T1, T2, T3, T4, T5)
+- $\text{Support}(B) = \frac{6}{10}$ = **60 %** (T1, T2, T3, T4, T6, T8)
+- $\text{Support}(M) = \frac{5}{10}$ = **50 %** (T1, T5, T6, T7, T8)
+- $\text{Support}(L) = \frac{4}{10}$ = **40 %** (T4, T7, T9, T10)
 
 **D2 (8 P):**
 Gemeinsames Vorkommen von S und B: T1, T2, T3, T4 = 4 Transaktionen
 
-- **Support(S → B)** = Anzahl(S und B) / Gesamtzahl = 4/10 = **40,00 %** *(3 P)*
-- **Konfidenz(S → B)** = Support(S und B) / Support(S) = 0,40 / 0,50 = **80,00 %** *(3 P)*
-- **Lift(S → B)** = Konfidenz / Support(B) = 0,80 / 0,60 = **1,33** *(2 P)*
+- **Support(S → B):** $\frac{\text{Anzahl}(S \text{ und } B)}{\text{Gesamtzahl}} = \frac{4}{10}$ = **40,00 %** *(3 P)*
+- **Konfidenz(S → B):** $\frac{\text{Support}(S \text{ und } B)}{\text{Support}(S)} = \frac{0{,}40}{0{,}50}$ = **80,00 %** *(3 P)*
+- **Lift(S → B):** $\frac{\text{Konfidenz}}{\text{Support}(B)} = \frac{0{,}80}{0{,}60}$ = **1,33** *(2 P)*
 
 *Prüferkommentar: Je 1 P der Teilpunkte entfällt auf die geforderte Formelangabe. Häufigster Fehler: Die Konfidenz wird durch die Gesamtzahl statt durch den Support des Bedingungsteils geteilt.*
 

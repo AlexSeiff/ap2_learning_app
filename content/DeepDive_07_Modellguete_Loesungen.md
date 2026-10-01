@@ -43,18 +43,18 @@ Positive Klasse ist **„Reklamation"** – das seltene, fachlich interessierend
 
 **B2 (20 P):** *(je 4 P: 1 P Formel, 2 P Rechenweg, 1 P Ergebnis)*
 
-- **Accuracy** = (TP + TN) / n = (90 + 840) / 1.000 = 930/1.000 = **93,00 %**
-- **Precision** = TP / (TP + FP) = 90 / (90 + 60) = 90/150 = **60,00 %**
-- **Recall** = TP / (TP + FN) = 90 / (90 + 10) = 90/100 = **90,00 %**
-- **F1** = 2 · (Precision · Recall) / (Precision + Recall) = 2 · (0,60 · 0,90) / (0,60 + 0,90) = 1,08 / 1,50 = **72,00 %**
-- **Spezifität** = TN / (TN + FP) = 840 / (840 + 60) = 840/900 = **93,33 %**
+- **Accuracy** = $\frac{TP + TN}{n} = \frac{90 + 840}{1.000} = \frac{930}{1.000}$ = **93,00 %**
+- **Precision** = $\frac{TP}{TP + FP} = \frac{90}{90 + 60} = \frac{90}{150}$ = **60,00 %**
+- **Recall** = $\frac{TP}{TP + FN} = \frac{90}{90 + 10} = \frac{90}{100}$ = **90,00 %**
+- **F1** = $2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} = 2 \cdot \frac{0{,}60 \cdot 0{,}90}{0{,}60 + 0{,}90} = \frac{1{,}08}{1{,}50}$ = **72,00 %**
+- **Spezifität** = $\frac{TN}{TN + FP} = \frac{840}{840 + 60} = \frac{840}{900}$ = **93,33 %**
 
 *Prüferkommentar: Häufigster Fehler beim F1 ist das arithmetische Mittel – (60 + 90)/2 = 75 % wäre falsch. Das F1-Maß ist das **harmonische** Mittel und liegt deshalb stets näher am kleineren der beiden Werte (hier 72 %). Zweithäufigster Fehler: Precision und Recall verwechselt, also durch die falsche Summe geteilt.*
 
 **B3 (6 P):**
 Das triviale Modell sagt immer „keine Reklamation": TP = 0, FP = 0, FN = 100, TN = 900.
-- Accuracy = (0 + 900) / 1.000 = **90,00 %** *(2 P)*
-- Recall = 0 / (0 + 100) = **0,00 %** *(2 P)*
+- Accuracy: $\frac{0 + 900}{1.000}$ = **90,00 %** *(2 P)*
+- Recall: $\frac{0}{0 + 100}$ = **0,00 %** *(2 P)*
 
 Vergleich: Die Accuracy des trivialen Modells (90 %) liegt nur knapp unter der des echten Modells (93 %) – gemessen an dieser Kennzahl allein erschiene der gesamte Aufwand kaum lohnend. Der Recall zeigt jedoch den entscheidenden Unterschied: Das triviale Modell findet **keinen einzigen** Reklamationsfall, das echte Modell 90 von 100. Bei unausgeglichenen Klassen ist die Accuracy daher irreführend (**Accuracy-Paradox**). *(2 P)*
 
@@ -114,8 +114,8 @@ Nicht enthaltene Faktoren *(je 1,5 P, zwei genügen)*:
 | 110 | 108 | +2 | 2 | 4 |
 | | | | **Σ 26** | **Σ 180** |
 
-- **MAE** = 26 / 5 = **5,20 T€** *(3 P)*
-- MSE = 180 / 5 = 36,00 → **RMSE** = √36 = **6,00 T€** *(4 P)*
+- **MAE** = $\frac{\sum |y - \hat{y}|}{n} = \frac{26}{5}$ = **5,20 T€** *(3 P)*
+- $\text{MSE} = \frac{\sum (y - \hat{y})^2}{n} = \frac{180}{5} = 36{,}00$ → **RMSE** = $\sqrt{\text{MSE}} = \sqrt{36}$ = **6,00 T€** *(4 P)*
 - *(1 P für die vollständige Fehlertabelle)*
 
 *Prüferkommentar: Häufigster Fehler ist die Verwendung der vorzeichenbehafteten Fehler beim MAE – die Summe der Residuen liegt hier bei +10 −6 +6 −2 +2 = +10 und wäre als Gütemaß unbrauchbar, weil sich positive und negative Abweichungen aufheben. Deshalb wird der **Betrag** gebildet.*

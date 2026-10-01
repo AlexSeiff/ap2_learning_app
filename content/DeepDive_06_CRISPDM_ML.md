@@ -110,7 +110,7 @@ Beides ist überwachtes Lernen – der Unterschied liegt in der **Zielvariablen*
 3. **Neu berechnen:** Für jedes Cluster den Mittelwert aller zugeordneten Punkte als neues Zentrum bestimmen
 4. **Wiederholen** ab Schritt 2, bis sich die Zuordnung nicht mehr ändert (Konvergenz)
 
-**Euklidischer Abstand:** d = √((x₁ − x₂)² + (y₁ − y₂)²)
+**Euklidischer Abstand:** $d = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}$
 
 **Rechentrick für die Klausur:** Zum reinen *Vergleichen* von Abständen kannst du die Wurzel weglassen – der kleinere quadrierte Abstand gehört zum näheren Zentrum. Das spart Zeit. Wird der Abstand als Wert verlangt, musst du die Wurzel ziehen.
 
@@ -132,8 +132,8 @@ Startzentren: Z1 = (4,4), Z2 = (6,6), k = 2
 | P6(9,9) | √50 = 7,07 | √18 = 4,24 | **Z2** |
 
 **Neue Zentren:**
-Z1 = ((2+3+1)/3 , (2+1+3)/3) = **(2 | 2)**
-Z2 = ((7+8+9)/3 , (8+7+9)/3) = **(8 | 8)**
+$Z_1 = \left(\frac{2+3+1}{3} \,\middle|\, \frac{2+1+3}{3}\right)$ = **(2 | 2)**
+$Z_2 = \left(\frac{7+8+9}{3} \,\middle|\, \frac{8+7+9}{3}\right)$ = **(8 | 8)**
 
 **Iteration 2:** Die Zuordnung bleibt unverändert (P1–P3 zu Z1, P4–P6 zu Z2) → **Konvergenz erreicht**.
 
@@ -182,15 +182,15 @@ Zehn Warenkörbe der Möbelhaus Nordholz GmbH (S = Schreibtisch, B = Bürostuhl,
 Einzelhäufigkeiten: S = 5 · B = 6 · M = 5 · L = 4 · (S und B) = 4 · (M und L) = 1
 
 **Regel S → B:**
-- Support = 4/10 = **40 %**
-- Konfidenz = 0,40 / 0,50 = **80 %**
-- Lift = 0,80 / 0,60 = **1,33**
+- Support: $\frac{4}{10}$ = **40 %**
+- Konfidenz: $\frac{0{,}40}{0{,}50}$ = **80 %**
+- Lift: $\frac{0{,}80}{0{,}60}$ = **1,33**
 
 Deutung: In 40 % aller Warenkörbe kommen Schreibtisch und Bürostuhl gemeinsam vor. Wer einen Schreibtisch kauft, kauft in 80 % der Fälle auch einen Bürostuhl. Der Lift von 1,33 bedeutet: Diese Kombination tritt 33 % häufiger auf als bei Unabhängigkeit zu erwarten – ein empfehlenswertes Bundle.
 
-**Gegenprobe B → S:** Support = 40 %, Konfidenz = 0,40 / 0,60 = **66,7 %**, Lift = 0,667 / 0,50 = **1,33**. Die Konfidenz ändert sich mit der Richtung, der Lift nicht.
+**Gegenprobe B → S:** Support = 40 %, Konfidenz: $\frac{0{,}40}{0{,}60}$ = **66,7 %**, Lift: $\frac{0{,}667}{0{,}50}$ = **1,33**. Die Konfidenz ändert sich mit der Richtung, der Lift nicht.
 
-**Regel L → M:** Support = 1/10 = **10 %**, Konfidenz = 0,10 / 0,40 = **25 %**, Lift = 0,25 / 0,50 = **0,50**. Lift deutlich unter 1 → Lampe und Monitor werden **seltener** zusammen gekauft als zufällig zu erwarten. Eine gemeinsame Platzierung wäre nicht zu empfehlen.
+**Regel L → M:** Support: $\frac{1}{10}$ = **10 %**, Konfidenz: $\frac{0{,}10}{0{,}40}$ = **25 %**, Lift: $\frac{0{,}25}{0{,}50}$ = **0,50**. Lift deutlich unter 1 → Lampe und Monitor werden **seltener** zusammen gekauft als zufällig zu erwarten. Eine gemeinsame Platzierung wäre nicht zu empfehlen.
 
 ---
 

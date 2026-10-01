@@ -86,13 +86,13 @@ Zunächst festlegen, was die **positive Klasse** ist – üblicherweise das selt
 | **Tatsächlich Reklamation** | TP = 60 | FN = 40 |
 | **Tatsächlich keine** | FP = 90 | TN = 810 |
 
-- Accuracy = (60 + 810) / 1000 = **87,00 %**
-- Precision = 60 / (60 + 90) = 60/150 = **40,00 %**
-- Recall = 60 / (60 + 40) = 60/100 = **60,00 %**
-- F1 = 2 · (0,40 · 0,60) / (0,40 + 0,60) = 0,48 / 1,00 = **48,00 %**
-- Spezifität = 810 / 900 = **90,00 %**
+- Accuracy: $\frac{60 + 810}{1000}$ = **87,00 %**
+- Precision: $\frac{60}{60 + 90} = \frac{60}{150}$ = **40,00 %**
+- Recall: $\frac{60}{60 + 40} = \frac{60}{100}$ = **60,00 %**
+- F1: $2 \cdot \frac{0{,}40 \cdot 0{,}60}{0{,}40 + 0{,}60} = \frac{0{,}48}{1{,}00}$ = **48,00 %**
+- Spezifität: $\frac{810}{900}$ = **90,00 %**
 
-**Das Accuracy-Paradox:** Ein triviales Modell, das **immer „keine Reklamation"** sagt, erreicht 900/1000 = **90 % Accuracy** – und ist damit scheinbar besser als unser Modell mit 87 %. Es findet allerdings **keinen einzigen** Reklamationsfall (Recall = 0 %), ist also fachlich völlig wertlos.
+**Das Accuracy-Paradox:** Ein triviales Modell, das **immer „keine Reklamation"** sagt, erreicht $\frac{900}{1000}$ = **90 % Accuracy** – und ist damit scheinbar besser als unser Modell mit 87 %. Es findet allerdings **keinen einzigen** Reklamationsfall (Recall = 0 %), ist also fachlich völlig wertlos.
 
 Daraus folgt die zentrale Aussage: **Bei unausgeglichenen Klassen ist Accuracy irreführend.** Aussagekräftig sind Precision, Recall und F1 – und der Vergleich mit einer **trivialen Baseline** gehört in jede Modellbewertung.
 
@@ -135,7 +135,7 @@ Bei stetiger Zielgröße (→ Deep Dive 4) gelten andere Maße:
 | 110 | 108 | +2 | 2 | 4 |
 | | | | **Σ 26** | **Σ 180** |
 
-MAE = 26/5 = **5,20 T€** · MSE = 180/5 = **36,00** · RMSE = √36 = **6,00 T€**
+$\text{MAE} = \frac{26}{5}$ = **5,20 T€** · $\text{MSE} = \frac{180}{5}$ = **36,00** · $\text{RMSE} = \sqrt{36}$ = **6,00 T€**
 
 **Interpretation:** Der RMSE (6,00) liegt über dem MAE (5,20) – ein Hinweis darauf, dass einzelne größere Abweichungen (hier +10) vorliegen. Je weiter RMSE und MAE auseinanderliegen, desto ungleichmäßiger sind die Fehler verteilt.
 

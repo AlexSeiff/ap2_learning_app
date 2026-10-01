@@ -59,12 +59,12 @@ Ereignis „Kostenvoranschlag ist versendet" → **Funktion „Kundenentscheidun
 ## Block C – Kennzahlen (26 P)
 
 **C1 (8 P):**
-- Bearbeitungszeit gesamt = 0,25 + 0,25 + 0,75 + 0,25 = **1,5 h** *(3 P)*
-- Liegezeit gesamt = 3,5 + 16,0 + 9,0 = **28,5 h** *(3 P)*
-- **Durchlaufzeit = 1,5 + 28,5 = 30,0 h** *(2 P)*
+- Bearbeitungszeit gesamt: $0{,}25 + 0{,}25 + 0{,}75 + 0{,}25$ = **1,5 h** *(3 P)*
+- Liegezeit gesamt: $3{,}5 + 16{,}0 + 9{,}0$ = **28,5 h** *(3 P)*
+- Durchlaufzeit: $\text{DLZ} = \text{Bearbeitungszeit} + \text{Liegezeit} = 1{,}5 + 28{,}5$ = **30,0 h** *(2 P)*
 
 **C2 (6 P):**
-Wertschöpfungsanteil = 1,5 / 30,0 · 100 = **5,00 %** *(2 P)*
+Wertschöpfungsanteil: $\frac{\text{Bearbeitungszeit}}{\text{DLZ}} \cdot 100 = \frac{1{,}5}{30{,}0} \cdot 100$ = **5,00 %** *(2 P)*
 
 Beurteilung: Nur 5 % der Durchlaufzeit entfallen auf echte Bearbeitung; in 95 % der Zeit liegt der Auftrag ungenutzt. Das ist ein sehr niedriger, in der Praxis aber typischer Wert und zeigt einen stark durch Wartezeiten geprägten Prozess. *(2 P)*
 
@@ -73,13 +73,13 @@ Ansatzpunkt: Die Optimierung muss bei den **Liegezeiten** ansetzen – insbesond
 *Prüferkommentar: Der letzte Absatz ist die eigentliche Prüfungsleistung. Wer „Techniker sollen schneller arbeiten" vorschlägt, erhält hier 0 P – die Zahlen widerlegen den Ansatz.*
 
 **C3 (6 P):**
-- Fehlerquote = 24 / 200 · 100 = **12,00 %** *(3 P)*
-- First Pass Yield = (200 − 24) / 200 · 100 = 176 / 200 · 100 = **88,00 %** *(3 P)*
+- Fehlerquote: $\frac{\text{fehlerhafte Fälle}}{\text{Gesamtfälle}} \cdot 100 = \frac{24}{200} \cdot 100$ = **12,00 %** *(3 P)*
+- First Pass Yield: $\frac{200 - 24}{200} \cdot 100 = \frac{176}{200} \cdot 100$ = **88,00 %** *(3 P)*
 
 **C4 (6 P):**
-- Nacharbeitszeit gesamt = 24 · 0,75 h = 18 h *(2 P)*
-- Nacharbeitskosten = 18 h · 60 €/h = **1.080,00 €** im Monat *(2 P)*
-- Zuschlag je Auftrag = 1.080 € / 200 = **5,40 € je Auftrag** *(2 P)*
+- Nacharbeitszeit gesamt: $24 \cdot 0{,}75\ \text{h} = 18\ \text{h}$ *(2 P)*
+- Nacharbeitskosten: $18\ \text{h} \cdot 60\ \text{€/h}$ = **1.080,00 €** im Monat *(2 P)*
+- Zuschlag je Auftrag: $\frac{1.080\ \text{€}}{200}$ = **5,40 € je Auftrag** *(2 P)*
 
 *Prüferkommentar: Der letzte Teilschritt wird häufig übersehen. Die Umlage auf alle Aufträge – nicht nur auf die fehlerhaften – ist fachlich korrekt, weil die Fehlerkosten in die Kalkulation jedes Auftrags eingehen.*
 
@@ -96,9 +96,9 @@ Ansatzpunkt: Die Optimierung muss bei den **Liegezeiten** ansetzen – insbesond
 *Prüferkommentar: Maßnahmen, die auf die Bearbeitungszeit statt auf die Liegezeit zielen, erhalten nur den halben Punkt – sie widersprechen dem Ergebnis aus C2.*
 
 **D2 (8 P):**
-- Zeitersparnis pro Jahr = 2.400 Aufträge · 5 min = 12.000 min = 12.000 / 60 = **200 h** *(2 P)*
-- Jährliche Einsparung = 200 h · 60 €/h = **12.000,00 €** *(2 P)*
-- Amortisationszeit = 18.000 € / 12.000 €/Jahr = **1,5 Jahre** (18 Monate) *(2 P)*
+- Zeitersparnis pro Jahr: $2.400 \cdot 5\ \text{min} = 12.000\ \text{min} = \frac{12.000}{60}\ \text{h}$ = **200 h** *(2 P)*
+- Jährliche Einsparung: $200\ \text{h} \cdot 60\ \text{€/h}$ = **12.000,00 €** *(2 P)*
+- Amortisationszeit: $\frac{\text{Investition}}{\text{jährliche Einsparung}} = \frac{18.000\ \text{€}}{12.000\ \text{€/Jahr}}$ = **1,5 Jahre** (18 Monate) *(2 P)*
 
 Beurteilung: Die Investition amortisiert sich nach 1,5 Jahren und damit deutlich innerhalb der geplanten Nutzungsdauer von fünf Jahren. In den verbleibenden 3,5 Jahren entsteht ein rechnerischer Überschuss von rund 42.000 €. Die Investition ist wirtschaftlich zu empfehlen. *(2 P)*
 
