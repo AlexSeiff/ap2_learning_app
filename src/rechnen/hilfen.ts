@@ -106,10 +106,22 @@ export class LoesungsBau {
     this.schritte.push(s);
   }
 
-  /** Fehlerbild für ein Ergebnis. Wird verworfen, wenn der Wert zufällig richtig, nicht endlich oder schon vorhanden ist. */
+  /**
+   * Fehlerbild für ein Ergebnis. Wird verworfen, wenn der Wert zufällig richtig ist (auch: nach der Rundung des Felds
+   * nicht vom richtigen zu unterscheiden, z. B. F1 ≈ (P + R) / 2 bei P ≈ R), nicht endlich oder schon vorhanden ist.
+   */
   fehler(eingabe: string, wert: RechenWert, text: string): void {
     const richtig = this.werte[eingabe];
     if (richtig === undefined || !endlich(wert) || gleich(wert, richtig)) return;
+    const runden = this.felder[eingabe]?.runden;
+    if (
+      typeof wert === 'number' &&
+      typeof richtig === 'number' &&
+      runden !== undefined &&
+      Math.abs(wert - richtig) <= 0.5 * 10 ** -runden
+    ) {
+      return;
+    }
     if (this.fehlerbilder.some((f) => f.eingabe === eingabe && gleich(f.wert, wert))) return;
     this.fehlerbilder.push({ eingabe, wert, text });
   }

@@ -373,6 +373,17 @@ describe('Zufall und Fehlerbilder', () => {
   });
 });
 
+describe('Fehlerbilder nahe am richtigen Wert', () => {
+  it('werden verworfen, wenn sie nach der Rundung des Felds nicht vom richtigen Wert zu unterscheiden sind (F1 ≈ (P + R) / 2)', () => {
+    const v = VORLAGEN.konfusionsmatrix;
+    const l = v.loese(v.schema.parse({ tp: 76, fp: 30, fn: 29, tn: 500 }));
+    const p = l.werte.precision as number;
+    const rc = l.werte.recall as number;
+    expect(Math.abs((p + rc) / 2 - (l.werte.f1 as number))).toBeLessThan(0.005);
+    expect(l.fehlerbilder.filter((f) => f.eingabe === 'f1' && f.text.includes('arithmetische Mittel'))).toEqual([]);
+  });
+});
+
 describe('Rechenweg-Formeln', () => {
   it('jede Formel aller Vorlagen ist gültiges KaTeX (feste Beispiele und Zufallsdaten)', () => {
     for (const v of Object.values(VORLAGEN)) {
