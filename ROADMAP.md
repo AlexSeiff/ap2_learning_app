@@ -93,7 +93,7 @@ Implementation notes: `lastBackupDownloadAt` is an optional field in `settings` 
 still migrates **v5 → v6**. `CardState` has no `lastReviewed`, so the card merge uses the review count; the journal merge uses the newest
 attempt per task. Details of all merge rules: DOKUMENTATION § 6.
 
-## Phase 4 – Professional solutions for calculation tasks [U] (4.1–4.3 ✅ done)
+## Phase 4 – Professional solutions for calculation tasks [U] ✅ done
 
 Today the solution sheets write formulas as plain text ("770 / 11 = **70,00 Minuten** *(3 P)*"). Goal: look like a printed textbook solution.
 
@@ -119,7 +119,17 @@ Today the solution sheets write formulas as plain text ("770 / 11 = **70,00 Minu
 Implementation notes (4.1–4.3): `<Markdown math>` loads a lazy `MathMarkdown` chunk (Lernen, solutions, `/druck` solution sheet, Material).
 Stray `$` are escaped by the Pandoc rule before parsing (`escapeStrayDollars`); the content has no `$` today. Solution styling is done by the
 rehype plugins in `src/lib/loesungStil.ts` (result box only for bold number + unit after `=`/`→` or a bold equation ending in number + unit).
-`Rechenweg` + `shared/rechenweg.ts` (`RechenSchritt`) are used by the Rechenübungen (phase 5). Details: DOKUMENTATION § 5. Still open: 4.4 (needs the owner's OK) and 4.5.
+`Rechenweg` + `shared/rechenweg.ts` (`RechenSchritt`) are used by the Rechenübungen (phase 5). Details: DOKUMENTATION § 5.
+
+Implementation notes (4.4–4.5):
+- 4.4 (owner's OK given): 182 formulas as `$…$` – solutions DD3 15, DD4 22, DD5 12, DD6 9, DD7 10, DD9 5, DD10 2, DD11 1, DD12 11, DD13 1, DD14 6;
+  theory DD3 21, DD4 25, DD5 4, DD6 11, DD7 9, DD9 1, DD12 14, DD13 1, DD14 2. **Deviation from the example:** the final result stays bold
+  text after the formula (`$\bar{x} = \frac{770}{11}$ = **70,00 Minuten**`) instead of `\mathbf` inside it – the result box (4.2) works
+  unchanged, the result stays readable without KaTeX and the numbers stay plain text. Not converted: tables, Prüferkommentare, Prüferfragen
+  (flashcards render no math), task texts, text-only steps (Modus, B2 "zwei/drei"). PDFs in `AP-2/` not regenerated.
+- 4.5: `src/rechnen/formeln.ts` (68 formulas: DD3 15, DD4 12, DD5 6, DD6 5, DD7 10, DD9 1, DD10 3, DD12 11, DD14 5), each with the template ids
+  it practises; the templates use `F.<id>.latex` in their Rechenwege (except `gleitender-durchschnitt`, `minijob`, `rpo`, which show the
+  concrete form). Page `/material/formeln` (lazy, printable), links via the new list filter `/rechnen?vorlage=a,b`.
 
 ## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U] ✅ done
 
@@ -300,7 +310,7 @@ Ordered by expected benefit per effort:
 
 - **Q1 (decided):** ~~Should "Prüferfragen ausschalten" also cover the *Fachgespräch* questions or the *Prüferkommentar* in solutions?~~
   Separate switches for Prüferfragen and Fachgespräch; the Prüferkommentar is never hidden.
-- **Q2 (decided for 1.1):** editing the sheets was approved for 1.1 (KW references replaced). Still open for 4.4. Is it OK to edit the sheets in `AP-2/` for phase 1.1 (remove KW references) and 4.4 (LaTeX formulas)? Alternative: leave the sheets
+- **Q2 (decided):** editing the sheets was approved for 1.1 (KW references replaced) and 4.4 (LaTeX formulas, done). Is it OK to edit the sheets in `AP-2/` for phase 1.1 (remove KW references) and 4.4 (LaTeX formulas)? Alternative: leave the sheets
   unchanged and only improve the rendering (4.2) and the new Rechenübungen.
 - **Q3 (decided):** ~~KI on Pages with each user's own key (7.5): yes or no?~~ No – Pages has no AI (7.4), 7.5 is not done.
 - **Q4 (open):** No license is claimed yet (the Datenschutz-Hinweis doesn't mention one). License/visibility of the content in `content/` now that others use the app (e.g. CC BY-NC 4.0)?
@@ -308,5 +318,5 @@ Ordered by expected benefit per effort:
 
 ## Suggested order
 
-Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (Done up to 7; next: 4.4/4.5, then 8.)
+Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (Done up to 7 and 4.4/4.5; next: 8.)
 Phases 1–3 are small (about 1 day together) and make the app safe for other users; 5 and 6 are the largest (mostly content writing).

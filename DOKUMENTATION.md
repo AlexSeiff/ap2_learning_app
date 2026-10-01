@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3, 5, 6 and 7.1–7.4 done, October 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–7 done incl. 4.4/4.5, without 7.5, October 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -87,7 +87,7 @@ lern-app/
 │  │                    navigation.ts (bottom bar groups, pure)
 │  ├─ rechnen/          Rechenübungen (pure, no React): typen.ts, zufall.ts (seeded PRNG), hilfen.ts (statistics helpers, LoesungsBau,
 │  │                    vorlage()), vorlagen/*.ts (28 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
-│  │                    checker.ts (input checking + Fehlerbilder)
+│  │                    checker.ts (input checking + Fehlerbilder), formeln.ts (Formelsammlung data, also used by the Rechenwege)
 │  └─ sql/              sqlWorker.ts, engine.ts, runner.ts, checker.ts, errors.ts, lint.ts, types.ts
 ├─ tests/             Vitest; fixtures/ with old progress formats and a mini sheet set
 └─ data/              fortschritt.json, generierte-aufgaben.json, backups/ (gitignored, local app only)
@@ -270,11 +270,12 @@ Betriebsrat D1, Günstigkeitsprinzip E3), Kündigungstermine (dates), DD11 algor
 **New template**: file in `src/rechnen/vorlagen/`, defined with `vorlage({ id, titel, bereich, beschreibung, schema, erzeuge, loese, platzhalter,
 tabelle?, hinweise })`; `loese` uses `LoesungsBau` (`wert`, `schritt`, `fehler`, `fertig(layout?)`). Register it in `vorlagen/index.ts`,
 add it to the table above, add a sheet example to `tests/rechenVorlagen.test.ts`; the property tests (`tests/rechenEigenschaften.test.ts`)
-pick it up automatically.
+pick it up automatically. Add at least one formula with the template id in `vorlagen` to `src/rechnen/formeln.ts` and use
+`F.<id>.latex` as the step `formel` where the general formula appears as is (`tests/formeln.test.ts` checks both).
 
 ### 4.5 Updating content for Pages
 
-Edit files in `AP-2/`, then `npm run sync-content` (copies to `content/`), commit, push. The Pages build reads `content/` only.
+Formulas in the sheets are written as `$…$` (see § 5 "Markdown, formulas"). Edit files in `AP-2/`, then `npm run sync-content` (copies to `content/`), commit, push. The Pages build reads `content/` only.
 AI-generated tasks (`data/`) never go into the Pages build.
 
 ## 5. Features (pages and routes)
@@ -291,7 +292,8 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/rechnen`, `/rechnen/:id` | Rechenübungen | list with filters in the URL (Thema, Schwierigkeit, Tag, Status), progress bar, "Nächste offene"; exercise page (see below) |
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only (Pages: no nav item, the route redirects to `/`) |
-| `/material`, `/material/:docId` | Material | cheat sheet, topic list |
+| `/material`, `/material/:docId` | Material | cheat sheet, topic list, tile "📏 Formelsammlung" |
+| `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
 
@@ -320,9 +322,10 @@ drops the mention.
 - **`$` safety** (`src/lib/mathDollar.ts`, `escapeStrayDollars`, tested): before the math variant parses, every `$` that can't delimit
   a formula by the **Pandoc rule** is escaped to `\$` – the opening `$` needs a non-space right after it, the closing `$` a non-space
   before it and no digit after it; the next `$` closes (like remark-math); a formula stays on one line; `$$`, fenced code and inline
-  code are left alone. So prices like `5 $ und 3 $` stay text. The sheets and JSON contain no `$` today (test in `tests/math.test.ts`).
-  Write formulas as `$x = 70$`, not `$ x $`.
-- **Solution styling** (`src/lib/loesungStil.ts`, rehype plugins, tested in `tests/loesungStil.test.ts`), no content change:
+  code are left alone. So prices like `5 $ und 3 $` stay text. Every `$` in `content/` is a formula delimiter; `tests/math.test.ts` checks that
+  `escapeStrayDollars` changes nothing there and that every formula renders with KaTeX (`throwOnError`).
+  Write formulas as `$x = 70$`, not `$ x $`; one line; German decimal comma as `{,}` (`70{,}00`), percent as `\%`.
+- **Solution styling** (`src/lib/loesungStil.ts`, rehype plugins, tested in `tests/loesungStil.test.ts`):
   - `rehypeLoesung` (only `<Markdown loesung>`: model solution and solution sheet):
     `*(3 P)*` / `*(je 1 P)*` → points badge (`span.punkte`), floated right when it ends a line (then a line break follows, like in the sheet);
     longer point notes (`*(je 4 P: 1 P Formel, …)*`) → small muted `span.punkte-hinweis`.
@@ -330,6 +333,13 @@ drops the mention.
     up to three words, not `P`/`Punkte`) directly after `=`, `≈`, `→` or `⇒`, or a bold equation/label ending in `= number unit` or
     `: number unit` (`**IQR = 70 − 40 = 30 Minuten**`, `**Projektdauer: 25 Tage**`). Never inside tables, headings, links, formulas or the
     Prüferkommentar. Bold numbers without a unit (`**−5**`, `**Q1 = 40**`, `**0,98**`) stay plain bold. About 60 results are boxed in the current sheets.
+    **Formulas in the sheets (phase 4.4):** the calculation steps of the solutions (and the calculation formulas of the theory parts) are
+    `$…$`, with the **final result as bold text after the formula**: `- Arithmetisches Mittel: $\bar{x} = \frac{\sum x_i}{n} = \frac{770}{11}$ = **70,00 Minuten** *(3 P)*`.
+    So the result box rule applies unchanged (text " = " before the bold result), the result stays readable without KaTeX (plain
+    Markdown, Markdown download) and the number is still plain text for the Rechenübungen smoke test. Never put the result into the
+    formula (`\mathbf`, `\boxed`): it would not be boxed (test in `tests/math.test.ts`). Labels like `**F1** = $…$` keep the colon out of
+    the bold text – `**F1:**` would be parsed as the solution of task F1. Prüferfragen (flashcards render no math), tables, points,
+    Prüferkommentare and task texts stay plain text. Content today: 182 formulas (94 in solutions, 88 in theory; DD3–DD7, DD9–DD14).
     A paragraph starting with `*Prüferkommentar: …*` (also inside a blockquote, as on the solution sheet) → callout `aside.pk-box`
     "🧑‍🏫 Prüferkommentar"; `GradePanel` renders `Solution.kommentar` in the same box.
   - `rehypeTabellen` (every `<Markdown>`): columns whose body cells are all numbers (German format, optional `Σ`, `%`, `€`, `P`; empty/`–` ignored)
@@ -426,7 +436,7 @@ print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the 
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
 - **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
   (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every
-  current browser uses woff2). Today **45 entries, about 3.5 MB**. `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
+  current browser uses woff2). Today **48 entries, about 3.5 MB**. `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
   Navigations fall back to the cached `index.html`, so the app starts offline after the first visit (SQL editor and formulas included).
 - **Updates** (`registerType: 'prompt'`, no `skipWaiting`/`clientsClaim`): every precached file has a revision hash in `sw.js`, so any change
   (also only `content.json` after `npm run sync-content`) changes `sw.js`. The browser installs the new worker, which then **waits**.
@@ -593,6 +603,10 @@ npm run build && npm run build:pages
   filter counts), `logic.test.ts` (box cap), `leichtRechnen.test.ts` (Rechnen options incl. every exercise of `content/` with several seeds,
   checker agrees; progress), `leichtSeiten.test.ts` (render of Karteikarten and every Rechenübung in Leicht), `lernkarten.test.ts` (`mc` block),
   `mcWerkzeug.test.ts` (authoring helper with a mock client).
+- Phase 4.4/4.5: `math.test.ts` (every formula in `content/` renders with KaTeX, no result inside a formula), `druck.test.ts` (`/druck` renders
+  every solution sheet with formulas, no `katex-error`), `loesungStil.test.ts` (result box after a formula), `formeln.test.ts` (every template has
+  formulas, no unknown template ids, valid KaTeX, Rechenwege use the formulas, Formelsammlung page, Material link, `?vorlage=` filter).
+  `rechenInhalte.smoke.test.ts` reads numbers inside formulas as text (`70{,}00` = 70,00).
 - Phase 7: `pwa.test.ts` (manifest paths relative, icons exist in the declared size, precache patterns, prompt update; update state),
   `navigation.test.ts` (bottom bar groups, badges, render), `pagesOhneKi.test.ts` (no AI UI in the Pages build).
 - One commit per logical change; formatting-only changes in their own commit.
