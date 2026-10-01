@@ -38,7 +38,7 @@ Intervall und Verhältnis werden zusammen als **metrisch** (kardinal) bezeichnet
 | Begriff | Bedeutung | Formel |
 |---|---|---|
 | absolute Häufigkeit h | Anzahl der Nennungen | Auszählung |
-| relative Häufigkeit f | Anteil an allen Fällen | f = h / n |
+| relative Häufigkeit f | Anteil an allen Fällen | $f = \frac{h}{n}$ |
 | kumulierte Häufigkeit | Summe bis einschließlich dieser Kategorie | fortlaufend addieren |
 
 Beispiel (50 Reklamationen des Möbelhauses):
@@ -65,12 +65,12 @@ Kontrolle: Die relativen Häufigkeiten summieren sich immer auf 1 bzw. 100 % –
 Beispieldatensatz (Lieferzeiten in Tagen, n = 10), bereits sortiert:
 **2, 3, 3, 4, 5, 5, 5, 6, 8, 19**
 
-**Arithmetisches Mittel** = Summe / n = 60 / 10 = **6,0 Tage**
+**Arithmetisches Mittel:** $\bar{x} = \frac{\sum x_i}{n} = \frac{60}{10}$ = **6,0 Tage**
 - Nutzt alle Werte, ist aber **empfindlich gegenüber Ausreißern**.
 
 **Median** = mittlerer Wert der sortierten Reihe
-- n ungerade → Wert an Position (n+1)/2
-- n gerade → Mittel der beiden mittleren Werte: (5 + 5) / 2 = **5,0 Tage**
+- n ungerade → Wert an Position $\frac{n+1}{2}$
+- n gerade → Mittel der beiden mittleren Werte: $\frac{5 + 5}{2}$ = **5,0 Tage**
 - **Robust** gegenüber Ausreißern.
 
 **Modus (Modalwert)** = häufigster Wert = **5 Tage** (kommt dreimal vor). Einziges Lagemaß für nominale Daten; eine Verteilung kann mehrere Modi haben.
@@ -78,8 +78,8 @@ Beispieldatensatz (Lieferzeiten in Tagen, n = 10), bereits sortiert:
 **Die entscheidende Interpretation:** Mittelwert (6,0) > Median (5,0). Diese Lücke entsteht durch den Ausreißer 19 – die Verteilung ist **rechtsschief**. Merksatz: *Liegt der Mittelwert deutlich über dem Median, ziehen große Ausreißer nach oben.* Genau diese Aussage bringt in Interpretationsaufgaben die Punkte.
 
 **Gewichtetes arithmetisches Mittel** (wenn Werte unterschiedlich schwer wiegen):
-x̄ = Σ(Wert × Gewicht) / Σ Gewichte
-Beispiel: 3 Aufträge à 40 min und 7 Aufträge à 60 min → (3·40 + 7·60) / 10 = 540/10 = 54 min. Bei klassierten Daten rechnest du genauso, mit Klassenmitte × Klassenhäufigkeit.
+$\bar{x} = \frac{\sum (\text{Wert} \cdot \text{Gewicht})}{\sum \text{Gewichte}}$
+Beispiel: 3 Aufträge à 40 min und 7 Aufträge à 60 min → $\frac{3 \cdot 40 + 7 \cdot 60}{10} = \frac{540}{10} = 54$ min. Bei klassierten Daten rechnest du genauso, mit Klassenmitte × Klassenhäufigkeit.
 
 > ❓ **Prüferfrage:** Warum berichtet man Gehälter üblicherweise als Median, nicht als Mittelwert?
 > *Wenige sehr hohe Gehälter ziehen den Mittelwert nach oben und erzeugen ein verzerrtes Bild der typischen Situation. Der Median ist robust und beschreibt die Mitte der Verteilung realistischer.*
@@ -91,7 +91,7 @@ Beispiel: 3 Aufträge à 40 min und 7 Aufträge à 60 min → (3·40 + 7·60) / 
 Zwei Datensätze können denselben Mittelwert haben und trotzdem völlig verschieden sein. Die Streuung beschreibt, **wie stark die Werte um die Mitte schwanken** – für die Prozess- und Qualitätsbewertung oft wichtiger als der Mittelwert selbst.
 
 ### 4.1 Spannweite
-R = Maximum − Minimum. Beim Beispiel: 19 − 2 = **17 Tage**. Schnell berechnet, aber nur von zwei Werten abhängig und daher extrem ausreißeranfällig.
+$R = x_{\max} - x_{\min}$. Beim Beispiel: $19 - 2$ = **17 Tage**. Schnell berechnet, aber nur von zwei Werten abhängig und daher extrem ausreißeranfällig.
 
 ### 4.2 Quartile und Interquartilsabstand
 
@@ -105,12 +105,12 @@ Beispiel (n = 10) – sortierte Reihe mit Positionen:
 |---|---|---|---|---|---|---|---|---|---|---|
 | Wert | 2 | 3 | 3 | 4 | 5 | 5 | 5 | 6 | 8 | 19 |
 
-- **Q1:** Position = 10 · 0,25 = 2,5 → aufrunden auf **Position 3**. Der 3. Wert der Reihe ist 3 → **Q1 = 3**
-- **Q3:** Position = 10 · 0,75 = 7,5 → aufrunden auf **Position 8**. Der 8. Wert der Reihe ist 6 → **Q3 = 6**
+- **Q1:** Position $= n \cdot p = 10 \cdot 0{,}25 = 2{,}5$ → aufrunden auf **Position 3**. Der 3. Wert der Reihe ist 3 → **Q1 = 3**
+- **Q3:** Position $= n \cdot p = 10 \cdot 0{,}75 = 7{,}5$ → aufrunden auf **Position 8**. Der 8. Wert der Reihe ist 6 → **Q3 = 6**
 
 ⚠️ **Position ist nicht der Wert.** Hier besonders heimtückisch: Die Rechnung führt auf Position 8 – und die Zahl 8 kommt in den Daten ebenfalls vor, allerdings an Position 9. Wer beides verwechselt, notiert fälschlich Q3 = 8. Schreibe deshalb in der Klausur immer beides hin: „Position 8 → Wert 6".
 
-**IQR = Q3 − Q1 = 6 − 3 = 3 Tage** – die mittleren 50 % der Aufträge liegen in einem Bereich von nur 3 Tagen. Der IQR ist robust, weil er die Extremwerte ausblendet.
+$\text{IQR} = Q_3 - Q_1 = 6 - 3$ = **3 Tage** – die mittleren 50 % der Aufträge liegen in einem Bereich von nur 3 Tagen. Der IQR ist robust, weil er die Extremwerte ausblendet.
 
 ### 4.3 Varianz und Standardabweichung
 
@@ -120,7 +120,7 @@ Rechenweg in vier Schritten (immer so aufschreiben – jeder Schritt gibt Teilpu
 3. Abweichungen quadrieren und aufsummieren (= Summe der Abweichungsquadrate, SAQ)
 4. Durch n teilen → Varianz; Wurzel ziehen → Standardabweichung
 
-Beispiel Durchlaufzeiten (Tage): 2, 4, 5, 6, 8 → x̄ = 25/5 = 5
+Beispiel Durchlaufzeiten (Tage): 2, 4, 5, 6, 8 → $\bar{x} = \frac{25}{5} = 5$
 
 | x | x − x̄ | (x − x̄)² |
 |---|---|---|
@@ -131,17 +131,17 @@ Beispiel Durchlaufzeiten (Tage): 2, 4, 5, 6, 8 → x̄ = 25/5 = 5
 | 8 | 3 | 9 |
 | | **Σ = 0** | **Σ = 20** |
 
-Varianz σ² = 20 / 5 = **4** · Standardabweichung σ = √4 = **2 Tage**
+Varianz: $\sigma^2 = \frac{\sum (x_i - \bar{x})^2}{n} = \frac{20}{5}$ = **4** · Standardabweichung: $\sigma = \sqrt{4}$ = **2 Tage**
 
 **Kontrolle:** Die Summe der einfachen Abweichungen ist immer 0 – deshalb wird überhaupt quadriert. Nutze das als Rechenprobe!
 
-⚠️ **σ² (÷ n) oder s² (÷ n−1)?** Liegen alle Daten der **Grundgesamtheit** vor, wird durch n geteilt. Ist es eine **Stichprobe**, mit der auf die Grundgesamtheit geschlossen wird, durch n − 1. Im Beispiel: s² = 20/4 = 5 → s = 2,24. Beides ist richtig – **im jeweiligen Kontext**. Schreibe hin, welche Variante du verwendest und warum; das ist prüfungssicher.
+⚠️ **σ² (÷ n) oder s² (÷ n−1)?** Liegen alle Daten der **Grundgesamtheit** vor, wird durch n geteilt. Ist es eine **Stichprobe**, mit der auf die Grundgesamtheit geschlossen wird, durch n − 1. Im Beispiel: $s^2 = \frac{20}{4} = 5$ → $s = \sqrt{5} = 2{,}24$. Beides ist richtig – **im jeweiligen Kontext**. Schreibe hin, welche Variante du verwendest und warum; das ist prüfungssicher.
 
 **Interpretation:** Die Standardabweichung steht in derselben Einheit wie die Daten (Tage) und ist damit direkt interpretierbar; die Varianz ist eine quadrierte Hilfsgröße. Faustregel bei annähernder Normalverteilung: ca. 68 % der Werte liegen im Bereich x̄ ± 1σ, ca. 95 % im Bereich x̄ ± 2σ.
 
 ### 4.4 Variationskoeffizient
 
-VK = σ / x̄ (oft in %). Er macht die Streuung **vergleichbar** zwischen Datensätzen mit unterschiedlichem Niveau.
+$\text{VK} = \frac{\sigma}{\bar{x}}$ (oft in %). Er macht die Streuung **vergleichbar** zwischen Datensätzen mit unterschiedlichem Niveau.
 
 Beispiel: Team A: x̄ = 50 min, σ = 5 min → VK = 10 %. Team B: x̄ = 100 min, σ = 8 min → VK = 8 %. Team B streut **absolut** stärker (8 > 5), **relativ** aber weniger (8 % < 10 %) – arbeitet also gleichmäßiger. Genau diese Unterscheidung ist eine typische Beurteilungsfrage.
 
@@ -166,10 +166,10 @@ Beispiel: Team A: x̄ = 50 min, σ = 5 min → VK = 10 %. Team B: x̄ = 100 min,
 
 ### 5.2 Die 1,5-IQR-Regel
 
-Unterer Zaun = Q1 − 1,5 · IQR · Oberer Zaun = Q3 + 1,5 · IQR
+Unterer Zaun $= Q_1 - 1{,}5 \cdot \text{IQR}$ · Oberer Zaun $= Q_3 + 1{,}5 \cdot \text{IQR}$
 Werte außerhalb gelten als Ausreißerverdacht.
 
-Beispiel Lieferzeiten: Q1 = 3, Q3 = 6, IQR = 3 → unterer Zaun = 3 − 4,5 = −1,5 · oberer Zaun = 6 + 4,5 = **10,5**. Der Wert **19** liegt darüber → Ausreißer. Der obere Whisker endet beim größten Wert innerhalb der Grenze, also bei 8.
+Beispiel Lieferzeiten: Q1 = 3, Q3 = 6, IQR = 3 → unterer Zaun $= 3 - 4{,}5 = -1{,}5$ · oberer Zaun $= 6 + 4{,}5$ = **10,5**. Der Wert **19** liegt darüber → Ausreißer. Der obere Whisker endet beim größten Wert innerhalb der Grenze, also bei 8.
 
 ### 5.3 Umgang mit Ausreißern – die DPA-Kernkompetenz
 

@@ -52,8 +52,8 @@ Der Reklamationsgrund ist **nominal** skaliert – es gibt weder eine Rangfolge 
 
 **C1 (10 P):**
 Sortiert: 35, 40, 40, 45, 50, 55, 60, 65, 70, 90, 220 *(2 P)*
-- Arithmetisches Mittel = 770 / 11 = **70,00 Minuten** *(3 P)*
-- Median: n = 11 ist ungerade → Position (11+1)/2 = 6 → **55 Minuten** *(3 P)*
+- Arithmetisches Mittel: $\bar{x} = \frac{\sum x_i}{n} = \frac{770}{11}$ = **70,00 Minuten** *(3 P)*
+- Median: $n = 11$ ist ungerade → Position $\frac{n+1}{2} = \frac{11+1}{2} = 6$ → **55 Minuten** *(3 P)*
 - Modus = **40 Minuten** (einziger doppelt vorkommender Wert) *(2 P)*
 
 *Prüferkommentar: Wer nicht sortiert, bestimmt den Median fast immer falsch – die Sortierung ist deshalb eigenständig bepunktet. Einheit „Minuten" nicht vergessen.*
@@ -65,7 +65,7 @@ Berichtet werden sollte der **Median**, da er die typische Bearbeitungsdauer rob
 *Prüferkommentar: Volle Punktzahl nur mit dem Begriff „rechtsschief" oder einer gleichwertigen Beschreibung („durch große Werte nach oben verzerrt") UND einer begründeten Empfehlung.*
 
 **C3 (4 P):**
-Gewichtetes arithmetisches Mittel: (4 · 45 + 6 · 70) / 10 = (180 + 420) / 10 = 600 / 10 = **60,00 Minuten**
+Gewichtetes arithmetisches Mittel: $\bar{x} = \frac{\sum n_i \cdot x_i}{\sum n_i} = \frac{4 \cdot 45 + 6 \cdot 70}{10} = \frac{180 + 420}{10} = \frac{600}{10}$ = **60,00 Minuten**
 
 *Prüferkommentar: 2 P Ansatz, 2 P Ergebnis. Der ungewichtete Mittelwert (45+70)/2 = 57,5 ist falsch – 1 P Restpunkt für erkennbaren Rechenversuch.*
 
@@ -74,11 +74,11 @@ Gewichtetes arithmetisches Mittel: (4 · 45 + 6 · 70) / 10 = (180 + 420) / 10 =
 ## Block D – Streuungsmaße (18 P)
 
 **D1 (4 P):**
-Spannweite R = 220 − 35 = **185 Minuten**. *(2 P)*
+Spannweite: $R = x_{\max} - x_{\min} = 220 - 35$ = **185 Minuten**. *(2 P)*
 Beurteilung: Die Aussagekraft ist gering, da die Spannweite ausschließlich von den beiden Extremwerten abhängt. Sie wird hier allein durch den Ausreißer 220 bestimmt und beschreibt die tatsächliche Streuung der übrigen Aufträge (35–90 min) nicht. Aussagekräftiger sind IQR oder Standardabweichung. *(2 P)*
 
 **D2 (10 P):**
-x̄ = (2 + 4 + 5 + 6 + 8) / 5 = 25 / 5 = 5 Tage
+$\bar{x} = \frac{2 + 4 + 5 + 6 + 8}{5} = \frac{25}{5} = 5$ Tage
 
 | x | x − x̄ | (x − x̄)² |
 |---|---|---|
@@ -89,13 +89,13 @@ x̄ = (2 + 4 + 5 + 6 + 8) / 5 = 25 / 5 = 5 Tage
 | 8 | 3 | 9 |
 | **Σ 25** | **Σ 0** | **Σ 20** |
 
-Varianz σ² = 20 / 5 = **4 (Tage²)** · Standardabweichung σ = √4 = **2,00 Tage**
+Varianz: $\sigma^2 = \frac{\sum (x_i - \bar{x})^2}{n} = \frac{20}{5}$ = **4 (Tage²)** · Standardabweichung: $\sigma = \sqrt{\sigma^2} = \sqrt{4}$ = **2,00 Tage**
 
 *Prüferkommentar: 2 P Mittelwert, 3 P vollständige Abweichungstabelle, 2 P Summe der Abweichungsquadrate, 2 P Varianz, 1 P Standardabweichung. Wer mit n − 1 rechnet (s² = 5, s = 2,24), erhält volle Punktzahl **nur**, wenn die Stichprobenannahme ausdrücklich benannt wird – die Aufgabe verlangte die Grundgesamtheit. Kontrolle: Σ(x − x̄) muss 0 ergeben.*
 
 **D3 (4 P):**
-- Filiale Nord: VK = 5 / 50 = 0,10 = **10 %**
-- Filiale Süd: VK = 8 / 100 = 0,08 = **8 %**
+- Filiale Nord: $\text{VK} = \frac{\sigma}{\bar{x}} = \frac{5}{50} = 0{,}10$ = **10 %**
+- Filiale Süd: $\text{VK} = \frac{8}{100} = 0{,}08$ = **8 %**
 
 Beurteilung: Filiale Süd streut **absolut** stärker (8 min > 5 min), **relativ zum eigenen Niveau** jedoch geringer. Bezogen auf die jeweilige durchschnittliche Bearbeitungsdauer arbeitet damit **Filiale Süd gleichmäßiger**. *(2 P Berechnung, 2 P Beurteilung)*
 
@@ -107,15 +107,15 @@ Beurteilung: Filiale Süd streut **absolut** stärker (8 min > 5 min), **relativ
 
 **E1 (8 P):**
 Konvention: Position = n · p; bei nicht ganzzahligem Ergebnis wird aufgerundet und der Wert an dieser Position genommen. *(2 P – die Angabe der Konvention war ausdrücklich gefordert)*
-- Q1: 11 · 0,25 = 2,75 → aufrunden auf Position 3 → **Q1 = 40** *(2 P)*
-- Q3: 11 · 0,75 = 8,25 → aufrunden auf Position 9 → **Q3 = 70** *(2 P)*
-- **IQR = 70 − 40 = 30 Minuten** *(2 P)*
+- Q1: $n \cdot p = 11 \cdot 0{,}25 = 2{,}75$ → aufrunden auf Position 3 → **Q1 = 40** *(2 P)*
+- Q3: $n \cdot p = 11 \cdot 0{,}75 = 8{,}25$ → aufrunden auf Position 9 → **Q3 = 70** *(2 P)*
+- $\text{IQR} = Q_3 - Q_1 = 70 - 40$ = **30 Minuten** *(2 P)*
 
 *Prüferkommentar: Andere gängige Konventionen liefern hier leicht abweichende Werte (z. B. Q1 = 42,5 bei Interpolation). Diese werden voll anerkannt, sofern die Methode benannt und durchgängig angewendet wurde. Ohne Methodenangabe gibt es bei Abweichung von der Musterlösung Abzug – deshalb immer dazuschreiben.*
 
 **E2 (6 P):**
-- Unterer Zaun = Q1 − 1,5 · IQR = 40 − 45 = **−5** *(2 P)*
-- Oberer Zaun = Q3 + 1,5 · IQR = 70 + 45 = **115** *(2 P)*
+- Unterer Zaun: $Q_1 - 1{,}5 \cdot \text{IQR} = 40 - 1{,}5 \cdot 30 = 40 - 45$ = **−5** *(2 P)*
+- Oberer Zaun: $Q_3 + 1{,}5 \cdot \text{IQR} = 70 + 1{,}5 \cdot 30 = 70 + 45$ = **115** *(2 P)*
 - Ausreißer: **220** (einziger Wert außerhalb der Zäune) *(2 P)*
 
 *Prüferkommentar: Häufigster Fehler ist „1,5 · Q3" statt „1,5 · IQR". Der negative untere Zaun ist kein Fehler – er bedeutet lediglich, dass es nach unten keine Ausreißer geben kann.*

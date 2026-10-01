@@ -33,10 +33,10 @@ r misst Stärke und Richtung eines **linearen** Zusammenhangs und liegt immer zw
 
 **Formel (Prüfungsschreibweise):**
 
-r = S<sub>xy</sub> / √(S<sub>xx</sub> · S<sub>yy</sub>)
+$r = \dfrac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}}$
 
 mit
-S<sub>xy</sub> = Σ (x − x̄)(y − ȳ) · S<sub>xx</sub> = Σ (x − x̄)² · S<sub>yy</sub> = Σ (y − ȳ)²
+$S_{xy} = \sum (x - \bar{x})(y - \bar{y})$ · $S_{xx} = \sum (x - \bar{x})^2$ · $S_{yy} = \sum (y - \bar{y})^2$
 
 | |r| | Interpretation |
 |---|---|
@@ -80,7 +80,7 @@ Während die Korrelation nur die **Stärke** beschreibt, liefert die Regression 
 
 ## 2.1 Die Regressionsgerade
 
-ŷ = a + b · x
+$\hat{y} = a + b \cdot x$
 
 - **b** = Steigung = Änderung von y, wenn x um **eine Einheit** steigt (die inhaltlich wichtigste Zahl!)
 - **a** = Achsenabschnitt = rechnerischer y-Wert bei x = 0
@@ -88,9 +88,9 @@ Während die Korrelation nur die **Stärke** beschreibt, liefert die Regression 
 
 **Berechnung:**
 
-b = S<sub>xy</sub> / S<sub>xx</sub> · a = ȳ − b · x̄
+$b = \dfrac{S_{xy}}{S_{xx}}$ · $a = \bar{y} - b \cdot \bar{x}$
 
-Die Gerade wird nach der **Methode der kleinsten Quadrate** bestimmt: Die Summe der quadrierten senkrechten Abstände zwischen Beobachtungen und Gerade wird minimiert. Diese Abstände heißen **Residuen** (e = y − ŷ).
+Die Gerade wird nach der **Methode der kleinsten Quadrate** bestimmt: Die Summe der quadrierten senkrechten Abstände zwischen Beobachtungen und Gerade wird minimiert. Diese Abstände heißen **Residuen** ($e = y - \hat{y}$).
 
 ## 2.2 Durchgerechnetes Beispiel
 
@@ -105,29 +105,29 @@ Werbebudget x (in T€) und Umsatz y (in T€) über fünf Monate:
 | 5 | 5 | 56 | 2 | 12 | 24 | 4 |
 | **Σ** | **15** | **220** | 0 | 0 | **64** | **10** |
 
-x̄ = 15/5 = 3 · ȳ = 220/5 = 44
+$\bar{x} = \frac{15}{5} = 3$ · $\bar{y} = \frac{220}{5} = 44$
 
-**b = 64 / 10 = 6,4** · **a = 44 − 6,4 · 3 = 44 − 19,2 = 24,8**
+$b = \frac{64}{10}$ = **6,4** · $a = 44 - 6{,}4 \cdot 3 = 44 - 19{,}2$ = **24,8**
 
-**Regressionsgleichung: ŷ = 24,8 + 6,4 · x**
+**Regressionsgleichung:** $\hat{y} = 24{,}8 + 6{,}4 \cdot x$
 
 **Interpretation (so formulieren!):** Je zusätzlich eingesetzten 1.000 € Werbebudget steigt der Umsatz im Durchschnitt um 6.400 €. Der Achsenabschnitt von 24,8 T€ ist der rechnerische Grundumsatz ohne Werbung – ob er fachlich sinnvoll ist, hängt davon ab, ob x = 0 im beobachteten Wertebereich liegt.
 
-**Prognose für x = 6:** ŷ = 24,8 + 6,4 · 6 = **63,2 T€**
+**Prognose für x = 6:** $\hat{y} = 24{,}8 + 6{,}4 \cdot 6$ = **63,2 T€**
 
 ⚠️ **Extrapolationswarnung:** Beobachtet wurde nur der Bereich x = 1 bis 5. Eine Prognose für x = 20 wäre unzulässig – außerhalb des Datenbereichs gilt der lineare Zusammenhang nicht notwendigerweise weiter (Sättigungseffekte). Diese Einschränkung **immer dazuschreiben**, sie ist regelmäßig eigenständig bepunktet.
 
 ## 2.3 Bestimmtheitsmaß R²
 
-R² = r² und liegt zwischen 0 und 1. Es gibt den **Anteil der Streuung von y an, der durch das Modell erklärt wird**.
+$R^2 = r^2$ und liegt zwischen 0 und 1. Es gibt den **Anteil der Streuung von y an, der durch das Modell erklärt wird**.
 
-Im Beispiel: S<sub>yy</sub> = 424 → r = 64 / √(10 · 424) = 64 / 65,12 = **0,983** → **R² = 0,966**
+Im Beispiel: $S_{yy} = 424$ → $r = \frac{64}{\sqrt{10 \cdot 424}} = \frac{64}{65{,}12}$ = **0,983** → $R^2 = 0{,}983^2$ = **0,966**
 
 Interpretation: Rund 96,6 % der Umsatzschwankungen lassen sich durch das Werbebudget erklären; die restlichen 3,4 % gehen auf andere Einflüsse zurück (Saison, Wettbewerb, Zufall).
 
 **Grenzen von R²:** Ein hohes R² bedeutet **nicht**, dass das Modell richtig oder der Zusammenhang kausal ist. Es misst nur, wie gut die Gerade zu **diesen** Daten passt. Bei wenigen Datenpunkten ist ein hohes R² schnell erreicht und wenig aussagekräftig.
 
-**Residuen prüfen:** e = y − ŷ. Im Beispiel: −1,2 / +2,4 / −2,0 / +1,6 / −0,8. Erwünscht ist eine **zufällige** Streuung um null. Zeigen die Residuen ein Muster (z. B. erst alle negativ, dann alle positiv), ist der Zusammenhang nicht linear und das Modell ungeeignet.
+**Residuen prüfen:** $e = y - \hat{y}$. Im Beispiel: −1,2 / +2,4 / −2,0 / +1,6 / −0,8. Erwünscht ist eine **zufällige** Streuung um null. Zeigen die Residuen ein Muster (z. B. erst alle negativ, dann alle positiv), ist der Zusammenhang nicht linear und das Modell ungeeignet.
 
 > ❓ **Prüferfrage:** Ihr Modell hat R² = 0,95. Ein Kollege sagt: „Damit können wir den Umsatz sicher vorhersagen." Beurteilen Sie das.
 > *Das ist zu optimistisch. R² beschreibt nur die Anpassungsgüte an die vorliegenden Daten. Aussagekraft für die Zukunft besteht nur, wenn sich die Rahmenbedingungen nicht ändern, die Prognose innerhalb des beobachteten Wertebereichs liegt und das Modell an unabhängigen Daten geprüft wurde – bei fünf Datenpunkten ist ein hohes R² zudem leicht zu erreichen.*
@@ -144,7 +144,7 @@ Glättet kurzfristige Schwankungen und macht den Trend sichtbar. Beim **3-Period
 
 Beispiel (Monatsumsatz in T€): 120, 138, 126, 150, 144, 168, 156, 180
 
-Erster Wert: (120 + 138 + 126) / 3 = **128,0** · zweiter: (138 + 126 + 150) / 3 = **138,0** · dritter: (126 + 150 + 144) / 3 = **140,0** …
+Erster Wert: $\frac{120 + 138 + 126}{3}$ = **128,0** · zweiter: $\frac{138 + 126 + 150}{3}$ = **138,0** · dritter: $\frac{126 + 150 + 144}{3}$ = **140,0** …
 
 Geglättete Reihe: 128,0 · 138,0 · 140,0 · 154,0 · 156,0 · 168,0
 
@@ -152,10 +152,10 @@ Der zackige Verlauf verschwindet, der steigende Trend wird klar erkennbar. **Pre
 
 ## 3.2 Wachstumsraten
 
-Veränderung gegenüber Vorperiode = (neuer Wert − alter Wert) / alter Wert · 100
+Veränderung gegenüber Vorperiode $= \frac{\text{neuer Wert} - \text{alter Wert}}{\text{alter Wert}} \cdot 100$
 
-Von 120 auf 138: (138 − 120) / 120 = 0,15 = **+15,0 %**
-Gesamtentwicklung 120 → 180: (180 − 120) / 120 = **+50,0 %**
+Von 120 auf 138: $\frac{138 - 120}{120} = 0{,}15$ = **+15,0 %**
+Gesamtentwicklung 120 → 180: $\frac{180 - 120}{120}$ = **+50,0 %**
 
 ⚠️ **Häufiger Fehler:** Prozentwerte einzelner Perioden dürfen nicht einfach addiert oder gemittelt werden – jede Rate bezieht sich auf eine andere Basis. Für die durchschnittliche Wachstumsrate über mehrere Perioden ist das **geometrische Mittel** korrekt.
 

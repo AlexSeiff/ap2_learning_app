@@ -14,7 +14,7 @@
 4. **Ausreißer:** einzelne weit abseits liegende Punkte, die Korrelation und Regressionsgerade stark verzerren können.
 
 **A2 (8 P):**
-x̄ = 42/6 = 7 Stunden · ȳ = 42/6 = 7 %
+$\bar{x} = \frac{42}{6} = 7$ Stunden · $\bar{y} = \frac{42}{6} = 7$ %
 
 | x | y | x − x̄ | y − ȳ | (x−x̄)(y−ȳ) | (x−x̄)² | (y−ȳ)² |
 |---|---|---|---|---|---|---|
@@ -26,7 +26,7 @@ x̄ = 42/6 = 7 Stunden · ȳ = 42/6 = 7 %
 | 12 | 5,0 | 5 | −2,0 | −10,00 | 25 | 4,00 |
 | **Σ 42** | **Σ 42** | 0 | 0 | **−30,00** | **70** | **13,00** |
 
-r = −30 / √(70 · 13) = −30 / √910 = −30 / 30,17 = **−0,99**
+$r = \frac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}} = \frac{-30}{\sqrt{70 \cdot 13}} = \frac{-30}{\sqrt{910}} = \frac{-30}{30{,}17}$ = **−0,99**
 
 *Prüferkommentar: 2 P Mittelwerte, 3 P vollständige Abweichungstabelle, 2 P korrekte Summen S<sub>xy</sub>/S<sub>xx</sub>/S<sub>yy</sub>, 1 P Endergebnis. Kontrolle: Beide Abweichungsspalten müssen sich zu 0 summieren. Ein positives r ist hier ein Vorzeichenfehler und kostet zusätzlich die Interpretationspunkte in A3.*
 
@@ -66,7 +66,7 @@ Mögliche Drittvariable: die **Unternehmensgröße bzw. das Auftragsvolumen** �
 ## Block C – Lineare Regression (30 P)
 
 **C1 (12 P):**
-x̄ = 15/5 = 3 · ȳ = 220/5 = 44
+$\bar{x} = \frac{15}{5} = 3$ · $\bar{y} = \frac{220}{5} = 44$
 
 | x | y | x − x̄ | y − ȳ | (x−x̄)(y−ȳ) | (x−x̄)² |
 |---|---|---|---|---|---|
@@ -77,10 +77,10 @@ x̄ = 15/5 = 3 · ȳ = 220/5 = 44
 | 5 | 56 | 2 | 12 | 24 | 4 |
 | **Σ 15** | **Σ 220** | 0 | 0 | **64** | **10** |
 
-b = S<sub>xy</sub> / S<sub>xx</sub> = 64 / 10 = **6,4**
-a = ȳ − b · x̄ = 44 − 6,4 · 3 = 44 − 19,2 = **24,8**
+$b = \frac{S_{xy}}{S_{xx}} = \frac{64}{10}$ = **6,4**
+$a = \bar{y} - b \cdot \bar{x} = 44 - 6{,}4 \cdot 3 = 44 - 19{,}2$ = **24,8**
 
-**Regressionsgleichung: ŷ = 24,8 + 6,4 · x**
+**Regressionsgleichung:** $\hat{y} = 24{,}8 + 6{,}4 \cdot x$
 
 *Prüferkommentar: 2 P Mittelwerte, 4 P Abweichungstabelle, 2 P S<sub>xy</sub> und S<sub>xx</sub>, 2 P b, 2 P a. Wer a und b vertauscht (ŷ = 6,4 + 24,8x), verliert 4 P – Kontrolle: Setze x̄ ein, es muss ȳ herauskommen (24,8 + 6,4 · 3 = 44 ✓). Diese Probe kostet zehn Sekunden und rettet regelmäßig Punkte.*
 
@@ -91,13 +91,13 @@ a = ȳ − b · x̄ = 44 − 6,4 · 3 = 44 − 19,2 = **24,8**
 *Prüferkommentar: Der Vorbehalt zum Achsenabschnitt ist eigenständig bepunktet (2 der 3 P). Er unterscheidet das reine Ablesen vom Verstehen.*
 
 **C3 (6 P):**
-- x = 6: ŷ = 24,8 + 6,4 · 6 = 24,8 + 38,4 = **63,20 T€** *(2 P)*
-- x = 20: ŷ = 24,8 + 6,4 · 20 = 24,8 + 128 = **152,80 T€** *(2 P)*
+- $x = 6$: $\hat{y} = 24{,}8 + 6{,}4 \cdot 6 = 24{,}8 + 38{,}4$ = **63,20 T€** *(2 P)*
+- $x = 20$: $\hat{y} = 24{,}8 + 6{,}4 \cdot 20 = 24{,}8 + 128$ = **152,80 T€** *(2 P)*
 
 Beurteilung: Die Prognose für x = 6 liegt knapp außerhalb, aber nahe am beobachteten Bereich (1 bis 5) und ist unter Vorbehalt vertretbar. Die Prognose für x = 20 ist eine **unzulässige Extrapolation** – sie liegt weit außerhalb der Datenbasis. Ein linearer Zusammenhang gilt dort nicht notwendigerweise weiter; realistisch sind Sättigungseffekte, bei denen zusätzliche Werbeausgaben immer weniger zusätzlichen Umsatz bringen. *(2 P)*
 
 **C4 (6 P):**
-Residuen e = y − ŷ:
+Residuen $e = y - \hat{y}$:
 
 | Monat | y | ŷ | e |
 |---|---|---|---|
@@ -116,8 +116,8 @@ Zu achten ist auf eine **zufällige, musterlose Streuung um null**: Positive und
 ## Block D – Modellgüte (16 P)
 
 **D1 (6 P):**
-r = S<sub>xy</sub> / √(S<sub>xx</sub> · S<sub>yy</sub>) = 64 / √(10 · 424) = 64 / √4240 = 64 / 65,12 = **0,98**
-R² = r² = 0,98² ≈ **0,97** (exakt 0,9660)
+$r = \frac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}} = \frac{64}{\sqrt{10 \cdot 424}} = \frac{64}{\sqrt{4240}} = \frac{64}{65{,}12}$ = **0,98**
+$R^2 = r^2 = 0{,}98^2$ ≈ **0,97** (exakt 0,9660)
 
 *(3 P r, 3 P R². Der Rechenweg über R² = r² muss erkennbar sein.)*
 
@@ -144,23 +144,23 @@ Der Wert 15 statt 55 liegt weit unter dem Trend und wirkt als **Ausreißer mit s
 ## Block E – Zeitreihen (12 P)
 
 **E1 (6 P):**
-- (120 + 138 + 126) / 3 = 384 / 3 = **128,00**
-- (138 + 126 + 150) / 3 = 414 / 3 = **138,00**
-- (126 + 150 + 144) / 3 = 420 / 3 = **140,00**
-- (150 + 144 + 168) / 3 = 462 / 3 = **154,00**
+- $\frac{120 + 138 + 126}{3} = \frac{384}{3}$ = **128,00**
+- $\frac{138 + 126 + 150}{3} = \frac{414}{3}$ = **138,00**
+- $\frac{126 + 150 + 144}{3} = \frac{420}{3}$ = **140,00**
+- $\frac{150 + 144 + 168}{3} = \frac{462}{3}$ = **154,00**
 
 *(4 P für die vier Werte)*
 
 Zweck: Kurzfristige, zufällige Schwankungen werden geglättet, sodass der **längerfristige Trend** sichtbar wird – hier ein deutlicher Aufwärtstrend, der in der ungeglätteten Zackenreihe schwer erkennbar ist. Nachteil: Am Anfang und Ende der Reihe entfallen Werte, und aktuelle Ausschläge werden abgeschwächt. *(2 P)*
 
 **E2 (3 P):**
-- Monat 1 → 2: (138 − 120) / 120 = 0,15 = **+15,00 %** *(1,5 P)*
-- Monat 1 → 8: (180 − 120) / 120 = 0,50 = **+50,00 %** *(1,5 P)*
+- Monat 1 → 2: $\frac{138 - 120}{120} = 0{,}15$ = **+15,00 %** *(1,5 P)*
+- Monat 1 → 8: $\frac{180 - 120}{120} = 0{,}50$ = **+50,00 %** *(1,5 P)*
 
 **E3 (3 P):**
 Beide Angaben beschreiben dieselbe Veränderung, sind aber unterschiedlich bezogen. Korrekt formuliert:
 - „Die Reklamationsquote ist um **2 Prozentpunkte** gestiegen." (absolute Differenz der Prozentwerte)
-- „Die Reklamationsquote ist um **50 Prozent** gestiegen." (relative Veränderung: 2/4 = 0,5)
+- „Die Reklamationsquote ist um **50 Prozent** gestiegen." (relative Veränderung: $\frac{2}{4} = 0{,}5$)
 
 Die Angabe „+2 %" ist **falsch** – sie verwechselt Prozentpunkte mit Prozent. *(2 P für beide korrekten Formulierungen, 1 P für die Feststellung des Fehlers)*
 
