@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–7 done incl. 4.4/4.5, without 7.5, October 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–7 done incl. 4.4/4.5, without 7.5, and 8.1–8.4, October 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -49,7 +49,8 @@ sql.js (SQLite/WASM), CodeMirror 6, `@anthropic-ai/sdk`.
 ```
 lern-app/
 ├─ shared/            used by client, server and tests (no file-system access)
-│  ├─ config.ts         constants: EXAM_MINUTES, NEW_PER_SESSION, JOURNAL_INTERVALS, CARD_INTERVALS, SAVE_DELAY_MS, DEV_PORT
+│  ├─ config.ts         constants: EXAM_MINUTES, NEW_PER_SESSION, JOURNAL_INTERVALS, CARD_INTERVALS, SAVE_DELAY_MS, DEV_PORT,
+│  │                    HEUTE_MINUTEN / HEUTE_ZEITEN / HEUTE_KARTEN_BLOCK (8.1), SICHER_RICHTIG_AB (8.3)
 │  ├─ types.ts          content model (Topic, Task, Flashcard, Deck, Exam, SqlDataset, SqlExercise, Content …)
 │  ├─ parser.ts         Markdown sheet + solution parser (pure, line/regex based)
 │  ├─ prueferfragen.ts  Prüferfrage blocks: read, split and strip (pure)
@@ -77,14 +78,16 @@ lern-app/
 ├─ public/icons/      PWA icons (192, 512, maskable 512, apple-touch-icon 180), generated once from the desktop icon
 ├─ src/
 │  ├─ pages/            one file per page, mostly rendering
-│  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useRechenUebung, useConfirm, useBackupDownload
+│  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useRechenUebung, useConfirm, useBackupDownload,
+│  │                    useHeute (running „Heute lernen“ session)
 │  ├─ components/       AnswerInput, Markdown (+ MathMarkdown, markdownComponents), TheoryMarkdown, Rechenweg, TaskParts, ErrorBoundary,
-│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs, MobileNav (bottom bar < 600 px), UpdateHinweis (PWA toast)
+│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs, MobileNav (bottom bar < 600 px), UpdateHinweis (PWA toast),
+│  │                    HeuteLeiste, EigeneAntwort, SicherheitWahl, OperatorTipp (phase 8)
 │  ├─ lib/              pure logic (progress, grading, stats, cards, leicht + leichtRechnen (Leicht-Modus), shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar,
 │  │                    rechnen (RechenState updates/selectors), wiederholung (repetition stages, SQL + Rechnen), uebungLabels)
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
 │  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts, pwa.ts (service worker registration),
-│  │                    navigation.ts (bottom bar groups, pure)
+│  │                    navigation.ts (bottom bar groups, pure), heute + heuteSitzung (8.1), kalibrierung (8.3), operatoren + operatorStil (8.4)
 │  ├─ rechnen/          Rechenübungen (pure, no React): typen.ts, zufall.ts (seeded PRNG), hilfen.ts (statistics helpers, LoesungsBau,
 │  │                    vorlage()), vorlagen/*.ts (28 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
 │  │                    checker.ts (input checking + Fehlerbilder), formeln.ts (Formelsammlung data, also used by the Rechenwege)
@@ -282,17 +285,19 @@ AI-generated tasks (`data/`) never go into the Pages build.
 
 | Route | Page | What it does |
 |---|---|---|
-| `/` | Dashboard | Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, Rechenübungen KPI ("x/y gelöst", due repetitions), average exam score + IHK grade, progress and exam trend per topic, weakest topics |
+| `/` | Dashboard | Button "▶ Heute lernen" (§ 5 "Heute lernen"). Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, Rechenübungen KPI ("x/y gelöst", due repetitions), average exam score + IHK grade, progress and exam trend per topic, weakest topics, "🎯 Selbsteinschätzung" (calibration, § 5 phase 8.3) |
+| `/heute` | Heute lernen | lazy page: plan of today's mixed round, start, progress, skip, end (§ 5 "Heute lernen") |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
-| `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below) |
-| `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
-| `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet |
+| `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below); optional "✍️ Deine Antwort" field (8.2); `?karten=ID,ID,…` = exactly these cards (used by "Heute lernen") |
+| `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, "Wie sicher bist du?" per task (8.3), operators marked (8.4), solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
+| `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet; task page asks "Wie sicher bist du?" before submitting (8.3); operators in task texts are marked (8.4) |
 | `/druck` | Druck | print view (task sheet or solution sheet, same numbering) → "Als PDF speichern"; also Markdown download |
 | `/sql`, `/sql/uebungen`, `/sql/uebung/:id` | SQL-Editor | free mode + exercises (see § 7) |
 | `/rechnen`, `/rechnen/:id` | Rechenübungen | list with filters in the URL (Thema, Schwierigkeit, Tag, Status), progress bar, "Nächste offene"; exercise page (see below) |
 | `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only (Pages: no nav item, the route redirects to `/`) |
-| `/material`, `/material/:docId` | Material | cheat sheet, topic list, tile "📏 Formelsammlung" |
+| `/material`, `/material/:docId` | Material | cheat sheet, topic list, tiles "📏 Formelsammlung" and "🗣️ Operatoren-Trainer" |
+| `/material/operatoren` | Operatoren-Trainer | lazy page: quiz "Was verlangt der Operator hier?" with real tasks, table of all operators (§ 5 phase 8.4) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
@@ -404,13 +409,81 @@ mode is meant as an entry point; the Dashboard shows "🟢 Leicht-Modus ist zum 
   with a wrong choice restarts the repetition (due tomorrow, like a wrong check); a right round changes nothing else. Because the right
   values were visible, the result card offers "✏️ Mit neuen Zahlen eintippen" (template exercises).
 
+### Heute lernen (phase 8.1)
+
+- **Planner** `planeHeute(content, progress, { today, zufall, minuten })` in `src/lib/heute.ts` (pure, `tests/heute.test.ts`). Target
+  `HEUTE_MINUTEN` = 20 min; estimates in `HEUTE_ZEITEN` (`shared/config.ts`): card 0.5 min (Leicht 0.33), task 0.9 min per point (min 3),
+  SQL 5, Rechnen 5. Steps:
+  1. **Fehlerjournal**: due open entries (oldest due first) until about half the time, at least one.
+  2. **One task from the weakest topic** (lowest last exam, else Ø tasks; without any data the topic with the fewest attempts): a task never
+     attempted (random), else the one with the worst last result; never one of the planned repetitions, never AI tasks.
+  3. **1–2 exercises**: due SQL and Rechenübungen (oldest due first, at most 2); none due → one unsolved exercise, preferably of the weakest topic.
+  4. **Cards** with the remaining time (at least 5 if available): due cards (longest due, lowest box first), then new ones (≤ `NEW_PER_SESSION`).
+     `cardPool` applies the Prüferfragen/Fachgespräch switches; in Leicht-Modus only cards with 4 answers. Grouped per topic (deck if no
+     topic) into blocks of at most `HEUTE_KARTEN_BLOCK` = 8.
+  5. **Interleaving** (`verschraenke`): greedy, always the topic with the most remaining items that is not the previous one → never the same topic
+     twice in a row unless only one is left; the order within a topic is kept.
+
+  Randomness is seeded by the date (`textSeed(today)`), so the plan stays the same for a day unless progress changes.
+- **Flow**: every plan item has a `link` into the existing pages (`/aufgabe/:id?modus=wiederholung`, `/aufgabe/:id`, `/sql/uebung/:id`,
+  `/rechnen/:id`, `/karteikarten?karten=…`). "▶ Los geht's" stores the session and opens the first link; `components/HeuteLeiste.tsx` (above every
+  page while a session runs, not on `/heute`) shows "Schritt n/m: …" and **"Weiter →"** (last step: "Fertig ✓"), which marks the step done and
+  opens the next one. `/heute` shows the list with ✓/⏭/▶, "⏭ Überspringen", "Runde beenden" and, when done, "🎉 Runde geschafft" + "Noch eine Runde".
+  The pages themselves are unchanged – learning is recorded as usual. Karteikarten with `?karten=` show "▶ Heute lernen: n Karten" and a start
+  button (no auto start: setting state in an effect is against the lint rules, and a click is more robust).
+- **Session** (`src/lib/heuteSitzung.ts`, pure + tiny store for `useSyncExternalStore`): `{ datum, items, index, erledigt, uebersprungen }` in
+  `localStorage` key **`ap2-heute`** (try/catch, read tolerantly with `leseSitzung`). Only valid on the same day and device – it is navigation
+  state, not progress, so it is not part of `Progress` or the backup.
+- Entry points: Dashboard button (shows "fortsetzen (n/m)" while running), sidebar "▶ Heute lernen", first entry of the mobile "Üben" menu.
+
+### Deine Antwort (phase 8.2)
+
+In "🃏 Aufdecken" a textarea "✍️ Deine Antwort (optional)" sits **below** the card (outside the clickable `role=button` card, so typing never
+flips it). After flipping, `AntwortVergleich` shows your text (plain text, `pre-wrap`) next to the model answer (stacked below 600 px).
+**Strg+Enter** flips. The global shortcuts (Space, 1–3) ignore events from `input`, `select`, `textarea` and `contenteditable`. The text lives
+only in `useCardSession` state and is cleared for the next card – **not persisted**. Components in `components/EigeneAntwort.tsx`.
+
+### Selbsteinschätzung „Wie sicher bist du?“ (phase 8.3)
+
+- Single tasks and exams ask before submitting (optional; clicking the chosen level again clears it): 1 😟 unsicher · 2 🤔 teils · 3 💪 sicher
+  (`components/SicherheitWahl.tsx`, `aria-pressed`). Single task: stored with the attempt; exam: `activeExam.sicherheit[taskId]` (only before
+  submission, `useExamRun.setSicherheit`), copied into each attempt by `finishExam`. After revealing, "Deine Einschätzung: …" is shown.
+- **Calibration** (`src/lib/kalibrierung.ts`, pure): per level the number of attempts, how many were **"richtig" = at least `SICHER_RICHTIG_AB` = 80 %
+  of the points** (≈ grade 2; full points are rare for open tasks), the rate and the average score. Dashboard card "🎯 Selbsteinschätzung" (only
+  with data): "Bei „sicher“ lagst du in 64 % richtig (7 von 11 Aufgaben · Ø 78 % der Punkte)". Hint from `KALIBRIERUNG_MIN` = 5 attempts per
+  level: "sicher" < 70 % → "⚠️ Vorsicht, falsche Sicherheit"; "unsicher" ≥ 70 % → "Du kannst mehr, als du denkst"; otherwise "passt".
+- Format decision: see § 6 (optional fields, no version bump).
+
+### Operatoren (phase 8.4)
+
+- **Data** `src/lib/operatoren.ts` (`OPERATOREN`, 29 entries): every operator that appears in italics in the Übungsklausuren plus the du-forms of the
+  Rechenübungen – nennen, angeben, benennen, notieren, definieren, beschreiben, darstellen, skizzieren, zeichnen (Anforderungsbereich I);
+  berechnen, ermitteln, bestimmen, zuordnen, erstellen, formulieren, erläutern, erklären, vergleichen, abgrenzen, interpretieren, analysieren,
+  prüfen, durchführen, ableiten (II); begründen, beurteilen, bewerten, entwickeln, entwerfen (III). Each with `verlangt` (one sentence), typical
+  `punkte`, a `tipp` and its trigger forms. Most frequent in `content/` (tasks containing it): erläutern 61, nennen 43, berechnen 31, angeben 23,
+  beurteilen 23, begründen 18, benennen 14, beschreiben 14, zuordnen 14; 188 of 258 tasks contain at least one.
+- **Tokenizer** `findeOperatoren(text)` (pure, tested): the Sie-form (= infinitive) only with "Sie" right after it ("*Nennen* Sie", "und *begründen* Sie");
+  the du-form at the start of a (partial) sentence ("Berechne …", "… und gib … an"); separable verbs only with their particle in the same sentence
+  ("Geben Sie … an" → angeben, "Stellen Sie … dar" → darstellen, "Grenzen Sie … ab", "Leiten Sie … ab", "Führen Sie … durch"; "Ordnen Sie" counts
+  as zuordnen even without "zu"). So "Stellen Sie sich vor", "an dieser Stelle" or "Wie würden Sie das bewerten?" are not marked. Only the verb is
+  marked. 304 of 306 italic operator forms in the tasks are recognised (the two misses are "geben Sie … Beispiele / eine Empfehlung" without "an").
+- **Marking** `rehypeOperatoren` (`src/lib/operatorStil.ts`) runs on the HTML tree, only for `<Markdown operatoren>` = `TaskText` (single tasks and
+  exams; not solutions, theory, flashcards or `/druck`). Per block (p, li, td, th, headings) the text nodes are joined (so "*Geben* Sie … *an*"
+  across nodes works) and split at the hits into `<span class="operator" data-operator="…">`; code, links and formulas are skipped, the Markdown
+  source is never changed. `components/OperatorTipp.tsx` renders it focusable (`tabindex=0`) with a `role="tooltip"` linked by `aria-describedby`,
+  visible on hover and keyboard focus; Escape leaves it; hidden in print.
+- **Trainer** `/material/operatoren` (lazy `pages/Operatoren.tsx`): quiz `operatorFrage(aufgaben, zufall)` – a random real task with an operator,
+  "Was verlangt der Operator „…“ hier?", 4 answers (`verlangt` texts: the right one plus 3 others, at least one from another Anforderungsbereich),
+  feedback with points and tip, score of this visit (not stored); table of all operators with Anforderungsbereich, requirement, points, tip and the
+  number of tasks using it.
+
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
 print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top) and below 600 px (bottom bar, see below).
 
 ### Mobile (phase 7.2, 7.3)
 
 - **Below 600 px** the sidebar is hidden and `components/MobileNav.tsx` shows a fixed **bottom bar** with five places: 🏠 Übersicht,
-  📖 Lernen, 🃏 Karteikarten, ✏️ **Üben** (menu: Übungsklausur, Einzelaufgaben, SQL-Editor, Rechenübungen) and ☰ **Mehr** (menu: Fehlerjournal,
+  📖 Lernen, 🃏 Karteikarten, ✏️ **Üben** (menu: ▶ Heute lernen, Übungsklausur, Einzelaufgaben, SQL-Editor, Rechenübungen) and ☰ **Mehr** (menu: Fehlerjournal,
   KI-Aufgaben (local app only), Material, Einstellungen, Daten & Import, theme toggle, save state). Both are always rendered; CSS decides which
   is visible, so the desktop sidebar (≥ 900 px) and the wrapped row (600–899 px) are unchanged.
 - Groups and path matching are pure (`src/lib/navigation.ts`: `UEBEN_ZIELE`, `MEHR_ZIELE`, `aktiveGruppe`, `badgeSumme`, tested): the place of the
@@ -436,7 +509,7 @@ print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the 
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
 - **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
   (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every
-  current browser uses woff2). Today **48 entries, about 3.5 MB**. `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
+  current browser uses woff2). Today **50 entries, about 3.5 MB**. `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
   Navigations fall back to the cached `index.html`, so the app starts offline after the first visit (SQL editor and formulas included).
 - **Updates** (`registerType: 'prompt'`, no `skipWaiting`/`clientsClaim`): every precached file has a revision hash in `sw.js`, so any change
   (also only `content.json` after `npm run sync-content`) changes `sw.js`. The browser installs the new worker, which then **waits**.
@@ -459,7 +532,7 @@ Defined in `shared/progress.ts`, **`PROGRESS_VERSION = 6`**.
 type Progress = {
   version: 6;
   revision: number;                        // bumped on every save; stale tab → 409 (v2)
-  attempts: Attempt[];                     // task attempts (taskId, points, max, date, answer)
+  attempts: Attempt[];                     // task attempts (taskId, points, max, date, mode, sicherheit?)
   exams: ExamRun[]; activeExam?: ExamRun;
   cards: Record<string, CardState>;        // Leitner box + due, keyed by flashcard id
   journal: Record<string, JournalEntry>;   // error journal (stage, due, resolvedAt)
@@ -471,6 +544,12 @@ type Progress = {
   rechnenDays: Record<string, number>;     // checked Rechenübungen per day, for the streak (v6)
   settings: Settings;                      // per-user settings, part of the backup (v5)
 };
+
+type Attempt = {
+  taskId: string; date: string; points: number; max: number; mode: 'klausur' | 'einzel' | 'wiederholung';
+  sicherheit?: 1 | 2 | 3;        // "Wie sicher bist du?" before submitting (phase 8.3, optional, no version bump)
+};
+// ExamRun additionally has sicherheit?: Record<taskId, 1 | 2 | 3> (chosen before submission, copied into the attempts by finishExam).
 
 type RechenState = {
   attempts: number;              // counted "✓ Prüfen" clicks
@@ -503,7 +582,12 @@ type Settings = {
   and `migrateSettings` already kept unknown fields, so every v5 file (old or new) is valid and nothing needs converting.
   `leichtAutomatisch` (phase 6.4) was added the same way (optional boolean, missing = on, a wrong type is dropped): every v6 file stays valid,
   so `PROGRESS_VERSION` stays **6**. Phase 6 needed no other format change (Leicht answers use the existing `CardState`/`RechenState` fields).
+  **Phase 8.3** added `Attempt.sicherheit` and `ExamRun.sicherheit` the same way (decision: optional fields, no bump): `AttemptSchema` and
+  `ExamRunSchema` are loose objects and `migrateAttempt`/`migrateExam` already kept unknown fields, so every v6 file stays valid and an older
+  app (e.g. a not yet updated PWA) keeps the fields too. `migrateAttempt`/`migrateExam` now drop invalid values (anything but 1, 2, 3);
+  `checkProgressPut` rejects them. Fixture `tests/fixtures/fortschritt-v6-2026-10-01.json` (v6 before 8.3) is tested to load unchanged.
   Adding a **required** field or changing a meaning still needs a version bump.
+  Not in `Progress`: the "Heute lernen" session (`localStorage` `ap2-heute`, per day and device, § 5) and the "Deine Antwort" text (not stored).
   Backup files are read with `parseBackup` (`src/lib/backup.ts`, used by Daten & Import and the welcome screen).
   **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`, one per version).
 - Settings are changed only through `withSettings` (`src/lib/settings.ts`). "Fortschritt zurücksetzen" keeps the settings. The theme stays in `localStorage` (per device).
@@ -523,8 +607,10 @@ type Settings = {
   - Downloads go through `useBackupDownload` (all modes): file `ap2-lernapp-sicherung-YYYY-MM-DD.json` (`backupFileName`), then
     `settings.lastBackupDownloadAt = today`.
 - **Merge on import** (`shared/mergeProgress.ts`, `mergeProgress(current, incoming)`, pure, `tests/mergeProgress.test.ts`), both sides migrated:
-  - `attempts`: union, duplicate = same `taskId` + `date`, sorted by date (stable) → never fewer attempts than before.
+  - `attempts`: union, duplicate = same `taskId` + `date`, sorted by date (stable) → never fewer attempts than before. For a duplicate the
+    current attempt wins, but a missing `sicherheit` is taken from the backup (8.3).
   - `exams`: union by `id`; in both → the more advanced run (finished > submitted > started, then later time); sorted by finish time.
+    The chosen run carries its `sicherheit` map.
   - `activeExam`: this browser's running exam; the backup's only if none runs here; dropped if the merged history has it finished.
   - `cards`: `CardState` has no date → more `reviews` wins, then later `due`.
   - `sql`, `rechnen`: newer `lastCheckedAt` wins (then more attempts/hints); the earliest `solvedAt` of both sides is kept.
@@ -609,6 +695,11 @@ npm run build && npm run build:pages
   `rechenInhalte.smoke.test.ts` reads numbers inside formulas as text (`70{,}00` = 70,00).
 - Phase 7: `pwa.test.ts` (manifest paths relative, icons exist in the declared size, precache patterns, prompt update; update state),
   `navigation.test.ts` (bottom bar groups, badges, render), `pagesOhneKi.test.ts` (no AI UI in the Pages build).
+- Phase 8.1–8.4: `heute.test.ts` (planner: weakest topic, exercises, journal share, cards incl. settings and Leicht, interleaving, day seed,
+  real content; session), `heuteSeite.test.ts` (`/heute`, Dashboard button, `?karten=`), `eigeneAntwort.test.ts`, `kalibrierung.test.ts`
+  (calibration, threshold, `finishExam`, `SicherheitWahl`), `sicherheitSeiten.test.ts` (task, exam, Dashboard card), `progress.test.ts`/
+  `mergeProgress.test.ts` (v6 fixture, `sicherheit` migration/schema/merge), `operatoren.test.ts` (tokenizer incl. false positives, coverage of
+  the italic operators in `content/` > 95 %, marking keeps Markdown and skips code, quiz), `operatorenSeite.test.ts` (trainer, Material tile, task page).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)

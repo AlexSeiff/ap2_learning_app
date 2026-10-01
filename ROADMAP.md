@@ -269,7 +269,7 @@ Implementation notes (7.1–7.4, details: DOKUMENTATION § 5 "Mobile" and "PWA",
 - 7.3: 44 px minimum height for buttons, selects and inputs below 600 px (small helper buttons excepted). Swipe on flashcards not done (optional).
 - 7.4: no AI UI on Pages: nav item (sidebar + Mehr), `/generator` → redirect to `/`, KI-Bewertung button, "Quelle" filter, KI section on Daten.
 
-## Phase 8 – More learning effect [C]
+## Phase 8 – More learning effect [C] (8.1–8.4 ✅ done)
 
 Ordered by expected benefit per effort:
 
@@ -282,6 +282,24 @@ Ordered by expected benefit per effort:
     ("Bei 'sicher' lagst du in 64 % richtig"). Reveals false confidence before the exam.
 8.4 **Operatoren-Trainer**: the IHK operators (nennen, beschreiben, erläutern, beurteilen, berechnen …) with what each requires and how many
     points it typically gives; highlight operators in task texts with a tooltip. Many points are lost by answering the wrong operator.
+Implementation notes (8.1–8.4, details: DOKUMENTATION § 5 "Heute lernen", "Deine Antwort", "Selbsteinschätzung", "Operatoren" and § 6):
+- 8.1 ✅ Pure planner `planeHeute` (`src/lib/heute.ts`): Fehlerjournal up to half of the 20 minutes (at least one), one task from the weakest
+  topic (never attempted first), 1–2 due SQL/Rechenübungen (else one unsolved, preferably from the weakest topic), due cards (else new ones) with
+  the remaining time – Prüferfragen/Fachgespräch settings and Leicht-Modus respected –, card blocks of ≤ 8 per topic, interleaved so the topic
+  changes every step. Time estimates in `shared/config.ts` (`HEUTE_*`). Flow: Dashboard button → `/heute` (lazy) → each step opens the existing
+  page; a bar above every page offers "Weiter →". Session per day and device in `localStorage` (`ap2-heute`), not in `Progress`.
+  Karteikarten accept `?karten=ID,…`. Mobile: first entry of the Üben menu.
+- 8.2 ✅ "✍️ Deine Antwort" below the card (outside the clickable card), shown next to the model answer after flipping, Strg+Enter flips,
+  shortcuts ignore typing. Not persisted (cleared per card).
+- 8.3 ✅ "Wie sicher bist du?" (1–3, optional) on the task page and per exam task. **Decision: optional fields `Attempt.sicherheit` and
+  `ExamRun.sicherheit`, no version bump** (the schemas are loose and the migration kept unknown fields, like `lastBackupDownloadAt`);
+  invalid values are dropped on migration and rejected by `checkProgressPut`; merge fills a missing value from the backup; v6 fixture added.
+  "Richtig" = at least 80 % of the points (`SICHER_RICHTIG_AB`). Dashboard card "🎯 Selbsteinschätzung" with a hint from 5 attempts per level.
+- 8.4 ✅ 29 operators actually used in the sheets (data module with Anforderungsbereich, requirement, typical points, tip). Tokenizer handles
+  Sie-/du-forms and separable verbs ("Geben Sie … an"); 304 of 306 italic operators in the tasks recognised. A rehype plugin marks them in task
+  texts only (Markdown untouched), accessible tooltip on hover/focus. Trainer `/material/operatoren` (lazy): quiz with real tasks + table.
+  Simplified: the quiz score is not stored; there is no setting to switch the marking off.
+
 8.5 **Mixed mock exam**: a 90-minute exam assembled across topics like the real AP2 (blocks weighted by the topic list), not only per Deep Dive.
 8.6 **Faded worked examples** for Rechenübungen: first time all steps shown, then one step missing, then only the result, based on the stage.
 8.7 **Error categories in the Fehlerjournal**: after self-assessment choose why ("Begriff verwechselt", "Formel falsch", "Rechenfehler",
@@ -318,5 +336,5 @@ Ordered by expected benefit per effort:
 
 ## Suggested order
 
-Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (Done up to 7 and 4.4/4.5; next: 8.)
+Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (Done up to 7, 4.4/4.5 and 8.1–8.4; next: 8.5–8.9.)
 Phases 1–3 are small (about 1 day together) and make the app safe for other users; 5 and 6 are the largest (mostly content writing).
