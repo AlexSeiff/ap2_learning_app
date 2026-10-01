@@ -474,6 +474,7 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .welcome { padding-left: 1.3em; }
 .welcome li { margin: 0.8em 0; }
 .welcome .field { margin-top: 8px; max-width: 260px; }
+.filters input[type='checkbox'] { min-width: 0; }
 .filters label.check { flex-direction: row; align-items: center; align-self: flex-end; gap: 6px; font-size: 0.9rem; color: var(--text); padding-bottom: 8px; cursor: pointer; }
 
 /* Prüferfragen in der Theorie */
@@ -516,3 +517,14 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
   .md { overflow-wrap: break-word; }
 }
 @media print { .bottom-nav { display: none !important; } }
+
+/* Touch (Roadmap 7.3): auf dem Handy mindestens 44 px hohe Tippflächen */
+@media (max-width: 599px) {
+  button:not(.small):not(.schema-col):not(.history-item), .button:not(.small), select, input:not([type='checkbox']):not([type='radio']):not(.re-zelle input) { min-height: 44px; }
+  .re-zelle input { min-height: 36px; }
+  input[type='checkbox'], input[type='radio'] { width: 20px; height: 20px; }
+  .choice { padding: 9px 0; }
+  .filters label.check { min-height: 44px; padding-bottom: 0; }
+  summary { padding: 8px 0; }
+  .tabs a { padding: 11px 14px; }
+}
