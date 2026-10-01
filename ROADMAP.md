@@ -121,7 +121,7 @@ Stray `$` are escaped by the Pandoc rule before parsing (`escapeStrayDollars`); 
 rehype plugins in `src/lib/loesungStil.ts` (result box only for bold number + unit after `=`/`→` or a bold equation ending in number + unit).
 `Rechenweg` + `shared/rechenweg.ts` (`RechenSchritt`) are used by the Rechenübungen (phase 5). Details: DOKUMENTATION § 5. Still open: 4.4 (needs the owner's OK) and 4.5.
 
-## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U] (5.1–5.6 ✅ done)
+## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U] ✅ done
 
 5.1 **Content file `AP-2/AP2_Rechen_Uebungen.json`** (synced like the SQL file; `isContentFile()` matches `*Rechen_Uebungen*.json`),
     parser `shared/rechenUebungen.ts` (zod, ImportIssues), `Content.rechenUebungen`.
@@ -173,7 +173,7 @@ rehype plugins in `src/lib/loesungStil.ts` (result box only for bold number + un
 5.7 **Starting content**: every "Berechnen" task of the sheets as a fixed exercise + at least one generated variant per template (~60 exercises).
     Write the JSON in `AP-2/` (owner's OK), then sync.
 
-Implementation notes (5.1–5.6):
+Implementation notes (5.1–5.7):
 - 5.1: format as above plus optional `params`, `neueZahlen`, `erklaerung`; `eingaben` entries may be plain ids; exercises without a template give
   `loesung` per input. The template check runs at import (`BuildOptions.pruefeRechenUebung`) → ImportIssues. Full format: DOKUMENTATION § 4.4.
 - 5.2: 27 templates (`lagemasse`, `gewichtetes-mittel`, `quartile`, `varianz`, `variationskoeffizient`, `haeufigkeiten`, `korrelation`,
@@ -189,7 +189,10 @@ Implementation notes (5.1–5.6):
 - 5.6: sheet examples per template (`rechenVorlagen.test.ts`), property tests over 150 seeds per template, content smoke test (fixed exercises
   must reproduce the numbers in the model solution of their `quelleAufgabe`), page render smoke test. The property tests found one bug
   (Fehlerbild "arithmetic instead of harmonic mean" for F1 was indistinguishable from the right value when P ≈ R) – fixed.
-- Open: 5.7 (≈ 30 more exercises: generated variants and the remaining "Berechnen" tasks; the starting set has 32, one per template/sheet task).
+- 5.7: **85 exercises** (57 fixed, 28 generated – one per template). Fixed: every calculation task of the Übungsklausuren plus the
+  calculation examples of the theory parts (source "DDn Teil …", checked against the theory text by the smoke test). New template `pert`
+  (Drei-Zeiten-Schätzung, DD12 3.1); `assoziation` now keeps every article in "Neue Zahlen". Skipped as non-calculations: DD13 lookups
+  (Pausen, Betriebsratsgröße, Günstigkeitsprinzip) and Kündigungstermine. More than the planned ~60 because the theory examples were added too.
 
 ## Phase 6 – Leicht-Modus: 4 answers, 1 correct [U]
 

@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3 and 5.1–5.6 done, October 2026).
+> this file describes **the app as it is** (state: ROADMAP phases 0–3, 4.1–4.3 and 5.1–5.7 done, October 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -80,7 +80,7 @@ lern-app/
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
 │  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts
 │  ├─ rechnen/          Rechenübungen (pure, no React): typen.ts, zufall.ts (seeded PRNG), hilfen.ts (statistics helpers, LoesungsBau,
-│  │                    vorlage()), vorlagen/*.ts (27 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
+│  │                    vorlage()), vorlagen/*.ts (28 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
 │  │                    checker.ts (input checking + Fehlerbilder)
 │  └─ sql/              sqlWorker.ts, engine.ts, runner.ts, checker.ts, errors.ts, lint.ts, types.ts
 ├─ tests/             Vitest; fixtures/ with old progress formats and a mini sheet set
@@ -222,6 +222,7 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 | `netzplan` | `{ vorgaenge: [{ id (1–4 chars), name?, dauer, vorgaenger: id[] }] (2–15), einheit? (default "Tage") }`, start = 0 | `FAZ_<id>`, `FEZ_<id>`, `SAZ_<id>`, `SEZ_<id>`, `GP_<id>`, `FP_<id>`, `projektdauer`, `kritischerPfad` (menge) – entered as a table | `dauerMin`, `dauerMax` | `vorgaenge`, `einheit` |
 | `nutzwert` | `{ kriterien: [{ name, gewicht }] (2–10, sum 100), alternativen: [{ name, punkte: number[per criterion] }] (2–5) }` | `teilA_K` (r2, alternative A, criterion K), `nutzwertA` (r2), `beste` (text) | – | `kriterien`, `alternativen` |
 | `risiko` | `{ risiken: [{ name, w, s }] (1–10) }` | `rpzN`, `hoechstes*` (text) | – | `risiken` |
+| `pert` | `{ vorgaenge: [{ name, o, m, p }] (1–8, o ≤ m ≤ p), einheit? (default "Tage") }` | `teN` (r2, (o + 4m + p) / 6), with ≥ 2 packages `summe` (r2) | `vorgaenge` (count) | `nameN`, `oN`, `mN`, `pN`, `anzahl`, `einheit` |
 | **WiSo** (DD14) | | | | |
 | `sozialversicherung` | `{ brutto, zusatzbeitrag, kinderlos, azubi?, lohnsteuer?, kirchensteuersatz?, soli?, saetze? }` (rates of the sheet in `SAETZE`: KV 14,6 %, PV 3,6 % + 0,6 % kinderlos, RV 18,6 %, ALV 2,6 %, Geringverdiener 325 €; `saetze` overrides) | `kv`, `pv`, `rv`, `alv`, `sv` (€ r2, each rounded to cents), `svSatz*`; with `lohnsteuer`: `kirchensteuer`, `netto` | `brutto` | `brutto`, `zusatzbeitrag`, `kinderlos`, `lohnsteuer`, `kirchensteuersatz` |
 | `minijob` | `{ grenze, stundenlohn }` | `stunden` (rounded down), `verdienst*` (€) | – | `grenze`, `stundenlohn` |
@@ -233,7 +234,13 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 `(r2)` = rounded to 2 decimals by default; every result has a default label and unit, which `eingaben` can override.
 The exact ids for given data are easiest to see in the solution table of the exercise page or with
 `VORLAGEN[id].loese(VORLAGEN[id].schema.parse(daten)).felder` (e.g. in a Vitest test). Look at `content/AP2_Rechen_Uebungen.json`
-for one worked example per template (32 exercises today: one fixed exercise per sheet task of DD3–DD7, DD9, DD10, DD12–DD14).
+for worked examples. **Content today: 85 exercises** – 57 fixed (53 with a template, 4 without: JArbSchG/BUrlG/Reallohn) and 28 generated
+(no `daten`, one per template). Fixed exercises cover every calculation task of the sheets: the Übungsklausur tasks (`quelleAufgabe`
+"DDn Übungsklausur X1") and the calculation examples in the theory parts (`quelleAufgabe` "DDn Teil 4.3" etc. – the smoke test then
+looks for the numbers in the theory sections of that sheet). Per sheet: DD3 17, DD4 12, DD5 8, DD6 7, DD7 7, DD9 3, DD10 4, DD11 1, DD12 13,
+DD13 3, DD14 10. IDs: `RE-ST1`/`ST2` (DD3/DD4), `MG` (DD7), `ML` (DD6), `PA` (DD5), `DQ` (DD9), `VI` (DD11), `PM` (DD12), `WI` (DD13/DD14),
+`IT` (DD10); the file is sorted in this order. Not included (no arithmetic or no number to check): pure lookups in DD13 (Pausen B1/B5,
+Betriebsrat D1, Günstigkeitsprinzip E3), Kündigungstermine (dates), DD11 algorithm/pseudocode tasks.
 
 **New template**: file in `src/rechnen/vorlagen/`, defined with `vorlage({ id, titel, bereich, beschreibung, schema, erzeuge, loese, platzhalter,
 tabelle?, hinweise })`; `loese` uses `LoesungsBau` (`wert`, `schritt`, `fehler`, `fertig(layout?)`). Register it in `vorlagen/index.ts`,
