@@ -35,7 +35,8 @@ export function useCardFilters() {
     return filterCards(pool, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe });
   }, [pool, auswahlParam, f.thema, f.deck, f.art, f.typ, f.stufe]);
   const deck = useMemo(() => (leichtModus ? alle.filter((c) => leicht.has(c.id)) : alle), [alle, leicht, leichtModus]);
-  return { f, set, deck, alle, pool, leicht, leichtModus, auswahl: auswahlParam !== null };
+  // ?von=suche: die Auswahl kommt aus der globalen Suche (ROADMAP 8.8), nicht aus „Heute lernen“.
+  return { f, set, deck, alle, pool, leicht, leichtModus, auswahl: auswahlParam !== null, ausSuche: params.get('von') === 'suche' };
 }
 
 /** Auswahl im Leicht-Modus: die gemischten Antworten der aktuellen Karte und die gewählte (null = noch offen). */

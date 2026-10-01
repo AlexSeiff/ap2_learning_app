@@ -36,6 +36,34 @@ const Heute = lazy(() => import('./pages/Heute').then((m) => ({ default: m.Heute
 const Operatoren = lazy(() => import('./pages/Operatoren').then((m) => ({ default: m.Operatoren })));
 // Formelsammlung lazy: zieht KaTeX nach.
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
+// Globale Suche lazy: Index und Dialog laden erst beim ersten Öffnen (Strg+K oder „🔎 Suchen“).
+const SucheDialog = lazy(() => import('./components/SucheDialog').then((m) => ({ default: m.SucheDialog })));
+
+/** Suche öffnen/schließen; Strg+K (Mac: ⌘K) überall in der App. Nach dem Schließen geht der Fokus zurück. */
+function useSuche() {
+  const [offen, setOffen] = useState(false);
+  const [vorher, setVorher] = useState<HTMLElement | null>(null);
+  const oeffnen = () => {
+    setVorher(document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    setOffen(true);
+  };
+  const schliessen = () => {
+    setOffen(false);
+    vorher?.focus();
+  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setVorher(document.activeElement instanceof HTMLElement ? document.activeElement : null);
+        setOffen(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  return { offen, oeffnen, schliessen };
+}
 
 function useTheme() {
   const [theme, setTheme] = useState<string>(() => {
@@ -59,7 +87,7 @@ function useTheme() {
   return { icon, toggle: () => setTheme(next), label: `Design: ${theme === 'system' ? 'System' : theme === 'dark' ? 'Dunkel' : 'Hell'}` };
 }
 
-function Nav() {
+function Nav({ onSuche }: { onSuche: () => void }) {
   const { content, progress, saveState } = useStore();
   const theme = useTheme();
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
@@ -89,6 +117,10 @@ function Nav() {
     <>
       <nav className="sidebar">
         <div className="brand">🎓 AP2 Lern-App</div>
+        <button type="button" className="suche-knopf" onClick={onSuche} title="Suchen (Strg+K)">
+          <span>🔎 Suchen</span>
+          <kbd>Strg K</kbd>
+        </button>
         {link('/', 'Übersicht')}
         {link('/heute', '▶ Heute lernen')}
         {link('/lernen', 'Lernen')}
@@ -111,6 +143,7 @@ function Nav() {
         </div>
       </nav>
       <MobileNav
+        onSuche={onSuche}
         badges={{ sql: dueSql, rechnen: dueRechnen, journal: dueJournal }}
         theme={theme}
         saveText={saveText}
@@ -149,13 +182,22 @@ function PageErrorBoundary({ children }: { children: ReactNode }) {
 export function App() {
   return (
     <HashRouter>
+      <Layout />
+    </HashRouter>
+  );
+}
+
+function Layout() {
+  const sucheSteuerung = useSuche();
+  return (
+    <>
       <Routes>
         <Route path="/druck" element={<Druck />} />
         <Route
           path="*"
           element={
             <div className="layout">
-              <Nav />
+              <Nav onSuche={sucheSteuerung.oeffnen} />
               <main>
                 <SaveErrorBanner />
                 <HeuteLeiste />
@@ -197,10 +239,15 @@ export function App() {
                 </PageErrorBoundary>
               </main>
               {IS_STATIC && <UpdateHinweis />}
+              {sucheSteuerung.offen && (
+                <Suspense fallback={null}>
+                  <SucheDialog onClose={sucheSteuerung.schliessen} />
+                </Suspense>
+              )}
             </div>
           }
         />
       </Routes>
-    </HashRouter>
+    </>
   );
 }

@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
 import { BEREICH_TEXT, OPERATOREN, OPERATOR_NACH_ID, operatorFrage, operatorHaeufigkeit, type OperatorFrage } from '../lib/operatoren';
+import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
 
 /** Operatoren-Trainer (ROADMAP 8.4): Quiz „Was verlangt dieser Operator?“ mit echten Aufgaben und eine Übersicht aller Operatoren. */
 export function Operatoren() {
   const { content } = useStore();
+  useStelle();
   const aufgaben = useMemo(
     () =>
       Object.values(content.tasks)

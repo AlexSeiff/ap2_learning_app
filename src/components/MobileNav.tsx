@@ -4,6 +4,8 @@ import { IS_STATIC } from '../lib/api';
 import { aktiveGruppe, badgeSumme, MEHR_ZIELE, type NavBadge, type NavGruppe, type NavZiel, UEBEN_ZIELE } from '../lib/navigation';
 
 type Props = {
+  /** Öffnet die globale Suche (ROADMAP 8.8) – erster Eintrag im Menü „Mehr“. */
+  onSuche: () => void;
   badges: Record<NavBadge, number>;
   theme: { icon: string; label: string; toggle: () => void };
   saveText: string;
@@ -15,7 +17,7 @@ type Menue = 'ueben' | 'mehr';
 const Badge = ({ n }: { n: number }) => (n > 0 ? <span className="nav-badge">{n}</span> : null);
 
 /** Untere Navigation unter 600 px (Roadmap 7.2). Darüber bleibt die Seitenleiste; per CSS ist immer nur eine sichtbar. */
-export function MobileNav({ badges, theme, saveText, saveState }: Props) {
+export function MobileNav({ onSuche, badges, theme, saveText, saveState }: Props) {
   const { pathname } = useLocation();
   // Das Menü merkt sich die Seite, auf der es geöffnet wurde – nach einem Seitenwechsel ist es damit zu.
   const [geoeffnet, setGeoeffnet] = useState<{ menue: Menue; pfad: string } | null>(null);
@@ -98,6 +100,16 @@ export function MobileNav({ badges, theme, saveText, saveState }: Props) {
             liste(UEBEN_ZIELE)
           ) : (
             <>
+              <button
+                type="button"
+                className="bn-suche"
+                onClick={() => {
+                  setGeoeffnet(null);
+                  onSuche();
+                }}
+              >
+                🔎 Suchen
+              </button>
               {liste(mehrZiele)}
               <div className="bn-foot">
                 <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>

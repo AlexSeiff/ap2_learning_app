@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
+import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
 import { cardPool } from '../lib/cards';
 import { TheoryMarkdown } from '../components/TheoryMarkdown';
@@ -36,6 +37,7 @@ export function Thema() {
   const { topicId } = useParams();
   const { content, progress, update } = useStore();
   const topic = content.topics.find((t) => t.id === topicId);
+  useStelle(!!topic);
   if (!topic)
     return (
       <div className="page">

@@ -49,6 +49,7 @@ describe('Navigation für Handys (Roadmap 7.2)', () => {
         MemoryRouter,
         { initialEntries: ['/sql'] },
         createElement(MobileNav, {
+          onSuche: () => {},
           badges: { sql: 2, rechnen: 0, journal: 1 },
           theme: { icon: '🖥️', label: 'Design: System', toggle: () => {} },
           saveText: '✓ gespeichert',

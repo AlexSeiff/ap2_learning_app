@@ -4,6 +4,7 @@
 import type { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { Tex } from '../components/Rechenweg';
+import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
 import { type Formel, formelnNachThema, THEMA_NAMEN, uebungenLink } from '../rechnen/formeln';
 
@@ -43,6 +44,7 @@ function FormelKarte({ formel, anzahl }: { formel: Formel; anzahl: number }) {
 
 export function Formelsammlung() {
   const { content } = useStore();
+  useStelle();
   const gruppen = formelnNachThema();
   const anzahl = (f: Formel) => content.rechenUebungen.filter((u) => u.vorlage && f.vorlagen.includes(u.vorlage)).length;
   const gesamt = gruppen.reduce((s, g) => s + g.formeln.length, 0);

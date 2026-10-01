@@ -27,7 +27,7 @@ const KIND_LABELS: Record<Flashcard['kind'], string> = {
 export function Karteikarten() {
   const { content, progress, update } = useStore();
   const { settings } = progress;
-  const { f, set, deck, alle, pool, leicht, leichtModus, auswahl } = useCardFilters();
+  const { f, set, deck, alle, pool, leicht, leichtModus, auswahl, ausSuche } = useCardFilters();
   const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next, eigeneAntwort, setEigeneAntwort } =
     useCardSession();
   const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
@@ -207,7 +207,9 @@ export function Karteikarten() {
       {auswahl && (
         <div className="card info actions">
           <span>
-            ▶ Heute lernen: {deck.length} {deck.length === 1 ? 'Karte' : 'Karten'} für diesen Schritt.
+            {ausSuche
+              ? `🔎 Aus der Suche: ${deck.length} ${deck.length === 1 ? 'Karte' : 'Karten'}.`
+              : `▶ Heute lernen: ${deck.length} ${deck.length === 1 ? 'Karte' : 'Karten'} für diesen Schritt.`}
           </span>
           {deck.length > 0 && (
             <button type="button" onClick={() => startRunde(deck)} autoFocus={!session}>
