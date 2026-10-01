@@ -39,6 +39,7 @@ describe('Druckansicht /druck', () => {
     const html = render('/druck?thema=03&art=loesungen');
     expect(html).toContain('<span class="ergebnis-label">Ergebnis</span><strong>70,00 Minuten</strong>');
     expect(html).toContain('pk-box');
+    expect(html).toContain('class="katex"');
     expect(html).toContain('class="punkte rechts"');
   });
 

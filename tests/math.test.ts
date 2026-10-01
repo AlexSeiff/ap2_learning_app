@@ -85,7 +85,7 @@ describe('Formeln in content/ (Roadmap 4.4)', () => {
         expect(() => katex.renderToString(tex, { throwOnError: true, strict: 'ignore' }), `${f}: ${tex}`).not.toThrow();
       }
     }
-    expect(anzahl).toBeGreaterThanOrEqual(0);
+    expect(anzahl).toBeGreaterThanOrEqual(180); // Stand Roadmap 4.4: 182 Formeln in Lösungen und Theorie
   });
 
   it('Endergebnisse stehen fett hinter der Formel, nicht als \\mathbf in ihr (sonst kein Ergebnis-Kasten)', () => {

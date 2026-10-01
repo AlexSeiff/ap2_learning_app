@@ -40,13 +40,13 @@
 Häufiger Fehler: 253,80 € – der Zuschlag für Kinderlose ab 23 wurde vergessen. Lea ist 24 und kinderlos, also fällt er an.
 
 **A5 (4 P):** **2.299,75 €**
-- SV-Arbeitnehmeranteil: 3.200 € × 21,15 % = 676,80 € (ein Kind → kein Kinderlosenzuschlag)
-- Kirchensteuer: 205,00 € × 9 % = 18,45 €
-- Netto: 3.200,00 − 676,80 − 205,00 − 18,45 = **2.299,75 €**
+- SV-Arbeitnehmeranteil: $3.200\ \text{€} \cdot 21{,}15\ \% = 676{,}80\ \text{€}$ (ein Kind → kein Kinderlosenzuschlag)
+- Kirchensteuer: $205{,}00\ \text{€} \cdot 9\ \% = 18{,}45\ \text{€}$
+- Netto: $3.200{,}00 - 676{,}80 - 205{,}00 - 18{,}45$ = **2.299,75 €**
 
 Häufiger Fehler: Kirchensteuer vom Bruttolohn statt von der Lohnsteuer berechnet.
 
-**A6 (4 P):** **43 Stunden** – 603 € / 13,90 € = 43,38 → höchstens 43 volle Stunden (43 × 13,90 € = 597,70 €). Mit 44 Stunden wären es 611,60 € – die Grenze wäre überschritten und die Aushilfe fiele in den Übergangsbereich.
+**A6 (4 P):** **43 Stunden** – $\frac{603\ \text{€}}{13{,}90\ \text{€}} = 43{,}38$ → höchstens 43 volle Stunden ($43 \cdot 13{,}90\ \text{€} = 597{,}70\ \text{€}$). Mit 44 Stunden wären es 611,60 € – die Grenze wäre überschritten und die Aushilfe fiele in den Übergangsbereich.
 
 **A7 (4 P):** **(4)** – Der Arbeitgeber zahlt bis zu **sechs Wochen** Entgeltfortzahlung – das gilt auch für Auszubildende. Ab der siebten Woche zahlt die Krankenkasse **Krankengeld** (70 % des Bruttos, höchstens 90 % des Nettos).
 
@@ -90,7 +90,7 @@ Häufiger Fehler: Kirchensteuer vom Bruttolohn statt von der Lohnsteuer berechne
 
 **D2 (4 P):** **14 €** – Bei 14 € stimmen angebotene und nachgefragte Menge (je 650) überein – dort wird die größtmögliche Menge umgesetzt.
 
-**D3 (4 P):** **2,50 %** – (123,0 − 120,0) / 120,0 × 100 = 3,0 / 120,0 × 100 = **2,50 %**. Häufiger Fehler: 3 % – die Differenz der Indexpunkte ist nicht die Inflationsrate, sie muss auf den Ausgangswert bezogen werden.
+**D3 (4 P):** **2,50 %** – $\frac{123{,}0 - 120{,}0}{120{,}0} \cdot 100 = \frac{3{,}0}{120{,}0} \cdot 100$ = **2,50 %**. Häufiger Fehler: 3 % – die Differenz der Indexpunkte ist nicht die Inflationsrate, sie muss auf den Ausgangswert bezogen werden.
 
 **D4 (4 P):** **(5)** – Ein **ausgeglichener Staatshaushalt** ist kein Ziel des magischen Vierecks. Die vier Ziele sind Preisniveaustabilität, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht und stetiges, angemessenes Wachstum.
 

@@ -251,9 +251,9 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 
 ## 4.5 Inflation und BIP
 
-**Inflationsrate = (VPI neu − VPI alt) / VPI alt · 100.** Beispiel: 120,0 → 123,0 ergibt **2,50 %**. Der Verbraucherpreisindex misst die Preisentwicklung eines repräsentativen Warenkorbs.
+**Inflationsrate:** $\dfrac{\text{VPI}_{\text{neu}} - \text{VPI}_{\text{alt}}}{\text{VPI}_{\text{alt}}} \cdot 100$. Beispiel: 120,0 → 123,0 ergibt **2,50 %**. Der Verbraucherpreisindex misst die Preisentwicklung eines repräsentativen Warenkorbs.
 
-**Reallohn:** Steigt der Nominallohn um 4 % bei 2,5 % Inflation, wächst die Kaufkraft nur um rund 1,5 % (Näherung Nominal minus Inflation; exakt 1,04 / 1,025 − 1 = 1,46 %).
+**Reallohn:** Steigt der Nominallohn um 4 % bei 2,5 % Inflation, wächst die Kaufkraft nur um rund 1,5 % (Näherung Nominal minus Inflation; exakt $\frac{1{,}04}{1{,}025} - 1 = 1{,}46\ \%$).
 
 **Ursachen:** Nachfrageinflation (Nachfrage übersteigt Angebot) und Kosteninflation (steigende Energie-, Lohn- oder Rohstoffkosten). **Folgen:** Kaufkraftverlust, Entwertung von Ersparnissen, Vorteil für Schuldner. **Deflation** ist ebenso gefährlich: Konsum wird aufgeschoben, Investitionen sinken.
 

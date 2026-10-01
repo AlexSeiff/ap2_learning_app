@@ -41,7 +41,7 @@
 
 **B1 (4 P):** **60 Minuten** – Nach dem **JArbSchG** stehen Jugendlichen bei mehr als sechs Stunden Arbeitszeit 60 Minuten Ruhepause zu. Häufiger Fehler: 30 Minuten nach ArbZG – das gilt nur für Erwachsene.
 
-**B2 (4 P):** **32 Stunden** – Ein Berufsschultag mit mehr als fünf Unterrichtsstunden à 45 Minuten wird einmal pro Woche mit **8 Stunden** angerechnet; an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. 40 − 8 = **32 Stunden** für die übrigen Tage.
+**B2 (4 P):** **32 Stunden** – Ein Berufsschultag mit mehr als fünf Unterrichtsstunden à 45 Minuten wird einmal pro Woche mit **8 Stunden** angerechnet; an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. $40 - 8$ = **32 Stunden** für die übrigen Tage.
 
 **B3 (4 P):** **(3)** – Seit 2020 gilt § 15 Abs. 2 Nr. 5 BBiG **für alle Azubis**: Am Arbeitstag unmittelbar vor der schriftlichen Abschlussprüfung besteht Freistellung, angerechnet mit der durchschnittlichen täglichen Ausbildungszeit.
 

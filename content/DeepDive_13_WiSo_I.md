@@ -117,7 +117,7 @@ Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (
 ## 2.3 Bundesurlaubsgesetz
 
 - Mindesturlaub **24 Werktage** (Sechs-Tage-Woche) = **20 Arbeitstage** bei einer Fünf-Tage-Woche.
-- Voller Anspruch erst nach **sechs Monaten Wartezeit**. Davor: Teilurlaub von **1/12 je vollem Beschäftigungsmonat**. Beispiel Eintritt 01.08.: 5 volle Monate → 24 × 5/12 = **10 Werktage** im ersten Kalenderjahr. Bruchteile ab einem halben Tag werden aufgerundet.
+- Voller Anspruch erst nach **sechs Monaten Wartezeit**. Davor: Teilurlaub von **1/12 je vollem Beschäftigungsmonat**. Beispiel Eintritt 01.08.: 5 volle Monate → $24 \cdot \frac{5}{12}$ = **10 Werktage** im ersten Kalenderjahr. Bruchteile ab einem halben Tag werden aufgerundet.
 - Urlaub ist grundsätzlich im laufenden Jahr zu nehmen; Übertragung bis **31.03.** nur aus dringenden Gründen.
 
 ## 2.4 Weitere Schutzvorschriften
