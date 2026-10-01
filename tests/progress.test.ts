@@ -298,6 +298,11 @@ describe('migrateProgress', () => {
     expect(migrateSettings({ lastBackupDownloadAt: '2026-09-30' })).toEqual({ ...defaultSettings(), lastBackupDownloadAt: '2026-09-30' });
     for (const bad of ['30.09.2026', 42, null]) expect(migrateSettings({ lastBackupDownloadAt: bad })).toEqual(defaultSettings());
     expect(ProgressSchema.safeParse({ version: 5, attempts: [], settings: { lastBackupDownloadAt: '2026-09-30' } }).success).toBe(true);
+    // leichtAutomatisch (Phase 6.4, optional, ohne neue Version): nur boolean bleibt, fehlt = an
+    expect(migrateSettings({ leichtAutomatisch: false })).toEqual({ ...defaultSettings(), leichtAutomatisch: false });
+    for (const bad of ['nein', 0, null]) expect(migrateSettings({ leichtAutomatisch: bad })).toEqual(defaultSettings());
+    expect(ProgressSchema.safeParse({ version: 6, attempts: [], settings: { leichtAutomatisch: false } }).success).toBe(true);
+    expect(ProgressSchema.safeParse({ version: 6, attempts: [], settings: { leichtAutomatisch: 'nein' } }).success).toBe(false);
     for (const raw of [undefined, null, 'x', []]) expect(migrateSettings(raw)).toEqual(defaultSettings());
     const migrated = migrateProgress({ version: 5, attempts: [], settings: { examDate: '2026-11-25', prueferfragen: false } });
     expect(migrated.settings).toEqual({ ...defaultSettings(), examDate: '2026-11-25', prueferfragen: false });

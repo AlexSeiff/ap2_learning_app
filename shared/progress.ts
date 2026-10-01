@@ -92,7 +92,7 @@ export type Settings = {
   prueferfragen: boolean;
   /** Fachgespräch-Fragen aus den Lernblättern als Karteikarten zeigen. */
   fachgespraech: boolean;
-  /** Zuletzt gewählter Karteikarten-Modus „Leicht“ (4 Antworten). */
+  /** Zuletzt gewählter Modus „Leicht“ (4 Antworten) – Karteikarten und Rechenübungen („Ergebnis auswählen“). */
   leichtModus: boolean;
   /** Nach wie vielen Tagen ohne heruntergeladene Sicherung erinnert wird. */
   backupReminderDays: number;
@@ -101,6 +101,11 @@ export type Settings = {
    * Optional und in Version 5 schon zulässig (SettingsSchema ist offen, migrateSettings behält es) – daher keine neue Version.
    */
   lastBackupDownloadAt?: string;
+  /**
+   * Leicht-Modus: Karten ohne eigenen mc-Block bekommen automatisch Antworten anderer Karten (ROADMAP 6.4). Fehlt = an.
+   * Optional wie lastBackupDownloadAt – jede Datei der Version 6 bleibt gültig, daher keine neue Version.
+   */
+  leichtAutomatisch?: boolean;
 };
 
 export const defaultSettings = (): Settings => ({ prueferfragen: true, fachgespraech: true, leichtModus: false, backupReminderDays: 7 });
@@ -267,13 +272,14 @@ export function isIsoDate(v: unknown): v is string {
 export function migrateSettings(v: unknown): Settings {
   const d = defaultSettings();
   if (!isObject(v)) return d;
-  const { examDate, lastBackupDownloadAt, ...rest } = v;
+  const { examDate, lastBackupDownloadAt, leichtAutomatisch, ...rest } = v;
   const bool = (x: unknown, fallback: boolean) => (typeof x === 'boolean' ? x : fallback);
   const days = v.backupReminderDays;
   return {
     ...rest,
     ...opt('examDate', examDate, isIsoDate(examDate)),
     ...opt('lastBackupDownloadAt', lastBackupDownloadAt, isIsoDate(lastBackupDownloadAt)),
+    ...opt('leichtAutomatisch', leichtAutomatisch, typeof leichtAutomatisch === 'boolean'),
     prueferfragen: bool(v.prueferfragen, d.prueferfragen),
     fachgespraech: bool(v.fachgespraech, d.fachgespraech),
     leichtModus: bool(v.leichtModus, d.leichtModus),
@@ -400,6 +406,7 @@ export const SettingsSchema = z.looseObject({
   leichtModus: z.boolean().optional(),
   backupReminderDays: z.number().optional(),
   lastBackupDownloadAt: z.string().optional(),
+  leichtAutomatisch: z.boolean().optional(),
 });
 
 export const ProgressSchema = z.looseObject({

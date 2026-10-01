@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { isIsoDate } from '../../shared/progress';
 import { Datenschutz } from '../components/Datenschutz';
 import { IS_STATIC } from '../lib/api';
+import { leichtAutomatischAn } from '../lib/leicht';
 import { withSettings } from '../lib/settings';
 import { daysUntilExam, formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
@@ -80,6 +81,29 @@ export function Einstellungen() {
           Ausgeschaltet heißt nur ausgeblendet: Dein Lernstand dieser Karten bleibt erhalten und ist beim Einschalten wieder da. Der
           Prüferkommentar in den Musterlösungen (das Punkteschema) bleibt immer sichtbar.
         </p>
+      </section>
+
+      <section className="card">
+        <h2>🟢 Leicht-Modus (4 Antworten)</h2>
+        <p>
+          Im Leicht-Modus wählst du bei Karteikarten und Rechenübungen aus 4 Antworten die richtige. Das ist zum Einstieg gedacht – für die
+          Prüfung frei antworten.
+        </p>
+        <label className="choice">
+          <input
+            type="checkbox"
+            checked={leichtAutomatischAn(settings)}
+            onChange={(e) => update((p) => withSettings(p, { leichtAutomatisch: e.target.checked }))}
+          />
+          <span>
+            <b>🤖 Automatische Antworten erlauben</b>
+            <br />
+            <span className="hint">
+              Karten ohne eigene Auswahlantworten bekommen Antworten anderer Karten desselben Decks als falsche Antworten (markiert mit
+              „automatisch“). Aus: nur Karten mit geprüften Auswahlantworten.
+            </span>
+          </span>
+        </label>
       </section>
 
       {IS_STATIC && (
