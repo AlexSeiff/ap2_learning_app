@@ -4,6 +4,7 @@
 import { lazy, type ReactNode, Suspense } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { RechenUebung as RechenUebungTyp } from '../../shared/types';
+import type { Beispiel } from '../rechnen/beispiel';
 import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
 import { useConfirm } from '../hooks/useConfirm';
@@ -102,6 +103,8 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
           {r.state && r.state.attempts > 0 && ` · ${r.state.attempts} ${r.state.attempts === 1 ? 'Versuch' : 'Versuche'}`}
         </p>
       </div>
+
+      {r.beispiel && <BeispielKarte b={r.beispiel} rechenweg={!!inst?.loesung.schritte.length} />}
 
       {inst && !r.error && (
         <div className="mode-switch" role="group" aria-label="Modus">
@@ -351,6 +354,41 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
         </section>
       )}
     </div>
+  );
+}
+
+const BEISPIEL_TITEL: Record<Beispiel['stufe'], string> = {
+  voll: '📘 Beispiel: so rechnest du das',
+  luecke: '📘 Beispiel mit Lücke – den letzten Schritt rechnest du selbst',
+  ergebnis: '',
+};
+
+/** Ausgeblendetes Lösungsbeispiel vor der Eingabe (ROADMAP 8.6): mit anderen Zahlen oder nur als Formel-Gerüst. */
+function BeispielKarte({ b, rechenweg }: { b: Beispiel; rechenweg: boolean }) {
+  if (b.stufe === 'ergebnis') {
+    return rechenweg ? (
+      <p className="hint beispiel-fertig">🎯 Ohne Beispiel: Du hast die Übung schon gelöst – jetzt zählt nur dein Ergebnis.</p>
+    ) : null;
+  }
+  if (b.quelle === 'keins' || !b.inst) return null;
+  const andere = b.quelle === 'andere-zahlen';
+  return (
+    <details className="card beispiel" open={b.stufe === 'voll'}>
+      <summary>
+        {BEISPIEL_TITEL[b.stufe]} <span className="muted small">{andere ? '(andere Zahlen)' : '(nur Schritte und Formeln)'}</span>
+      </summary>
+      {andere ? (
+        <div className="beispiel-aufgabe small">
+          <Markdown source={false}>{b.inst.aufgabe}</Markdown>
+          {b.inst.tabelle && <DatenTabelle t={b.inst.tabelle} />}
+        </div>
+      ) : (
+        <p className="hint">Die Zahlen deiner Aufgabe setzt du selbst ein.</p>
+      )}
+      <Suspense fallback={<p className="muted">Lade Beispiel …</p>}>
+        <Rechenweg schritte={b.inst.loesung.schritte} sicht={b.sicht} />
+      </Suspense>
+    </details>
   );
 }
 

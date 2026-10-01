@@ -8,6 +8,7 @@ import { rechenAuswahl } from '../lib/leichtRechnen';
 import { recordRechenCheck, recordRechenHint, recordRechenLeicht, recordRechenLoesung, setRechenSeed } from '../lib/rechnen';
 import { withSettings } from '../lib/settings';
 import { useStore } from '../lib/store';
+import { baueBeispiel } from '../rechnen/beispiel';
 import { type PruefErgebnis, pruefeAntworten } from '../rechnen/checker';
 import { baueInstanz, type RechenInstanz } from '../rechnen/instanz';
 import { erzeugeZufall, neuerSeed, seedAusText } from '../rechnen/zufall';
@@ -32,6 +33,10 @@ export function useRechenUebung(u: RechenUebung) {
   const [seed, setSeed] = useState<number | undefined>(() => (u.neueZahlen ? state?.lastSeed : undefined));
   const gebaut = useMemo(() => baue(u, seed), [u, seed]);
   const inst = gebaut.inst;
+
+  // Ausgeblendetes Beispiel (ROADMAP 8.6): Stufe nach dem Lernstand beim Öffnen – eine Prüfung ändert es nicht mitten in der Übung.
+  const [stateBeimOeffnen] = useState(state);
+  const beispiel = useMemo(() => (inst ? baueBeispiel(u, inst, stateBeimOeffnen) : undefined), [u, inst, stateBeimOeffnen]);
 
   const [antworten, setAntworten] = useState<Record<string, string>>(() => state?.antworten ?? {});
   const [ergebnis, setErgebnis] = useState<PruefErgebnis | null>(null);
@@ -136,6 +141,7 @@ export function useRechenUebung(u: RechenUebung) {
     error: gebaut.error,
     /** true, wenn gerade Zufallszahlen statt der festen Zahlen zu sehen sind. */
     zufall: seed !== undefined && inst?.seed === seed,
+    beispiel,
     antworten,
     setAntwort,
     ergebnis,

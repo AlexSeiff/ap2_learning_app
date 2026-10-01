@@ -2,6 +2,7 @@ import 'katex/dist/katex.min.css';
 import katex from 'katex';
 import { useMemo } from 'react';
 import { formatErgebnis, type RechenSchritt, rundungsHinweis } from '../../shared/rechenweg';
+import type { SchrittSicht } from '../rechnen/beispiel';
 
 // Zieht KaTeX nach: nur in lazy geladenen Seiten verwenden (z. B. Rechenübungen, ROADMAP Phase 5), nicht im Hauptbundle.
 
@@ -11,12 +12,37 @@ export function Tex({ tex }: { tex: string }) {
   return <span className="rw-tex" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-/** Nummerierter Rechenweg: je Schritt Formel → Einsetzen → Ergebnis (deutsches Zahlenformat, Einheit, Rundungshinweis). */
-export function Rechenweg({ schritte }: { schritte: RechenSchritt[] }) {
+/**
+ * Nummerierter Rechenweg: je Schritt Formel → Einsetzen → Ergebnis (deutsches Zahlenformat, Einheit, Rundungshinweis).
+ * `sicht` (ausgeblendetes Beispiel, ROADMAP 8.6) zeigt je Schritt alles, nur die Formel oder nur den Titel („rechnest du selbst“).
+ */
+export function Rechenweg({ schritte, sicht }: { schritte: RechenSchritt[]; sicht?: SchrittSicht[] }) {
   return (
     <ol className="rechenweg">
       {schritte.map((s, i) => {
         const gerundet = rundungsHinweis(s.ergebnis, s.runden);
+        const art = sicht?.[i] ?? 'ganz';
+        if (art === 'verdeckt') {
+          return (
+            <li key={i} className="rw-schritt rw-verdeckt">
+              <div className="rw-titel">{s.titel}</div>
+              <p className="hint">✏️ Diesen Schritt rechnest du selbst.</p>
+            </li>
+          );
+        }
+        if (art === 'formel') {
+          return (
+            <li key={i} className="rw-schritt">
+              <div className="rw-titel">{s.titel}</div>
+              <dl className="rw-zeilen">
+                <dt>Formel</dt>
+                <dd>
+                  <Tex tex={s.formel} />
+                </dd>
+              </dl>
+            </li>
+          );
+        }
         return (
           <li key={i} className="rw-schritt">
             <div className="rw-titel">{s.titel}</div>

@@ -582,3 +582,8 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .operator-tipp { display: none; position: absolute; left: 0; top: calc(100% + 6px); z-index: 20; width: max-content; max-width: min(340px, 80vw); padding: 8px 10px; border-radius: 8px; background: var(--surface); color: var(--text); border: 1px solid var(--border); box-shadow: var(--shadow); font-size: 0.85rem; font-style: normal; font-weight: normal; line-height: 1.4; white-space: normal; }
 .operator:hover .operator-tipp, .operator:focus .operator-tipp { display: block; }
 @media print { .operator { text-decoration: none; } .operator-tipp { display: none !important; } }
+
+/* Ausgeblendete Lösungsbeispiele der Rechenübungen (8.6) */
+.beispiel summary { cursor: pointer; font-weight: 600; }
+.beispiel-aufgabe { background: var(--surface-2); border-radius: var(--radius); padding: 8px 12px; margin: 10px 0; }
+.rw-verdeckt .rw-titel { color: var(--muted); }
