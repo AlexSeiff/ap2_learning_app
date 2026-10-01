@@ -30,6 +30,17 @@ export function recordRechenCheck(p: Progress, id: string, ok: boolean, antworte
   return { ...withState(p, id, next), rechnenDays: { ...p.rechnenDays, [today]: (p.rechnenDays[today] ?? 0) + 1 } };
 }
 
+/**
+ * Runde im Leicht-Modus („🟢 Ergebnis auswählen“) beendet. Auswählen ist leichter als selbst rechnen, deshalb:
+ * zählt als Lerntag (rechnenDays), aber nicht als Versuch und nie als „gelöst“ – gelöst wird eine Übung nur durch Eintippen.
+ * Falsch ausgewählt → Wiederholung ab Stufe 1 (morgen), wie eine falsche Prüfung; richtig ändert die Wiederholung nicht.
+ */
+export function recordRechenLeicht(p: Progress, id: string, ok: boolean, today = localDate()): Progress {
+  const prev = p.rechnen[id] ?? emptyState();
+  const next: RechenState = ok ? { ...prev, lastCheckedAt: today } : restartRepetition({ ...prev, lastCheckedAt: today }, today);
+  return { ...withState(p, id, next), rechnenDays: { ...p.rechnenDays, [today]: (p.rechnenDays[today] ?? 0) + 1 } };
+}
+
 /** Ein weiterer Hinweis wurde aufgedeckt. */
 export function recordRechenHint(p: Progress, id: string): Progress {
   const prev = p.rechnen[id] ?? emptyState();

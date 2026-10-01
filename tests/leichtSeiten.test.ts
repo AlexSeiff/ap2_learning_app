@@ -17,9 +17,15 @@ vi.mock('../src/lib/store', () => ({
 }));
 
 const { Karteikarten } = await import('../src/pages/Karteikarten');
+const { RechenUebung } = await import('../src/pages/RechenUebung');
 
 function render(path: string): string {
-  const routes = createElement(Routes, null, createElement(Route, { path: '/karteikarten', element: createElement(Karteikarten) }));
+  const routes = createElement(
+    Routes,
+    null,
+    createElement(Route, { path: '/karteikarten', element: createElement(Karteikarten) }),
+    createElement(Route, { path: '/rechnen/:id', element: createElement(RechenUebung) }),
+  );
   const app = createElement(MemoryRouter, { initialEntries: [path] }, routes);
   return renderToString(createElement(ConfirmContext.Provider, { value: async () => true }, app)).replace(/<!-- -->/g, '');
 }
@@ -63,5 +69,26 @@ describe('Karteikarten im Leicht-Modus', () => {
     const falle = content.flashcards.filter((c) => c.typ === 'falle');
     const html = render('/karteikarten?typ=falle');
     expect(html).toContain(`🟢 ${falle.filter((c) => m.has(c.id)).length} von ${falle.length} Karten`);
+  });
+});
+
+describe('Rechenübungen: Ergebnis auswählen', () => {
+  it('Eintippen: Moduswahl und Eingabefelder', () => {
+    progress = emptyProgress();
+    const html = render('/rechnen/RE-ST1-001');
+    expect(html).toContain('✏️ Eintippen');
+    expect(html).toContain('🟢 Ergebnis auswählen');
+    expect(html).toContain('✓ Prüfen');
+    expect(html).not.toContain('leicht-option');
+  });
+
+  it('jede Übung zeigt im Leicht-Modus Auswahlknöpfe statt Eingabefeldern', () => {
+    progress = mitSettings({ leichtModus: true });
+    for (const u of content.rechenUebungen) {
+      const html = render(`/rechnen/${u.id}`);
+      expect(html, u.id).toContain('leicht-option');
+      expect(html, u.id).not.toContain('✓ Prüfen');
+      expect(html, u.id).not.toContain('keine Auswahl');
+    }
   });
 });

@@ -2,13 +2,15 @@
 // aufgedeckte Hinweise und Lösung. Speichert über die reinen Funktionen aus src/lib/rechnen.ts im Fortschritt.
 // Die Seite rendert nur.
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { RechenUebung } from '../../shared/types';
-import { recordRechenCheck, recordRechenHint, recordRechenLoesung, setRechenSeed } from '../lib/rechnen';
+import { rechenAuswahl } from '../lib/leichtRechnen';
+import { recordRechenCheck, recordRechenHint, recordRechenLeicht, recordRechenLoesung, setRechenSeed } from '../lib/rechnen';
+import { withSettings } from '../lib/settings';
 import { useStore } from '../lib/store';
 import { type PruefErgebnis, pruefeAntworten } from '../rechnen/checker';
 import { baueInstanz, type RechenInstanz } from '../rechnen/instanz';
-import { neuerSeed } from '../rechnen/zufall';
+import { erzeugeZufall, neuerSeed, seedAusText } from '../rechnen/zufall';
 
 type Gebaut = { inst: RechenInstanz; error?: undefined } | { inst?: undefined; error: string };
 
@@ -38,6 +40,54 @@ export function useRechenUebung(u: RechenUebung) {
   const [hintsShown, setHintsShown] = useState(() => Math.min(state?.hintsUsed ?? 0, hinweise.length));
   const [loesungOffen, setLoesungOffen] = useState(false);
 
+  // Leicht-Modus („🟢 Ergebnis auswählen“, gleiche Einstellung wie bei den Karteikarten): je Eingabe 4 Antworten.
+  const leichtModus = progress.settings.leichtModus;
+  const [leichtRunde, setLeichtRunde] = useState(0);
+  const [wahl, setWahl] = useState<Record<string, number>>({});
+  // Reproduzierbar gemischt je Übung, Zahlen und Runde (gleich beim erneuten Rendern).
+  const auswahl = useMemo(
+    () => (inst ? rechenAuswahl(inst, erzeugeZufall(seedAusText(id) + (inst.seed ?? 0) + leichtRunde).zahl) : undefined),
+    [inst, id, leichtRunde],
+  );
+  const leicht = leichtModus && !!auswahl;
+  const leichtFertig = !!auswahl && auswahl.every((a) => wahl[a.eingabe] !== undefined);
+  const leichtOk = leichtFertig && auswahl.every((a) => a.optionen[wahl[a.eingabe]].richtig);
+
+  const setLeichtModus = (an: boolean) => update((p) => withSettings(p, { leichtModus: an }));
+
+  /** Antwort `i` für eine Eingabe wählen; ist danach jede Eingabe gewählt, wird die Runde gespeichert. */
+  const waehle = useCallback(
+    (eingabe: string, i: number) => {
+      if (!auswahl || wahl[eingabe] !== undefined) return;
+      const neu = { ...wahl, [eingabe]: i };
+      setWahl(neu);
+      if (auswahl.every((a) => neu[a.eingabe] !== undefined)) {
+        const ok = auswahl.every((a) => a.optionen[neu[a.eingabe]].richtig);
+        update((p) => recordRechenLeicht(p, id, ok));
+      }
+    },
+    [auswahl, wahl, update, id],
+  );
+
+  /** Gleiche Zahlen, Antworten neu gemischt. */
+  const leichtNochmal = () => {
+    setWahl({});
+    setLeichtRunde((r) => r + 1);
+  };
+
+  // Tasten 1–4 wählen für die erste noch offene Eingabe.
+  useEffect(() => {
+    if (!leicht || !auswahl) return;
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest('input, select, textarea') || !/^[1-4]$/.test(e.key)) return;
+      const offen = auswahl.find((a) => wahl[a.eingabe] === undefined);
+      if (offen && offen.optionen[Number(e.key) - 1]) waehle(offen.eingabe, Number(e.key) - 1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [leicht, auswahl, wahl, waehle]);
+
   const setAntwort = useCallback((eingabe: string, text: string) => {
     setAntworten((a) => ({ ...a, [eingabe]: text }));
     setLeer(false);
@@ -64,6 +114,7 @@ export function useRechenUebung(u: RechenUebung) {
     setErgebnis(null);
     setLeer(false);
     setLoesungOffen(false);
+    setWahl({});
     update((p) => setRechenSeed(p, id, neu));
   };
 
@@ -97,5 +148,16 @@ export function useRechenUebung(u: RechenUebung) {
     hinweis,
     loesungOffen,
     zeigeLoesung,
+    /** Einstellung Leicht-Modus an (auch wenn diese Übung keine Auswahl hat). */
+    leichtModus,
+    setLeichtModus,
+    /** Leicht-Modus aktiv und für diese Übung möglich. */
+    leicht,
+    auswahl,
+    wahl,
+    waehle,
+    leichtFertig,
+    leichtOk,
+    leichtNochmal,
   };
 }

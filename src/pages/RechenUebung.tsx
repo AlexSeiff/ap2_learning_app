@@ -4,6 +4,7 @@
 import { lazy, type ReactNode, Suspense } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { RechenUebung as RechenUebungTyp } from '../../shared/types';
+import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
 import { useConfirm } from '../hooks/useConfirm';
 import { useRechenUebung } from '../hooks/useRechenUebung';
@@ -102,10 +103,77 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
         </p>
       </div>
 
+      {inst && !r.error && (
+        <div className="mode-switch" role="group" aria-label="Modus">
+          <button type="button" aria-pressed={!r.leichtModus} onClick={() => r.setLeichtModus(false)}>
+            ✏️ Eintippen
+          </button>
+          <button type="button" aria-pressed={r.leichtModus} onClick={() => r.setLeichtModus(true)}>
+            🟢 Ergebnis auswählen
+          </button>
+        </div>
+      )}
+      {r.leichtModus && inst && !r.auswahl && <p className="hint">Für diese Übung gibt es keine Auswahl – trag die Ergebnisse ein.</p>}
+
       {r.error || !inst ? (
         <p className="card warn">
           ⚠ Diese Übung passt nicht zu ihrer Vorlage: {r.error}. Das ist ein Fehler in den Übungsdaten, nicht bei dir.
         </p>
+      ) : r.leicht && r.auswahl ? (
+        <div className="card re-eingaben">
+          {r.auswahl.map((a, ai) => {
+            const e = inst.eingaben.find((x) => x.id === a.eingabe)!;
+            const g = r.wahl[a.eingabe];
+            const gewaehlt = g === undefined ? null : a.optionen[g];
+            const aktuell = r.auswahl!.findIndex((x) => r.wahl[x.eingabe] === undefined) === ai;
+            return (
+              <div key={a.eingabe} className="re-feld">
+                <span className="re-label">
+                  <b>{e.label}</b>
+                  {e.einheit && <span className="muted"> ({e.einheit})</span>}
+                </span>
+                <LeichtOptionen
+                  optionen={a.optionen}
+                  gewaehlt={g ?? null}
+                  onWaehle={(i) => r.waehle(a.eingabe, i)}
+                  tasten={aktuell}
+                  label={e.label}
+                />
+                {gewaehlt && !gewaehlt.richtig && (
+                  <div className="re-meldung small">
+                    {gewaehlt.erklaerung ? (
+                      <Markdown source={false}>{'🔎 ' + gewaehlt.erklaerung}</Markdown>
+                    ) : (
+                      <span className="muted">Kein typischer Fehler bekannt – rechne noch einmal nach.</span>
+                    )}
+                  </div>
+                )}
+                {a.aufgefuellt > 0 && (
+                  <p className="small muted">
+                    {a.aufgefuellt === a.optionen.length - 1
+                      ? 'Die falschen Antworten sind Werte in der Nähe, keine bekannten typischen Fehler.'
+                      : `${a.aufgefuellt} falsche ${a.aufgefuellt === 1 ? 'Antwort ist ein Wert' : 'Antworten sind Werte'} in der Nähe, kein bekannter typischer Fehler.`}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+          {!r.leichtFertig && (
+            <p className="hint">
+              Wähle je Ergebnis die richtige Antwort: klicken oder <kbd>1</kbd>–<kbd>4</kbd>. Rechne vorher auf Papier.
+            </p>
+          )}
+          <div className="actions">
+            {r.hinweiseGesamt > 0 && (
+              <button type="button" className="secondary" onClick={r.hinweis} disabled={r.hinweise.length >= r.hinweiseGesamt}>
+                💡 Hinweis {Math.min(r.hinweise.length + 1, r.hinweiseGesamt)}/{r.hinweiseGesamt}
+              </button>
+            )}
+            <button type="button" className="secondary" onClick={() => void showSolution()} disabled={r.loesungOffen}>
+              👁 Lösung zeigen
+            </button>
+          </div>
+        </div>
       ) : (
         <form
           className="card re-eingaben"
@@ -156,6 +224,44 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
               </li>
             ))}
           </ol>
+        </div>
+      )}
+
+      {r.leicht && r.leichtFertig && (
+        <div className={`card ${r.leichtOk ? 'success' : 'verdict-fail'}`} role="status">
+          <p className={`verdict ${r.leichtOk ? 'ok' : 'bad'}`}>
+            {r.leichtOk ? '✅ Alles richtig ausgewählt!' : '❌ Nicht alles richtig – die Übung kommt morgen zur Wiederholung.'}
+          </p>
+          <p className="hint">
+            🟢 Auswählen ist zum Einstieg. Als „gelöst“ zählt die Übung erst, wenn du die Ergebnisse selbst eintippst
+            {u.neueZahlen ? ' – am besten mit neuen Zahlen.' : '.'}
+          </p>
+          <div className="actions">
+            <button type="button" className="secondary" onClick={r.leichtNochmal}>
+              🔀 Nochmal auswählen
+            </button>
+            {u.neueZahlen && (
+              <button type="button" className="secondary" onClick={r.neueZahlen}>
+                🎲 Neue Zahlen
+              </button>
+            )}
+            {u.neueZahlen && (
+              <button
+                type="button"
+                onClick={() => {
+                  r.setLeichtModus(false);
+                  r.neueZahlen();
+                }}
+              >
+                ✏️ Mit neuen Zahlen eintippen
+              </button>
+            )}
+            {next && (
+              <Link className="button" to={`/rechnen/${next.id}`}>
+                Weiter →
+              </Link>
+            )}
+          </div>
         </div>
       )}
 
