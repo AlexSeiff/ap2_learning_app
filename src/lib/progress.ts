@@ -70,3 +70,23 @@ export function rateCard(p: Progress, cardId: string, rating: Rating, today = lo
 }
 
 export const isDue = (due: string, today = localDate()) => due <= today;
+
+/** Höchstes Leitner-Fach, das eine Karte mit Antworten aus dem Leicht-Modus erreicht (ROADMAP 6.6, Entscheidung Q5). */
+export const LEICHT_MAX_BOX = 2;
+
+/**
+ * Bewertung im Leicht-Modus (4 Antworten): Wiedererkennen ist leichter als freies Erinnern.
+ * Richtig → höchstens ein Fach weiter und höchstens bis Fach 2 (eine Karte in Fach 3–5 bleibt, wo sie ist);
+ * falsch → Fach 1, heute wieder fällig. Zählt wie jede Bewertung für die Lernserie (cardReviewDays).
+ */
+export function rateCardLeicht(p: Progress, cardId: string, richtig: boolean, today = localDate()): Progress {
+  const prev = p.cards[cardId] ?? { box: 1, due: today, reviews: 0 };
+  const box = richtig ? Math.max(prev.box, Math.min(prev.box + 1, LEICHT_MAX_BOX)) : 1;
+  const days = richtig ? CARD_INTERVALS[box] : 0;
+  const last: Rating = richtig ? 'gewusst' : 'nicht';
+  return {
+    ...p,
+    cards: { ...p.cards, [cardId]: { box, due: addDays(today, days), reviews: prev.reviews + 1, last } },
+    cardReviewDays: { ...p.cardReviewDays, [today]: (p.cardReviewDays[today] ?? 0) + 1 },
+  };
+}

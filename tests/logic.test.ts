@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Task } from '../shared/types';
 import { autoGrade, ihkGrade, parseGermanNumber } from '../src/lib/grading';
 import { emptyProgress } from '../shared/progress';
-import { addDays, rateCard, recordAttempt } from '../src/lib/progress';
+import { addDays, LEICHT_MAX_BOX, rateCard, rateCardLeicht, recordAttempt } from '../src/lib/progress';
 import { daysUntilExam, formatIsoDate } from '../src/lib/stats';
 
 const T0 = '2026-09-21';
@@ -45,6 +45,43 @@ describe('Karteikarten (Leitner)', () => {
     expect(p.cards.k).toMatchObject({ box: 3, due: '2026-09-28' });
     p = rateCard(p, 'k', 'nicht', T0);
     expect(p.cards.k).toMatchObject({ box: 1, due: T0 });
+  });
+});
+
+describe('Karteikarten im Leicht-Modus (Fach höchstens 2)', () => {
+  it('richtig schiebt höchstens bis Fach 2, auch bei vielen richtigen Antworten', () => {
+    let p = rateCardLeicht(emptyProgress(), 'k', true, T0);
+    expect(p.cards.k).toEqual({ box: 2, due: '2026-09-24', reviews: 1, last: 'gewusst' });
+    for (let i = 0; i < 5; i++) p = rateCardLeicht(p, 'k', true, T0);
+    expect(p.cards.k).toMatchObject({ box: LEICHT_MAX_BOX, due: '2026-09-24', reviews: 6 });
+  });
+
+  it('eine Karte in Fach 3–5 fällt bei richtig nicht zurück, steigt aber auch nicht', () => {
+    let p = rateCard(emptyProgress(), 'k', 'gewusst', T0);
+    p = rateCard(p, 'k', 'gewusst', T0);
+    p = rateCard(p, 'k', 'gewusst', T0);
+    expect(p.cards.k.box).toBe(4);
+    p = rateCardLeicht(p, 'k', true, T0);
+    expect(p.cards.k).toMatchObject({ box: 4, due: addDays(T0, 14), reviews: 4 });
+  });
+
+  it('falsch → Fach 1, heute wieder fällig', () => {
+    let p = rateCard(rateCard(emptyProgress(), 'k', 'gewusst', T0), 'k', 'gewusst', T0);
+    p = rateCardLeicht(p, 'k', false, T0);
+    expect(p.cards.k).toEqual({ box: 1, due: T0, reviews: 3, last: 'nicht' });
+  });
+
+  it('erst der normale Modus bringt die Karte in Fach 3', () => {
+    let p = rateCardLeicht(emptyProgress(), 'k', true, T0);
+    p = rateCard(p, 'k', 'gewusst', T0);
+    expect(p.cards.k.box).toBe(3);
+  });
+
+  it('zählt für die Lernserie (cardReviewDays)', () => {
+    let p = rateCardLeicht(emptyProgress(), 'a', true, T0);
+    p = rateCardLeicht(p, 'b', false, T0);
+    p = rateCard(p, 'c', 'gewusst', T0);
+    expect(p.cardReviewDays).toEqual({ [T0]: 3 });
   });
 });
 

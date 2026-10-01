@@ -50,6 +50,12 @@ function Uebersicht() {
     <div className="page">
       <h1>Übersicht</h1>
       <BackupBanner />
+      {progress.settings.leichtModus && (
+        <p className="card info" role="note">
+          🟢 Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten. Karten kommen mit 4 Antworten höchstens bis Fach 2; Fach 3–5
+          erreichst du nur mit „Aufdecken“.
+        </p>
+      )}
       <div className="kpis">
         {days === undefined || !examDate ? (
           <Link to="/einstellungen" className="kpi">
