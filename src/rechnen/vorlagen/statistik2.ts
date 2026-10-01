@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { fz, fzListe, intParam, L, LoesungsBau, lz, lzk, lzSumme, mittel, runde, summe, textParam, vorlage } from '../hilfen';
+import { F } from '../formeln';
 import type { Params, Tabelle } from '../typen';
 import type { Zufall } from '../zufall';
 
@@ -131,7 +132,7 @@ function schritteKorrelation(b: LoesungsBau, x: number[], y: number[], k: Return
   });
   b.schritt({
     titel: 'Sxy',
-    formel: L`S_{xy} = \sum (x_i - \bar{x})(y_i - \bar{y})`,
+    formel: F.sxy.latex,
     einsetzen: `S_{xy} = ${k.dx.map((v, i) => L`${lzk(v, 2)} \cdot ${lzk(k.dy[i], 2)}`).join(' + ')}`,
     ergebnis: k.sxy,
     runden: 2,
@@ -139,27 +140,27 @@ function schritteKorrelation(b: LoesungsBau, x: number[], y: number[], k: Return
   });
   b.schritt({
     titel: 'Sxx',
-    formel: L`S_{xx} = \sum (x_i - \bar{x})^2`,
+    formel: F.sxx.latex,
     einsetzen: `S_{xx} = ${k.dx.map((v) => L`${lzk(v, 2)}^2`).join(' + ')}`,
     ergebnis: k.sxx,
     runden: 2,
   });
   b.schritt({
     titel: 'Syy',
-    formel: L`S_{yy} = \sum (y_i - \bar{y})^2`,
+    formel: F.syy.latex,
     einsetzen: `S_{yy} = ${k.dy.map((v) => L`${lzk(v, 2)}^2`).join(' + ')}`,
     ergebnis: k.syy,
     runden: 2,
   });
   b.schritt({
     titel: 'Korrelationskoeffizient',
-    formel: L`r = \frac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}}`,
+    formel: F.pearson.latex,
     einsetzen: L`r = \frac{${lz(k.sxy, 2)}}{\sqrt{${lz(k.sxx, 2)} \cdot ${lz(k.syy, 2)}}} = \frac{${lz(k.sxy, 2)}}{${lz(Math.sqrt(k.sxx * k.syy), 2)}}`,
     ergebnis: r,
     runden: 2,
     hinweis: `${r < 0 ? 'Negativ: gegenläufiger' : 'Positiv: gleichläufiger'} Zusammenhang, ${Math.abs(r) >= 0.7 ? 'stark' : Math.abs(r) >= 0.3 ? 'mittel' : 'schwach'}.`,
   });
-  b.schritt({ titel: 'Bestimmtheitsmaß', formel: L`R^2 = r^2`, einsetzen: L`R^2 = ${lzk(r, 4)}^2`, ergebnis: r2, runden: 2 });
+  b.schritt({ titel: 'Bestimmtheitsmaß', formel: F.bestimmtheitsmass.latex, einsetzen: L`R^2 = ${lzk(r, 4)}^2`, ergebnis: r2, runden: 2 });
 
   b.fehler('r', -r, 'Vorzeichenfehler – das Vorzeichen von r ist das von Sxy.');
   b.fehler('r', k.sxy / (k.sxx * k.syy), 'Du hast die Wurzel im Nenner vergessen: r = Sxy / √(Sxx · Syy).');
@@ -223,14 +224,14 @@ export const regression = vorlage<z.infer<typeof regressionSchema>>({
     });
     b.schritt({
       titel: 'Steigung',
-      formel: L`b = \frac{S_{xy}}{S_{xx}}`,
+      formel: F.steigung.latex,
       einsetzen: L`b = \frac{${lz(k.sxy, 2)}}{${lz(k.sxx, 2)}}`,
       ergebnis: steig,
       runden: 2,
     });
     b.schritt({
       titel: 'Achsenabschnitt',
-      formel: L`a = \bar{y} - b \cdot \bar{x}`,
+      formel: F.achsenabschnitt.latex,
       einsetzen: L`a = ${lz(k.ym, 2)} - ${lzk(steig, 4)} \cdot ${lzk(k.xm, 2)}`,
       ergebnis: achse,
       runden: 2,
@@ -240,7 +241,7 @@ export const regression = vorlage<z.infer<typeof regressionSchema>>({
       const w = b.wert(`prognose${i + 1}`, yDach(xp), { label: `Prognose ŷ für x = ${fz(xp)}`, einheit: e, runden: 2 });
       b.schritt({
         titel: `Prognose für x = ${fz(xp)}`,
-        formel: L`\hat{y} = a + b \cdot x`,
+        formel: F.regressionsgerade.latex,
         einsetzen: L`\hat{y} = ${lz(achse, 2)} + ${lzk(steig, 2)} \cdot ${lzk(xp)}`,
         ergebnis: w,
         einheit: e,
@@ -262,7 +263,7 @@ export const regression = vorlage<z.infer<typeof regressionSchema>>({
     });
     b.schritt({
       titel: 'Residuen',
-      formel: L`e_i = y_i - \hat{y}_i`,
+      formel: F.residuum.latex,
       einsetzen: d.x.map((xi, i) => lz(runde(d.y[i] - yDach(xi), 2), 2)).join(L`;\ `),
       ergebnis: summe(d.x.map((xi, i) => d.y[i] - yDach(xi))),
       runden: 2,
@@ -397,14 +398,14 @@ export const prozentVeraenderung = vorlage({
     b.wert('faktor', d.neu / d.alt, { label: 'Wachstumsfaktor', runden: 4, zusatz: true });
     b.schritt({
       titel: 'Differenz',
-      formel: L`\Delta = x_{neu} - x_{alt}`,
+      formel: F.differenz.latex,
       einsetzen: L`\Delta = ${lz(d.neu)} - ${lzk(d.alt)}`,
       ergebnis: diff,
       einheit: d.einheit === '%' ? 'Prozentpunkte' : d.einheit,
     });
     b.schritt({
       titel: 'Relative Veränderung',
-      formel: L`\frac{x_{neu} - x_{alt}}{x_{alt}} \cdot 100\,\%`,
+      formel: F.prozentVeraenderung.latex,
       einsetzen: L`\frac{${lzk(diff)}}{${lz(d.alt)}} \cdot 100\,\%`,
       ergebnis: p,
       einheit: '%',

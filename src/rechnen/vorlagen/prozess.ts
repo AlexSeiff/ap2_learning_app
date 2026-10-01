@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { fz, intParam, L, LoesungsBau, lz, lzSumme, summe, vorlage } from '../hilfen';
+import { F } from '../formeln';
 
 const nichtNeg = z.number().finite().nonnegative();
 
@@ -71,7 +72,7 @@ export const durchlaufzeit = vorlage({
     });
     b.schritt({
       titel: 'Durchlaufzeit',
-      formel: L`DLZ = t_{Bearbeitung} + t_{Liege}`,
+      formel: F.durchlaufzeit.latex,
       einsetzen: L`${lz(bz)} + ${lz(lz_)}`,
       ergebnis: dz,
       einheit: e,
@@ -79,7 +80,7 @@ export const durchlaufzeit = vorlage({
     });
     b.schritt({
       titel: 'Wertschöpfungsanteil',
-      formel: L`\frac{t_{Bearbeitung}}{DLZ} \cdot 100\,\%`,
+      formel: F.wertschoepfung.latex,
       einsetzen: L`\frac{${lz(bz)}}{${lz(dz)}} \cdot 100\,\%`,
       ergebnis: ws,
       einheit: '%',
@@ -133,7 +134,7 @@ export const fehlerquote = vorlage({
     const fpy = b.wert('fpy', ((d.gesamt - d.fehler) / d.gesamt) * 100, { label: 'First Pass Yield', einheit: '%', runden: 2 });
     b.schritt({
       titel: 'Fehlerquote',
-      formel: L`\frac{\text{fehlerhaft}}{\text{gesamt}} \cdot 100\,\%`,
+      formel: F.fehlerquote.latex,
       einsetzen: L`\frac{${lz(d.fehler)}}{${lz(d.gesamt)}} \cdot 100\,\%`,
       ergebnis: fq,
       einheit: '%',
@@ -141,7 +142,7 @@ export const fehlerquote = vorlage({
     });
     b.schritt({
       titel: 'First Pass Yield',
-      formel: L`\frac{\text{gesamt} - \text{fehlerhaft}}{\text{gesamt}} \cdot 100\,\%`,
+      formel: F.fpy.latex,
       einsetzen: L`\frac{${lz(d.gesamt)} - ${lz(d.fehler)}}{${lz(d.gesamt)}} \cdot 100\,\%`,
       ergebnis: fpy,
       einheit: '%',
@@ -281,7 +282,7 @@ export const amortisation = vorlage({
     b.wert('amortisationMonate', (d.investition / ein) * 12, { label: 'Amortisationszeit', einheit: 'Monate', runden: 1, zusatz: true });
     b.schritt({
       titel: 'Amortisationszeit',
-      formel: L`\frac{\text{Investition}}{\text{jährliche Einsparung}}`,
+      formel: F.amortisation.latex,
       einsetzen: L`\frac{${lz(d.investition, 2)}\,\text{€}}{${lz(ein, 2)}\,\text{€}/\text{Jahr}}`,
       ergebnis: amo,
       einheit: 'Jahre',
@@ -315,7 +316,7 @@ export const amortisation = vorlage({
       });
       b.schritt({
         titel: 'ROI',
-        formel: L`ROI = \frac{G}{I} \cdot 100\,\%`,
+        formel: F.roi.latex,
         einsetzen: L`\frac{${lz(gew, 2)}}{${lz(d.investition, 2)}} \cdot 100\,\%`,
         ergebnis: roi,
         einheit: '%',

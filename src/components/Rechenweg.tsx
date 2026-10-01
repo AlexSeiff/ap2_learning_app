@@ -6,7 +6,7 @@ import { formatErgebnis, type RechenSchritt, rundungsHinweis } from '../../share
 // Zieht KaTeX nach: nur in lazy geladenen Seiten verwenden (z. B. Rechenübungen, ROADMAP Phase 5), nicht im Hauptbundle.
 
 /** LaTeX als Formel (inline). Fehler erscheinen rot statt die Seite abstürzen zu lassen. */
-function Tex({ tex }: { tex: string }) {
+export function Tex({ tex }: { tex: string }) {
   const html = useMemo(() => katex.renderToString(tex, { throwOnError: false, strict: 'ignore', errorColor: 'var(--low)' }), [tex]);
   return <span className="rw-tex" dangerouslySetInnerHTML={{ __html: html }} />;
 }

@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { fz, L, LoesungsBau, lz, vorlage } from '../hilfen';
+import { F } from '../formeln';
 
 const dsSchema = z.object({
   voll: z.number().positive(),
@@ -43,7 +44,7 @@ export const datensicherung = vorlage({
     b.wert('medienDifferenziell', 2, { label: 'Medien zur Wiederherstellung (differenziell)' });
     b.schritt({
       titel: 'Inkrementell',
-      formel: L`V = V_{voll} + t \cdot \Delta`,
+      formel: F.sicherungInkrementell.latex,
       einsetzen: L`${lz(d.voll)} + ${t} \cdot ${lz(d.aenderung)}`,
       ergebnis: ink,
       einheit: e,
@@ -51,7 +52,7 @@ export const datensicherung = vorlage({
     });
     b.schritt({
       titel: 'Differenziell',
-      formel: L`V = V_{voll} + (1 + 2 + \dots + t) \cdot \Delta`,
+      formel: F.sicherungDifferenziell.latex,
       einsetzen: L`${lz(d.voll)} + ${Array.from({ length: t }, (_, i) => lz((i + 1) * d.aenderung)).join(' + ')}`,
       ergebnis: dif,
       einheit: e,

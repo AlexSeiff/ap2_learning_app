@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import { fz, L, LoesungsBau, lz, vorlage } from '../hilfen';
+import { F } from '../formeln';
 
 const kennzahlSchema = z
   .object({
@@ -60,7 +61,7 @@ export const qualitaetsgrad = vorlage({
       const w = b.wert(k.id, (k.gut / k.gesamt) * 100, { label: k.name, einheit: '%', runden: 2 });
       b.schritt({
         titel: k.name,
-        formel: L`\frac{\text{erfüllt}}{\text{gesamt}} \cdot 100\,\%`,
+        formel: F.qualitaetsgrad.latex,
         einsetzen: L`\frac{${lz(k.gut)}}{${lz(k.gesamt)}} \cdot 100\,\%`,
         ergebnis: w,
         einheit: '%',

@@ -29,6 +29,8 @@ const SqlUebung = lazy(() => import('./pages/SqlUebung').then((m) => ({ default:
 // Rechenübungen lazy: Vorlagen, Prüfung und (beim Rechenweg) KaTeX bleiben aus dem Hauptbundle.
 const RechenUebungen = lazy(() => import('./pages/RechenUebungen').then((m) => ({ default: m.RechenUebungen })));
 const RechenUebung = lazy(() => import('./pages/RechenUebung').then((m) => ({ default: m.RechenUebung })));
+// Formelsammlung lazy: zieht KaTeX nach.
+const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
 
 function useTheme() {
   const [theme, setTheme] = useState<string>(() => {
@@ -169,6 +171,7 @@ export function App() {
                       <Route path="/fehlerjournal" element={<Fehlerjournal />} />
                       <Route path="/generator" element={IS_STATIC ? <Navigate to="/" replace /> : <Generator />} />
                       <Route path="/material" element={<Material />} />
+                      <Route path="/material/formeln" element={<Formelsammlung />} />
                       <Route path="/material/:docId" element={<Material />} />
                       <Route path="/einstellungen" element={<Einstellungen />} />
                       <Route path="/daten" element={<Daten />} />

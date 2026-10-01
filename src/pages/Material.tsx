@@ -24,6 +24,10 @@ export function Material() {
     <div className="page">
       <h1>Material</h1>
       <div className="grid">
+        <Link to="/material/formeln" className="tile">
+          <span className="tile-title">📏 Formelsammlung</span>
+          <span className="tile-meta">alle Formeln der Rechenübungen, nach Thema – druckbar</span>
+        </Link>
         {content.materials.map((m) => (
           <Link key={m.id} to={`/material/${m.id}`} className="tile">
             <span className="tile-title">{m.title}</span>

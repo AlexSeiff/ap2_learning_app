@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { fz, intParam, L, LoesungsBau, lz, lzk, median, mittel, tx, vorlage } from '../hilfen';
+import { F } from '../formeln';
 
 const artikel = z.string().trim().min(1);
 const assoSchema = z
@@ -87,7 +88,7 @@ export const assoziation = vorlage({
     const lift = b.wert('lift', konf / sD, { label: `Lift(${wenn} → ${dann})`, runden: 2 });
     b.schritt({
       titel: `Support(${wenn} → ${dann})`,
-      formel: L`\frac{\text{Anzahl mit } X \text{ und } Y}{n}`,
+      formel: F.support.latex,
       einsetzen: L`\frac{${nWD}}{${n}}`,
       ergebnis: sup,
       einheit: '%',
@@ -95,7 +96,7 @@ export const assoziation = vorlage({
     });
     b.schritt({
       titel: 'Konfidenz',
-      formel: L`\frac{Support(X \cup Y)}{Support(X)}`,
+      formel: F.konfidenz.latex,
       einsetzen: L`\frac{${lz(sup / 100, 4)}}{${lz(sW / 100, 4)}}`,
       ergebnis: konf,
       einheit: '%',
@@ -103,7 +104,7 @@ export const assoziation = vorlage({
     });
     b.schritt({
       titel: 'Lift',
-      formel: L`\frac{Konfidenz(X \rightarrow Y)}{Support(Y)}`,
+      formel: F.lift.latex,
       einsetzen: L`\frac{${lz(konf / 100, 4)}}{${lz(sD / 100, 4)}}`,
       ergebnis: lift,
       runden: 2,
@@ -202,7 +203,7 @@ export const kmeans = vorlage({
       });
       b.schritt({
         titel: `P${i + 1}(${fz(p[0])}|${fz(p[1])})`,
-        formel: L`d = \sqrt{(x - x_Z)^2 + (y - y_Z)^2}`,
+        formel: F.euklid.latex,
         einsetzen: d.zentren
           .map((c, j) => L`d_{Z${j + 1}} = \sqrt{(${lz(p[0])} - ${lzk(c[0])})^2 + (${lz(p[1])} - ${lzk(c[1])})^2} = ${lz(ds[j], 2)}`)
           .join(L`;\quad `),

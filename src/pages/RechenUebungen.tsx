@@ -1,13 +1,15 @@
 // Liste der Rechenübungen (/rechnen). Filter stehen in der URL (?thema=…&stufe=…&tag=…&status=…) wie bei den SQL-Übungen.
+// ?vorlage=a,b (Link aus der Formelsammlung) zeigt nur Übungen dieser Rechenvorlagen.
 
 import { Link, useSearchParams } from 'react-router-dom';
 import type { RechenUebung } from '../../shared/types';
 import { rechenStatus, rechenSummary } from '../lib/rechnen';
 import { useStore } from '../lib/store';
+import { findeVorlage } from '../rechnen/vorlagen/index';
 import { LEVEL_LABELS, stars, STATUS_CLASS, STATUS_LABELS } from '../lib/uebungLabels';
 
-type Filter = { thema: string; stufe: string; tag: string; status: string };
-const KEYS: (keyof Filter)[] = ['thema', 'stufe', 'tag', 'status'];
+type Filter = { thema: string; stufe: string; tag: string; status: string; vorlage: string };
+const KEYS: (keyof Filter)[] = ['thema', 'stufe', 'tag', 'status', 'vorlage'];
 
 function readFilter(params: URLSearchParams): Filter {
   const f = {} as Filter;
@@ -36,13 +38,15 @@ export function RechenUebungen() {
   const themen = [...new Set(all.map((u) => u.thema))].sort((a, b) => a.localeCompare(b, 'de', { numeric: true }));
   const tags = [...new Set(all.flatMap((u) => u.tags))].sort((a, b) => a.localeCompare(b, 'de'));
   const status = (u: RechenUebung) => rechenStatus(progress.rechnen[u.id]);
+  const vorlagen = f.vorlage === 'alle' ? [] : f.vorlage.split(',').filter(Boolean);
 
   const list = all.filter(
     (u) =>
       (f.thema === 'alle' || u.thema === f.thema) &&
       (f.stufe === 'alle' || String(u.schwierigkeit) === f.stufe) &&
       (f.tag === 'alle' || u.tags.includes(f.tag)) &&
-      (f.status === 'alle' || status(u) === f.status),
+      (f.status === 'alle' || status(u) === f.status) &&
+      (!vorlagen.length || vorlagen.includes(u.vorlage ?? '')),
   );
   const pct = summary.total ? (summary.solved / summary.total) * 100 : 0;
   const nextOpen = list.find((u) => status(u) === 'faellig') ?? list.find((u) => status(u) === 'offen');
@@ -118,6 +122,15 @@ export function RechenUebungen() {
               </select>
             </label>
           </div>
+
+          {vorlagen.length > 0 && (
+            <p className="hint">
+              📏 Nur Übungen zu: {vorlagen.map((id) => findeVorlage(id)?.titel ?? id).join(' · ')}{' '}
+              <button type="button" className="ghost small" onClick={() => set({ vorlage: 'alle' })}>
+                ✕ alle Vorlagen
+              </button>
+            </p>
+          )}
 
           <div className="selection-bar">
             <span>

@@ -25,6 +25,7 @@ import {
   vorlage,
   zahlParam,
 } from '../hilfen';
+import { F } from '../formeln';
 import type { Params } from '../typen';
 import type { Zufall } from '../zufall';
 
@@ -105,7 +106,7 @@ export const lagemasse = vorlage({
     });
     b.schritt({
       titel: 'Arithmetisches Mittel',
-      formel: L`\bar{x} = \frac{\sum x_i}{n}`,
+      formel: F.mittel.latex,
       einsetzen: L`\bar{x} = \frac{${lzSumme(s)}}{${n}} = \frac{${lz(sum)}}{${n}}`,
       ergebnis: m,
       einheit: e,
@@ -115,7 +116,7 @@ export const lagemasse = vorlage({
       const pos = (n + 1) / 2;
       b.schritt({
         titel: 'Median',
-        formel: L`\tilde{x} = x_{\left(\frac{n+1}{2}\right)}`,
+        formel: F.medianUngerade.latex,
         einsetzen: L`\tilde{x} = x_{(${pos})}`,
         ergebnis: med,
         einheit: e,
@@ -125,7 +126,7 @@ export const lagemasse = vorlage({
     } else {
       b.schritt({
         titel: 'Median',
-        formel: L`\tilde{x} = \frac{x_{(n/2)} + x_{(n/2+1)}}{2}`,
+        formel: F.medianGerade.latex,
         einsetzen: L`\tilde{x} = \frac{${lzk(s[n / 2 - 1])} + ${lzk(s[n / 2])}}{2}`,
         ergebnis: med,
         einheit: e,
@@ -146,7 +147,7 @@ export const lagemasse = vorlage({
     }
     b.schritt({
       titel: 'Spannweite',
-      formel: L`R = x_{\max} - x_{\min}`,
+      formel: F.spannweite.latex,
       einsetzen: L`R = ${lz(s[n - 1])} - ${lzk(s[0])}`,
       ergebnis: r,
       einheit: e,
@@ -218,7 +219,7 @@ export const gewichtetesMittel = vorlage({
     const m = b.wert('mittel', prod / gew, { label: 'Gewichtetes Mittel', einheit: e, runden: 2 });
     b.schritt({
       titel: 'Gewichtetes arithmetisches Mittel',
-      formel: L`\bar{x} = \frac{\sum (n_i \cdot x_i)}{\sum n_i}`,
+      formel: F.gewichtetesMittel.latex,
       einsetzen: L`\bar{x} = \frac{${d.gruppen.map((g) => L`${lz(g.anzahl)} \cdot ${lzk(g.wert)}`).join(' + ')}}{${d.gruppen.map((g) => lz(g.anzahl)).join(' + ')}} = \frac{${lz(prod)}}{${lz(gew)}}`,
       ergebnis: m,
       einheit: e,
@@ -273,7 +274,7 @@ export const quartile = vorlage({
       const pos = q.position;
       b.schritt({
         titel: name,
-        formel: L`\text{Position} = n \cdot p`,
+        formel: F.quartilPosition.latex,
         einsetzen: q.ganz
           ? L`${n} \cdot ${lz(p)} = ${lz(pos)} \Rightarrow \frac{x_{(${pos})} + x_{(${pos + 1})}}{2} = \frac{${lzk(s[pos - 1])} + ${lzk(s[pos])}}{2}`
           : L`${n} \cdot ${lz(p)} = ${lz(pos)} \Rightarrow \text{aufrunden: } x_{(${Math.ceil(pos)})}`,
@@ -297,7 +298,7 @@ export const quartile = vorlage({
     schrittQ('Oberes Quartil Q3', 0.75, Q3);
     b.schritt({
       titel: 'Interquartilsabstand',
-      formel: L`IQR = Q_3 - Q_1`,
+      formel: F.iqr.latex,
       einsetzen: L`IQR = ${lz(q3)} - ${lzk(q1)}`,
       ergebnis: iqr,
       einheit: e,
@@ -305,7 +306,7 @@ export const quartile = vorlage({
     });
     b.schritt({
       titel: 'Unterer Zaun',
-      formel: L`Q_1 - 1{,}5 \cdot IQR`,
+      formel: F.zaunUnten.latex,
       einsetzen: L`${lz(q1)} - 1{,}5 \cdot ${lzk(iqr)} = ${lz(q1)} - ${lzk(1.5 * iqr)}`,
       ergebnis: zu,
       einheit: e,
@@ -313,7 +314,7 @@ export const quartile = vorlage({
     });
     b.schritt({
       titel: 'Oberer Zaun',
-      formel: L`Q_3 + 1{,}5 \cdot IQR`,
+      formel: F.zaunOben.latex,
       einsetzen: L`${lz(q3)} + 1{,}5 \cdot ${lzk(iqr)} = ${lz(q3)} + ${lzk(1.5 * iqr)}`,
       ergebnis: zo,
       einheit: e,
@@ -397,7 +398,7 @@ export const varianz = vorlage({
 
     b.schritt({
       titel: 'Mittelwert',
-      formel: L`\bar{x} = \frac{\sum x_i}{n}`,
+      formel: F.mittel.latex,
       einsetzen: L`\bar{x} = \frac{${lzSumme(d.werte)}}{${n}}`,
       ergebnis: m,
       einheit: e,
@@ -405,7 +406,7 @@ export const varianz = vorlage({
     });
     b.schritt({
       titel: 'Summe der Abweichungsquadrate',
-      formel: L`SAQ = \sum (x_i - \bar{x})^2`,
+      formel: F.saq.latex,
       einsetzen: `SAQ = ${abw.map((a) => L`${lzk(a, 2)}^2`).join(' + ')}`,
       ergebnis: saq,
       runden: 2,
@@ -413,7 +414,7 @@ export const varianz = vorlage({
     });
     b.schritt({
       titel: stich ? 'Varianz der Stichprobe' : 'Varianz der Grundgesamtheit',
-      formel: stich ? L`s^2 = \frac{SAQ}{n - 1}` : L`\sigma^2 = \frac{SAQ}{n}`,
+      formel: stich ? F.varianzStichprobe.latex : F.varianzGrundgesamtheit.latex,
       einsetzen: stich ? L`s^2 = \frac{${lz(saq, 2)}}{${n} - 1}` : L`\sigma^2 = \frac{${lz(saq, 2)}}{${n}}`,
       ergebnis: v,
       einheit: e ? `${e}²` : undefined,
@@ -507,7 +508,7 @@ export const variationskoeffizient = vorlage({
       const vk = b.wert(`vk${i + 1}`, (g.stdabw / g.mittel) * 100, { label: `VK ${g.name}`, einheit: '%', runden: 2 });
       b.schritt({
         titel: `Variationskoeffizient ${g.name}`,
-        formel: L`VK = \frac{\sigma}{\bar{x}} \cdot 100\,\%`,
+        formel: F.variationskoeffizient.latex,
         einsetzen: L`VK = \frac{${lz(g.stdabw)}}{${lz(g.mittel)}} \cdot 100\,\%`,
         ergebnis: vk,
         einheit: '%',
@@ -612,7 +613,7 @@ export const haeufigkeiten = vorlage({
       lauf += rel;
       b.schritt({
         titel: `${i + 1}. ${k.name}`,
-        formel: L`f_i = \frac{h_i}{n} \cdot 100\,\%,\quad F_i = F_{i-1} + f_i`,
+        formel: F.haeufigkeiten.latex,
         einsetzen: L`f = \frac{${lz(k.h)}}{${lz(n)}} \cdot 100\,\% = ${lz(rel, 1)}\,\%,\quad F = ${lz(lauf, 1)}\,\%`,
         ergebnis: lauf,
         einheit: '%',

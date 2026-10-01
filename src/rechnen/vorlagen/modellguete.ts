@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { fz, fzListe, intParam, L, LoesungsBau, lz, lzk, mittel, summe, vorlage } from '../hilfen';
+import { F } from '../formeln';
 
 const anzahl = z.number().int().nonnegative();
 const kmSchema = z
@@ -83,7 +84,7 @@ export const konfusionsmatrix = vorlage({
 
     b.schritt({
       titel: 'Accuracy',
-      formel: L`\frac{TP + TN}{n}`,
+      formel: F.accuracy.latex,
       einsetzen: L`\frac{${lz(d.tp)} + ${lz(d.tn)}}{${lz(n)}}`,
       ergebnis: acc,
       einheit: '%',
@@ -91,7 +92,7 @@ export const konfusionsmatrix = vorlage({
     });
     b.schritt({
       titel: 'Precision',
-      formel: L`\frac{TP}{TP + FP}`,
+      formel: F.precision.latex,
       einsetzen: L`\frac{${lz(d.tp)}}{${lz(d.tp)} + ${lz(d.fp)}}`,
       ergebnis: prec,
       einheit: '%',
@@ -99,7 +100,7 @@ export const konfusionsmatrix = vorlage({
     });
     b.schritt({
       titel: 'Recall',
-      formel: L`\frac{TP}{TP + FN}`,
+      formel: F.recall.latex,
       einsetzen: L`\frac{${lz(d.tp)}}{${lz(d.tp)} + ${lz(d.fn)}}`,
       ergebnis: rec,
       einheit: '%',
@@ -107,7 +108,7 @@ export const konfusionsmatrix = vorlage({
     });
     b.schritt({
       titel: 'F1-Maß',
-      formel: L`F_1 = \frac{2 \cdot P \cdot R}{P + R}`,
+      formel: F.f1.latex,
       einsetzen: L`\frac{2 \cdot ${lz(prec / 100, 4)} \cdot ${lz(rec / 100, 4)}}{${lz(prec / 100, 4)} + ${lz(rec / 100, 4)}}`,
       ergebnis: f1,
       einheit: '%',
@@ -116,7 +117,7 @@ export const konfusionsmatrix = vorlage({
     });
     b.schritt({
       titel: 'Spezifität',
-      formel: L`\frac{TN}{TN + FP}`,
+      formel: F.spezifitaet.latex,
       einsetzen: L`\frac{${lz(d.tn)}}{${lz(d.tn)} + ${lz(d.fp)}}`,
       ergebnis: spez,
       einheit: '%',
@@ -150,7 +151,7 @@ export const konfusionsmatrix = vorlage({
       b.wert('ersparnis', kt - k, { label: 'Ersparnis durch das Modell', einheit: '€', runden: 2, zusatz: true });
       b.schritt({
         titel: 'Fehlerkosten',
-        formel: L`K = FN \cdot k_{FN} + FP \cdot k_{FP}`,
+        formel: F.fehlerkosten.latex,
         einsetzen: L`${lz(d.fn)} \cdot ${lz(d.kostenFN)} + ${lz(d.fp)} \cdot ${lz(d.kostenFP)}`,
         ergebnis: k,
         einheit: '€',
@@ -227,7 +228,7 @@ export const regressionsguete = vorlage({
 
     b.schritt({
       titel: 'Fehler',
-      formel: L`e_i = y_i - \hat{y}_i`,
+      formel: F.residuum.latex,
       einsetzen: err.map((x) => lz(x)).join(L`;\ `),
       ergebnis: summe(err),
       einheit: e,
@@ -235,7 +236,7 @@ export const regressionsguete = vorlage({
     });
     b.schritt({
       titel: 'MAE',
-      formel: L`MAE = \frac{\sum |e_i|}{n}`,
+      formel: F.mae.latex,
       einsetzen: L`\frac{${err.map((x) => lz(Math.abs(x))).join(' + ')}}{${n}} = \frac{${lz(sa)}}{${n}}`,
       ergebnis: mae,
       einheit: e,
@@ -243,14 +244,14 @@ export const regressionsguete = vorlage({
     });
     b.schritt({
       titel: 'MSE',
-      formel: L`MSE = \frac{\sum e_i^2}{n}`,
+      formel: F.mse.latex,
       einsetzen: L`\frac{${err.map((x) => L`${lzk(x)}^2`).join(' + ')}}{${n}} = \frac{${lz(sq)}}{${n}}`,
       ergebnis: mse,
       runden: 2,
     });
     b.schritt({
       titel: 'RMSE',
-      formel: L`RMSE = \sqrt{MSE}`,
+      formel: F.rmse.latex,
       einsetzen: L`\sqrt{${lz(mse, 2)}}`,
       ergebnis: rmse,
       einheit: e,
@@ -260,7 +261,7 @@ export const regressionsguete = vorlage({
     if (r2 !== undefined) {
       b.schritt({
         titel: 'R²',
-        formel: L`R^2 = 1 - \frac{SS_{res}}{SS_{tot}}`,
+        formel: F.r2Modell.latex,
         einsetzen: L`1 - \frac{${lz(sq)}}{${lz(sst, 2)}}`,
         ergebnis: r2,
         runden: 2,

@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { fz, intParam, L, LoesungsBau, lz, summe, tx, vorlage } from '../hilfen';
+import { F } from '../formeln';
 import type { EingabeLayout } from '../typen';
 
 // ---------- Netzplan ----------
@@ -165,7 +166,7 @@ export const netzplan = vorlage({
     for (const v of topo) {
       b.schritt({
         titel: `Vorwärts: ${v.id}`,
-        formel: v.vorgaenger.length ? L`FAZ = \max(FEZ_{\text{Vorgänger}}),\ FEZ = FAZ + D` : L`FAZ = 0,\ FEZ = FAZ + D`,
+        formel: v.vorgaenger.length ? F.vorwaerts.latex : L`FAZ = 0,\ FEZ = FAZ + D`,
         einsetzen: v.vorgaenger.length
           ? L`FAZ = \max(${v.vorgaenger.map((x) => lz(p.fez[x])).join(L`;\ `)}) = ${lz(p.faz[v.id])},\ FEZ = ${lz(p.faz[v.id])} + ${lz(v.dauer)}`
           : L`FEZ = 0 + ${lz(v.dauer)}`,
@@ -180,7 +181,7 @@ export const netzplan = vorlage({
       b.schritt({
         titel: `Rückwärts und Puffer: ${v.id}`,
         formel: ns.length
-          ? L`SEZ = \min(SAZ_{\text{Nachf.}}),\ SAZ = SEZ - D,\ GP = SAZ - FAZ,\ FP = \min(FAZ_{\text{Nachf.}}) - FEZ`
+          ? L`${F.rueckwaerts.latex},\ ${F.gesamtpuffer.latex},\ ${F.freierPuffer.latex}`
           : L`SEZ = \text{Projektdauer},\ SAZ = SEZ - D,\ GP = SAZ - FAZ,\ FP = \text{Projektdauer} - FEZ`,
         einsetzen: ns.length
           ? L`SEZ = \min(${ns.map((w) => lz(p.saz[w.id])).join(L`;\ `)}) = ${lz(p.sez[v.id])},\ SAZ = ${lz(p.sez[v.id])} - ${lz(v.dauer)} = ${lz(p.saz[v.id])},\ GP = ${lz(p.saz[v.id])} - ${lz(p.faz[v.id])},\ FP = ${lz(Math.min(...ns.map((w) => p.faz[w.id])))} - ${lz(p.fez[v.id])}`
@@ -301,7 +302,7 @@ export const nutzwert = vorlage({
       const w = b.wert(`nutzwert${ai + 1}`, summe(teile), { label: `Nutzwert ${a.name}`, runden: 2 });
       b.schritt({
         titel: `Nutzwert ${a.name}`,
-        formel: L`N = \sum g_i \cdot p_i`,
+        formel: F.nutzwert.latex,
         einsetzen: d.kriterien.map((k, ki) => L`${lz(k.gewicht / 100)} \cdot ${lz(a.punkte[ki])}`).join(' + '),
         ergebnis: w,
         runden: 2,
@@ -376,7 +377,7 @@ export const breakEven = vorlage({
     const be = b.wert('breakEven', Math.ceil(exakt - 1e-9), { label: 'Break-even-Menge', einheit: 'Stück' });
     b.schritt({
       titel: 'Deckungsbeitrag',
-      formel: L`db = p - k_v`,
+      formel: F.deckungsbeitrag.latex,
       einsetzen: L`${lz(d.preis, 2)} - ${lz(d.variabel, 2)}`,
       ergebnis: db,
       einheit: '€',
@@ -384,7 +385,7 @@ export const breakEven = vorlage({
     });
     b.schritt({
       titel: 'Break-even-Menge',
-      formel: L`x_{BE} = \frac{K_{fix}}{db}`,
+      formel: F.breakEven.latex,
       einsetzen: L`\frac{${lz(d.fixkosten, 2)}}{${lz(db, 2)}} = ${lz(exakt, 2)}`,
       ergebnis: be,
       einheit: 'Stück',
@@ -406,7 +407,7 @@ export const breakEven = vorlage({
       const g = b.wert('gewinn', db * d.menge - d.fixkosten, { label: `Gewinn bei ${fz(d.menge)} Stück`, einheit: '€', runden: 2 });
       b.schritt({
         titel: 'Gewinn',
-        formel: L`G = db \cdot x - K_{fix}`,
+        formel: F.gewinn.latex,
         einsetzen: L`${lz(db, 2)} \cdot ${lz(d.menge)} - ${lz(d.fixkosten, 2)}`,
         ergebnis: g,
         einheit: '€',
@@ -452,7 +453,7 @@ export const risiko = vorlage({
     const b = new LoesungsBau();
     const rpz = d.risiken.map((r, i) => {
       const w = b.wert(`rpz${i + 1}`, r.w * r.s, { label: `Risikozahl: ${r.name}` });
-      b.schritt({ titel: r.name, formel: L`R = W \cdot S`, einsetzen: L`${lz(r.w)} \cdot ${lz(r.s)}`, ergebnis: w });
+      b.schritt({ titel: r.name, formel: F.risiko.latex, einsetzen: L`${lz(r.w)} \cdot ${lz(r.s)}`, ergebnis: w });
       b.fehler(`rpz${i + 1}`, r.w + r.s, 'Du hast addiert – die Risikozahl ist das **Produkt** W · S.');
       return w;
     });
@@ -537,7 +538,7 @@ export const pert = vorlage({
       const w = b.wert(id, (v.o + 4 * v.m + v.p) / 6, { label: `Erwartete Dauer ${v.name}`, einheit: e, runden: 2 });
       b.schritt({
         titel: v.name,
-        formel: L`t_e = \frac{o + 4 \cdot m + p}{6}`,
+        formel: F.pert.latex,
         einsetzen: L`t_e = \frac{${lz(v.o)} + 4 \cdot ${lz(v.m)} + ${lz(v.p)}}{6} = \frac{${lz(v.o + 4 * v.m + v.p)}}{6}`,
         ergebnis: w,
         einheit: e,

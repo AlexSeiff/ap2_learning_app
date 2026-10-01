@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 import { fz, intParam, L, LoesungsBau, lz, runde, summe, vorlage, zahlParam } from '../hilfen';
+import { F } from '../formeln';
 
 const SAETZE = { kv: 14.6, pv: 3.6, rv: 18.6, alv: 2.6, kinderlosZuschlag: 0.6, geringverdiener: 325 };
 
@@ -86,7 +87,7 @@ export const sozialversicherung = vorlage({
       const w = b.wert(t.id, gering ? 0 : cent((d.brutto * t.satz) / 100), { label: `AN-Anteil ${t.label}`, einheit: '€', runden: 2 });
       b.schritt({
         titel: t.label,
-        formel: L`\text{Brutto} \cdot \text{AN-Satz}`,
+        formel: F.svBeitrag.latex,
         einsetzen: L`${lz(d.brutto, 2)} \cdot ${t.text}\,\%`,
         ergebnis: w,
         einheit: '€',
@@ -168,7 +169,7 @@ export const sozialversicherung = vorlage({
       }
       b.schritt({
         titel: 'Nettoentgelt',
-        formel: L`\text{Brutto} - \text{LSt} - \text{Soli} - \text{KiSt} - \text{SV}`,
+        formel: F.netto.latex,
         einsetzen: L`${lz(d.brutto, 2)} - ${lz(d.lohnsteuer, 2)} - ${lz(soli, 2)} - ${lz(kist, 2)} - ${lz(sv, 2)}`,
         ergebnis: netto,
         einheit: '€',
@@ -272,7 +273,7 @@ export const gleichgewicht = vorlage({
     b.wert('menge', gg.nachfrage, { label: 'Gleichgewichtsmenge', einheit: 'Stück', zusatz: true });
     b.schritt({
       titel: 'Gleichgewicht',
-      formel: L`\text{Angebot} = \text{Nachfrage}`,
+      formel: F.gleichgewicht.latex,
       einsetzen: L`${lz(gg.angebot)} = ${lz(gg.nachfrage)}`,
       ergebnis: gg.preis,
       einheit: '€',
