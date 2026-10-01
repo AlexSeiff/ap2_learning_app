@@ -1,5 +1,5 @@
 // Projektmanagement (Deep Dive 12): Netzplan (FAZ, FEZ, SAZ, SEZ, Gesamt- und freier Puffer, kritischer Pfad),
-// Nutzwertanalyse, Break-even-Menge und Risikoprioritätszahl.
+// Nutzwertanalyse, Break-even-Menge, Risikoprioritätszahl und Drei-Zeiten-Schätzung (PERT).
 
 import { z } from 'zod';
 import { fz, intParam, L, LoesungsBau, lz, summe, tx, vorlage } from '../hilfen';
@@ -455,6 +455,108 @@ export const risiko = vorlage({
       return w;
     });
     b.wert('hoechstes', d.risiken[rpz.indexOf(Math.max(...rpz))].name, { label: 'Höchstes Risiko', vergleich: 'text', zusatz: true });
+    return b.fertig();
+  },
+});
+
+// ---------- Drei-Zeiten-Schätzung (PERT) ----------
+
+const schaetzSchema = z.object({
+  vorgaenge: z
+    .array(
+      z
+        .object({ name: z.string().trim().min(1), o: z.number().nonnegative(), m: z.number().nonnegative(), p: z.number().nonnegative() })
+        .refine((v) => v.o <= v.m && v.m <= v.p, { message: 'es muss optimistisch ≤ wahrscheinlich ≤ pessimistisch gelten' }),
+    )
+    .min(1)
+    .max(8),
+  einheit: z.string().trim().min(1).optional(),
+});
+
+const ARBEITSPAKETE = [
+  'Anforderungsanalyse',
+  'Datenmodell entwerfen',
+  'ETL-Strecke entwickeln',
+  'Dashboard entwerfen',
+  'Test',
+  'Dokumentation',
+  'Schulung',
+  'Abnahme',
+];
+
+export const pert = vorlage({
+  id: 'pert',
+  titel: 'Drei-Zeiten-Schätzung (PERT)',
+  bereich: 'Projektmanagement',
+  beschreibung: 'Erwartete Dauer t_e = (o + 4 · m + p) / 6 je Arbeitspaket und bei mehreren Paketen die Summe.',
+  schema: schaetzSchema,
+  hinweise: [
+    't_e = (optimistisch + 4 · wahrscheinlich + pessimistisch) / 6.',
+    'Der wahrscheinlichste Wert zählt vierfach – geteilt wird deshalb durch 6, nicht durch 3.',
+  ],
+  erzeuge(z, params, vorbild) {
+    const namen = vorbild?.vorgaenge.map((v) => v.name) ?? ARBEITSPAKETE;
+    const k = intParam(params, 'vorgaenge', vorbild?.vorgaenge.length ?? 1, 1, 8);
+    return {
+      vorgaenge: Array.from({ length: k }, (_, i) => {
+        const o = z.ganz(2, 8);
+        const m = o + z.ganz(1, 5);
+        return { name: namen[i] ?? `Arbeitspaket ${i + 1}`, o, m, p: m + z.ganz(3, 12) };
+      }),
+      ...(vorbild?.einheit ? { einheit: vorbild.einheit } : {}),
+    };
+  },
+  platzhalter: (d) => {
+    const p: Record<string, string> = { einheit: d.einheit ?? 'Tage', anzahl: String(d.vorgaenge.length) };
+    d.vorgaenge.forEach((v, i) => {
+      p[`name${i + 1}`] = v.name;
+      p[`o${i + 1}`] = fz(v.o);
+      p[`m${i + 1}`] = fz(v.m);
+      p[`p${i + 1}`] = fz(v.p);
+    });
+    return p;
+  },
+  tabelle: (d) => ({
+    kopf: ['Arbeitspaket', 'optimistisch (o)', 'wahrscheinlich (m)', 'pessimistisch (p)'],
+    zeilen: d.vorgaenge.map((v) => [v.name, ...[v.o, v.m, v.p].map((x) => `${fz(x)} ${d.einheit ?? 'Tage'}`)]),
+  }),
+  loese(d) {
+    const b = new LoesungsBau();
+    const e = d.einheit ?? 'Tage';
+    const te = d.vorgaenge.map((v, i) => {
+      const id = `te${i + 1}`;
+      const w = b.wert(id, (v.o + 4 * v.m + v.p) / 6, { label: `Erwartete Dauer ${v.name}`, einheit: e, runden: 2 });
+      b.schritt({
+        titel: v.name,
+        formel: L`t_e = \frac{o + 4 \cdot m + p}{6}`,
+        einsetzen: L`t_e = \frac{${lz(v.o)} + 4 \cdot ${lz(v.m)} + ${lz(v.p)}}{6} = \frac{${lz(v.o + 4 * v.m + v.p)}}{6}`,
+        ergebnis: w,
+        einheit: e,
+        runden: 2,
+      });
+      b.fehler(id, (v.o + v.m + v.p) / 3, 'Das ist das einfache Mittel – bei PERT zählt der wahrscheinlichste Wert **vierfach**.');
+      b.fehler(id, (v.o + v.m + v.p) / 6, 'Der wahrscheinlichste Wert muss mit 4 multipliziert werden.');
+      b.fehler(id, (v.o + 4 * v.m + v.p) / 3, 'Geteilt wird durch 6 (1 + 4 + 1 Gewichte), nicht durch 3.');
+      b.fehler(id, v.o + 4 * v.m + v.p, 'Du hast die gewichtete Summe nicht durch 6 geteilt.');
+      b.fehler(id, v.m, 'Das ist nur der wahrscheinlichste Wert – optimistische und pessimistische Schätzung gehören dazu.');
+      return w;
+    });
+    if (d.vorgaenge.length > 1) {
+      const s = b.wert('summe', summe(te), { label: 'Erwartete Dauer gesamt (nacheinander)', einheit: e, runden: 2 });
+      b.schritt({
+        titel: 'Summe',
+        formel: tx('Summe der erwarteten Dauern'),
+        einsetzen: te.map((x) => lz(x, 2)).join(' + '),
+        ergebnis: s,
+        einheit: e,
+        runden: 2,
+      });
+      b.fehler(
+        'summe',
+        summe(d.vorgaenge.map((v) => v.m)),
+        'Das ist die Summe der wahrscheinlichsten Werte – addiere die erwarteten Dauern t_e.',
+      );
+    }
     return b.fertig();
   },
 });

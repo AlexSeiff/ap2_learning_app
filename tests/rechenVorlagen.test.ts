@@ -301,6 +301,21 @@ describe('Prozessanalyse (DD5), Datenqualität (DD9), Projektmanagement (DD12)',
     });
     expect([rs.rpz1, rs.rpz2, rs.rpz3, rs.hoechstes]).toEqual([10, 16, 9, 'Datenqualität']);
   });
+
+  it('DD12 Teil 3.1 Drei-Zeiten-Schätzung: o = 4, m = 7, p = 16 → t_e = 8 Tage; mehrere Pakete mit Summe', () => {
+    const v = VORLAGEN.pert;
+    const l = v.loese(v.schema.parse({ vorgaenge: [{ name: 'Datenmodell', o: 4, m: 7, p: 16 }] }));
+    expect(l.werte).toEqual({ te1: 8 });
+    expect(l.fehlerbilder.map((f) => f.wert)).toEqual(expect.arrayContaining([9, 48, 16, 7]));
+    const zwei = loese('pert', {
+      vorgaenge: [
+        { name: 'A', o: 4, m: 7, p: 16 },
+        { name: 'B', o: 2, m: 3, p: 10 },
+      ],
+    });
+    expect([zwei.te1, r(zwei.te2), r(zwei.summe)]).toEqual([8, 4, 12]);
+    expect(v.schema.safeParse({ vorgaenge: [{ name: 'X', o: 5, m: 4, p: 9 }] }).success).toBe(false);
+  });
 });
 
 describe('WiSo (DD14) und Datensicherung (DD10)', () => {

@@ -4,7 +4,7 @@ import type { Vorlage } from '../typen';
 import { assoziation, kmeans } from './crispdm';
 import { qualitaetsgrad } from './datenqualitaet';
 import { konfusionsmatrix, regressionsguete } from './modellguete';
-import { breakEven, netzplan, nutzwert, risiko } from './projekt';
+import { breakEven, netzplan, nutzwert, pert, risiko } from './projekt';
 import { amortisation, durchlaufzeit, fehlerquote } from './prozess';
 import { datensicherung, rpo } from './sicherung';
 import { gewichtetesMittel, haeufigkeiten, lagemasse, quartile, varianz, variationskoeffizient } from './statistik1';
@@ -34,6 +34,7 @@ const alle = [
   nutzwert,
   breakEven,
   risiko,
+  pert,
   sozialversicherung,
   minijob,
   gleichgewicht,
