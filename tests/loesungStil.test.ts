@@ -98,6 +98,22 @@ describe('rehypeLoesung (gerendert)', () => {
     expect(ergebnisse(loesung(md))).toEqual(['70,00 Minuten', '40 Minuten', '93,00 %']);
   });
 
+  it('Rechenweg als Formel ($…$), Endergebnis fett dahinter: Kasten bleibt, Formel wird gesetzt (Roadmap 4.4)', () => {
+    const md = [
+      '- Arithmetisches Mittel: $\\bar{x} = \\frac{\\sum x_i}{n} = \\frac{770}{11}$ = **70,00 Minuten** *(3 P)*',
+      '- Standardabweichung: $\\sigma = \\sqrt{4}$ = **2,00 Tage**',
+      '- Unterer Zaun: $Q_1 - 1{,}5 \\cdot \\text{IQR} = 40 - 45$ = **−5** *(2 P)*',
+      '- Quote: $\\frac{18}{20} = 0{,}9$ ≈ **90,0 %**',
+    ].join('\n');
+    const html = loesung(md);
+    expect(ergebnisse(html)).toEqual(['70,00 Minuten', '2,00 Tage', '90,0 %']);
+    expect(html.match(/class="katex"/g)).toHaveLength(4);
+    expect(html).not.toContain('katex-error');
+    expect(html.match(/class="punkte rechts"/g)).toHaveLength(2);
+    // Ein Ergebnis in der Formel (\mathbf) wird nicht erkannt – deshalb steht es im Lernblatt dahinter.
+    expect(ergebnisse(loesung('$\\bar{x} = \\mathbf{70{,}00\\ \\text{min}}$ *(3 P)*'))).toEqual([]);
+  });
+
   it('Prüferkommentar als Absatz und als Zitat (Lösungsblatt) wird ein Kasten', () => {
     const box =
       '<aside class="pk-box"><div class="pk-label">🧑‍🏫 Prüferkommentar</div><p>2 P Ansatz, 2 P Ergebnis. Nicht <strong>(45+70)/2</strong>.</p></aside>';

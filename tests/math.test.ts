@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import katex from 'katex';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
@@ -57,5 +58,39 @@ describe('MathMarkdown (KaTeX)', () => {
 
   it('ein Formelfehler bricht nicht ab', () => {
     expect(render('Kaputt: $\\frac{1$')).toContain('Kaputt');
+  });
+});
+
+/** Alle Inline-Formeln `$…$` einer Datei (außerhalb von Code), nach der Pandoc-Regel wie `escapeStrayDollars`. */
+function formeln(markdown: string): string[] {
+  const out: string[] = [];
+  let fence = false;
+  for (const line of markdown.split('\n')) {
+    if (/^\s{0,3}(`{3,}|~{3,})/.test(line)) fence = !fence;
+    if (fence) continue;
+    const ohneCode = line.replace(/`+[^`]*`+/g, '');
+    for (const m of ohneCode.matchAll(/(?<![\\$])\$(?!\s)([^$]+?)(?<!\s)\$(?![\d$])/g)) out.push(m[1]);
+  }
+  return out;
+}
+
+describe('Formeln in content/ (Roadmap 4.4)', () => {
+  const dateien = readdirSync(CONTENT_DIR).filter((f) => f.endsWith('.md'));
+
+  it('jede Formel lässt sich mit KaTeX setzen', () => {
+    let anzahl = 0;
+    for (const f of dateien) {
+      for (const tex of formeln(readFileSync(join(CONTENT_DIR, f), 'utf8'))) {
+        anzahl++;
+        expect(() => katex.renderToString(tex, { throwOnError: true, strict: 'ignore' }), `${f}: ${tex}`).not.toThrow();
+      }
+    }
+    expect(anzahl).toBeGreaterThanOrEqual(0);
+  });
+
+  it('Endergebnisse stehen fett hinter der Formel, nicht als \\mathbf in ihr (sonst kein Ergebnis-Kasten)', () => {
+    for (const f of dateien) {
+      for (const tex of formeln(readFileSync(join(CONTENT_DIR, f), 'utf8'))) expect(tex, `${f}: ${tex}`).not.toMatch(/\\mathbf|\\boxed/);
+    }
   });
 });

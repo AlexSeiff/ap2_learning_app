@@ -13,6 +13,7 @@ import { findeVorlage } from '../src/rechnen/vorlagen/index';
 // alles wird ohne Importhinweis gelesen, jede Vorlage existiert, „Neue Zahlen“ funktioniert für viele Seeds, und die
 // festen Übungen ergeben genau die Zahlen, die in der Musterlösung der angegebenen Aufgabe stehen – bzw. bei einem
 // Rechenbeispiel aus dem Theorieteil (Quelle ohne „Übungsklausur“, z. B. „DD3 Teil 4.3“) im Theorieteil des Lernblatts.
+// Zahlen in Formeln ($…$) zählen mit (`70{,}00` = 70,00).
 
 const DATEI = 'AP2_Rechen_Uebungen.json';
 const content = loadContent(CONTENT_DIR);
@@ -31,7 +32,16 @@ function aufgaben(quelle: string): string[] {
 
 /** Typografisches Minus und geschützte/schmale Leerzeichen (U+00A0, U+202F) wie im Zahlformat vereinheitlichen. */
 const SCHMALE_LEERZEICHEN = new RegExp('[\\u00a0\\u202f]', 'g');
-const norm = (s: string) => s.replace(/−/g, '-').replace(SCHMALE_LEERZEICHEN, ' ');
+/**
+ * Zahlen in Formeln (`$…$`, Roadmap 4.4) wie Text lesen: `70{,}00` → `70,00`, `1{.}080` → `1.080`,
+ * LaTeX-Abstände (`\,`, `\;`, `\ `) → Leerzeichen, `\%` → `%`.
+ */
+const latexZahlen = (s: string) =>
+  s
+    .replace(/\{([,.])\}/g, '$1')
+    .replace(/\\[,;: ]/g, ' ')
+    .replace(/\\%/g, '%');
+const norm = (s: string) => latexZahlen(s).replace(/−/g, '-').replace(SCHMALE_LEERZEICHEN, ' ');
 
 describe('Rechenübungen in content/', () => {
   it('werden ohne Importhinweis gelesen, IDs sind eindeutig und jede Vorlage existiert', () => {

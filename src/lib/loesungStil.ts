@@ -6,6 +6,9 @@
 // - Endergebnisse → Kasten „Ergebnis“. Bewusst vorsichtig: nur fetter Text aus Zahl + Einheit direkt nach „=“, „≈“ oder „→“
 //   (`= **70,00 Minuten**`) oder eine fette Gleichung, die auf Zahl + Einheit endet (`**IQR = 70 − 40 = 30 Minuten**`).
 //   Nicht in Tabellen, Überschriften, Links, Formeln und im Prüferkommentar.
+//   Rechenwege als Formel (Roadmap 4.4): Das Endergebnis steht bewusst NICHT in der Formel, sondern fett dahinter –
+//   `$\bar{x} = \frac{770}{11}$ = **70,00 Minuten**`. So erkennt diese Regel es weiter (Text „ = “ direkt davor), es bleibt
+//   ohne KaTeX (normales Markdown, Markdown-Download) lesbar und die Zahl steht im Lernblatt wie bisher.
 // - Absatz `*Prüferkommentar: …*` (auch als Zitat, wie im Lösungsblatt) → Kasten „🧑‍🏫 Prüferkommentar“.
 //
 // rehypeTabellen (überall): Zahlenspalten rechtsbündig mit gleich breiten Ziffern, Summenzeilen fett mit Linie.
