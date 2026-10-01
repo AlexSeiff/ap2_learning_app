@@ -2,6 +2,7 @@ import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { MobileNav } from './components/MobileNav';
 import { UpdateHinweis } from './components/UpdateHinweis';
 import { IS_STATIC } from './lib/api';
 import { isDue } from './lib/progress';
@@ -69,36 +70,44 @@ function Nav() {
       {!!badge && <span className="nav-badge">{badge}</span>}
     </NavLink>
   );
+  const saveText =
+    saveState === 'gespeichert'
+      ? '✓ gespeichert'
+      : saveState === 'speichert'
+        ? '… speichert'
+        : saveState === 'konflikt'
+          ? '⚠ nicht gespeichert – neu laden'
+          : '⚠ Speichern fehlgeschlagen';
   return (
-    <nav className="sidebar">
-      <div className="brand">🎓 AP2 Lern-App</div>
-      {link('/', 'Übersicht')}
-      {link('/lernen', 'Lernen')}
-      {link('/karteikarten', 'Karteikarten')}
-      {link('/klausur', 'Übungsklausur')}
-      {link('/aufgaben', 'Einzelaufgaben')}
-      {link('/sql', '🧮 SQL-Editor', dueSql)}
-      {link('/rechnen', '📐 Rechenübungen', dueRechnen)}
-      {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
-      {link('/generator', 'KI-Aufgaben')}
-      {link('/material', 'Material')}
-      {link('/einstellungen', '⚙️ Einstellungen')}
-      {link('/daten', 'Daten & Import')}
-      <div className="sidebar-foot">
-        <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>
-          {theme.icon} {theme.label}
-        </button>
-        <span className={`save-state ${saveState}`}>
-          {saveState === 'gespeichert'
-            ? '✓ gespeichert'
-            : saveState === 'speichert'
-              ? '… speichert'
-              : saveState === 'konflikt'
-                ? '⚠ nicht gespeichert – neu laden'
-                : '⚠ Speichern fehlgeschlagen'}
-        </span>
-      </div>
-    </nav>
+    <>
+      <nav className="sidebar">
+        <div className="brand">🎓 AP2 Lern-App</div>
+        {link('/', 'Übersicht')}
+        {link('/lernen', 'Lernen')}
+        {link('/karteikarten', 'Karteikarten')}
+        {link('/klausur', 'Übungsklausur')}
+        {link('/aufgaben', 'Einzelaufgaben')}
+        {link('/sql', '🧮 SQL-Editor', dueSql)}
+        {link('/rechnen', '📐 Rechenübungen', dueRechnen)}
+        {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
+        {link('/generator', 'KI-Aufgaben')}
+        {link('/material', 'Material')}
+        {link('/einstellungen', '⚙️ Einstellungen')}
+        {link('/daten', 'Daten & Import')}
+        <div className="sidebar-foot">
+          <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>
+            {theme.icon} {theme.label}
+          </button>
+          <span className={`save-state ${saveState}`}>{saveText}</span>
+        </div>
+      </nav>
+      <MobileNav
+        badges={{ sql: dueSql, rechnen: dueRechnen, journal: dueJournal }}
+        theme={theme}
+        saveText={saveText}
+        saveState={saveState}
+      />
+    </>
   );
 }
 
