@@ -2,7 +2,7 @@
 
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
-> this file describes **the app as it is** (state: ROADMAP phases 0–7 done incl. 4.4/4.5, without 7.5, and 8.1–8.4, October 2026).
+> this file describes **the app as it is** (state: all ROADMAP phases 0–8 done incl. 4.4/4.5, without 7.5 (decision Q3), October 2026).
 > Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
 
 ---
@@ -82,15 +82,18 @@ lern-app/
 │  │                    useHeute (running „Heute lernen“ session)
 │  ├─ components/       AnswerInput, Markdown (+ MathMarkdown, markdownComponents), TheoryMarkdown, Rechenweg, TaskParts, ErrorBoundary,
 │  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs, MobileNav (bottom bar < 600 px), UpdateHinweis (PWA toast),
-│  │                    HeuteLeiste, EigeneAntwort, SicherheitWahl, OperatorTipp (phase 8)
+│  │                    HeuteLeiste, EigeneAntwort, SicherheitWahl, OperatorTipp, FehlergrundWahl + FehlergrundKarte (8.7),
+│  │                    SucheDialog (8.8, lazy) (phase 8)
 │  ├─ lib/              pure logic (progress, grading, stats, cards, leicht + leichtRechnen (Leicht-Modus), shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar,
 │  │                    rechnen (RechenState updates/selectors), wiederholung (repetition stages, SQL + Rechnen), uebungLabels)
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
 │  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts, pwa.ts (service worker registration),
-│  │                    navigation.ts (bottom bar groups, pure), heute + heuteSitzung (8.1), kalibrierung (8.3), operatoren + operatorStil (8.4)
+│  │                    navigation.ts (bottom bar groups, pure), heute + heuteSitzung (8.1), kalibrierung (8.3), operatoren + operatorStil (8.4),
+│  │                    mischKlausur (8.5), fehlergruende (8.7), suche + normalisiere (8.8), glossar (8.9)
 │  ├─ rechnen/          Rechenübungen (pure, no React): typen.ts, zufall.ts (seeded PRNG), hilfen.ts (statistics helpers, LoesungsBau,
 │  │                    vorlage()), vorlagen/*.ts (28 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
-│  │                    checker.ts (input checking + Fehlerbilder), formeln.ts (Formelsammlung data, also used by the Rechenwege)
+│  │                    checker.ts (input checking + Fehlerbilder), formeln.ts (Formelsammlung data, also used by the Rechenwege),
+│  │                    beispiel.ts (faded worked examples, 8.6)
 │  └─ sql/              sqlWorker.ts, engine.ts, runner.ts, checker.ts, errors.ts, lint.ts, types.ts
 ├─ tests/             Vitest; fixtures/ with old progress formats and a mini sheet set
 └─ data/              fortschritt.json, generierte-aufgaben.json, backups/ (gitignored, local app only)
@@ -289,15 +292,17 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/heute` | Heute lernen | lazy page: plan of today's mixed round, start, progress, skip, end (§ 5 "Heute lernen") |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
 | `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below); optional "✍️ Deine Antwort" field (8.2); `?karten=ID,ID,…` = exactly these cards (used by "Heute lernen") |
-| `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, "Wie sicher bist du?" per task (8.3), operators marked (8.4), solutions locked until submission, self-assessment with criteria checkboxes, IHK grade, auto-submit on timeout, resumable (`activeExam`) |
-| `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet; task page asks "Wie sicher bist du?" before submitting (8.3); operators in task texts are marked (8.4) |
+| `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, "Wie sicher bist du?" per task (8.3), operators marked (8.4), solutions locked until submission, self-assessment with criteria checkboxes, "Woran lag's?" below full points (8.7), IHK grade, auto-submit on timeout, resumable (`activeExam`). Card "🎲 Gemischte Probeklausur" on `/klausur`; `:topicId` can also be `mix-<bereich>-<seed>` (8.5) |
+| `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet; task page asks "Wie sicher bist du?" before submitting (8.3) and "Woran lag's?" below full points (8.7); operators in task texts are marked (8.4) |
 | `/druck` | Druck | print view (task sheet or solution sheet, same numbering) → "Als PDF speichern"; also Markdown download |
 | `/sql`, `/sql/uebungen`, `/sql/uebung/:id` | SQL-Editor | free mode + exercises (see § 7) |
-| `/rechnen`, `/rechnen/:id` | Rechenübungen | list with filters in the URL (Thema, Schwierigkeit, Tag, Status), progress bar, "Nächste offene"; exercise page (see below) |
-| `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`) |
+| `/rechnen`, `/rechnen/:id` | Rechenübungen | list with filters in the URL (Thema, Schwierigkeit, Tag, Status), progress bar, "Nächste offene"; exercise page (see below) with a faded worked example (8.6) |
+| `/fehlerjournal` | Fehlerjournal | every task below full points comes back after 1, 3, 7 days (`JOURNAL_INTERVALS`); card "🧩 Woran es meistens liegt" and the last error category per entry (8.7) |
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only (Pages: no nav item, the route redirects to `/`) |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list, tiles "📏 Formelsammlung" and "🗣️ Operatoren-Trainer" |
 | `/material/operatoren` | Operatoren-Trainer | lazy page: quiz "Was verlangt der Operator hier?" with real tasks, table of all operators (§ 5 phase 8.4) |
+| `/material/glossar` | Glossar | lazy page: terms A–Z from `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources (§ 5 phase 8.9) |
+| (dialog) | Suche | `Strg+K` / `⌘K`, "🔎 Suchen" in the sidebar and first entry of the mobile "Mehr" menu: global search, lazy (§ 5 phase 8.8) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
@@ -477,13 +482,103 @@ only in `useCardSession` state and is cleared for the next card – **not persis
   feedback with points and tip, score of this visit (not stored); table of all operators with Anforderungsbereich, requirement, points, tip and the
   number of tasks using it.
 
+### Gemischte Probeklausur (phase 8.5)
+
+- **Assembly** `baueMischKlausur(content, bereich, seed)` in `src/lib/mischKlausur.ts` (pure, `tests/mischKlausur.test.ts`). Three variants like the
+  written AP2 parts: `prozess` ("Durchführen einer Prozessanalyse", Themenblock A1–A4), `qualitaet` ("Sicherstellen der Datenqualität", B1–B4) and
+  `gemischt` (all eight). WiSo (DD13/14) is not used – it is its own 60-minute part with bound tasks.
+- **Weights** = number of checklist items (`- [ ]`) under each `### A1 …` heading of the topic list (MaterialDoc `themenliste-beispielfragen`,
+  `gewichteAusThemenliste`; today A1 7, A2 6, A3 5, A4 3, B1 7, B2 8, B3 4, B4 6; `FALLBACK_GEWICHTE` if the file is missing). 100 points are
+  distributed by largest remainder (`verteile`; e.g. Prozessanalyse 33/29/24/14).
+- **Sources** (`UNTERBEREICHE`, checked by a test against `content/`): A1 → DD5 A–C; A2 → DD12 A, B, C, E + DD15 D; A3 → DD12 D, DD5 D;
+  A4 → DD5 E, DD10 C; B1 → DD1, SQL-Zusatz, DD2, DD8, DD15 A–C/E; B2 → DD9, DD3, DD4, DD6, DD7, DD11; B3 → DD10 D, E; B4 → DD10 A–C.
+- **Filling**: each sub-area becomes one block (A, B, …). Its candidate blocks are shuffled with the seed (`erzeugeZufall`); from each block
+  the longest **prefix** of tasks (A1, A1+A2, …) that still fits the target is taken – prefixes keep tasks that build on each other together,
+  and the block intro (data, scenario) comes along. A second pass fills missing points in the sub-area furthest below its target, with
+  the prefix closest to the gap (also continuing a block already used there). Never above 100 points, never a task twice. Up to
+  `MISCH_VERSUCHE` = 8 derived arrangements are tried and the first with exactly 100 wins (over 500 seeds: 99.4 % / 82 % / 99 % exactly 100
+  for gemischt/prozess/qualitaet; otherwise 98–99, never less – documented deviation from "100 points").
+- **Id** `mix-<bereich>-<seed>` (`mischId`, `parseMischId`) is stored in `ExamRun.topicId` – no format change; `klausurFuer(content, id)` rebuilds
+  the exam from it (same content + seed → same exam). If the content changes while a mixed exam runs, the exam is rebuilt from the new content.
+- **UI**: `/klausur` card "🎲 Gemischte Probeklausur" with one button per variant (new random seed each click, `neuerSeed`). The start page shows
+  each block with its sources ("Deep Dive 5 · Block C – Kennzahlen (C1, C2)"), "🎲 Neu mischen" and the variant switch. `useExamRun`, the exam
+  page (groups with their source heading and intro), the attachments (all attachments/intros of the used Deep Dives, prefixed with the Deep
+  Dive), `/druck?thema=mix-…` (`examSheet`) and the result page work as for a topic exam.
+- **Statistics**: `topicStats`/`examTrends` only look at exams whose `topicId` is a topic, so per-topic trends and best scores ignore mixed exams;
+  the single attempts count as usual (task averages, journal, calibration). Dashboard "Ø Übungsklausuren" includes them, "Letzte Klausuren"
+  names them "🎲 Gemischt (…)" (`klausurName`).
+
+### Ausgeblendete Lösungsbeispiele (phase 8.6)
+
+- **Stage** `beispielStufe(state)` (`src/rechnen/beispiel.ts`, pure, `tests/beispiel.test.ts`) from the stored `RechenState` (no format change):
+  never checked → `voll` (complete worked example before the inputs); checked but not solved, or back on repetition stage 1 (wrong or solution
+  shown) → `luecke` (the **last** step is hidden: "✏️ Diesen Schritt rechnest du selbst." – backward fading); solved and not just reset →
+  `ergebnis` (no example; a hint "🎯 Ohne Beispiel …"). The stage is taken when the page opens (`useRechenUebung`), a check doesn't change it mid-way.
+- **No leak**: exercises with a template and "Neue Zahlen" (79 of 85) show the example with **other numbers** – seed `beispielSeed(id, currentSeed, n)`
+  (never the current seed), data must differ, of up to `BEISPIEL_VERSUCHE` = 6 seeds the one with the fewest equal asked results. A step whose
+  result still equals one of the current asked values (e.g. buffer 0, unchanged x values) shows only its formula. Fixed exercises without
+  "Neue Zahlen" (2: `RE-PM-006`, `RE-WI-009`) show only step titles and general formulas (formulas with concrete numbers are hidden,
+  `formelMitZahlen`); exercises without a Rechenweg (4) have no example. A test runs every exercise of `content/` with original and new numbers.
+- **UI**: `<details class="beispiel">` "📘 Beispiel: so rechnest du das (andere Zahlen)" (open at `voll`, closed at `luecke`) with the example's
+  task text and data table and the `Rechenweg` with `sicht` per step (`ganz` | `formel` | `verdeckt`). KaTeX (Rechenweg chunk) now loads when an
+  exercise with an example opens, not only with the solution.
+
+### Fehlergründe (phase 8.7)
+
+- After the self-assessment **below full points** the task page and the exam (after submission, per task) ask "Woran lag's? (optional)":
+  🔀 Begriff verwechselt (`begriff`), 📐 Formel falsch (`formel`), 🧮 Rechenfehler (`rechenfehler`), 🗣️ Operator nicht beachtet (`operator`),
+  ⏱️ Zeit (`zeit`) – `components/FehlergrundWahl.tsx`, clicking again clears it. Task page: before or after saving (`setzeFehlergrund` updates
+  the saved attempt by task id + date). Exam: `activeExam.fehlergrund[taskId]` (`useExamRun.setFehlergrund`, only after submission),
+  copied into the attempts by `finishExam` only if the score is below the task's points.
+- **Evaluation** `src/lib/fehlergruende.ts` (pure): `fehlerStatistik(attempts)` counts reasons of attempts below full points, most frequent first;
+  `haeufigster` only without a tie. Card "🧩 Woran es meistens liegt" (`components/FehlergrundKarte.tsx`, Dashboard and Fehlerjournal, only with
+  data): most frequent reason with a tip and a link (Abgrenzungs-Karten, Formelsammlung, Rechenübungen, Operatoren-Trainer, Übungsklausur).
+  The Fehlerjournal shows the reason of the last attempt per open entry. Format: § 6.
+
+### Globale Suche (phase 8.8)
+
+- **Index** `baueSuchIndex(content, settings, zusatz)` (`src/lib/suche.ts`, pure, `tests/suche.test.ts`): theory sections of every sheet (link
+  `/lernen/<topic>?stelle=<section id>`), material docs, flashcards (`cardPool` → the Prüferfragen/Fachgespräch switches apply; link
+  `/karteikarten?karten=<id>&von=suche`, shown as "🔎 Aus der Suche: 1 Karte."), tasks, SQL exercises, Rechenübungen, formulas
+  (`/material/formeln?stelle=formel-<id>`), operators (`/material/operatoren?stelle=op-<id>`) and the glossary (8.9). With Prüferfragen off,
+  their blockquotes are also stripped from the section text. Today **1,858 entries** (299 sections, 2 material docs, 504 cards, 258 tasks,
+  59 SQL, 85 Rechnen, 68 formulas, 29 operators, 554 glossary terms); built in about 30 ms, a query takes a few ms.
+- **Normalisation** `normalisiere` (`src/lib/normalisiere.ts`): lower case, accents removed, ä/ae → a, ö/oe → o, ü/ue → u, ß → ss, everything else
+  → space. So "Pruefung", "Prüfung" and "prufung" match, "Groesse" finds "Größe".
+- **Ranking** `suche(index, query, max = 40)`: every query word must occur (AND). Per word: exact title word 12, title word start 8, in title 5,
+  text word start 2, in text 1; whole query in the title +10, title starts with it +6; small bonus per kind (glossary 3, section/formula/operator 2,
+  material/card 1). Ties → shorter title, then index order. Snippet (`ausschnitt`) around the first matching word. Fewer than 2 characters → nothing.
+- **Dialog** `components/SucheDialog.tsx` is a lazy chunk together with the index, formulas, operators and glossary; it loads on the first
+  `Strg+K`/`⌘K` (listener in `App.tsx`, `useSuche`) or click on "🔎 Suchen" (sidebar, first entry of the mobile "Mehr" menu). Combobox pattern
+  (`role=combobox` + `listbox`/`option`, `aria-activedescendant`), ↑/↓/Home, Enter opens, Esc or a click outside closes, focus returns.
+- **Jump**: `hooks/useStelle.ts` reads `?stelle=<id>` (a hash anchor can't be used with the HashRouter), scrolls the element into view and
+  highlights it briefly (`.stelle-ziel`). Used by Thema, Formelsammlung, Operatoren and Glossar.
+
+### Glossar (phase 8.9)
+
+- **Builder** `baueGlossar(content)` (`src/lib/glossar.ts`, pure, `tests/glossar.test.ts`):
+  - `wissen` cards whose question names one term (`begriffAusFrage`: "Was ist (ein/eine/der …) X?", "Was bedeutet X?", "Was versteht man unter X?",
+    "Wofür steht X?", "Was misst/beschreibt/bezeichnet X?"; no lists, no "Was ist bei … erforderlich?") → definition = the card answer (26 terms).
+  - Bold terms in the theory sections (Prüferfragen and code blocks skipped, `begriffeAusZeile`): `**Term:** …`, `**Term** – …`, `**Term** = …`
+    at the line start (also in lists) and table rows `| **Term** | … |` give a definition; `**Term** ist/bezeichnet/beschreibt …` keeps the
+    sentence; other bold terms are kept without a definition. `pruefeBegriff` drops results, points, numbers and paragraphs (digits except
+    "3. Normalform"/"3-2-1-Regel"), lists, sentences (more than one lower-case word, final punctuation), sentence starts ("Die …", "Für …"),
+    learning hints ("Prüfungstaktik", "Merkhilfe") and emphasis ("nicht", "Drei", "Achtung" …); a definition needs at least two real words
+    (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
+  - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); card definition
+    before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
+    normalised letter (Ä → A), `#` otherwise. Today **554 terms, 418 with a definition**. Some noise remains (e.g. names from WiSo scenarios).
+- **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
+  `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
+  term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material` (`navigation.ts` unchanged).
+
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
 print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top) and below 600 px (bottom bar, see below).
 
 ### Mobile (phase 7.2, 7.3)
 
 - **Below 600 px** the sidebar is hidden and `components/MobileNav.tsx` shows a fixed **bottom bar** with five places: 🏠 Übersicht,
-  📖 Lernen, 🃏 Karteikarten, ✏️ **Üben** (menu: ▶ Heute lernen, Übungsklausur, Einzelaufgaben, SQL-Editor, Rechenübungen) and ☰ **Mehr** (menu: Fehlerjournal,
+  📖 Lernen, 🃏 Karteikarten, ✏️ **Üben** (menu: ▶ Heute lernen, Übungsklausur, Einzelaufgaben, SQL-Editor, Rechenübungen) and ☰ **Mehr** (menu: 🔎 Suchen (opens the search dialog), Fehlerjournal,
   KI-Aufgaben (local app only), Material, Einstellungen, Daten & Import, theme toggle, save state). Both are always rendered; CSS decides which
   is visible, so the desktop sidebar (≥ 900 px) and the wrapped row (600–899 px) are unchanged.
 - Groups and path matching are pure (`src/lib/navigation.ts`: `UEBEN_ZIELE`, `MEHR_ZIELE`, `aktiveGruppe`, `badgeSumme`, tested): the place of the
@@ -509,7 +604,7 @@ print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the 
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
 - **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
   (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every
-  current browser uses woff2). Today **50 entries, about 3.5 MB**. `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
+  current browser uses woff2). Today **54 entries, about 3.6 MB** (incl. the lazy search and glossary chunks). `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
   Navigations fall back to the cached `index.html`, so the app starts offline after the first visit (SQL editor and formulas included).
 - **Updates** (`registerType: 'prompt'`, no `skipWaiting`/`clientsClaim`): every precached file has a revision hash in `sw.js`, so any change
   (also only `content.json` after `npm run sync-content`) changes `sw.js`. The browser installs the new worker, which then **waits**.
@@ -548,8 +643,11 @@ type Progress = {
 type Attempt = {
   taskId: string; date: string; points: number; max: number; mode: 'klausur' | 'einzel' | 'wiederholung';
   sicherheit?: 1 | 2 | 3;        // "Wie sicher bist du?" before submitting (phase 8.3, optional, no version bump)
+  fehlergrund?: 'begriff' | 'formel' | 'rechenfehler' | 'operator' | 'zeit'; // why below full points (phase 8.7, optional, no version bump)
 };
-// ExamRun additionally has sicherheit?: Record<taskId, 1 | 2 | 3> (chosen before submission, copied into the attempts by finishExam).
+// ExamRun additionally has sicherheit?: Record<taskId, 1 | 2 | 3> (chosen before submission) and fehlergrund?: Record<taskId, Fehlergrund>
+// (chosen while grading); finishExam copies both into the attempts (fehlergrund only below full points).
+// ExamRun.topicId is a topic id or the id of a mixed exam "mix-<bereich>-<seed>" (phase 8.5, no format change).
 
 type RechenState = {
   attempts: number;              // counted "✓ Prüfen" clicks
@@ -586,6 +684,10 @@ type Settings = {
   `ExamRunSchema` are loose objects and `migrateAttempt`/`migrateExam` already kept unknown fields, so every v6 file stays valid and an older
   app (e.g. a not yet updated PWA) keeps the fields too. `migrateAttempt`/`migrateExam` now drop invalid values (anything but 1, 2, 3);
   `checkProgressPut` rejects them. Fixture `tests/fixtures/fortschritt-v6-2026-10-01.json` (v6 before 8.3) is tested to load unchanged.
+  **Phase 8.7** added `Attempt.fehlergrund` and `ExamRun.fehlergrund` by the same rule (optional, loose schemas, `migrateAttempt`/`migrateExam` kept
+  unknown fields): `FEHLERGRUENDE` in `shared/progress.ts`, invalid values dropped on migration (`isFehlergrund`) and rejected by
+  `checkProgressPut` (`z.enum`); `PROGRESS_VERSION` stays **6**. Tested with the v6 fixture (which has no `fehlergrund`). Phases 8.5, 8.6, 8.8 and
+  8.9 need no format change (mixed exam id in `topicId`; example stage from `RechenState`; search and glossary are derived data).
   Adding a **required** field or changing a meaning still needs a version bump.
   Not in `Progress`: the "Heute lernen" session (`localStorage` `ap2-heute`, per day and device, § 5) and the "Deine Antwort" text (not stored).
   Backup files are read with `parseBackup` (`src/lib/backup.ts`, used by Daten & Import and the welcome screen).
@@ -608,9 +710,9 @@ type Settings = {
     `settings.lastBackupDownloadAt = today`.
 - **Merge on import** (`shared/mergeProgress.ts`, `mergeProgress(current, incoming)`, pure, `tests/mergeProgress.test.ts`), both sides migrated:
   - `attempts`: union, duplicate = same `taskId` + `date`, sorted by date (stable) → never fewer attempts than before. For a duplicate the
-    current attempt wins, but a missing `sicherheit` is taken from the backup (8.3).
+    current attempt wins, but a missing `sicherheit` (8.3) or `fehlergrund` (8.7) is taken from the backup.
   - `exams`: union by `id`; in both → the more advanced run (finished > submitted > started, then later time); sorted by finish time.
-    The chosen run carries its `sicherheit` map.
+    The chosen run carries its `sicherheit` and `fehlergrund` maps.
   - `activeExam`: this browser's running exam; the backup's only if none runs here; dropped if the merged history has it finished.
   - `cards`: `CardState` has no date → more `reviews` wins, then later `due`.
   - `sql`, `rechnen`: newer `lastCheckedAt` wins (then more attempts/hints); the earliest `solvedAt` of both sides is kept.
@@ -700,6 +802,12 @@ npm run build && npm run build:pages
   (calibration, threshold, `finishExam`, `SicherheitWahl`), `sicherheitSeiten.test.ts` (task, exam, Dashboard card), `progress.test.ts`/
   `mergeProgress.test.ts` (v6 fixture, `sicherheit` migration/schema/merge), `operatoren.test.ts` (tokenizer incl. false positives, coverage of
   the italic operators in `content/` > 95 %, marking keeps Markdown and skips code, quiz), `operatorenSeite.test.ts` (trainer, Material tile, task page).
+- Phase 8.5–8.9: `mischKlausur.test.ts` (weights from the topic list, distribution, sources exist, points ≤ 100 and ≥ 98, no duplicates, spread,
+  reproducible by seed, prefixes with intro, attachments, ids, statistics ignore mixed exams, `/druck`, pages), `beispiel.test.ts` (stage,
+  visibility, seed, every exercise without leaked results, Rechenweg `sicht`, page), `fehlergruende.test.ts` (statistics, `setzeFehlergrund`,
+  `finishExam`, exam/journal/Dashboard pages) plus `progress.test.ts`/`mergeProgress.test.ts` (`fehlergrund` migration/schema/merge),
+  `suche.test.ts` (normalisation, plain text, index and targets, settings, ranking, snippet, dialog, card selection), `glossar.test.ts`
+  (card questions, term filter, definitions from lines, dedupe, sorting, sources, search, page).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)

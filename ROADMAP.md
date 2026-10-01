@@ -1,5 +1,8 @@
 # AP2 Lern-App – Roadmap (implementation plan)
 
+> **Stand (01.10.2026):** Alle Phasen 0–8 sind umgesetzt – außer 7.5 (KI mit eigenem Schlüssel auf Pages, nicht umgesetzt nach
+> Entscheidung Q3). Offen ist nur die Frage Q4 (Lizenz/Sichtbarkeit der Inhalte).
+
 > Hand this file to a coding agent (e.g. Claude Code) started in `lern-app/`. Read `DOKUMENTATION.md` first: it describes the current
 > app, its data model and the rules (§ 10) that stay valid. Target: the **GitHub Pages version**, which is used by **several people**.
 > Written against commit `06d77e7` (30.09.2026).
@@ -269,7 +272,7 @@ Implementation notes (7.1–7.4, details: DOKUMENTATION § 5 "Mobile" and "PWA",
 - 7.3: 44 px minimum height for buttons, selects and inputs below 600 px (small helper buttons excepted). Swipe on flashcards not done (optional).
 - 7.4: no AI UI on Pages: nav item (sidebar + Mehr), `/generator` → redirect to `/`, KI-Bewertung button, "Quelle" filter, KI section on Daten.
 
-## Phase 8 – More learning effect [C] (8.1–8.4 ✅ done)
+## Phase 8 – More learning effect [C] ✅ done
 
 Ordered by expected benefit per effort:
 
@@ -307,6 +310,30 @@ Implementation notes (8.1–8.4, details: DOKUMENTATION § 5 "Heute lernen", "De
 8.8 **Global search** (`Strg+K`): terms across sheets, cards and exercises, jump to the section.
 8.9 **Glossary** built from `wissen` cards and bold terms in the sheets.
 
+Implementation notes (8.5–8.9, details: DOKUMENTATION § 5 "Gemischte Probeklausur", "Ausgeblendete Lösungsbeispiele", "Fehlergründe",
+"Globale Suche", "Glossar" and § 6):
+- 8.5 ✅ Pure `baueMischKlausur(content, bereich, seed)`: variants Prozessanalyse (A1–A4), Datenqualität (B1–B4) or both; weights = checklist
+  items per sub-area of the topic list (MaterialDoc), 100 points by largest remainder; one block per sub-area, filled with **prefixes** of
+  Übungsklausur blocks of the mapped Deep Dives (tasks that build on each other stay together, block intro and attachments come along). Never
+  above 100, no task twice; up to 8 derived arrangements, the first with exactly 100 wins – **deviation:** in rare cases 98–99 points
+  (Prozessanalyse ~18 % of seeds, the others ~1 %). Id `mix-<bereich>-<seed>` in `ExamRun.topicId` (no format change) → exam page, solution
+  sheet, `/druck` rebuild it. Per-topic trend/best ignore mixed exams. WiSo is not mixed in (own 60-minute part).
+- 8.6 ✅ Pure `beispielStufe`/`beispielSichtbarkeit`/`baueBeispiel`: never checked → full example, tried/not solved or repetition stage 1 → last
+  step hidden, solved → no example. Never leaks the current answer: template exercises with "Neue Zahlen" (79/85) use **other numbers**
+  (own seed, steps whose result equals a current asked value show only the formula); the 2 fixed exercises without new numbers show only step
+  titles and general formulas; 4 exercises without Rechenweg have none. No format change (stage from `RechenState`).
+- 8.7 ✅ "Woran lag's?" after the self-assessment below full points (task page before/after saving, exam after submission). **Decision: optional
+  fields `Attempt.fehlergrund` and `ExamRun.fehlergrund`, no version bump** (same rule as 8.3); invalid values dropped/rejected, merge fills a
+  missing reason from the backup. Card "🧩 Woran es meistens liegt" on Dashboard and Fehlerjournal (most frequent reason + tip + link).
+- 8.8 ✅ Pure index + ranking (`src/lib/suche.ts`, 1,858 entries today: sections, material, cards per settings, tasks, SQL, Rechnen, formulas,
+  operators, glossary); German normalisation (ä/ae, ö/oe, ü/ue, ß, case, accents); AND search with title/word-start weights. Dialog and index are
+  a lazy chunk (`Strg+K`/`⌘K`, "🔎 Suchen" in the sidebar and the mobile "Mehr" menu), combobox with keyboard navigation; targets jump via
+  `?stelle=<id>` (HashRouter) to sections, formulas, operators and glossary entries.
+- 8.9 ✅ Pure `baueGlossar`: 554 terms (418 with a definition) from `wissen` card questions ("Was ist …?", "Wofür steht …?" …) and bold terms of
+  the theory sections (definition from "**Term:** …", "**Term** – …", "**Term** ist …", table rows); filtered (results, points, sentences,
+  emphasis), deduped (normalised, bracket suffix ignored, card definition first). Page `/material/glossar` (lazy, letter jump bar, filter),
+  linked from the search. Simplified: heuristic term extraction, a little noise remains (e.g. scenario names).
+
 ---
 
 ## Review of earlier suggestions for multi-user use
@@ -336,5 +363,5 @@ Implementation notes (8.1–8.4, details: DOKUMENTATION § 5 "Heute lernen", "De
 
 ## Suggested order
 
-Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (Done up to 7, 4.4/4.5 and 8.1–8.4; next: 8.5–8.9.)
+Phase 0 → 1 → 2 → 3 → 4.1–4.3 → 5 → 6 → 7 → 4.4/4.5 → 8. (All done except 7.5 – decision Q3; Q4 is still open.)
 Phases 1–3 are small (about 1 day together) and make the app safe for other users; 5 and 6 are the largest (mostly content writing).
