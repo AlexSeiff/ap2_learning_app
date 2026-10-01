@@ -9,7 +9,8 @@ export default defineConfig(async ({ mode }) => {
   // .env.local wird hier gar nicht erst gelesen, der API-Schlüssel kann also nicht in den Build geraten.
   if (mode === 'pages') {
     const { contentJsonPlugin } = await import('./server/pagesPlugin');
-    return { base: './', plugins: [react(), contentJsonPlugin()] };
+    const { pwaPlugin } = await import('./server/pwaPlugin');
+    return { base: './', plugins: [react(), contentJsonPlugin(), pwaPlugin()] };
   }
 
   // ANTHROPIC_API_KEY / ANTHROPIC_MODEL / LERN_QUELLE dürfen auch in .env.local stehen (gilt für dev und preview).

@@ -483,3 +483,8 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .pf-answer > summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 0.92rem; margin-top: 0.3em; }
 .pf-answer[open] > summary { margin-bottom: 0.2em; }
 .pf-answer .md { border-top: 1px dashed var(--border); padding-top: 0.3em; }
+
+/* Update-Hinweis der Pages-Version (Service Worker) */
+.toast { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; max-width: min(460px, calc(100vw - 32px)); padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(16, 24, 40, 0.18); }
+.toast span { flex: 1 1 14em; font-weight: 600; }
+@media print { .toast { display: none; } }

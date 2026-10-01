@@ -2,6 +2,8 @@ import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { UpdateHinweis } from './components/UpdateHinweis';
+import { IS_STATIC } from './lib/api';
 import { isDue } from './lib/progress';
 import { rechenSummary } from './lib/rechnen';
 import { sqlSummary } from './lib/sql';
@@ -172,6 +174,7 @@ export function App() {
                   </Suspense>
                 </PageErrorBoundary>
               </main>
+              {IS_STATIC && <UpdateHinweis />}
             </div>
           }
         />
