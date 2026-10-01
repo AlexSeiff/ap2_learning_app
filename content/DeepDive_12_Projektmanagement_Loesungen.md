@@ -83,13 +83,13 @@ Vorwärtsrechnung (FAZ = **größtes** FEZ der Vorgänger), Rückwärtsrechnung 
 | F | 4 | 19 | 23 | 19 | 23 | 0 | 0 |
 | G | 2 | 23 | 25 | 23 | 25 | 0 | 0 |
 
-Wichtige Zwischenschritte: FAZ(D) = max(FEZ B = 9; FEZ C = 11) = **11**. FAZ(F) = max(FEZ D = 19; FEZ E = 12) = **19**. SEZ(B) = min(SAZ D = 11; SAZ E = 16) = **11**. SEZ(A) = min(SAZ B = 7; SAZ C = 5) = **5**.
+Wichtige Zwischenschritte: $\text{FAZ}_D = \max(\text{FEZ}_B = 9;\ \text{FEZ}_C = 11)$ = **11**. $\text{FAZ}_F = \max(\text{FEZ}_D = 19;\ \text{FEZ}_E = 12)$ = **19**. $\text{SEZ}_B = \min(\text{SAZ}_D = 11;\ \text{SAZ}_E = 16)$ = **11**. $\text{SEZ}_A = \min(\text{SAZ}_B = 7;\ \text{SAZ}_C = 5)$ = **5**.
 
 *Prüferkommentar: 8 P Vorwärtsrechnung, 8 P Rückwärtsrechnung. Ein Fehler am Zusammenlaufpunkt D oder F pflanzt sich durch den gesamten Plan fort – als Folgefehler wird er nur **einmal** bestraft, sofern die Methode danach konsequent angewendet wurde. Häufigster echter Fehler: vorwärts das Minimum statt des Maximums gebildet.*
 
 **C2 (4 P):**
 - **Projektdauer: 25 Tage** (größtes FEZ) *(2 P)*
-- **Kritischer Pfad: A → C → D → F → G** (alle mit Gesamtpuffer 0), Summe der Dauern 5 + 6 + 8 + 4 + 2 = 25 Tage *(2 P)*
+- **Kritischer Pfad: A → C → D → F → G** (alle mit Gesamtpuffer 0), Summe der Dauern $5 + 6 + 8 + 4 + 2 = 25$ Tage *(2 P)*
 
 **C3 (6 P):**
 | Vorgang | Gesamtpuffer | Freier Puffer |
@@ -111,9 +111,9 @@ Vorgang C liegt **auf dem kritischen Pfad** und hat einen Gesamtpuffer von 0. Ei
 ## Block D – Wirtschaftlichkeit (26 P)
 
 **D1 (8 P):**
-a) Amortisationszeit = 45.000 € / 18.000 € pro Jahr = **2,5 Jahre** (30 Monate) *(3 P)*
-b) Gesamtersparnis über fünf Jahre = 5 · 18.000 € = 90.000 €; Gewinn = 90.000 − 45.000 = 45.000 €
-ROI = 45.000 / 45.000 · 100 = **100 %** über die Nutzungsdauer, entspricht **20 % pro Jahr** *(3 P)*
+a) Amortisationszeit: $\frac{\text{Investition}}{\text{jährliche Ersparnis}} = \frac{45.000\ \text{€}}{18.000\ \text{€ pro Jahr}}$ = **2,5 Jahre** (30 Monate) *(3 P)*
+b) Gesamtersparnis über fünf Jahre: $5 \cdot 18.000\ \text{€} = 90.000\ \text{€}$; Gewinn: $90.000 - 45.000 = 45.000\ \text{€}$
+ROI: $\frac{\text{Gewinn}}{\text{eingesetztes Kapital}} \cdot 100 = \frac{45.000}{45.000} \cdot 100$ = **100 %** über die Nutzungsdauer, entspricht **20 % pro Jahr** *(3 P)*
 c) Beurteilung: Die Investition amortisiert sich nach 2,5 Jahren und damit deutlich innerhalb der geplanten Nutzungsdauer von fünf Jahren. In den verbleibenden 2,5 Jahren entsteht ein Überschuss von 45.000 €. Die Investition ist wirtschaftlich **zu empfehlen**, sofern die laufenden Betriebskosten – in dieser Rechnung nicht enthalten – den Rückfluss nicht wesentlich schmälern. *(2 P)*
 
 **D2 (10 P):**
@@ -136,8 +136,8 @@ Grundsätzlich sind Kriterienauswahl, Gewichtung und Punktvergabe **subjektiv**;
 *Prüferkommentar: Wer nur „Anbieter B gewinnt" schreibt, erhält 0 von 4 P im Teil b. Das Erkennen der Knappheit ist die eigentliche Prüfungsleistung.*
 
 **D3 (4 P):**
-Deckungsbeitrag je Stück = 80 € − 50 € = 30 €
-Break-even-Menge = 24.000 € / 30 € = **800 Stück** pro Jahr
+Deckungsbeitrag je Stück: $80\ \text{€} - 50\ \text{€} = 30\ \text{€}$
+Break-even-Menge: $\frac{\text{Fixkosten}}{\text{Deckungsbeitrag je Stück}} = \frac{24.000\ \text{€}}{30\ \text{€}}$ = **800 Stück** pro Jahr
 *(2 P Ansatz mit Deckungsbeitrag, 2 P Ergebnis)*
 
 **D4 (4 P):**

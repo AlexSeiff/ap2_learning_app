@@ -83,22 +83,22 @@ Der **Projektstrukturplan (PSP)** zerlegt das Projekt hierarchisch in Teilaufgab
 
 **Schätzverfahren:** Analogieschätzung (Vergleich mit ähnlichen Projekten) · Expertenschätzung · **Drei-Zeiten-Methode (PERT)**:
 
-**t_e = (optimistisch + 4 · wahrscheinlich + pessimistisch) / 6**
+$t_e = \dfrac{\text{optimistisch} + 4 \cdot \text{wahrscheinlich} + \text{pessimistisch}}{6}$
 
-Beispiel: o = 4, m = 7, p = 16 Tage → t_e = (4 + 28 + 16) / 6 = **8 Tage**. Der pessimistische Wert zieht den Erwartungswert nach oben – genau das ist gewollt, denn Aufwände werden systematisch unterschätzt.
+Beispiel: o = 4, m = 7, p = 16 Tage → $t_e = \frac{4 + 4 \cdot 7 + 16}{6} = \frac{4 + 28 + 16}{6}$ = **8 Tage**. Der pessimistische Wert zieht den Erwartungswert nach oben – genau das ist gewollt, denn Aufwände werden systematisch unterschätzt.
 
 ## 3.2 Netzplantechnik – der Rechenteil
 
 Vier Zeitwerte je Vorgang:
-- **FAZ** (frühester Anfangszeitpunkt) · **FEZ** (frühestes Ende) = FAZ + Dauer
-- **SAZ** (spätester Anfang) = SEZ − Dauer · **SEZ** (spätestes Ende)
+- **FAZ** (frühester Anfangszeitpunkt) · **FEZ** (frühestes Ende): $\text{FEZ} = \text{FAZ} + \text{Dauer}$
+- **SAZ** (spätester Anfang): $\text{SAZ} = \text{SEZ} - \text{Dauer}$ · **SEZ** (spätestes Ende)
 
 **Vorwärtsrechnung** (Projektstart = 0): FAZ eines Vorgangs = **größtes** FEZ aller Vorgänger. Das größte FEZ am Ende ist die **Projektdauer**.
 **Rückwärtsrechnung** (vom Projektende): SEZ eines Vorgangs = **kleinstes** SAZ aller Nachfolger.
 
 **Puffer:**
-- **Gesamtpuffer GP = SAZ − FAZ** (auch SEZ − FEZ) – um wie viel darf sich der Vorgang verschieben, **ohne den Projekttermin** zu gefährden?
-- **Freier Puffer FP = kleinstes FAZ der Nachfolger − FEZ** – um wie viel darf er sich verschieben, **ohne einen Nachfolger** zu verzögern?
+- **Gesamtpuffer:** $\text{GP} = \text{SAZ} - \text{FAZ}$ (auch $\text{SEZ} - \text{FEZ}$) – um wie viel darf sich der Vorgang verschieben, **ohne den Projekttermin** zu gefährden?
+- **Freier Puffer:** $\text{FP} = \min(\text{FAZ der Nachfolger}) - \text{FEZ}$ – um wie viel darf er sich verschieben, **ohne einen Nachfolger** zu verzögern?
 
 **Kritischer Pfad:** die Kette der Vorgänge mit **Gesamtpuffer 0**. Jede Verzögerung dort verschiebt das Projektende unmittelbar. Merke: Der kritische Pfad ist der **längste** Weg durch den Netzplan – nicht der kürzeste.
 
@@ -125,15 +125,15 @@ Balkendiagramm über der Zeitachse; zeigt Dauer, Überlappungen, Meilensteine un
 
 ## 4.2 Die vier Rechnungen
 
-**Amortisationszeit = Investition / jährlicher Rückfluss**
-Beispiel: 45.000 € / 18.000 € pro Jahr = **2,5 Jahre**
+**Amortisationszeit:** $\dfrac{\text{Investition}}{\text{jährlicher Rückfluss}}$
+Beispiel: $\frac{45.000\ \text{€}}{18.000\ \text{€ pro Jahr}}$ = **2,5 Jahre**
 
-**Return on Investment (ROI) = Gewinn / eingesetztes Kapital · 100**
-Bei fünf Jahren Nutzungsdauer: Gesamtersparnis 5 · 18.000 = 90.000 €, abzüglich Investition 45.000 € → Gewinn 45.000 €.
-ROI über die Laufzeit = 45.000 / 45.000 = **100 %**, entspricht **20 % pro Jahr**.
+**Return on Investment (ROI):** $\text{ROI} = \dfrac{\text{Gewinn}}{\text{eingesetztes Kapital}} \cdot 100$
+Bei fünf Jahren Nutzungsdauer: Gesamtersparnis $5 \cdot 18.000 = 90.000$ €, abzüglich Investition 45.000 € → Gewinn 45.000 €.
+ROI über die Laufzeit: $\frac{45.000}{45.000}$ = **100 %**, entspricht **20 % pro Jahr**.
 
-**Break-even-Menge = Fixkosten / (Preis − variable Stückkosten)**
-Beispiel: 24.000 € / (80 € − 50 €) = 24.000 / 30 = **800 Stück**. Der Nenner ist der **Deckungsbeitrag je Stück**.
+**Break-even-Menge:** $\dfrac{\text{Fixkosten}}{\text{Preis} - \text{variable Stückkosten}}$
+Beispiel: $\frac{24.000\ \text{€}}{80\ \text{€} - 50\ \text{€}} = \frac{24.000}{30}$ = **800 Stück**. Der Nenner ist der **Deckungsbeitrag je Stück**.
 
 **Nutzwertanalyse** – für Entscheidungen mit nicht-monetären Kriterien:
 1. Kriterien festlegen · 2. Gewichten (Summe 100 %) · 3. Punkte je Alternative vergeben (z. B. 1–10) · 4. Punkte × Gewicht = Teilnutzen · 5. Teilnutzen summieren → höchster Nutzwert gewinnt.
