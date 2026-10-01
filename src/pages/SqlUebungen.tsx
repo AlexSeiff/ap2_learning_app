@@ -3,22 +3,12 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import type { SqlExercise } from '../../shared/types';
 import { SqlTabs } from '../components/SqlTabs';
-import { sqlStatus, sqlSummary, type SqlStatus } from '../lib/sql';
+import { sqlStatus, sqlSummary } from '../lib/sql';
 import { useStore } from '../lib/store';
+import { LEVEL_LABELS, stars, STATUS_CLASS, STATUS_LABELS } from '../lib/uebungLabels';
 
 type Filter = { thema: string; stufe: string; tag: string; status: string };
 const KEYS: (keyof Filter)[] = ['thema', 'stufe', 'tag', 'status'];
-
-export const LEVEL_LABELS: Record<number, string> = { 1: 'Basis', 2: 'Standard', 3: 'Transfer' };
-export const STATUS_LABELS: Record<SqlStatus, string> = {
-  offen: 'offen',
-  geloest: '✓ gelöst',
-  faellig: '↻ Wiederholung fällig',
-  'mit-loesung': '👁 mit Lösung',
-};
-const STATUS_CLASS: Record<SqlStatus, string> = { offen: '', geloest: 'good', faellig: 'low', 'mit-loesung': 'mid' };
-
-export const stars = (n: number) => '★'.repeat(n) + '☆'.repeat(Math.max(0, 3 - n));
 
 function readFilter(params: URLSearchParams): Filter {
   const f = {} as Filter;

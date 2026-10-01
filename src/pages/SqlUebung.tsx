@@ -13,11 +13,11 @@ import { useConfirm } from '../hooks/useConfirm';
 import { useSqlSession } from '../hooks/useSqlSession';
 import { recordSolutionShown, recordSqlCheck, recordSqlHint, saveSqlQuery, SQL_QUERY_MAX, sqlStatus } from '../lib/sql';
 import { useStore } from '../lib/store';
+import { LEVEL_LABELS, stars, STATUS_LABELS } from '../lib/uebungLabels';
 import { compareResults, lastResultSet } from '../sql/checker';
 import { getSqlEngine } from '../sql/engine';
 import { hasBlockingWarning, lintSql } from '../sql/lint';
 import type { CompareVerdict, ExecResult, LintWarning, StatementResult } from '../sql/types';
-import { LEVEL_LABELS, stars, STATUS_LABELS } from './SqlUebungen';
 
 /** Verzögerung, bevor die Abfrage im Fortschritt gespeichert wird. */
 const SAVE_DELAY_MS = 800;

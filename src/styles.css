@@ -425,6 +425,35 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
   .sql-status { min-width: 0; }
 }
 
+/* Rechenübungen */
+.re-daten { margin: 10px 0; }
+.re-daten .result-table td, .re-layout .result-table td { white-space: nowrap; }
+.re-eingaben { display: flex; flex-direction: column; gap: 10px; }
+.re-eingaben .actions { margin: 4px 0 0; }
+.re-eingaben > .hint { margin: 0; }
+.re-feld label { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.re-label { flex: 1 1 14em; font-weight: 600; }
+.re-input { display: inline-flex; align-items: center; gap: 6px; }
+.re-input input { width: 11em; font-variant-numeric: tabular-nums; }
+.re-einheit { color: var(--muted); min-width: 2.5em; }
+.re-icon { font-weight: 700; width: 1.2em; text-align: center; }
+.re-richtig input { border-color: var(--good); background: var(--good-soft); }
+.re-falsch input, .re-ungueltig input { border-color: var(--low); background: var(--low-soft); }
+.re-richtig .re-icon, td.re-ok { color: var(--good); }
+.re-falsch .re-icon, .re-ungueltig .re-icon, td.re-falsch { color: var(--low); }
+.re-meldung { margin: 4px 0 0; color: var(--text); }
+.re-feld .re-meldung { padding-left: 0.2em; }
+.re-meldung .md p { margin: 0; display: inline; }
+.re-meldung .md { display: inline; }
+.re-meldungen { margin: 0; padding-left: 20px; }
+.re-meldungen .re-meldung { display: inline; }
+.re-hinweis p { margin: 0; }
+.re-zelle { display: inline-flex; align-items: center; gap: 4px; }
+.re-zelle input { width: 5.5em; padding: 3px 6px; font-variant-numeric: tabular-nums; }
+.re-layout .result-table th[scope='row'] { text-align: left; white-space: nowrap; }
+.re-layout-einheit { margin: 4px 8px; }
+.re-vergleich { margin: 8px 0 14px; }
+
 /* Einstellungen */
 .field { display: flex; flex-direction: column; gap: 3px; font-size: 0.85rem; color: var(--muted); }
 .field input, .field select { font-size: 1rem; color: var(--text); }

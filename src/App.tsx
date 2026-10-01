@@ -3,6 +3,7 @@ import { HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-do
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { isDue } from './lib/progress';
+import { rechenSummary } from './lib/rechnen';
 import { sqlSummary } from './lib/sql';
 import { useStore } from './lib/store';
 import { Aufgabe } from './pages/Aufgabe';
@@ -22,6 +23,9 @@ import { Thema, Themen } from './pages/Themen';
 const SqlFrei = lazy(() => import('./pages/SqlFrei').then((m) => ({ default: m.SqlFrei })));
 const SqlUebungen = lazy(() => import('./pages/SqlUebungen').then((m) => ({ default: m.SqlUebungen })));
 const SqlUebung = lazy(() => import('./pages/SqlUebung').then((m) => ({ default: m.SqlUebung })));
+// Rechenübungen lazy: Vorlagen, Prüfung und (beim Rechenweg) KaTeX bleiben aus dem Hauptbundle.
+const RechenUebungen = lazy(() => import('./pages/RechenUebungen').then((m) => ({ default: m.RechenUebungen })));
+const RechenUebung = lazy(() => import('./pages/RechenUebung').then((m) => ({ default: m.RechenUebung })));
 
 function useTheme() {
   const [theme, setTheme] = useState<string>(() => {
@@ -53,6 +57,10 @@ function Nav() {
     progress,
     content.sqlExercises.map((e) => e.id),
   ).due;
+  const dueRechnen = rechenSummary(
+    progress,
+    content.rechenUebungen.map((u) => u.id),
+  ).due;
   const link = (to: string, label: string, badge?: number) => (
     <NavLink to={to} end={to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
       {label}
@@ -68,6 +76,7 @@ function Nav() {
       {link('/klausur', 'Übungsklausur')}
       {link('/aufgaben', 'Einzelaufgaben')}
       {link('/sql', '🧮 SQL-Editor', dueSql)}
+      {link('/rechnen', '📐 Rechenübungen', dueRechnen)}
       {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
       {link('/generator', 'KI-Aufgaben')}
       {link('/material', 'Material')}
@@ -130,7 +139,7 @@ export function App() {
               <main>
                 <SaveErrorBanner />
                 <PageErrorBoundary>
-                  <Suspense fallback={<div className="page loading">Lade SQL-Editor …</div>}>
+                  <Suspense fallback={<div className="page loading">Lädt …</div>}>
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/lernen" element={<Themen />} />
@@ -143,6 +152,8 @@ export function App() {
                       <Route path="/sql" element={<SqlFrei />} />
                       <Route path="/sql/uebungen" element={<SqlUebungen />} />
                       <Route path="/sql/uebung/:id" element={<SqlUebung />} />
+                      <Route path="/rechnen" element={<RechenUebungen />} />
+                      <Route path="/rechnen/:id" element={<RechenUebung />} />
                       <Route path="/fehlerjournal" element={<Fehlerjournal />} />
                       <Route path="/generator" element={<Generator />} />
                       <Route path="/material" element={<Material />} />
