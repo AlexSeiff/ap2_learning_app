@@ -2,6 +2,7 @@ import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { HashRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { HeuteLeiste } from './components/HeuteLeiste';
 import { MobileNav } from './components/MobileNav';
 import { UpdateHinweis } from './components/UpdateHinweis';
 import { IS_STATIC } from './lib/api';
@@ -29,6 +30,8 @@ const SqlUebung = lazy(() => import('./pages/SqlUebung').then((m) => ({ default:
 // Rechenübungen lazy: Vorlagen, Prüfung und (beim Rechenweg) KaTeX bleiben aus dem Hauptbundle.
 const RechenUebungen = lazy(() => import('./pages/RechenUebungen').then((m) => ({ default: m.RechenUebungen })));
 const RechenUebung = lazy(() => import('./pages/RechenUebung').then((m) => ({ default: m.RechenUebung })));
+// „Heute lernen“ lazy: der Planer braucht nur diese Seite.
+const Heute = lazy(() => import('./pages/Heute').then((m) => ({ default: m.Heute })));
 // Formelsammlung lazy: zieht KaTeX nach.
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
 
@@ -85,6 +88,7 @@ function Nav() {
       <nav className="sidebar">
         <div className="brand">🎓 AP2 Lern-App</div>
         {link('/', 'Übersicht')}
+        {link('/heute', '▶ Heute lernen')}
         {link('/lernen', 'Lernen')}
         {link('/karteikarten', 'Karteikarten')}
         {link('/klausur', 'Übungsklausur')}
@@ -152,10 +156,12 @@ export function App() {
               <Nav />
               <main>
                 <SaveErrorBanner />
+                <HeuteLeiste />
                 <PageErrorBoundary>
                   <Suspense fallback={<div className="page loading">Lädt …</div>}>
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
+                      <Route path="/heute" element={<Heute />} />
                       <Route path="/lernen" element={<Themen />} />
                       <Route path="/lernen/:topicId" element={<Thema />} />
                       <Route path="/karteikarten" element={<Karteikarten />} />

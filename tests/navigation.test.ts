@@ -10,7 +10,16 @@ describe('Navigation für Handys (Roadmap 7.2)', () => {
     expect(aktiveGruppe('/')).toBe('uebersicht');
     expect(aktiveGruppe('/lernen/03')).toBe('lernen');
     expect(aktiveGruppe('/karteikarten')).toBe('karteikarten');
-    for (const p of ['/klausur', '/klausur/03', '/aufgaben', '/aufgabe/03-A1', '/sql', '/sql/uebung/SQL-MH-001', '/rechnen/RE-ST1-001']) {
+    for (const p of [
+      '/heute',
+      '/klausur',
+      '/klausur/03',
+      '/aufgaben',
+      '/aufgabe/03-A1',
+      '/sql',
+      '/sql/uebung/SQL-MH-001',
+      '/rechnen/RE-ST1-001',
+    ]) {
       expect(aktiveGruppe(p)).toBe('ueben');
     }
     for (const p of ['/fehlerjournal', '/generator', '/material/lernzettel', '/einstellungen', '/daten'])
@@ -23,8 +32,8 @@ describe('Navigation für Handys (Roadmap 7.2)', () => {
     expect(passtZuZiel('/', '/lernen')).toBe(false);
   });
 
-  it('Üben enthält Klausur, Einzelaufgaben, SQL und Rechnen; Mehr enthält Fehlerjournal, Material, Einstellungen, Daten', () => {
-    expect(UEBEN_ZIELE.map((z) => z.to)).toEqual(['/klausur', '/aufgaben', '/sql', '/rechnen']);
+  it('Üben enthält Heute lernen, Klausur, Einzelaufgaben, SQL und Rechnen; Mehr enthält Fehlerjournal, Material, Einstellungen, Daten', () => {
+    expect(UEBEN_ZIELE.map((z) => z.to)).toEqual(['/heute', '/klausur', '/aufgaben', '/sql', '/rechnen']);
     expect(MEHR_ZIELE.map((z) => z.to)).toEqual(expect.arrayContaining(['/fehlerjournal', '/material', '/einstellungen', '/daten']));
   });
 

@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Welcome } from '../components/Welcome';
 import { useBackupDownload } from '../hooks/useBackupDownload';
+import { useHeuteSitzung } from '../hooks/useHeute';
 import { IS_STATIC } from '../lib/api';
 import { backupReminder } from '../lib/backupReminder';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { cardPool } from '../lib/cards';
+import { istFertig } from '../lib/heuteSitzung';
 import { isDue } from '../lib/progress';
 import { rechenSummary } from '../lib/rechnen';
 import { sqlSummary } from '../lib/sql';
 import { daysUntilExam, examTrends, formatIsoDate, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
+import { HEUTE_MINUTEN } from '../../shared/config';
 
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
 
@@ -50,6 +53,7 @@ function Uebersicht() {
     <div className="page">
       <h1>Übersicht</h1>
       <BackupBanner />
+      <HeuteStart />
       {progress.settings.leichtModus && (
         <p className="card info" role="note">
           🟢 Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten. Karten kommen mit 4 Antworten höchstens bis Fach 2; Fach 3–5
@@ -290,6 +294,24 @@ function Delta({ value }: { value?: number }) {
       {rounded > 0 ? '▲ +' : '▼ −'}
       {Math.abs(rounded)} %-Pkt.
     </span>
+  );
+}
+
+/** Einstieg in „Heute lernen“ (ROADMAP 8.1); läuft schon eine Runde, geht es dort weiter. */
+function HeuteStart() {
+  const sitzung = useHeuteSitzung();
+  const laeuft = sitzung && !istFertig(sitzung);
+  return (
+    <div className="actions heute-start">
+      <Link className="button" to="/heute">
+        {laeuft ? `▶ Heute lernen fortsetzen (${sitzung.index + 1}/${sitzung.items.length})` : '▶ Heute lernen'}
+      </Link>
+      <span className="muted">
+        {sitzung && !laeuft
+          ? '✓ Heute schon eine Runde geschafft.'
+          : `Gemischte Runde, etwa ${HEUTE_MINUTEN} Minuten – aus dem, was fällig ist.`}
+      </span>
+    </div>
   );
 }
 

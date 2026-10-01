@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { CardType, Flashcard } from '../../shared/types';
 import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
@@ -25,7 +26,7 @@ const KIND_LABELS: Record<Flashcard['kind'], string> = {
 export function Karteikarten() {
   const { content, progress, update } = useStore();
   const { settings } = progress;
-  const { f, set, deck, alle, pool, leicht, leichtModus } = useCardFilters();
+  const { f, set, deck, alle, pool, leicht, leichtModus, auswahl } = useCardFilters();
   const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next } = useCardSession();
   const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
 
@@ -191,6 +192,21 @@ export function Karteikarten() {
       {session && (
         <div className="card success">
           Runde beendet: ✓ {done.gewusst} gewusst · ~ {done.unsicher} unsicher · ✗ {done.nicht} nicht gewusst
+        </div>
+      )}
+      {auswahl && (
+        <div className="card info actions">
+          <span>
+            ▶ Heute lernen: {deck.length} {deck.length === 1 ? 'Karte' : 'Karten'} für diesen Schritt.
+          </span>
+          {deck.length > 0 && (
+            <button type="button" onClick={() => startRunde(deck)} autoFocus={!session}>
+              🃏 {session ? 'Noch einmal' : 'Diese Karten lernen'}
+            </button>
+          )}
+          <Link to="/karteikarten" className="small">
+            alle Karten
+          </Link>
         </div>
       )}
       <div className="mode-switch" role="group" aria-label="Modus">

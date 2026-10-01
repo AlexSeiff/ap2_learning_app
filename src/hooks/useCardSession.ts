@@ -25,12 +25,17 @@ export function useCardFilters() {
   const set = (changes: Partial<CardFilter>) => setParams(withCardFilter(params, changes), { replace: true });
   const pool = useMemo(() => cardPool(content.flashcards, { prueferfragen, fachgespraech }), [content, prueferfragen, fachgespraech]);
   const leicht = useMemo(() => leichtKarten(pool, { automatisch }), [pool, automatisch]);
-  const alle = useMemo(
-    () => filterCards(pool, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe }),
-    [pool, f.thema, f.deck, f.art, f.typ, f.stufe],
-  );
+  // ?karten=ID,ID,… (aus „Heute lernen“): genau diese Karten, die übrigen Filter gelten dann nicht.
+  const auswahlParam = params.get('karten');
+  const alle = useMemo(() => {
+    if (auswahlParam !== null) {
+      const ids = new Set(auswahlParam.split(',').filter(Boolean));
+      return pool.filter((c) => ids.has(c.id));
+    }
+    return filterCards(pool, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe });
+  }, [pool, auswahlParam, f.thema, f.deck, f.art, f.typ, f.stufe]);
   const deck = useMemo(() => (leichtModus ? alle.filter((c) => leicht.has(c.id)) : alle), [alle, leicht, leichtModus]);
-  return { f, set, deck, alle, pool, leicht, leichtModus };
+  return { f, set, deck, alle, pool, leicht, leichtModus, auswahl: auswahlParam !== null };
 }
 
 /** Auswahl im Leicht-Modus: die gemischten Antworten der aktuellen Karte und die gewählte (null = noch offen). */

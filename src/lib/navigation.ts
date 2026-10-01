@@ -8,6 +8,7 @@ export type NavZiel = { to: string; label: string; badge?: NavBadge; nurLokal?: 
 export type NavGruppe = 'uebersicht' | 'lernen' | 'karteikarten' | 'ueben' | 'mehr';
 
 export const UEBEN_ZIELE: NavZiel[] = [
+  { to: '/heute', label: '▶ Heute lernen' },
   { to: '/klausur', label: '⏱️ Übungsklausur' },
   { to: '/aufgaben', label: '📝 Einzelaufgaben' },
   { to: '/sql', label: '🧮 SQL-Editor', badge: 'sql' },
