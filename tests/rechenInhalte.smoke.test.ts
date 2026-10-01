@@ -11,7 +11,8 @@ import { findeVorlage } from '../src/rechnen/vorlagen/index';
 
 // Rauchtest der echten Rechenübungen (content/AP2_Rechen_Uebungen.json, Kopie aus AP-2 per npm run sync-content):
 // alles wird ohne Importhinweis gelesen, jede Vorlage existiert, „Neue Zahlen“ funktioniert für viele Seeds, und die
-// festen Übungen ergeben genau die Zahlen, die in der Musterlösung der angegebenen Aufgabe stehen.
+// festen Übungen ergeben genau die Zahlen, die in der Musterlösung der angegebenen Aufgabe stehen – bzw. bei einem
+// Rechenbeispiel aus dem Theorieteil (Quelle ohne „Übungsklausur“, z. B. „DD3 Teil 4.3“) im Theorieteil des Lernblatts.
 
 const DATEI = 'AP2_Rechen_Uebungen.json';
 const content = loadContent(CONTENT_DIR);
@@ -61,18 +62,21 @@ describe('Rechenübungen in content/', () => {
         expect(pruefeAntworten(inst, antworten).ok, wo).toBe(true);
       }
     }
-  });
+  }, 60_000); // 85 Übungen × 101 Seeds – braucht länger als die Standardzeit von 5 s
 
   it('feste Übungen ergeben die Zahlen der Musterlösung ihrer Aufgabe (z. B. DD3 C1 → 70,00 / 55 / 40)', () => {
     const geprueft: string[] = [];
     for (const u of uebungen) {
       if (!u.quelleAufgabe || (u.vorlage && !u.daten)) continue;
-      const loesung = norm(
-        aufgaben(u.quelleAufgabe)
-          .map((code) => content.tasks[`${u.topicId}-${code}`]?.solution?.markdown ?? '')
-          .join('\n'),
-      );
-      expect(loesung.trim(), `${u.id}: keine Musterlösung zu ${u.quelleAufgabe}`).not.toBe('');
+      const codes = aufgaben(u.quelleAufgabe);
+      const quelle = codes.length
+        ? codes.map((code) => content.tasks[`${u.topicId}-${code}`]?.solution?.markdown ?? '').join('\n')
+        : (content.topics
+            .find((t) => t.id === u.topicId)
+            ?.sections.map((s) => s.markdown)
+            .join('\n') ?? '');
+      const loesung = norm(quelle);
+      expect(loesung.trim(), `${u.id}: keine Musterlösung bzw. kein Theorieteil zu ${u.quelleAufgabe}`).not.toBe('');
       const inst = baueInstanz(u);
       for (const e of inst.eingaben) {
         const w = e.erwartet;
@@ -96,8 +100,10 @@ describe('Rechenübungen in content/', () => {
       }
       geprueft.push(u.id);
     }
-    expect(geprueft).toEqual(expect.arrayContaining(['RE-ST1-001', 'RE-MG-001', 'RE-PM-001']));
-    expect(geprueft.length).toBeGreaterThanOrEqual(30);
+    expect(geprueft).toEqual(
+      expect.arrayContaining(['RE-ST1-001', 'RE-MG-001', 'RE-PM-001', 'RE-ST1-008', 'RE-MG-004', 'RE-PM-008', 'RE-WI-010']),
+    );
+    expect(geprueft.length).toBeGreaterThanOrEqual(55);
   });
 
   it('DD3 C1 und DD7 B2 im Detail', () => {

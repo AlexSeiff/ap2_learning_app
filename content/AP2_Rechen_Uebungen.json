@@ -2,7 +2,8 @@
   "meta": {
     "version": "1.0",
     "hinweise": [
-      "Startset: je Vorlage mindestens eine feste Übung mit den Zahlen aus den Musterlösungen der Deep Dives.",
+      "Feste Übungen: jede Rechenaufgabe der Deep Dives (Übungsklausur und Rechenbeispiele im Theorieteil) mit den Zahlen der Musterlösung; quelleAufgabe nennt die Stelle.",
+      "Übungen ohne daten erzeugen ihre Zahlen selbst (je Vorlage mindestens eine) – „Neue Zahlen“ liefert beliebig viele Varianten.",
       "Format und Vorlagen: lern-app/DOKUMENTATION.md § 4.4. IDs nie ändern – der Fortschritt hängt daran."
     ]
   },
@@ -97,6 +98,194 @@
       "quelleAufgabe": "DD3 Übungsklausur B1/B2"
     },
     {
+      "id": "RE-ST1-007",
+      "thema": "Deep Dive 3",
+      "titel": "Spannweite",
+      "schwierigkeit": 1,
+      "tags": ["streuung", "spannweite"],
+      "vorlage": "lagemasse",
+      "daten": { "werte": [60, 40, 220, 45, 35, 90, 55, 40, 70, 50, 65], "einheit": "min" },
+      "aufgabe": "Bearbeitungsdauer von {{n}} Reparaturaufträgen (in Minuten): {{werte}}.\n\nBestimme Minimum, Maximum und Spannweite. Wie aussagekräftig ist die Spannweite hier?",
+      "eingaben": ["minimum", "maximum", "spannweite"],
+      "hinweise": ["Suche den kleinsten und den größten Wert – am sichersten in der sortierten Reihe.", "Spannweite R = Maximum − Minimum."],
+      "erklaerung": "Die Spannweite hängt nur von den beiden Extremwerten ab. Ein einziger Ausreißer (in der Originalaufgabe 220 min) bestimmt sie allein und sagt nichts über die Streuung der übrigen Aufträge. Aussagekräftiger sind IQR oder Standardabweichung.",
+      "quelleAufgabe": "DD3 Übungsklausur D1"
+    },
+    {
+      "id": "RE-ST1-008",
+      "thema": "Deep Dive 3",
+      "titel": "Lagemaße bei geradem n",
+      "schwierigkeit": 1,
+      "tags": ["lagemaße", "median", "spannweite"],
+      "vorlage": "lagemasse",
+      "daten": { "werte": [2, 3, 3, 4, 5, 5, 5, 6, 8, 19], "einheit": "Tage" },
+      "aufgabe": "Lieferzeiten von {{n}} Aufträgen (in Tagen): {{werte}}.\n\nBerechne arithmetisches Mittel, Median, Modus und Spannweite.",
+      "eingaben": ["mittel", "median", "modus", "spannweite"],
+      "hinweise": [
+        "n = {{n}} ist gerade: Der Median ist das Mittel der beiden mittleren Werte der sortierten Reihe.",
+        "Der Modus ist der Wert, der am häufigsten vorkommt.",
+        "Spannweite = Maximum − Minimum."
+      ],
+      "erklaerung": "Liegt der Mittelwert deutlich über dem Median, ziehen große Werte ihn nach oben – die Verteilung ist **rechtsschief**. Der Median ist robust gegenüber Ausreißern, Mittelwert und Spannweite sind es nicht.",
+      "quelleAufgabe": "DD3 Teil 3 Lagemaße"
+    },
+    {
+      "id": "RE-ST1-009",
+      "thema": "Deep Dive 3",
+      "titel": "Quartile und Boxplot (n gerade)",
+      "schwierigkeit": 2,
+      "tags": ["quartile", "boxplot", "ausreißer"],
+      "vorlage": "quartile",
+      "daten": { "werte": [2, 3, 3, 4, 5, 5, 5, 6, 8, 19], "einheit": "Tage" },
+      "aufgabe": "Lieferzeiten von {{n}} Aufträgen (in Tagen): {{werte}}.\n\nBestimme Q1, Q3 und den Interquartilsabstand nach der Konvention des Lernblatts. Berechne die Zäune der 1,5-IQR-Regel, nenne alle Ausreißer und gib an, wo der obere Whisker endet.",
+      "eingaben": ["q1", "q3", "iqr", "zaunUnten", "zaunOben", "ausreisser", "whiskerOben"],
+      "hinweise": [
+        "Position = n · p = {{n}} · 0,25 bzw. {{n}} · 0,75. Keine ganze Zahl → aufrunden und den **Wert** an dieser Position nehmen.",
+        "Zäune: Q1 − 1,5 · IQR und Q3 + 1,5 · IQR.",
+        "Der Whisker endet beim größten Wert **innerhalb** des oberen Zauns, nicht am Zaun selbst."
+      ],
+      "erklaerung": "Vorsicht bei Position und Wert: Position 8 führt zum Wert 6 – nicht zum Wert 8, der zufällig auch in der Reihe steht. Schreib in der Klausur immer beides hin („Position 8 → Wert 6“) und nenne die verwendete Konvention.",
+      "quelleAufgabe": "DD3 Teil 4.2 / 5.2"
+    },
+    {
+      "id": "RE-ST1-010",
+      "thema": "Deep Dive 3",
+      "titel": "Gewichtetes Mittel (Theoriebeispiel)",
+      "schwierigkeit": 1,
+      "tags": ["lagemaße", "gewichtetes mittel"],
+      "vorlage": "gewichtetes-mittel",
+      "daten": { "gruppen": [{ "anzahl": 3, "wert": 40 }, { "anzahl": 7, "wert": 60 }], "einheit": "min" },
+      "aufgabe": "{{anzahl1}} Aufträge dauern je {{wert1}} Minuten, {{anzahl2}} Aufträge je {{wert2}} Minuten.\n\nBerechne die durchschnittliche Dauer aller {{gesamt}} Aufträge.",
+      "eingaben": ["mittel"],
+      "hinweise": ["Jede Dauer zählt so oft, wie sie vorkommt.", "x̄ = Σ(Anzahl · Wert) / Σ Anzahl."],
+      "erklaerung": "Das einfache Mittel der beiden Dauern wäre falsch, weil die längeren Aufträge häufiger vorkommen. Bei klassierten Daten rechnest du genauso – mit Klassenmitte × Klassenhäufigkeit.",
+      "quelleAufgabe": "DD3 Teil 3 Lagemaße"
+    },
+    {
+      "id": "RE-ST1-011",
+      "thema": "Deep Dive 3",
+      "titel": "Varianz einer Stichprobe",
+      "schwierigkeit": 2,
+      "tags": ["streuung", "varianz", "stichprobe"],
+      "vorlage": "varianz",
+      "daten": { "werte": [2, 4, 5, 6, 8], "art": "stichprobe", "einheit": "Tage" },
+      "aufgabe": "Die Durchlaufzeiten {{werte}} (in Tagen) sind eine **Stichprobe** von {{n}} Aufträgen, mit der auf alle Aufträge geschlossen werden soll.\n\nBerechne die Summe der Abweichungsquadrate, die Varianz und die Standardabweichung {{artLang}}.",
+      "eingaben": ["saq", "varianz", "stdabw"],
+      "hinweise": [
+        "Erst den Mittelwert, dann die Abweichungen x − x̄ quadrieren und summieren (SAQ).",
+        "Stichprobe: s² = SAQ / (n − 1).",
+        "Die Standardabweichung ist die Wurzel aus der Varianz."
+      ],
+      "erklaerung": "Bei einer Stichprobe teilt man durch n − 1, weil der Mittelwert aus derselben Stichprobe geschätzt wird und die Streuung sonst unterschätzt würde. Liegen alle Daten der Grundgesamtheit vor, teilt man durch n. Schreib in der Klausur dazu, welche Variante du verwendest und warum.",
+      "quelleAufgabe": "DD3 Teil 4.3"
+    },
+    {
+      "id": "RE-ST1-012",
+      "thema": "Deep Dive 3",
+      "titel": "Lagemaße mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["lagemaße", "median", "spannweite"],
+      "vorlage": "lagemasse",
+      "aufgabe": "Bearbeitungsdauer von {{n}} Aufträgen (in Minuten): {{werte}}.\n\nBerechne arithmetisches Mittel, Median, Modus und Spannweite.",
+      "eingaben": [
+        { "id": "mittel", "einheit": "min" },
+        { "id": "median", "einheit": "min" },
+        { "id": "modus", "einheit": "min" },
+        { "id": "spannweite", "einheit": "min" }
+      ],
+      "hinweise": [
+        "Sortiere die Werte zuerst aufsteigend.",
+        "n = {{n}}: ungerade → Wert an Position (n + 1) / 2, gerade → Mittel der beiden mittleren Werte.",
+        "Modus = häufigster Wert, Spannweite = Maximum − Minimum."
+      ],
+      "erklaerung": "Vergleiche Mittelwert und Median: Liegt der Mittelwert deutlich darüber, zieht ein großer Ausreißer ihn nach oben (rechtsschiefe Verteilung) – dann ist der Median das bessere Lagemaß für den Bericht."
+    },
+    {
+      "id": "RE-ST1-013",
+      "thema": "Deep Dive 3",
+      "titel": "Gewichtetes Mittel mit drei Gruppen",
+      "schwierigkeit": 1,
+      "tags": ["lagemaße", "gewichtetes mittel"],
+      "vorlage": "gewichtetes-mittel",
+      "params": { "gruppen": 3 },
+      "aufgabe": "Eine Werkstatt meldet für den Monat Aufträge mit folgenden Dauern (Anzahl × Minuten): {{gruppen}}.\n\nBerechne die durchschnittliche Bearbeitungsdauer je Auftrag.",
+      "eingaben": [{ "id": "mittel", "einheit": "min" }],
+      "hinweise": ["Multipliziere jede Dauer mit ihrer Anzahl und addiere.", "Teile durch die Gesamtzahl der Aufträge ({{gesamt}}), nicht durch die Zahl der Gruppen."],
+      "erklaerung": "Das einfache Mittel der Gruppenwerte ist nur richtig, wenn alle Gruppen gleich groß sind. Sonst muss jede Gruppe mit ihrer Anzahl gewichtet werden."
+    },
+    {
+      "id": "RE-ST1-014",
+      "thema": "Deep Dive 3",
+      "titel": "Quartile mit ganzzahliger Position",
+      "schwierigkeit": 2,
+      "tags": ["quartile", "boxplot", "ausreißer"],
+      "vorlage": "quartile",
+      "params": { "n": 12, "ausreisser": true },
+      "aufgabe": "Bearbeitungsdauer von {{n}} Aufträgen (in Minuten): {{werte}}.\n\nBestimme Q1, Q3 und den IQR nach der Konvention des Lernblatts, berechne beide Zäune der 1,5-IQR-Regel und nenne alle Ausreißer.",
+      "eingaben": [
+        { "id": "q1", "einheit": "min" },
+        { "id": "q3", "einheit": "min" },
+        { "id": "iqr", "einheit": "min" },
+        { "id": "zaunUnten", "einheit": "min" },
+        { "id": "zaunOben", "einheit": "min" },
+        { "id": "ausreisser", "einheit": "min" }
+      ],
+      "hinweise": [
+        "Position = {{n}} · 0,25 = 3 ist eine ganze Zahl → Q1 ist das Mittel der Werte an Position 3 und 4.",
+        "Genauso Q3: Position {{n}} · 0,75 = 9 → Mittel der Werte an Position 9 und 10.",
+        "Zäune: Q1 − 1,5 · IQR und Q3 + 1,5 · IQR. Ausreißer liegen außerhalb."
+      ],
+      "erklaerung": "Bei ganzzahliger Position nimmt die Lernblatt-Konvention das Mittel aus diesem und dem nächsten Wert, sonst wird aufgerundet. Andere Konventionen (z. B. Excel QUARTIL.INKL) liefern leicht andere Werte – nenne in der Klausur immer die verwendete Konvention."
+    },
+    {
+      "id": "RE-ST1-015",
+      "thema": "Deep Dive 3",
+      "titel": "Stichprobenvarianz mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["streuung", "varianz", "stichprobe"],
+      "vorlage": "varianz",
+      "params": { "art": "stichprobe" },
+      "aufgabe": "Eine Stichprobe von {{n}} Aufträgen hat folgende Durchlaufzeiten (in Tagen): {{werte}}.\n\nBerechne Mittelwert, Summe der Abweichungsquadrate, Varianz und Standardabweichung {{artLang}}.",
+      "eingaben": [
+        { "id": "mittel", "einheit": "Tage" },
+        "saq",
+        { "id": "varianz", "einheit": "Tage²" },
+        { "id": "stdabw", "einheit": "Tage" }
+      ],
+      "hinweise": [
+        "Mittelwert, dann je Wert (x − x̄)² und alles addieren (SAQ). Kontrolle: Σ(x − x̄) = 0.",
+        "Stichprobe → durch n − 1 = {{n}} − 1 teilen.",
+        "Standardabweichung = √Varianz."
+      ],
+      "erklaerung": "Die Standardabweichung hat dieselbe Einheit wie die Daten und ist direkt interpretierbar; die Varianz ist eine quadrierte Hilfsgröße. Bei annähernder Normalverteilung liegen etwa 68 % der Werte im Bereich x̄ ± s."
+    },
+    {
+      "id": "RE-ST1-016",
+      "thema": "Deep Dive 3",
+      "titel": "Variationskoeffizient zweier Filialen",
+      "schwierigkeit": 1,
+      "tags": ["streuung", "variationskoeffizient"],
+      "vorlage": "variationskoeffizient",
+      "aufgabe": "{{name1}}: x̄ = {{mittel1}} min, σ = {{stdabw1}} min. {{name2}}: x̄ = {{mittel2}} min, σ = {{stdabw2}} min.\n\nBerechne jeweils den Variationskoeffizienten und gib an, welche Filiale gleichmäßiger arbeitet.",
+      "hinweise": ["VK = σ / x̄ · 100 %.", "Gleichmäßiger ist die Filiale mit dem **kleineren VK** – nicht unbedingt die mit dem kleineren σ."],
+      "erklaerung": "Die Standardabweichung allein ist nicht vergleichbar, wenn die Mittelwerte verschieden hoch sind. Der VK setzt die Streuung ins Verhältnis zum Niveau."
+    },
+    {
+      "id": "RE-ST1-017",
+      "thema": "Deep Dive 3",
+      "titel": "Pareto-Analyse mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["häufigkeiten", "pareto"],
+      "vorlage": "haeufigkeiten",
+      "aufgabe": "Von {{n}} Reklamationen entfallen: {{kategorien}}.\n\nSortiere absteigend und berechne relative und kumulierte relative Häufigkeiten (in %, eine Nachkommastelle). Wie viele Fehlerarten braucht man mindestens, um {{schwelle}} % der Reklamationen abzudecken?",
+      "hinweise": [
+        "Zuerst absteigend nach Häufigkeit sortieren.",
+        "Relativ = h / {{n}} · 100 %, kumuliert = laufende Summe. Kontrolle: Am Ende stehen 100 %.",
+        "Gesucht ist die kleinste Anzahl, bei der der kumulierte Anteil {{schwelle}} % erreicht."
+      ],
+      "erklaerung": "Das Pareto-Prinzip (80/20): Wenige Ursachen erklären den Großteil der Fälle – dort setzt die Prozessoptimierung an. Im Pareto-Diagramm stehen Balken (absolute Häufigkeit) und eine Linie (kumulierter Anteil) zusammen."
+    },
+    {
       "id": "RE-ST2-001",
       "thema": "Deep Dive 4",
       "titel": "Korrelationskoeffizient nach Pearson",
@@ -143,6 +332,121 @@
       "quelleAufgabe": "DD4 Übungsklausur E2"
     },
     {
+      "id": "RE-ST2-005",
+      "thema": "Deep Dive 4",
+      "titel": "Residuen der Regressionsgeraden",
+      "schwierigkeit": 2,
+      "tags": ["regression", "residuen"],
+      "vorlage": "regression",
+      "daten": { "x": [1, 2, 3, 4, 5], "y": [30, 40, 42, 52, 56], "xName": "Werbebudget x (T€)", "yName": "Umsatz y (T€)", "einheitY": "T€" },
+      "aufgabe": "Werbebudget und Umsatz von {{n}} Monaten in T€ (Tabelle).\n\nErmittle die Regressionsgerade ŷ = a + b · x und berechne für jeden Monat das Residuum e = y − ŷ.",
+      "eingaben": ["b", "a", "residuum1", "residuum2", "residuum3", "residuum4", "residuum5"],
+      "hinweise": [
+        "b = Sxy / Sxx, danach a = ȳ − b · x̄.",
+        "Setze jedes x in die Gerade ein: ŷ = a + b · x.",
+        "Residuum = tatsächlich minus geschätzt: e = y − ŷ (Vorzeichen beachten)."
+      ],
+      "erklaerung": "Die Residuen sollten zufällig um null streuen. Zeigen sie ein Muster – etwa erst nur negative, dann nur positive Werte –, ist der Zusammenhang nicht linear und das Modell ungeeignet. Kontrolle: Die Summe der Residuen ist bei der Kleinste-Quadrate-Geraden immer 0.",
+      "quelleAufgabe": "DD4 Übungsklausur C1/C4"
+    },
+    {
+      "id": "RE-ST2-006",
+      "thema": "Deep Dive 4",
+      "titel": "Korrelation und Bestimmtheitsmaß",
+      "schwierigkeit": 2,
+      "tags": ["korrelation", "bestimmtheitsmaß"],
+      "vorlage": "korrelation",
+      "daten": { "x": [1, 2, 3, 4, 5], "y": [30, 40, 42, 52, 56], "xName": "Werbebudget x (T€)", "yName": "Umsatz y (T€)" },
+      "aufgabe": "Werbebudget x und Umsatz y von {{n}} Monaten in T€ (Tabelle).\n\nBerechne Sxy, Sxx, Syy, den Korrelationskoeffizienten r und das Bestimmtheitsmaß R².",
+      "eingaben": ["sxy", "sxx", "syy", "r", "r2"],
+      "hinweise": [
+        "Mittelwerte x̄ und ȳ, dann je Monat die Abweichungen x − x̄ und y − ȳ.",
+        "r = Sxy / √(Sxx · Syy).",
+        "R² = r² – rechne mit dem ungerundeten r weiter."
+      ],
+      "erklaerung": "R² ist der Anteil der Streuung von y, den das Modell erklärt (in der Originalaufgabe rund 97 %). Ein hohes R² belegt aber weder Kausalität noch die Gültigkeit außerhalb des beobachteten Bereichs – bei wenigen Datenpunkten ist es zudem leicht zu erreichen.",
+      "quelleAufgabe": "DD4 Übungsklausur D1"
+    },
+    {
+      "id": "RE-ST2-007",
+      "thema": "Deep Dive 4",
+      "titel": "Gesamtveränderung einer Zeitreihe",
+      "schwierigkeit": 1,
+      "tags": ["prozent", "veränderung", "zeitreihen"],
+      "vorlage": "prozent-veraenderung",
+      "daten": { "alt": 120, "neu": 180, "einheit": "T€" },
+      "aufgabe": "Der Monatsumsatz liegt im ersten Monat bei {{alt}} T€ und im achten Monat bei {{neu}} T€.\n\nBerechne die prozentuale Gesamtveränderung von Monat 1 zu Monat 8.",
+      "eingaben": ["prozent"],
+      "hinweise": ["Veränderung = (neu − alt) / alt · 100 %.", "Basis ist der Ausgangswert von Monat 1 – nicht die Summe der Monatsraten."],
+      "erklaerung": "Die Raten der einzelnen Monate darf man nicht addieren oder mitteln, weil sich jede auf eine andere Basis bezieht. Für die durchschnittliche Wachstumsrate über mehrere Perioden ist das geometrische Mittel richtig.",
+      "quelleAufgabe": "DD4 Übungsklausur E2"
+    },
+    {
+      "id": "RE-ST2-008",
+      "thema": "Deep Dive 4",
+      "titel": "Prozent oder Prozentpunkte?",
+      "schwierigkeit": 1,
+      "tags": ["prozent", "prozentpunkte"],
+      "vorlage": "prozent-veraenderung",
+      "daten": { "alt": 4, "neu": 6, "einheit": "%" },
+      "aufgabe": "Die Reklamationsquote steigt von {{alt}} % auf {{neu}} %.\n\nBerechne die absolute Veränderung in Prozentpunkten und die relative Veränderung in Prozent.",
+      "eingaben": ["differenz", "prozent"],
+      "hinweise": ["Die Differenz zweier Prozentwerte sind **Prozentpunkte**.", "Relativ: (neu − alt) / alt · 100 %."],
+      "erklaerung": "Beide Angaben beschreiben dieselbe Veränderung: „um 2 Prozentpunkte gestiegen“ (absolut) und „um 50 Prozent gestiegen“ (relativ). Falsch ist „+2 %“ – das verwechselt Prozentpunkte mit Prozent.",
+      "quelleAufgabe": "DD4 Übungsklausur E3"
+    },
+    {
+      "id": "RE-ST2-009",
+      "thema": "Deep Dive 4",
+      "titel": "Korrelation mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["korrelation"],
+      "vorlage": "korrelation",
+      "aufgabe": "Für {{n}} Filialen wurden zwei Merkmale x und y erfasst (Tabelle).\n\nBerechne die Mittelwerte, Sxy, Sxx, Syy und den Korrelationskoeffizienten r. Deute r nach Vorzeichen und Stärke.",
+      "hinweise": [
+        "Tabelle mit x − x̄, y − ȳ, deren Produkt und Quadraten anlegen.",
+        "r = Sxy / √(Sxx · Syy) – das Vorzeichen kommt aus Sxy.",
+        "Stärke: |r| ab 0,8 stark, 0,5–0,8 mittel, darunter schwach."
+      ],
+      "erklaerung": "Ein starkes r zeigt nur einen **linearen Zusammenhang** – keine Ursache. Für Kausalität braucht es einen plausiblen Wirkmechanismus oder ein kontrolliertes Experiment."
+    },
+    {
+      "id": "RE-ST2-010",
+      "thema": "Deep Dive 4",
+      "titel": "Regressionsgerade mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["regression"],
+      "vorlage": "regression",
+      "aufgabe": "Für {{n}} Monate liegen Werte einer Einflussgröße x und einer Zielgröße y vor (Tabelle).\n\nErmittle die Regressionsgerade ŷ = a + b · x.",
+      "eingaben": ["b", "a"],
+      "hinweise": ["Zuerst x̄ und ȳ, dann Sxy und Sxx.", "b = Sxy / Sxx, a = ȳ − b · x̄.", "Probe: Setzt du x̄ ein, kommt ȳ heraus."],
+      "erklaerung": "b ist die inhaltlich wichtigste Zahl: So stark ändert sich y im Durchschnitt, wenn x um eine Einheit steigt. a ist nur sinnvoll deutbar, wenn x = 0 im beobachteten Bereich liegt."
+    },
+    {
+      "id": "RE-ST2-011",
+      "thema": "Deep Dive 4",
+      "titel": "Gleitender 4-Monats-Durchschnitt",
+      "schwierigkeit": 1,
+      "tags": ["zeitreihen", "gleitender durchschnitt"],
+      "vorlage": "gleitender-durchschnitt",
+      "params": { "n": 7, "k": 4 },
+      "aufgabe": "Monatsumsatz in T€ über {{n}} Monate: {{werte}}.\n\nBerechne alle gleitenden {{k}}-Monats-Durchschnitte.",
+      "hinweise": ["Fenster aus {{k}} aufeinanderfolgenden Monaten, Summe durch {{k}}.", "Dann das Fenster um einen Monat weiterschieben – es gibt {{anzahl}} Werte."],
+      "erklaerung": "Der gleitende Durchschnitt glättet kurzfristige Schwankungen und macht den Trend sichtbar. Preis der Glättung: Am Rand fehlen Werte, und aktuelle Ausschläge werden abgeschwächt."
+    },
+    {
+      "id": "RE-ST2-012",
+      "thema": "Deep Dive 4",
+      "titel": "Veränderung gegenüber dem Vorjahr",
+      "schwierigkeit": 1,
+      "tags": ["prozent", "veränderung"],
+      "vorlage": "prozent-veraenderung",
+      "aufgabe": "Die Zahl der Serviceaufträge ändert sich von {{alt}} im Vorjahr auf {{neu}} in diesem Jahr.\n\nBerechne die absolute und die prozentuale Veränderung.",
+      "eingaben": [{ "id": "differenz", "einheit": "Aufträge" }, "prozent"],
+      "hinweise": ["Differenz = neu − alt (bei einem Rückgang negativ).", "Prozent = Differenz / **alt** · 100 %."],
+      "erklaerung": "Die Basis ist immer der Ausgangswert. Ein Rückgang um 20 % und ein anschließender Anstieg um 20 % führen deshalb nicht zum alten Wert zurück."
+    },
+    {
       "id": "RE-MG-001",
       "thema": "Deep Dive 7",
       "titel": "Gütemaße aus der Konfusionsmatrix",
@@ -177,6 +481,65 @@
       "quelleAufgabe": "DD7 Übungsklausur E1"
     },
     {
+      "id": "RE-MG-004",
+      "thema": "Deep Dive 7",
+      "titel": "Accuracy-Paradox (Theoriebeispiel)",
+      "schwierigkeit": 2,
+      "tags": ["konfusionsmatrix", "accuracy-paradox"],
+      "vorlage": "konfusionsmatrix",
+      "daten": { "tp": 60, "fp": 90, "fn": 40, "tn": 810, "positiv": "Reklamation" },
+      "aufgabe": "Ein Reklamationsmodell wurde an {{n}} Aufträgen getestet, davon {{positive}} tatsächlich reklamiert (Konfusionsmatrix in der Tabelle).\n\nBerechne Accuracy, Precision, Recall, F1-Maß und Spezifität. Welche Accuracy erreicht ein triviales Modell, das immer „keine Reklamation“ sagt?",
+      "eingaben": ["accuracy", "precision", "recall", "f1", "spezifitaet", "trivialAccuracy"],
+      "hinweise": [
+        "Accuracy = (TP + TN) / n, Precision = TP / (TP + FP), Recall = TP / (TP + FN).",
+        "F1 = 2 · P · R / (P + R), Spezifität = TN / (TN + FP).",
+        "Das triviale Modell trifft genau alle tatsächlich Negativen: (FP + TN) / n."
+      ],
+      "erklaerung": "Das triviale Modell hat hier eine **höhere** Accuracy als das echte Modell, findet aber keinen einzigen Reklamationsfall (Recall 0 %). Bei unausgeglichenen Klassen ist Accuracy irreführend – aussagekräftig sind Precision, Recall und F1 im Vergleich mit einer trivialen Baseline.",
+      "quelleAufgabe": "DD7 Teil 2.3"
+    },
+    {
+      "id": "RE-MG-005",
+      "thema": "Deep Dive 7",
+      "titel": "Kosten statt Prozente (Theoriebeispiel)",
+      "schwierigkeit": 2,
+      "tags": ["konfusionsmatrix", "fehlerkosten"],
+      "vorlage": "konfusionsmatrix",
+      "daten": { "tp": 60, "fp": 90, "fn": 40, "tn": 810, "kostenFN": 120, "kostenFP": 15, "positiv": "Reklamation" },
+      "aufgabe": "Konfusionsmatrix des Reklamationsmodells siehe Tabelle. Ein übersehener Reklamationsfall (FN) kostet {{kostenFN}} €, eine unnötige Vorabprüfung (FP) {{kostenFP}} €.\n\nBerechne die Fehlerkosten des Modells und die des trivialen Modells, das immer „keine Reklamation“ sagt.",
+      "eingaben": ["kostenModell", "kostenTrivial"],
+      "hinweise": ["Kosten Modell = FN · Kosten je FN + FP · Kosten je FP.", "Das triviale Modell übersieht **alle** tatsächlichen Reklamationen (TP + FN) und erzeugt keine FP."],
+      "erklaerung": "Trotz niedrigerer Accuracy kann ein Modell wirtschaftlich klar überlegen sein. Kennzahlen in Geld zu übersetzen, ist das stärkste Argument im Fachgespräch.",
+      "quelleAufgabe": "DD7 Teil 4.2"
+    },
+    {
+      "id": "RE-MG-006",
+      "thema": "Deep Dive 7",
+      "titel": "Gütemaße eines Betrugsmodells",
+      "schwierigkeit": 2,
+      "tags": ["konfusionsmatrix", "precision", "recall"],
+      "vorlage": "konfusionsmatrix",
+      "aufgabe": "Ein Modell zur Betrugserkennung wurde an {{n}} Transaktionen getestet; {{positive}} davon waren tatsächlich Betrugsfälle (positiv). Die Konfusionsmatrix steht in der Tabelle.\n\nBerechne Accuracy, Precision, Recall, F1-Maß und Spezifität.",
+      "hinweise": [
+        "Precision: Wie oft stimmt ein Alarm? TP / (TP + FP).",
+        "Recall: Wie viele echte Betrugsfälle findet das Modell? TP / (TP + FN).",
+        "F1 ist das **harmonische** Mittel von Precision und Recall."
+      ],
+      "erklaerung": "Bei Betrugserkennung ist meist der Recall entscheidend – ein übersehener Betrug (FN) kostet mehr als eine unnötige Prüfung (FP). Accuracy ist bei wenigen positiven Fällen kaum aussagekräftig."
+    },
+    {
+      "id": "RE-MG-007",
+      "thema": "Deep Dive 7",
+      "titel": "MAE, MSE und RMSE mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["regressionsgüte", "mae", "rmse"],
+      "vorlage": "regressionsguete",
+      "aufgabe": "Tatsächliche Monatsumsätze y und Prognosen ŷ für {{n}} Monate (in T€) stehen in der Tabelle.\n\nBerechne MAE, MSE und RMSE.",
+      "eingaben": [{ "id": "mae", "einheit": "T€" }, "mse", { "id": "rmse", "einheit": "T€" }],
+      "hinweise": ["Fehlertabelle: e = y − ŷ, |e| und e².", "MAE = Σ|e| / n, MSE = Σe² / n, RMSE = √MSE."],
+      "erklaerung": "Der RMSE ist nie kleiner als der MAE. Je weiter beide auseinanderliegen, desto ungleichmäßiger sind die Fehler verteilt – einzelne große Abweichungen treiben den RMSE nach oben."
+    },
+    {
       "id": "RE-ML-001",
       "thema": "Deep Dive 6",
       "titel": "Support, Konfidenz und Lift",
@@ -201,6 +564,93 @@
       "daten": { "punkte": [[2, 2], [3, 1], [1, 3], [7, 8], [8, 7], [9, 9]], "zentren": [[4, 4], [6, 6]] },
       "aufgabe": "Kunden: {{punkte}}. Startzentren: {{zentren}}, k = {{k}}.\n\nBerechne die euklidischen Abstände aller Punkte zu beiden Zentren, ordne die Punkte zu und bestimme die neuen Clusterzentren.",
       "quelleAufgabe": "DD6 Übungsklausur C2"
+    },
+    {
+      "id": "RE-ML-003",
+      "thema": "Deep Dive 6",
+      "titel": "Support der Einzelartikel",
+      "schwierigkeit": 1,
+      "tags": ["assoziationsanalyse", "support"],
+      "vorlage": "assoziation",
+      "daten": {
+        "transaktionen": [["S", "B", "M"], ["S", "B"], ["S", "B"], ["S", "B", "L"], ["S", "M"], ["B", "M"], ["M", "L"], ["B", "M"], ["L"], ["L"]],
+        "wenn": ["S"],
+        "dann": ["B"]
+      },
+      "aufgabe": "{{n}} Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe) stehen in der Tabelle.\n\nBerechne den Support der Einzelartikel S, B, M und L.",
+      "eingaben": ["support_S", "support_B", "support_M", "support_L"],
+      "hinweise": ["Support(X) = Anzahl Warenkörbe mit X / alle Warenkörbe.", "Zähle je Artikel die Spalten, in denen er vorkommt."],
+      "erklaerung": "Der Support der Einzelartikel ist die Grundlage für Konfidenz und Lift: Die Konfidenz teilt durch den Support des Wenn-Teils, der Lift zusätzlich durch den Support des Dann-Teils.",
+      "quelleAufgabe": "DD6 Übungsklausur D1"
+    },
+    {
+      "id": "RE-ML-004",
+      "thema": "Deep Dive 6",
+      "titel": "Gegenprobe: Regel in der anderen Richtung",
+      "schwierigkeit": 2,
+      "tags": ["assoziationsanalyse", "konfidenz", "lift"],
+      "vorlage": "assoziation",
+      "daten": {
+        "transaktionen": [["S", "B", "M"], ["S", "B"], ["S", "B"], ["S", "B", "L"], ["S", "M"], ["B", "M"], ["M", "L"], ["B", "M"], ["L"], ["L"]],
+        "wenn": ["B"],
+        "dann": ["S"]
+      },
+      "aufgabe": "{{n}} Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe) stehen in der Tabelle.\n\nBerechne für die Regel **{{regel}}** Support, Konfidenz (eine Nachkommastelle) und Lift. Vergleiche mit der Regel S → B.",
+      "eingaben": ["support", { "id": "konfidenz", "runden": 1 }, "lift"],
+      "hinweise": [
+        "Konfidenz(B → S) = Support(B und S) / Support(**B**).",
+        "Lift = Konfidenz / Support(S)."
+      ],
+      "erklaerung": "Die **Konfidenz ist richtungsabhängig** (S → B: 80 %, B → S: 66,7 %), der **Lift ist symmetrisch** – er ist in beide Richtungen gleich. Erst der Lift zeigt, ob wirklich ein Zusammenhang besteht.",
+      "quelleAufgabe": "DD6 Teil 4.2"
+    },
+    {
+      "id": "RE-ML-005",
+      "thema": "Deep Dive 6",
+      "titel": "Lift unter 1",
+      "schwierigkeit": 2,
+      "tags": ["assoziationsanalyse", "lift"],
+      "vorlage": "assoziation",
+      "daten": {
+        "transaktionen": [["S", "B", "M"], ["S", "B"], ["S", "B"], ["S", "B", "L"], ["S", "M"], ["B", "M"], ["M", "L"], ["B", "M"], ["L"], ["L"]],
+        "wenn": ["L"],
+        "dann": ["M"]
+      },
+      "aufgabe": "{{n}} Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe) stehen in der Tabelle.\n\nBerechne für die Regel **{{regel}}** Support, Konfidenz und Lift und deute den Lift.",
+      "eingaben": ["support", "konfidenz", "lift"],
+      "hinweise": ["Zähle die Warenkörbe, in denen L **und** M vorkommen.", "Konfidenz = Support(L und M) / Support(L), Lift = Konfidenz / Support(M)."],
+      "erklaerung": "Ein Lift unter 1 bedeutet: Die Artikel werden **seltener** zusammen gekauft, als bei Unabhängigkeit zu erwarten wäre (negativer Zusammenhang, z. B. Ersatzprodukte). Eine gemeinsame Platzierung oder ein Bundle ist dann nicht zu empfehlen.",
+      "quelleAufgabe": "DD6 Teil 4.2"
+    },
+    {
+      "id": "RE-ML-006",
+      "thema": "Deep Dive 6",
+      "titel": "Assoziationsregel mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["assoziationsanalyse", "lift"],
+      "vorlage": "assoziation",
+      "aufgabe": "{{n}} Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe) stehen in der Tabelle.\n\nBerechne für die Regel **{{regel}}** Support, Konfidenz und Lift und entscheide, ob sich ein Bundle lohnt.",
+      "hinweise": [
+        "Support = Warenkörbe mit beiden Artikeln / alle Warenkörbe.",
+        "Konfidenz = Support(beide) / Support(Wenn-Teil).",
+        "Lift = Konfidenz / Support(Dann-Teil). Über 1: positiver Zusammenhang."
+      ],
+      "erklaerung": "Eine hohe Konfidenz allein kann täuschen, wenn der Dann-Artikel ohnehin in fast jedem Warenkorb liegt. Erst ein Lift über 1 zeigt, dass die Kombination häufiger vorkommt als zufällig zu erwarten."
+    },
+    {
+      "id": "RE-ML-007",
+      "thema": "Deep Dive 6",
+      "titel": "k-Means mit Zufallszahlen",
+      "schwierigkeit": 3,
+      "tags": ["clustering", "k-means"],
+      "vorlage": "kmeans",
+      "aufgabe": "Kunden: {{punkte}}. Startzentren: {{zentren}}, k = {{k}}.\n\nFühre die erste Iteration durch: Berechne alle euklidischen Abstände, ordne jeden Punkt dem nächsten Zentrum zu und bestimme die neuen Clusterzentren.",
+      "hinweise": [
+        "Abstand = √((x − xZ)² + (y − yZ)²).",
+        "Zum reinen Vergleichen genügen die quadrierten Abstände – gefragt sind hier aber die Abstände selbst.",
+        "Neues Zentrum = Mittelwert der x- und der y-Werte seiner Punkte."
+      ],
+      "erklaerung": "k-Means wiederholt Zuordnen und Neuberechnen, bis sich die Zentren nicht mehr ändern. Merkmale mit großer Zahlenspanne dominieren den Abstand – deshalb vorher skalieren."
     },
     {
       "id": "RE-PA-001",
@@ -245,6 +695,78 @@
       "quelleAufgabe": "DD5 Übungsklausur D2"
     },
     {
+      "id": "RE-PA-004",
+      "thema": "Deep Dive 5",
+      "titel": "Wertschöpfungsanteil (Theoriebeispiel)",
+      "schwierigkeit": 1,
+      "tags": ["prozesskennzahlen", "durchlaufzeit"],
+      "vorlage": "durchlaufzeit",
+      "daten": { "schritte": [{ "name": "Reparaturauftrag (alle Schritte zusammen)", "bearbeitung": 1.5, "liege": 28.5 }], "einheit": "h" },
+      "aufgabe": "Für einen Reparaturauftrag wurden die gesamte Bearbeitungszeit und die gesamte Liegezeit gemessen (Tabelle, in {{einheit}}).\n\nBerechne die Durchlaufzeit und den Wertschöpfungsanteil (Flussgrad).",
+      "eingaben": ["durchlaufzeit", "wertschoepfung"],
+      "hinweise": ["Durchlaufzeit = Bearbeitungszeit + Liegezeit.", "Wertschöpfungsanteil = Bearbeitungszeit / Durchlaufzeit · 100 %."],
+      "erklaerung": "In der Praxis liegt der Wertschöpfungsanteil oft unter 10 %: Die meiste Zeit wartet der Auftrag. Der Hebel liegt deshalb fast immer bei den Liegezeiten – nicht darin, dass die Techniker schneller arbeiten.",
+      "quelleAufgabe": "DD5 Teil 3.1"
+    },
+    {
+      "id": "RE-PA-005",
+      "thema": "Deep Dive 5",
+      "titel": "Amortisation über die Nutzungsdauer beurteilen",
+      "schwierigkeit": 2,
+      "tags": ["wirtschaftlichkeit", "amortisation"],
+      "vorlage": "amortisation",
+      "daten": { "investition": 18000, "auftraege": 2400, "minutenJeAuftrag": 5, "kostensatz": 60, "nutzungsdauer": 5 },
+      "aufgabe": "Ein digitales Auftragssystem kostet einmalig {{investition}} € und spart je Auftrag {{minutenJeAuftrag}} Minuten. {{auftraege}} Aufträge im Jahr, Kostensatz {{kostensatz}} €/h, geplante Nutzungsdauer {{nutzungsdauer}} Jahre.\n\nBerechne die Amortisationszeit in Monaten und den rechnerischen Überschuss über die gesamte Nutzungsdauer. Lohnt sich die Investition?",
+      "eingaben": [{ "id": "amortisationMonate", "runden": 0 }, { "id": "gewinn", "label": "Überschuss über die Nutzungsdauer" }],
+      "hinweise": [
+        "Erst die jährliche Einsparung: Aufträge · Minuten / 60 · Kostensatz.",
+        "Amortisationszeit = Investition / jährliche Einsparung – in Monaten: · 12.",
+        "Überschuss = Nutzungsdauer · jährliche Einsparung − Investition."
+      ],
+      "erklaerung": "„Beurteilen“ heißt: Amortisationszeit mit der Nutzungsdauer vergleichen. Amortisiert sich die Investition deutlich vor dem Ende der Nutzungsdauer, ist sie wirtschaftlich zu empfehlen – ergänzt um qualitative Faktoren (Fehlerreduktion, Folgekosten, Akzeptanz).",
+      "quelleAufgabe": "DD5 Übungsklausur D2"
+    },
+    {
+      "id": "RE-PA-006",
+      "thema": "Deep Dive 5",
+      "titel": "Durchlaufzeit eines Prozesses mit vier Schritten",
+      "schwierigkeit": 1,
+      "tags": ["prozesskennzahlen", "durchlaufzeit"],
+      "vorlage": "durchlaufzeit",
+      "params": { "schritte": 4 },
+      "aufgabe": "Zeitaufnahme eines Bearbeitungsprozesses (Mittelwerte je Vorgang in {{einheit}}, siehe Tabelle).\n\nBerechne Gesamtbearbeitungszeit, Gesamtliegezeit, Durchlaufzeit und den Wertschöpfungsanteil.",
+      "hinweise": ["Addiere die Bearbeitungszeiten und die Liegezeiten jeweils getrennt.", "Durchlaufzeit = Bearbeitung + Liegezeit, Wertschöpfungsanteil = Bearbeitung / Durchlaufzeit · 100 %."],
+      "erklaerung": "Ein niedriger Wertschöpfungsanteil zeigt: Der Hebel liegt bei den Liegezeiten – Schnittstellen reduzieren, Wartezeiten abbauen, Schritte parallelisieren oder automatisieren."
+    },
+    {
+      "id": "RE-PA-007",
+      "thema": "Deep Dive 5",
+      "titel": "Fehlerquote und Nacharbeitskosten mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["prozesskennzahlen", "fehlerquote", "first pass yield"],
+      "vorlage": "fehlerquote",
+      "aufgabe": "Im Monat wurden {{gesamt}} Aufträge bearbeitet, {{fehler}} davon mussten nachgearbeitet werden. Jede Nacharbeit dauert {{nacharbeitJe}} h, der Kostensatz beträgt {{kostensatz}} €/h.\n\nBerechne Fehlerquote, First Pass Yield, die monatlichen Nacharbeitskosten und den Zuschlag je Auftrag.",
+      "hinweise": [
+        "Fehlerquote = fehlerhafte / alle · 100 %, FPY = 100 % − Fehlerquote.",
+        "Nacharbeitskosten = Fälle · Stunden je Fall · Kostensatz.",
+        "Zuschlag = Nacharbeitskosten / **alle** Aufträge."
+      ],
+      "erklaerung": "Der Zuschlag verteilt die Kosten schlechter Qualität auf alle Aufträge – so wird sichtbar, was jede Nacharbeit den Betrieb pro Auftrag kostet."
+    },
+    {
+      "id": "RE-PA-008",
+      "thema": "Deep Dive 5",
+      "titel": "Amortisation aus der Zeitersparnis",
+      "schwierigkeit": 2,
+      "tags": ["wirtschaftlichkeit", "amortisation"],
+      "vorlage": "amortisation",
+      "params": { "auftraege": true },
+      "aufgabe": "Eine Software kostet einmalig {{investition}} € und spart je Auftrag {{minutenJeAuftrag}} Minuten. Im Jahr fallen {{auftraege}} Aufträge an, der Kostensatz beträgt {{kostensatz}} €/h.\n\nBerechne die Zeitersparnis pro Jahr in Stunden, die jährliche Einsparung und die Amortisationszeit.",
+      "eingaben": ["stunden", "einsparung", "amortisation"],
+      "hinweise": ["Minuten · Aufträge, dann ÷ 60 → Stunden.", "Stunden · Kostensatz = jährliche Einsparung.", "Amortisationszeit = Investition / jährliche Einsparung."],
+      "erklaerung": "Zur Beurteilung gehört immer der Vergleich mit der Nutzungsdauer und der Blick auf qualitative Faktoren wie Fehlerreduktion, Folgekosten und Akzeptanz."
+    },
+    {
       "id": "RE-DQ-001",
       "thema": "Deep Dive 9",
       "titel": "Datenqualitäts-Kennzahlen",
@@ -261,6 +783,49 @@
       },
       "aufgabe": "Kundentabelle mit {{gesamt}} Datensätzen: {{schlecht_email}} E-Mail-Felder sind leer, {{schlecht_eindeutig}} Datensätze sind Dubletten, {{schlecht_plz}} PLZ sind nicht fünfstellig, {{schlecht_geburt}} Geburtsdaten sind unplausibel.\n\nBerechne Vollständigkeitsgrad E-Mail, Eindeutigkeitsgrad, Gültigkeitsgrad PLZ und den Anteil plausibler Geburtsdaten.",
       "quelleAufgabe": "DD9 Übungsklausur C1"
+    },
+    {
+      "id": "RE-DQ-002",
+      "thema": "Deep Dive 9",
+      "titel": "Vollständigkeit des Datenbestands",
+      "schwierigkeit": 1,
+      "tags": ["datenqualität", "kennzahlen", "vollständigkeit"],
+      "vorlage": "qualitaetsgrad",
+      "daten": { "kennzahlen": [{ "id": "bestand", "name": "Vollständigkeitsgrad des Datenbestands", "gut": 57, "gesamt": 60 }] },
+      "aufgabe": "Die Pflichtfelder eines Datenbestands ergeben zusammen {{gesamt}} Zellen, davon sind {{schlecht_bestand}} leer.\n\nBerechne den Vollständigkeitsgrad des Datenbestands. Warum sieht er günstiger aus als der Vollständigkeitsgrad eines einzelnen lückenhaften Feldes?",
+      "hinweise": ["Vollständigkeitsgrad = gefüllte Zellen / alle Pflichtzellen · 100 %.", "Gefüllt = alle Zellen − leere Zellen."],
+      "erklaerung": "Die Kennzahl bezieht sich auf **alle Zellen über alle Pflichtfelder**. Wenige fehlende Werte verteilen sich rechnerisch und fallen kaum ins Gewicht – große Lücken in einem einzelnen, fachlich wichtigen Feld bleiben so verborgen. Deshalb immer die Bezugsgröße angeben und zusätzlich je Feld messen.",
+      "quelleAufgabe": "DD9 Übungsklausur C2"
+    },
+    {
+      "id": "RE-DQ-003",
+      "thema": "Deep Dive 9",
+      "titel": "Qualitätskennzahlen mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["datenqualität", "kennzahlen"],
+      "vorlage": "qualitaetsgrad",
+      "aufgabe": "Eine Kundentabelle hat {{gesamt}} Datensätze. {{schlecht_vollstaendigkeit}} E-Mail-Felder sind leer, {{schlecht_eindeutigkeit}} Datensätze sind Dubletten und {{schlecht_gueltigkeit}} Postleitzahlen haben ein ungültiges Format.\n\nBerechne Vollständigkeitsgrad (E-Mail), Eindeutigkeitsgrad und Gültigkeitsgrad (PLZ).",
+      "eingaben": [
+        { "id": "vollstaendigkeit", "label": "Vollständigkeitsgrad E-Mail" },
+        { "id": "eindeutigkeit", "label": "Eindeutigkeitsgrad" },
+        { "id": "gueltigkeit", "label": "Gültigkeitsgrad PLZ" }
+      ],
+      "hinweise": ["Qualitätsgrad = gute Werte / alle Werte · 100 %.", "Gute Werte = {{gesamt}} minus die fehlerhaften."],
+      "erklaerung": "Eine Kennzahl braucht immer ihre Bezugsgröße (je Feld oder über alle Zellen), einen Zielwert und eine verantwortliche Stelle – sonst löst sie nichts aus."
+    },
+    {
+      "id": "RE-VI-001",
+      "thema": "Deep Dive 11",
+      "titel": "Tatsächliches Wachstum hinter einer abgeschnittenen Achse",
+      "schwierigkeit": 1,
+      "tags": ["visualisierung", "prozent", "manipulation"],
+      "vorlage": "prozent-veraenderung",
+      "daten": { "alt": 4.8, "neu": 5.1, "einheit": "Mio. €" },
+      "aufgabe": "Ein Säulendiagramm zeigt den Jahresumsatz von {{alt}} Mio. € (erstes Jahr) bis {{neu}} Mio. € (drittes Jahr). Die y-Achse beginnt bei 4,70 Mio. €, die Überschrift lautet „Umsatz explodiert“.\n\nBerechne den absoluten Zuwachs und das tatsächliche Gesamtwachstum in Prozent.",
+      "eingaben": [{ "id": "differenz", "runden": 2 }, "prozent"],
+      "hinweise": ["Gesamtwachstum = (Endwert − Anfangswert) / Anfangswert · 100 %.", "Die Achse ändert die Zahlen nicht – nur ihren Eindruck."],
+      "erklaerung": "Beginnt die y-Achse nicht bei null, wirken kleine Unterschiede dramatisch (in der Originalaufgabe sichtbare Säulenhöhen 1 : 2,5 : 4 bei nur 6,25 % Wachstum). Bei Säulen codiert die Länge den Wert – ein Nullpunkt ist Pflicht. Sachliche Überschrift: „Umsatz wächst stetig um rund 2 % pro Jahr“.",
+      "quelleAufgabe": "DD11 Übungsklausur B1"
     },
     {
       "id": "RE-PM-001",
@@ -348,6 +913,125 @@
       "quelleAufgabe": "DD12 Übungsklausur E1"
     },
     {
+      "id": "RE-PM-006",
+      "thema": "Deep Dive 12",
+      "titel": "Verzögerung auf dem kritischen Pfad",
+      "schwierigkeit": 2,
+      "tags": ["netzplan", "kritischer pfad"],
+      "vorlage": "netzplan",
+      "daten": {
+        "vorgaenge": [
+          { "id": "A", "name": "Anforderungsanalyse", "dauer": 5, "vorgaenger": [] },
+          { "id": "B", "name": "Datenmodell entwerfen", "dauer": 4, "vorgaenger": ["A"] },
+          { "id": "C", "name": "Datenquellen anbinden (verzögert)", "dauer": 8, "vorgaenger": ["A"] },
+          { "id": "D", "name": "ETL-Strecke entwickeln", "dauer": 8, "vorgaenger": ["B", "C"] },
+          { "id": "E", "name": "Dashboard entwerfen", "dauer": 3, "vorgaenger": ["B"] },
+          { "id": "F", "name": "Test", "dauer": 4, "vorgaenger": ["D", "E"] },
+          { "id": "G", "name": "Dokumentation", "dauer": 2, "vorgaenger": ["F"] }
+        ],
+        "einheit": "Tage"
+      },
+      "aufgabe": "Im Reporting-Projekt (ursprüngliche Projektdauer 25 Tage, kritischer Pfad A – C – D – F – G) verzögert sich Vorgang C um zwei Tage. Die Tabelle zeigt bereits die neue Dauer.\n\nWie lange dauert das Projekt jetzt?",
+      "eingaben": ["projektdauer"],
+      "hinweise": ["Liegt C auf dem kritischen Pfad? Dann hat C keinen Puffer.", "Vorwärtsrechnung: FAZ = größtes FEZ der Vorgänger; das größte FEZ am Ende ist die Projektdauer."],
+      "erklaerung": "Ein Vorgang auf dem kritischen Pfad hat Gesamtpuffer 0 – jede Verzögerung verschiebt das Projektende unmittelbar und vollständig. Ausgleichen lässt sie sich nur, indem ein anderer kritischer Vorgang verkürzt wird.",
+      "neueZahlen": false,
+      "quelleAufgabe": "DD12 Übungsklausur C4"
+    },
+    {
+      "id": "RE-PM-007",
+      "thema": "Deep Dive 12",
+      "titel": "Überschuss und ROI pro Jahr",
+      "schwierigkeit": 2,
+      "tags": ["wirtschaftlichkeit", "roi"],
+      "vorlage": "amortisation",
+      "daten": { "investition": 45000, "einsparung": 18000, "nutzungsdauer": 5 },
+      "aufgabe": "Das Reporting-System kostet einmalig {{investition}} € und spart jährlich {{einsparung}} €. Geplante Nutzungsdauer: {{nutzungsdauer}} Jahre.\n\nBerechne die Amortisationszeit in Monaten, den Überschuss über die Nutzungsdauer und den ROI pro Jahr.",
+      "eingaben": [{ "id": "amortisationMonate", "runden": 0 }, { "id": "gewinn", "label": "Überschuss über die Nutzungsdauer" }, "roiJahr"],
+      "hinweise": [
+        "Amortisationszeit = Investition / jährliche Einsparung (in Monaten: · 12).",
+        "Überschuss = Nutzungsdauer · Einsparung − Investition.",
+        "ROI = Überschuss / Investition · 100 %, pro Jahr: geteilt durch die Nutzungsdauer."
+      ],
+      "erklaerung": "Laufende Betriebskosten (Lizenzen, Wartung, Schulung) fehlen in dieser Rechnung – sie gehören in eine TCO-Betrachtung und können den Überschuss deutlich schmälern.",
+      "quelleAufgabe": "DD12 Übungsklausur D1"
+    },
+    {
+      "id": "RE-PM-008",
+      "thema": "Deep Dive 12",
+      "titel": "Drei-Zeiten-Schätzung (PERT)",
+      "schwierigkeit": 1,
+      "tags": ["aufwandsschätzung", "pert"],
+      "vorlage": "pert",
+      "daten": { "vorgaenge": [{ "name": "Arbeitspaket", "o": 4, "m": 7, "p": 16 }], "einheit": "Tage" },
+      "aufgabe": "Für ein Arbeitspaket schätzt das Team: optimistisch {{o1}} Tage, wahrscheinlich {{m1}} Tage, pessimistisch {{p1}} Tage.\n\nBerechne die erwartete Dauer nach der Drei-Zeiten-Methode (PERT).",
+      "eingaben": ["te1"],
+      "hinweise": ["t_e = (o + 4 · m + p) / 6.", "Der wahrscheinlichste Wert zählt vierfach."],
+      "erklaerung": "Der pessimistische Wert zieht den Erwartungswert über den wahrscheinlichsten Wert – das ist gewollt, denn Aufwände werden systematisch unterschätzt.",
+      "quelleAufgabe": "DD12 Teil 3.1"
+    },
+    {
+      "id": "RE-PM-009",
+      "thema": "Deep Dive 12",
+      "titel": "Netzplan mit Zufallszahlen",
+      "schwierigkeit": 3,
+      "tags": ["netzplan", "kritischer pfad", "puffer"],
+      "vorlage": "netzplan",
+      "aufgabe": "Vorgänge {{vorgaenge}} mit Dauern und Vorgängern siehe Tabelle (Einheit: {{einheit}}). Projektstart ist Tag 0.\n\nBerechne FAZ, FEZ, SAZ, SEZ, Gesamtpuffer und freien Puffer für alle Vorgänge. Bestimme die Projektdauer und den kritischen Pfad.",
+      "hinweise": [
+        "Vorwärts: FAZ = **größtes** FEZ der Vorgänger, FEZ = FAZ + Dauer.",
+        "Rückwärts: SEZ = **kleinstes** SAZ der Nachfolger, SAZ = SEZ − Dauer.",
+        "GP = SAZ − FAZ, FP = kleinstes FAZ der Nachfolger − FEZ. Kritisch: GP = 0."
+      ],
+      "erklaerung": "Der kritische Pfad ist der **längste** Weg durch den Netzplan. Der freie Puffer ist nie größer als der Gesamtpuffer."
+    },
+    {
+      "id": "RE-PM-010",
+      "thema": "Deep Dive 12",
+      "titel": "Nutzwertanalyse mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["nutzwertanalyse", "entscheidung"],
+      "vorlage": "nutzwert",
+      "aufgabe": "Zur Auswahl stehen {{alternativen}}. Kriterien und Gewichte: {{kriterien}}; die Punkte (1–10) stehen in der Tabelle.\n\nBerechne alle Teilnutzen und die Nutzwerte. Welche Alternative liegt vorn?",
+      "hinweise": ["Teilnutzen = Gewicht als Anteil (40 % = 0,4) · Punkte.", "Nutzwert = Summe der Teilnutzen einer Alternative."],
+      "erklaerung": "Bei knappem Abstand entscheidet die subjektive Gewichtung – dann gehört eine Sensitivitätsprüfung in die Beurteilung (Was passiert, wenn ein Gewicht etwas anders ausfällt?)."
+    },
+    {
+      "id": "RE-PM-011",
+      "thema": "Deep Dive 12",
+      "titel": "Break-even mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["wirtschaftlichkeit", "break-even"],
+      "vorlage": "break-even",
+      "aufgabe": "Fixkosten {{fixkosten}} € pro Jahr, Verkaufspreis {{preis}} € je Stück, variable Stückkosten {{variabel}} €.\n\nBerechne den Deckungsbeitrag je Stück und die Break-even-Menge.",
+      "hinweise": ["Deckungsbeitrag = Preis − variable Stückkosten.", "Break-even-Menge = Fixkosten / Deckungsbeitrag, auf ganze Stück aufrunden."],
+      "erklaerung": "Ab der Break-even-Menge deckt jedes weitere Stück mit seinem Deckungsbeitrag Gewinn statt Fixkosten."
+    },
+    {
+      "id": "RE-PM-012",
+      "thema": "Deep Dive 12",
+      "titel": "Risikozahlen mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["risikomanagement"],
+      "vorlage": "risiko",
+      "aufgabe": "Bewerte die Projektrisiken aus der Tabelle (Eintrittswahrscheinlichkeit W und Schadensausmaß S, Skala 1–5) mit einer Risikozahl und nenne das höchste Risiko.",
+      "eingaben": ["rpz1", "rpz2", "rpz3", "hoechstes"],
+      "hinweise": ["Risikozahl = W · S – multiplizieren, nicht addieren."],
+      "erklaerung": "Zu jedem Risiko gehört eine Strategie: vermeiden, vermindern, übertragen oder akzeptieren. Das höchste Risiko braucht zuerst eine Maßnahme."
+    },
+    {
+      "id": "RE-PM-013",
+      "thema": "Deep Dive 12",
+      "titel": "Drei-Zeiten-Schätzung für mehrere Arbeitspakete",
+      "schwierigkeit": 2,
+      "tags": ["aufwandsschätzung", "pert"],
+      "vorlage": "pert",
+      "params": { "vorgaenge": 3 },
+      "aufgabe": "Für {{anzahl}} Arbeitspakete, die nacheinander bearbeitet werden, liegen Schätzungen vor (Tabelle, Einheit: {{einheit}}).\n\nBerechne für jedes Paket die erwartete Dauer nach der Drei-Zeiten-Methode und die erwartete Gesamtdauer.",
+      "hinweise": ["t_e = (o + 4 · m + p) / 6 für jedes Paket.", "Die Gesamtdauer ist die Summe der erwarteten Dauern."],
+      "erklaerung": "Die Summe der wahrscheinlichsten Werte unterschätzt die Dauer, weil die pessimistischen Schätzungen meist weiter vom wahrscheinlichsten Wert entfernt liegen als die optimistischen."
+    },
+    {
       "id": "RE-WI-001",
       "thema": "Deep Dive 14",
       "titel": "Arbeitnehmeranteil zur Sozialversicherung",
@@ -429,6 +1113,107 @@
       "quelleAufgabe": "DD13 Übungsklausur B2"
     },
     {
+      "id": "RE-WI-007",
+      "thema": "Deep Dive 13",
+      "titel": "Jahresurlaub nach dem JArbSchG",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "jugendarbeitsschutz", "urlaub"],
+      "aufgabe": "Jonas ist am 15.03.2009 geboren.\n\nWie viele Werktage beträgt sein gesetzlicher Jahresurlaub für 2026 nach dem Jugendarbeitsschutzgesetz?",
+      "eingaben": [{ "id": "urlaub", "label": "Jahresurlaub 2026", "einheit": "Werktage", "loesung": 27 }],
+      "hinweise": [
+        "Maßgeblich ist das Alter zu **Beginn** des Kalenderjahres (01.01.2026).",
+        "JArbSchG: noch nicht 16 → 30, noch nicht 17 → 27, noch nicht 18 → 25 Werktage."
+      ],
+      "erklaerung": "Am 01.01.2026 ist Jonas 16 Jahre alt, also „noch nicht 17“ → **27 Werktage**. Häufiger Fehler: 25 Werktage, weil er im Laufe des Jahres 17 wird.",
+      "quelleAufgabe": "DD13 Übungsklausur B4"
+    },
+    {
+      "id": "RE-WI-008",
+      "thema": "Deep Dive 13",
+      "titel": "Teilurlaub im ersten Jahr",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "urlaub"],
+      "aufgabe": "Eine neue Mitarbeiterin tritt am 01.08. ein und arbeitet in einer Sechs-Tage-Woche. Es gilt nur der gesetzliche Mindesturlaub von 24 Werktagen.\n\nWie viele Werktage Urlaub stehen ihr im ersten Kalenderjahr zu?",
+      "eingaben": [{ "id": "teilurlaub", "label": "Teilurlaub im ersten Jahr", "einheit": "Werktage", "loesung": 10 }],
+      "hinweise": [
+        "Vor Ablauf der sechsmonatigen Wartezeit gibt es Teilurlaub: 1/12 je **vollem** Beschäftigungsmonat.",
+        "Von August bis Dezember sind es 5 volle Monate: 24 · 5 / 12."
+      ],
+      "erklaerung": "Der volle Anspruch entsteht erst nach sechs Monaten Wartezeit. Bis zum Jahresende sind es nur 5 volle Monate → 24 · 5/12 = **10 Werktage**. Bruchteile ab einem halben Tag werden aufgerundet.",
+      "quelleAufgabe": "DD13 Teil 2.3 Bundesurlaubsgesetz"
+    },
+    {
+      "id": "RE-WI-009",
+      "thema": "Deep Dive 14",
+      "titel": "Brutto-Netto-Rechnung eines Auszubildenden",
+      "schwierigkeit": 2,
+      "tags": ["wiso", "nettoentgelt", "sozialversicherung"],
+      "vorlage": "sozialversicherung",
+      "daten": { "brutto": 1200, "zusatzbeitrag": 2.9, "kinderlos": false, "lohnsteuer": 0, "kirchensteuersatz": 0 },
+      "aufgabe": "Jonas (17) erhält eine Bruttovergütung von {{brutto}} €, der Zusatzbeitrag seiner Krankenkasse beträgt {{zusatzbeitrag}} %. Sein Einkommen liegt unter dem Grundfreibetrag (keine Lohnsteuer), Kirchensteuer zahlt er nicht. Beitragssätze wie im Lernblatt.\n\nBerechne die Arbeitnehmeranteile zu KV, PV, RV und ALV, den gesamten SV-Anteil und das Nettoentgelt.",
+      "eingaben": ["kv", "pv", "rv", "alv", "sv", "netto"],
+      "hinweise": [
+        "AN-Anteil: KV (14,6 % + Zusatzbeitrag) / 2, PV 1,8 %, RV 9,3 %, ALV 1,3 %.",
+        "Jonas ist unter 23 – kein Kinderlosenzuschlag.",
+        "Netto = Brutto − Steuern − SV-Anteil."
+      ],
+      "erklaerung": "Bei Lea (24, kinderlos) käme bei gleichem Brutto der Kinderlosenzuschlag von 0,6 % zur Pflegeversicherung dazu. Alter und Kinderzahl immer zuerst prüfen.",
+      "neueZahlen": false,
+      "quelleAufgabe": "DD14 Teil 1.4"
+    },
+    {
+      "id": "RE-WI-010",
+      "thema": "Deep Dive 14",
+      "titel": "Reallohn",
+      "schwierigkeit": 2,
+      "tags": ["wiso", "inflation", "prozent"],
+      "aufgabe": "Der Nominallohn steigt um 4 %, die Inflationsrate beträgt 2,5 %.\n\nUm wie viel Prozent steigt der Reallohn (die Kaufkraft) genau? Runde auf zwei Nachkommastellen.",
+      "eingaben": [{ "id": "reallohn", "label": "Veränderung des Reallohns", "einheit": "%", "runden": 2, "loesung": 1.46 }],
+      "hinweise": ["Rechne mit Wachstumsfaktoren: 1,04 für den Lohn, 1,025 für die Preise.", "Reallohnänderung = 1,04 / 1,025 − 1."],
+      "erklaerung": "Exakt: 1,04 / 1,025 − 1 = 0,0146 → **+1,46 %**. Die Näherung „Nominal minus Inflation“ ergibt rund 1,5 % – für eine schnelle Einschätzung in Ordnung, gefragt war aber der genaue Wert.",
+      "quelleAufgabe": "DD14 Teil 4.5"
+    },
+    {
+      "id": "RE-WI-011",
+      "thema": "Deep Dive 14",
+      "titel": "Sozialversicherungsbeiträge mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["wiso", "sozialversicherung"],
+      "vorlage": "sozialversicherung",
+      "aufgabe": "Bruttoentgelt {{brutto}} € ({{kinderlos}}), Zusatzbeitrag der Krankenkasse {{zusatzbeitrag}} %. Beitragssätze: KV 14,6 % + Zusatzbeitrag · PV 3,6 % (Zuschlag für Kinderlose ab 23: 0,6 %, trägt der AN allein) · RV 18,6 % · ALV 2,6 %.\n\nBerechne die Arbeitnehmeranteile zu KV, PV, RV und ALV sowie den gesamten SV-Anteil.",
+      "eingaben": ["kv", "pv", "rv", "alv", "sv"],
+      "hinweise": [
+        "Arbeitnehmer und Arbeitgeber teilen sich die Beiträge – auch den Zusatzbeitrag.",
+        "Kinderlos ab 23: + 0,6 % zur Pflegeversicherung, nur beim Arbeitnehmer.",
+        "Jeden Anteil auf Cent runden, dann addieren."
+      ],
+      "erklaerung": "Die Unfallversicherung fehlt hier mit Absicht: Sie trägt der Arbeitgeber allein. Für das Nettoentgelt kommen noch Lohnsteuer, Solidaritätszuschlag und Kirchensteuer dazu."
+    },
+    {
+      "id": "RE-WI-012",
+      "thema": "Deep Dive 14",
+      "titel": "Stunden im Minijob",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "minijob"],
+      "vorlage": "minijob",
+      "aufgabe": "Die Minijob-Grenze beträgt {{grenze}} € im Monat, der Stundenlohn {{stundenlohn}} €.\n\nWie viele volle Stunden darf die Aushilfe höchstens im Monat arbeiten, und was verdient sie dabei?",
+      "eingaben": ["stunden", "verdienst"],
+      "hinweise": ["Grenze / Stundenlohn.", "Nur volle Stunden, die die Grenze nicht überschreiten → abrunden."],
+      "erklaerung": "Aufrunden wäre falsch: Schon eine Stunde mehr würde die Verdienstgrenze überschreiten – dann läge kein Minijob mehr vor."
+    },
+    {
+      "id": "RE-WI-013",
+      "thema": "Deep Dive 14",
+      "titel": "Gleichgewichtspreis mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["wiso", "markt"],
+      "vorlage": "gleichgewicht",
+      "aufgabe": "Angebot und Nachfrage auf einem Markt stehen in der Tabelle.\n\nBestimme den Gleichgewichtspreis und die Menge, die dabei umgesetzt wird.",
+      "eingaben": ["preis", "menge"],
+      "hinweise": ["Im Gleichgewicht sind Angebot und Nachfrage gleich groß.", "Darunter herrscht Nachfrageüberhang, darüber Angebotsüberhang."],
+      "erklaerung": "Am Gleichgewichtspreis wird die größtmögliche Menge umgesetzt. Ein Höchstpreis darunter erzeugt Knappheit, ein Mindestpreis darüber Überschüsse."
+    },
+    {
       "id": "RE-IT-001",
       "thema": "Deep Dive 10",
       "titel": "Inkrementelle und differenzielle Sicherung",
@@ -449,6 +1234,32 @@
       "daten": { "sicherungUm": 23, "ausfallUm": 14, "rpo": 4 },
       "aufgabe": "Die Sicherung läuft täglich um {{sicherungUm}} Uhr. Der Ausfall tritt am nächsten Tag um {{ausfallUm}} Uhr ein. Vorgabe: RPO {{rpo}} Stunden.\n\nBestimme den maximalen Datenverlust und ob die RPO eingehalten wird.",
       "quelleAufgabe": "DD10 Übungsklausur E3"
+    },
+    {
+      "id": "RE-IT-003",
+      "thema": "Deep Dive 10",
+      "titel": "Sicherungsverfahren mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["datensicherung", "backup"],
+      "vorlage": "datensicherung",
+      "aufgabe": "Sonntags wird vollständig gesichert ({{voll}} {{einheit}}), an den Folgetagen täglich; täglich ändern sich {{aenderung}} {{einheit}}. Der Ausfall tritt nach {{tage}} täglichen Sicherungen ein.\n\nBerechne für die inkrementelle und die differenzielle Sicherung das gesamte Sicherungsvolumen und die Zahl der Medien, die du zur Wiederherstellung brauchst.",
+      "hinweise": [
+        "Inkrementell: jede Sicherung enthält nur die Änderungen seit der **letzten** Sicherung.",
+        "Differenziell: jede Sicherung enthält alle Änderungen seit der **Vollsicherung** – sie wächst täglich.",
+        "Wiederherstellung: inkrementell Voll + alle Inkremente, differenziell Voll + letzte Differenz."
+      ],
+      "erklaerung": "Zielkonflikt: Inkrementell spart Speicher und Sicherungszeit, braucht aber zur Wiederherstellung die ganze Kette. Differenziell braucht mehr Speicher, stellt aber schneller und mit weniger Risiko wieder her."
+    },
+    {
+      "id": "RE-IT-004",
+      "thema": "Deep Dive 10",
+      "titel": "Maximaler Datenverlust mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["datensicherung", "rpo"],
+      "vorlage": "rpo",
+      "aufgabe": "Die Sicherung läuft täglich um {{sicherungUm}} Uhr. Am nächsten Tag fällt das System um {{ausfallUm}} Uhr aus.\n\nWie groß ist der maximale Datenverlust in Stunden?",
+      "hinweise": ["Verloren geht alles seit der letzten erfolgreichen Sicherung.", "Über Mitternacht: Stunden bis 24:00 plus Stunden ab 0:00."],
+      "erklaerung": "Der mögliche Datenverlust muss kleiner sein als die RPO (Recovery Point Objective). Ist er größer, muss häufiger gesichert werden – z. B. zusätzlich die Transaktionsprotokolle."
     }
   ]
 }
