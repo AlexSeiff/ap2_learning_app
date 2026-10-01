@@ -4,7 +4,7 @@ import { mergeProgress } from '../../shared/mergeProgress';
 import { emptyProgress } from '../../shared/progress';
 import { useBackupDownload } from '../hooks/useBackupDownload';
 import { useConfirm } from '../hooks/useConfirm';
-import { AI_UNAVAILABLE, api, IS_STATIC } from '../lib/api';
+import { api, IS_STATIC } from '../lib/api';
 import { parseBackup } from '../lib/backup';
 import { isStoragePersisted } from '../lib/persistentStorage';
 import { formatIsoDate } from '../lib/stats';
@@ -105,8 +105,9 @@ export function Daten() {
         <p>
           Stand: {new Date(content.importedAt).toLocaleString('de-DE')} · {content.topics.length} Themen ·{' '}
           {tasks.filter((t) => !t.generated).length} Aufgaben aus Lernblättern ({tasks.filter((t) => !t.generated && t.solution).length} mit
-          Musterlösung) · {tasks.filter((t) => t.generated).length} KI-Aufgaben · {content.flashcards.length} Karteikarten ·{' '}
-          {content.sqlExercises.length} SQL-Übungen · {content.rechenUebungen.length} Rechenübungen · {content.materials.length} Materialien
+          Musterlösung) · {!IS_STATIC && <>{tasks.filter((t) => t.generated).length} KI-Aufgaben · </>}
+          {content.flashcards.length} Karteikarten · {content.sqlExercises.length} SQL-Übungen · {content.rechenUebungen.length}{' '}
+          Rechenübungen · {content.materials.length} Materialien
         </p>
         {IS_STATIC ? (
           <p className="hint">
@@ -308,20 +309,20 @@ export function Daten() {
         </div>
       </section>
 
-      <section className="card">
-        <h2>KI</h2>
-        <p>
-          {IS_STATIC ? (
-            AI_UNAVAILABLE
-          ) : aiEnabled ? (
-            <>
-              ✓ Aktiv mit Modell <code>{aiModel}</code>.
-            </>
-          ) : (
-            'Deaktiviert – kein ANTHROPIC_API_KEY gesetzt (siehe README).'
-          )}
-        </p>
-      </section>
+      {!IS_STATIC && (
+        <section className="card">
+          <h2>KI</h2>
+          <p>
+            {aiEnabled ? (
+              <>
+                ✓ Aktiv mit Modell <code>{aiModel}</code>.
+              </>
+            ) : (
+              'Deaktiviert – kein ANTHROPIC_API_KEY gesetzt (siehe README).'
+            )}
+          </p>
+        </section>
+      )}
     </div>
   );
 }

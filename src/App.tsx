@@ -1,5 +1,5 @@
 import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
-import { HashRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { HashRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileNav } from './components/MobileNav';
@@ -90,7 +90,8 @@ function Nav() {
         {link('/sql', '🧮 SQL-Editor', dueSql)}
         {link('/rechnen', '📐 Rechenübungen', dueRechnen)}
         {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
-        {link('/generator', 'KI-Aufgaben')}
+        {/* Pages hat keine KI (Roadmap 7.4, Entscheidung Q3) */}
+        {!IS_STATIC && link('/generator', 'KI-Aufgaben')}
         {link('/material', 'Material')}
         {link('/einstellungen', '⚙️ Einstellungen')}
         {link('/daten', 'Daten & Import')}
@@ -166,7 +167,7 @@ export function App() {
                       <Route path="/rechnen" element={<RechenUebungen />} />
                       <Route path="/rechnen/:id" element={<RechenUebung />} />
                       <Route path="/fehlerjournal" element={<Fehlerjournal />} />
-                      <Route path="/generator" element={<Generator />} />
+                      <Route path="/generator" element={IS_STATIC ? <Navigate to="/" replace /> : <Generator />} />
                       <Route path="/material" element={<Material />} />
                       <Route path="/material/:docId" element={<Material />} />
                       <Route path="/einstellungen" element={<Einstellungen />} />

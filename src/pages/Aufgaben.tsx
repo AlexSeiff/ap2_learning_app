@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { IS_STATIC } from '../lib/api';
 import { difficulty, formatPoints, percent } from '../lib/grading';
 import { useStore } from '../lib/store';
 
@@ -11,7 +12,8 @@ export function Aufgaben() {
     thema: params.get('thema') ?? 'alle',
     block: params.get('block') ?? 'alle',
     stufe: params.get('stufe') ?? 'alle',
-    quelle: params.get('quelle') ?? 'alle',
+    // Pages hat keine KI-Aufgaben (Roadmap 7.4): dort gibt es den Filter nicht.
+    quelle: IS_STATIC ? 'alle' : (params.get('quelle') ?? 'alle'),
     status: params.get('status') ?? 'alle',
     suche: params.get('suche') ?? '',
   };
@@ -101,14 +103,16 @@ export function Aufgaben() {
             <option value="schwer">schwer (&gt; 10 P)</option>
           </select>
         </label>
-        <label>
-          Quelle
-          <select value={f.quelle} onChange={(e) => set('quelle', e.target.value)}>
-            <option value="alle">Alle</option>
-            <option value="blatt">Lernblatt</option>
-            <option value="ki">KI-generiert</option>
-          </select>
-        </label>
+        {!IS_STATIC && (
+          <label>
+            Quelle
+            <select value={f.quelle} onChange={(e) => set('quelle', e.target.value)}>
+              <option value="alle">Alle</option>
+              <option value="blatt">Lernblatt</option>
+              <option value="ki">KI-generiert</option>
+            </select>
+          </label>
+        )}
         <label>
           Status
           <select value={f.status} onChange={(e) => set('status', e.target.value)}>
