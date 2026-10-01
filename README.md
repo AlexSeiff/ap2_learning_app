@@ -96,7 +96,7 @@ Beide gibt es zusätzlich als Markdown-Download.
 
 ## KI-Funktionen einschalten (optional)
 
-Ohne Schlüssel funktioniert alles außer „KI-Aufgaben" und „KI-Bewertung".
+Ohne Schlüssel funktioniert alles außer „KI-Aufgaben", „KI-Bewertung" und dem Werkzeug `npm run mc-entwurf` (siehe [Lernkarten-Datei](#lernkarten-datei)).
 
 1. API-Schlüssel unter https://console.anthropic.com/settings/keys erstellen.
 2. Im Ordner `lern-app` eine Datei `.env.local` anlegen (Vorlage: `.env.local.example`):
@@ -122,6 +122,30 @@ Jede Datei `*Lernkarten*.json` im Ordner `AP-2` wird importiert (aktuell `AP2_FI
 - `typ`: wissen · abgrenzung · rechnung · anwendung · falle – „falle"-Karten gibt es gesammelt über **⚠️ Fallen wiederholen** und vor jeder Übungsklausur.
 - Zeilenumbrüche (`\n`) in Antworten bleiben erhalten; SQL-Zeilen werden als Codeblock angezeigt.
 - Der Lernstand hängt an der Karten-`id` – IDs beim Bearbeiten der Datei also nicht ändern.
+- Optional `mc` für den **Leicht-Modus** (4 Antworten, 1 richtig): `"mc": { "richtig": "…", "falsch": ["…", "…", "…"], "erklaerung": "…" }`
+  – genau 3 verschiedene falsche Antworten, keine gleich der richtigen, `erklaerung` optional. Ein fehlerhafter Block steht im
+  Importbericht, die Karte bleibt ohne ihn nutzbar.
+
+### Auswahlantworten mit KI vorschlagen lassen (nur lokal)
+
+Gute falsche Antworten müssen geschrieben werden. Dabei hilft Claude – die Vorschläge prüfst du selbst, bevor sie in die Datei kommen.
+Braucht `ANTHROPIC_API_KEY` in `.env.local` (siehe oben) und kostet API-Guthaben (pro Deck meist nur Cent-Beträge).
+
+```bash
+npm run mc-entwurf -- --deck sql          # Vorschläge für Karten des Decks „sql“ ohne mc → data/mc-entwurf.json
+npm run mc-entwurf -- --deck sql --max 10 # höchstens 10 Karten (Standard 30); --anwendung nimmt auch Anwendungskarten dazu
+npm run mc-uebernehmen -- --probe         # zeigt nur, welche Karten einen mc-Block bekämen
+npm run mc-uebernehmen                    # trägt die angenommenen Einträge in AP-2/AP2_FIDPA_Lernkarten.json ein
+npm run sync-content                      # danach: für die Online-Version nach content/ kopieren
+```
+
+1. `mc-entwurf` fragt Karten der Typen wissen, abgrenzung, falle und rechnung an, die noch keinen `mc`-Block haben und noch nicht
+   im Entwurf stehen. Neue Vorschläge werden an `data/mc-entwurf.json` angehängt (Status `"offen"`), schon durchgesehene bleiben.
+2. Öffne `data/mc-entwurf.json`, korrigiere die Texte nach Bedarf und setze `"status"` auf `"angenommen"` oder `"abgelehnt"`.
+3. `mc-uebernehmen` schreibt nur die angenommenen Einträge als Feld `mc` ans Ende der jeweiligen Karte. Reihenfolge, IDs und
+   Formatierung der Datei bleiben gleich; Karten, die schon `mc` haben, werden nicht überschrieben.
+
+In der App wird nichts generiert – alle sehen dieselben, geprüften Antworten.
 
 ## Lernblätter ändern / neu importieren
 
@@ -170,6 +194,8 @@ npm run build         # Typecheck + Build der lokalen App nach dist/
 npm run build:pages   # statische Version für GitHub Pages nach dist/ (mit content.json)
 npm run import-report # Importbericht der Lernblätter im Terminal
 npm run sync-content  # Lernblätter aus AP-2 nach content/ kopieren (für Pages und Tests)
+npm run mc-entwurf -- --deck <id>  # KI-Vorschläge für Auswahlantworten (Leicht-Modus) → data/mc-entwurf.json
+npm run mc-uebernehmen             # angenommene Vorschläge in AP2_FIDPA_Lernkarten.json eintragen
 ```
 
 Vor jedem Commit sollten `npm test`, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build` und

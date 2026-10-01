@@ -15,13 +15,13 @@ export function aiEnabled(): boolean {
 }
 
 let client: Anthropic | null = null;
-function getClient(): Anthropic {
+export function getClient(): Anthropic {
   if (!aiEnabled()) throw new HttpError(400, 'Kein ANTHROPIC_API_KEY gesetzt – KI-Funktionen sind deaktiviert.');
   client ??= new Anthropic();
   return client;
 }
 
-function explainApiError(err: unknown): never {
+export function explainApiError(err: unknown): never {
   if (err instanceof HttpError) throw err;
   if (err instanceof Anthropic.AuthenticationError) throw new HttpError(401, 'API-Schlüssel ungültig. Bitte ANTHROPIC_API_KEY prüfen.');
   if (err instanceof Anthropic.RateLimitError) throw new HttpError(429, 'Rate-Limit erreicht – bitte kurz warten und erneut versuchen.');

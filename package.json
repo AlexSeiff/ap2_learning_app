@@ -14,7 +14,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "import-report": "tsx server/report.ts",
-    "sync-content": "tsx server/syncContent.ts"
+    "sync-content": "tsx server/syncContent.ts",
+    "mc-entwurf": "tsx server/mcEntwurf.ts",
+    "mc-uebernehmen": "tsx server/mcUebernehmen.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

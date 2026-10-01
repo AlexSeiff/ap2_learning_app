@@ -118,6 +118,25 @@ lern-app/
 - Currently 24 decks and 407 cards (typ: wissen 216, falle 62, abgrenzung 55, anwendung 48, rechnung 26).
 - `quelle` containing "Deep Dive N" maps the deck to a topic; decks without one (WiSo, project work) are reachable via the deck filter.
 - Progress is keyed by card `id`. **Never change IDs.**
+- Optional **`mc`** block per card for the Leicht-Modus (phase 6): `{ "richtig": "…", "falsch": ["…", "…", "…"], "erklaerung"?: "…" }`.
+  Validated by `KartenMcSchema` / `pruefeMc` (`shared/lernkarten.ts`): exactly 3 `falsch`, pairwise distinct and none equal to `richtig`
+  (compared with `mcNorm`: case, whitespace and a final full stop ignored). An invalid block → ImportIssue, the card is imported without `mc`.
+  Today no card has `mc`; the Leicht-Modus uses the automatic fallback (§ 5).
+
+**Authoring helper for `mc` (local only, the owner runs it, `server/mcWerkzeug.ts` = pure logic, tested in `tests/mcWerkzeug.test.ts`
+with a mock client – no API call in tests):**
+- `npm run mc-entwurf -- --deck <id> [--max 30] [--anwendung]` (`server/mcEntwurf.ts`): `.env.local` is loaded first (`server/ladeEnv.ts`,
+  same keys as `vite.config.ts`), then `server/ai.ts` provides the client (`getClient`) and `MODEL` (`ANTHROPIC_MODEL`, default
+  `claude-sonnet-5`). Candidates (`mcKandidaten`): cards of the deck with typ wissen/abgrenzung/falle/rechnung (+ anwendung with
+  `--anwendung`), no `mc` yet, not yet in the draft. Requests in batches of 15 (`entwerfeMc`) via `messages.parse` with structured output
+  (`zodOutputFormat(McAntwortSchema)`, like `ai.ts`); every proposal is checked with `pruefeMc` (`pruefeMcAntwort`: unknown/duplicate/missing ids
+  and invalid blocks are reported, a failed batch doesn't stop the others). New entries are appended to `data/mc-entwurf.json`
+  (`{ hinweis, eintraege: [{ id, deck, frage, antwort, status: "offen", mc }] }`); entries already there are kept (`ergaenzeEntwurf`).
+- The owner edits the draft and sets `status` to `angenommen` or `abgelehnt`.
+- `npm run mc-uebernehmen [-- --probe]` (`server/mcUebernehmen.ts`, `uebernehmeMc`): writes the accepted blocks as the last key `mc` of the card
+  into `AP-2/AP2_FIDPA_Lernkarten.json` (temp file + rename). The file is `JSON.stringify(…, null, 2)` formatted (checked: a round trip
+  must reproduce it exactly, otherwise nothing is written); line endings, final newline and BOM are kept; ids and order never change;
+  cards that already have `mc` are not overwritten. Then `npm run sync-content`.
 
 ### 4.3 SQL exercises `AP2_SQL_Uebungen.json`
 
