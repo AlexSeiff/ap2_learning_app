@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import type { Sicherheit } from '../../shared/progress';
+import type { Fehlergrund, Sicherheit } from '../../shared/progress';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnswerInput } from '../components/AnswerInput';
+import { FehlergrundWahl } from '../components/FehlergrundWahl';
 import { Markdown } from '../components/Markdown';
 import { SicherheitWahl } from '../components/SicherheitWahl';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
 import { formatPoints } from '../lib/grading';
 import { sicherheitLabel } from '../lib/kalibrierung';
-import { isDue, recordAttempt } from '../lib/progress';
+import { isDue, recordAttempt, setzeFehlergrund } from '../lib/progress';
 import { useStore } from '../lib/store';
 
 export function Aufgabe() {
@@ -25,8 +26,9 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
   const [answer, setAnswer] = useState('');
   const [revealed, setRevealed] = useState(false);
   const [points, setPoints] = useState<number | undefined>();
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<string | undefined>();
   const [sicherheit, setSicherheit] = useState<Sicherheit | undefined>();
+  const [fehlergrund, setFehlergrund] = useState<Fehlergrund | undefined>();
 
   if (!task)
     return (
@@ -44,19 +46,29 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
     (j) => !j.resolvedAt && isDue(j.due) && j.taskId !== task.id && content.tasks[j.taskId],
   );
 
+  const unterVoll = points !== undefined && points < task.points;
+
   const save = () => {
     if (points === undefined) return;
+    const date = new Date().toISOString();
     update((p) =>
       recordAttempt(p, {
         taskId: task.id,
-        date: new Date().toISOString(),
+        date,
         points,
         max: task.points,
         mode: repeat ? 'wiederholung' : 'einzel',
         ...(sicherheit ? { sicherheit } : {}),
+        ...(fehlergrund && unterVoll ? { fehlergrund } : {}),
       }),
     );
-    setSaved(true);
+    setSaved(date);
+  };
+
+  /** Fehlergrund wählen – auch nach dem Speichern, dann wird der gespeicherte Versuch angepasst (ROADMAP 8.7). */
+  const waehleGrund = (g: Fehlergrund | undefined) => {
+    setFehlergrund(g);
+    if (saved) update((p) => setzeFehlergrund(p, task.id, saved, g));
   };
 
   return (
@@ -91,6 +103,7 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
         ) : (
           <>
             <GradePanel task={task} answer={answer} points={points} onPoints={setPoints} />
+            {unterVoll && <FehlergrundWahl value={fehlergrund} onChange={waehleGrund} />}
             <div className="actions">
               {!saved ? (
                 <button type="button" onClick={save} disabled={points === undefined}>

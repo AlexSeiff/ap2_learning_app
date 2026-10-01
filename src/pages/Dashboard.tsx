@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FehlergrundKarte } from '../components/FehlergrundKarte';
 import { Welcome } from '../components/Welcome';
 import { useBackupDownload } from '../hooks/useBackupDownload';
 import { useHeuteSitzung } from '../hooks/useHeute';
@@ -146,6 +147,7 @@ function Uebersicht() {
       )}
 
       <KalibrierungKarte />
+      <FehlergrundKarte />
 
       <section className="card">
         <h2>Fortschritt je Thema</h2>

@@ -15,13 +15,19 @@ const attemptKey = (a: Attempt) => `${a.taskId}\u0000${a.date}`;
 
 /**
  * Vereinigung der Versuche ohne Doppelte, nach Datum sortiert (stabil: bei gleichem Datum bleibt die Reihenfolge).
- * Bei Doppelten gilt der aktuelle Versuch; fehlt ihm die Selbsteinschätzung (sicherheit), kommt sie aus der Sicherung.
+ * Bei Doppelten gilt der aktuelle Versuch; fehlen ihm Selbsteinschätzung (sicherheit) oder Fehlergrund, kommen sie aus der Sicherung.
  */
 function mergeAttempts(a: Attempt[], b: Attempt[]): Attempt[] {
   const fromB = new Map(b.map((x) => [attemptKey(x), x]));
   const current = a.map((x) => {
-    const s = fromB.get(attemptKey(x))?.sicherheit;
-    return x.sicherheit === undefined && s !== undefined ? { ...x, sicherheit: s } : x;
+    const other = fromB.get(attemptKey(x));
+    const s = other?.sicherheit;
+    const g = other?.fehlergrund;
+    return {
+      ...x,
+      ...(x.sicherheit === undefined && s !== undefined ? { sicherheit: s } : {}),
+      ...(x.fehlergrund === undefined && g !== undefined ? { fehlergrund: g } : {}),
+    };
   });
   const seen = new Set(a.map(attemptKey));
   const merged = [...current, ...b.filter((x) => !seen.has(attemptKey(x)) && seen.add(attemptKey(x)))];
@@ -89,8 +95,8 @@ function mergeDays(a: Record<string, number>, b: Record<string, number>): Record
 /**
  * Führt eine Sicherung (`incoming`) in den aktuellen Stand (`current`) ein. Regeln:
  * - attempts: Vereinigung, doppelt = gleiche taskId und gleiches date; nach Datum sortiert. Es werden also nie weniger Versuche.
- *   Fehlt dem aktuellen Versuch die Selbsteinschätzung (sicherheit), wird die der Sicherung übernommen.
- * - exams/activeExam tragen ihre Selbsteinschätzungen (sicherheit je Aufgabe) mit dem gewählten Lauf.
+ *   Fehlen dem aktuellen Versuch Selbsteinschätzung (sicherheit) oder Fehlergrund (fehlergrund), werden die der Sicherung übernommen.
+ * - exams/activeExam tragen ihre Selbsteinschätzungen und Fehlergründe (je Aufgabe) mit dem gewählten Lauf.
  * - exams: Vereinigung nach id; in beiden → die weiter fortgeschrittene (abgeschlossen > abgegeben > begonnen, dann später).
  * - activeExam: die laufende Klausur dieses Browsers; nur wenn hier keine läuft, die aus der Sicherung.
  *   Ist sie in der Historie schon abgeschlossen, entfällt sie.

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { EXAM_MINUTES } from '../../shared/config';
-import type { ExamRun, Sicherheit } from '../../shared/progress';
+import type { ExamRun, Fehlergrund, Sicherheit } from '../../shared/progress';
 import type { Task } from '../../shared/types';
 import { klausurFuer } from '../lib/mischKlausur';
 import { finishExam, submitExam } from '../lib/progress';
@@ -77,6 +77,17 @@ export function useExamRun(topicId: string | undefined) {
     [update],
   );
 
+  /** Fehlergrund je Aufgabe (ROADMAP 8.7); undefined entfernt ihn. Nur nach der Abgabe, beim Bewerten. */
+  const setFehlergrund = useCallback(
+    (taskId: string, value: Fehlergrund | undefined) =>
+      update((p) => {
+        if (!p.activeExam?.submittedAt) return p;
+        const { [taskId]: _alt, ...rest } = p.activeExam.fehlergrund ?? {};
+        return { ...p, activeExam: { ...p.activeExam, fehlergrund: value ? { ...rest, [taskId]: value } : rest } };
+      }),
+    [update],
+  );
+
   const submit = () => update((p) => submitExam(p));
 
   /** Unbewertete Aufgaben zählen 0 Punkte; Ergebnis landet in der Historie und im Fehlerjournal. */
@@ -110,6 +121,7 @@ export function useExamRun(topicId: string | undefined) {
     setAnswer,
     setScore,
     setSicherheit,
+    setFehlergrund,
     submit,
     finish,
     abort,

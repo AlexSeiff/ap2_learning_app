@@ -250,6 +250,28 @@ describe('migrateProgress', () => {
     expect(checkProgressPut(bad, raw)).toMatchObject({ ok: false, status: 400 });
   });
 
+  it('Fehlergrund (ROADMAP 8.7): optional ohne neue Version; gültige Werte bleiben, ungültige fallen weg', () => {
+    const raw = fixture('fortschritt-v6-2026-10-01.json');
+    raw.attempts[0].fehlergrund = 'operator';
+    raw.attempts[1].fehlergrund = 'faul';
+    raw.attempts[2].fehlergrund = 3;
+    raw.activeExam.fehlergrund = { '04-A1': 'zeit', '04-A2': 'nix' };
+    raw.exams[0].fehlergrund = { '03-C2': 'formel' };
+    const migrated = migrateProgress(raw);
+    expect(PROGRESS_VERSION).toBe(6);
+    expect(migrated.attempts.map((a) => a.fehlergrund)).toEqual(['operator', undefined, undefined]);
+    expect('fehlergrund' in migrated.attempts[1]).toBe(false);
+    expect(migrated.activeExam?.fehlergrund).toEqual({ '04-A1': 'zeit' });
+    expect(migrated.exams[0].fehlergrund).toEqual({ '03-C2': 'formel' });
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+    expect(checkProgressPut(migrated, raw).ok).toBe(true);
+    expect(migrateProgress(migrated)).toEqual(migrated);
+    const bad = { ...migrated, attempts: [{ ...migrated.attempts[0], fehlergrund: 'faul' }, ...migrated.attempts.slice(1)] };
+    expect(checkProgressPut(bad, raw)).toMatchObject({ ok: false, status: 400 });
+    const badExam = { ...migrated, exams: [{ ...migrated.exams[0], fehlergrund: { x: 'faul' } }] };
+    expect(checkProgressPut(badExam, raw)).toMatchObject({ ok: false, status: 400 });
+  });
+
   it('alle alten Fixtures laden in das aktuelle Format und erfüllen das Schema', () => {
     for (const name of [
       'fortschritt-alt-ohne-felder.json',

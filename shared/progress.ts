@@ -14,6 +14,15 @@ export type Sicherheit = 1 | 2 | 3;
 
 export const isSicherheit = (v: unknown): v is Sicherheit => v === 1 || v === 2 || v === 3;
 
+/**
+ * Warum eine Aufgabe nicht volle Punkte bekam (Fehlerjournal, ROADMAP 8.7): Begriff verwechselt, Formel falsch, Rechenfehler,
+ * Operator nicht beachtet, Zeit. Anzeige-Texte in src/lib/fehlergruende.ts.
+ */
+export const FEHLERGRUENDE = ['begriff', 'formel', 'rechenfehler', 'operator', 'zeit'] as const;
+export type Fehlergrund = (typeof FEHLERGRUENDE)[number];
+
+export const isFehlergrund = (v: unknown): v is Fehlergrund => (FEHLERGRUENDE as readonly unknown[]).includes(v);
+
 export type Attempt = {
   taskId: string;
   date: string;
@@ -25,6 +34,11 @@ export type Attempt = {
    * Optional und in Version 6 schon zulässig (AttemptSchema ist offen, migrateAttempt behielt unbekannte Felder) – daher keine neue Version.
    */
   sicherheit?: Sicherheit;
+  /**
+   * Warum unter voller Punktzahl (ROADMAP 8.7); optional, nach der Selbstbewertung gewählt. Wie `sicherheit` ohne neue Version:
+   * AttemptSchema ist offen und migrateAttempt behielt unbekannte Felder.
+   */
+  fehlergrund?: Fehlergrund;
 };
 
 export type ExamRun = {
@@ -39,6 +53,8 @@ export type ExamRun = {
   max: number;
   /** Selbsteinschätzung je Aufgabe (Task-ID → 1–3), vor der Abgabe gewählt; geht beim Abschließen in die Versuche (ROADMAP 8.3). */
   sicherheit?: Record<string, Sicherheit>;
+  /** Fehlergrund je Aufgabe (Task-ID → Grund), nach der Abgabe beim Bewerten gewählt; geht beim Abschließen in die Versuche (ROADMAP 8.7). */
+  fehlergrund?: Record<string, Fehlergrund>;
 };
 
 export type CardState = {
@@ -193,10 +209,11 @@ function filterRecord<T>(v: unknown, map: (value: unknown, key: string) => T | u
 
 function migrateAttempt(v: unknown): Attempt | undefined {
   if (!isObject(v) || typeof v.taskId !== 'string') return undefined;
-  const { sicherheit, ...rest } = v;
+  const { sicherheit, fehlergrund, ...rest } = v;
   return {
     ...rest,
     ...opt('sicherheit', sicherheit, isSicherheit(sicherheit)),
+    ...opt('fehlergrund', fehlergrund, isFehlergrund(fehlergrund)),
     taskId: v.taskId,
     date: str(v.date),
     points: num(v.points),
@@ -207,13 +224,18 @@ function migrateAttempt(v: unknown): Attempt | undefined {
 
 function migrateExam(v: unknown, index: number | string): ExamRun | undefined {
   if (!isObject(v)) return undefined;
-  const { submittedAt, finishedAt, total, sicherheit, ...rest } = v;
+  const { submittedAt, finishedAt, total, sicherheit, fehlergrund, ...rest } = v;
   return {
     ...rest,
     ...opt(
       'sicherheit',
       filterRecord(sicherheit, (s) => (isSicherheit(s) ? s : undefined)),
       isObject(sicherheit),
+    ),
+    ...opt(
+      'fehlergrund',
+      filterRecord(fehlergrund, (g) => (isFehlergrund(g) ? g : undefined)),
+      isObject(fehlergrund),
     ),
     ...opt('submittedAt', submittedAt, typeof submittedAt === 'string'),
     ...opt('finishedAt', finishedAt, typeof finishedAt === 'string'),
@@ -371,6 +393,7 @@ export const AttemptSchema = z.looseObject({
   max: z.number(),
   mode: z.string(),
   sicherheit: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
+  fehlergrund: z.enum(FEHLERGRUENDE).optional(),
 });
 
 export const ExamRunSchema = z.looseObject({
@@ -385,6 +408,7 @@ export const ExamRunSchema = z.looseObject({
   total: z.number().nullable().optional(),
   max: z.number(),
   sicherheit: z.record(z.string(), z.union([z.literal(1), z.literal(2), z.literal(3)])).optional(),
+  fehlergrund: z.record(z.string(), z.enum(FEHLERGRUENDE)).optional(),
 });
 
 export const CardStateSchema = z.looseObject({

@@ -47,6 +47,24 @@ describe('mergeProgress', () => {
     expect(mergeProgress(emptyProgress(), { ...emptyProgress(), exams: [ex] }).exams[0].sicherheit).toEqual({ '01-A1': 2 });
   });
 
+  it('Versuche: Fehlergrund bleibt erhalten, fehlt er hier, kommt er aus der Sicherung (8.7)', () => {
+    const a1 = attempt('01-A1', '2026-09-20T10:00:00.000Z');
+    const a2 = attempt('01-A2', '2026-09-21T10:00:00.000Z');
+    const a = { ...emptyProgress(), attempts: [a1, { ...a2, fehlergrund: 'zeit' as const }] };
+    const b = {
+      ...emptyProgress(),
+      attempts: [
+        { ...a1, fehlergrund: 'formel' as const, sicherheit: 2 as const },
+        { ...a2, fehlergrund: 'begriff' as const },
+      ],
+    };
+    const m = mergeProgress(a, b);
+    expect(m.attempts.map((x) => x.fehlergrund)).toEqual(['formel', 'zeit']);
+    expect(m.attempts[0].sicherheit).toBe(2);
+    const ex = exam('ex-1', { fehlergrund: { '01-A1': 'operator' }, finishedAt: '2026-09-20T11:00:00.000Z' });
+    expect(mergeProgress(emptyProgress(), { ...emptyProgress(), exams: [ex] }).exams[0].fehlergrund).toEqual({ '01-A1': 'operator' });
+  });
+
   it('gleiche Stände: kommt unverändert heraus', () => {
     for (const name of [
       'fortschritt-v1-2026-09-22.json',

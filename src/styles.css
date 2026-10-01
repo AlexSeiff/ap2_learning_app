@@ -587,3 +587,4 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .beispiel summary { cursor: pointer; font-weight: 600; }
 .beispiel-aufgabe { background: var(--surface-2); border-radius: var(--radius); padding: 8px 12px; margin: 10px 0; }
 .rw-verdeckt .rw-titel { color: var(--muted); }
+.fehlergrund-badge { margin-left: 6px; }

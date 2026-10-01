@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { ExamRun } from '../../shared/progress';
 import { AnswerInput } from '../components/AnswerInput';
+import { FehlergrundWahl } from '../components/FehlergrundWahl';
 import { Markdown } from '../components/Markdown';
 import { SicherheitWahl } from '../components/SicherheitWahl';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
@@ -102,6 +103,7 @@ export function Klausur() {
     setAnswer,
     setScore,
     setSicherheit,
+    setFehlergrund,
     submit,
     finish,
     abort,
@@ -322,6 +324,9 @@ export function Klausur() {
                     )}
                     {submitted && (
                       <GradePanel task={task} answer={run.answers[id]} points={run.scores[id]} onPoints={(v) => setScore(id, v)} />
+                    )}
+                    {submitted && run.scores[id] !== undefined && run.scores[id] < task.points && (
+                      <FehlergrundWahl value={run.fehlergrund?.[id]} onChange={(g) => setFehlergrund(id, g)} />
                     )}
                   </div>
                 );

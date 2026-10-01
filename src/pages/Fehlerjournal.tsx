@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { JournalEntry } from '../../shared/progress';
+import { FehlergrundKarte } from '../components/FehlergrundKarte';
+import { FEHLERGRUND_INFO, letzterFehlergrund } from '../lib/fehlergruende';
 import { formatPoints } from '../lib/grading';
 import { isDue, localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
@@ -19,6 +21,7 @@ export function Fehlerjournal() {
         Jede Aufgabe unter voller Punktzahl landet automatisch hier und kommt nach <b>1, 3 und 7 Tagen</b> wieder. Erst nach drei vollen
         Wiederholungen gilt sie als erledigt; ein Fehler setzt sie auf Tag 1 zurück.
       </p>
+      <FehlergrundKarte />
       <section className="card">
         <h2>Heute fällig ({due.length})</h2>
         {due.length ? (
@@ -49,13 +52,14 @@ export function Fehlerjournal() {
 }
 
 function EntryList({ entries }: { entries: JournalEntry[] }) {
-  const { content } = useStore();
+  const { content, progress } = useStore();
   const today = localDate();
   return (
     <ul className="task-list">
       {entries.map((j) => {
         const t = content.tasks[j.taskId];
         const topic = content.topics.find((x) => x.id === t.topicId);
+        const grund = j.resolvedAt ? undefined : letzterFehlergrund(progress.attempts, j.taskId);
         return (
           <li key={j.taskId}>
             <Link to={`/aufgabe/${t.id}${j.resolvedAt ? '' : '?modus=wiederholung'}`} className="task-link">
@@ -67,7 +71,10 @@ function EntryList({ entries }: { entries: JournalEntry[] }) {
                   .slice(0, 120)}
               </span>
             </Link>
-            <span className="muted small">{topic?.title}</span>
+            <span className="muted small">
+              {topic?.title}
+              {grund && <span className="badge fehlergrund-badge">{FEHLERGRUND_INFO[grund].label}</span>}
+            </span>
             <span className="small">
               {formatPoints(j.lastPoints)}/{formatPoints(j.max)} P
             </span>

@@ -1,7 +1,7 @@
 // Lernfortschritt: reine Update-Funktionen (Fehlerjournal, Klausur, Karteikarten). Das gespeicherte Datenmodell liegt in shared/progress.ts.
 
 import { CARD_INTERVALS, JOURNAL_INTERVALS } from '../../shared/config';
-import type { Attempt, ExamRun, Progress, Rating } from '../../shared/progress';
+import type { Attempt, ExamRun, Fehlergrund, Progress, Rating } from '../../shared/progress';
 import type { Task } from '../../shared/types';
 
 export function localDate(d = new Date()): string {
@@ -42,22 +42,43 @@ export function recordAttempt(p: Progress, attempt: Attempt, today = localDate()
   return { ...p, attempts: [...p.attempts, attempt], journal };
 }
 
-/** Überträgt eine bewertete Klausur in die Historie und alle Einzelergebnisse (mit Selbsteinschätzung) ins Fehlerjournal. */
+/**
+ * Überträgt eine bewertete Klausur in die Historie und alle Einzelergebnisse (mit Selbsteinschätzung und – unter voller
+ * Punktzahl – Fehlergrund) ins Fehlerjournal.
+ */
 export function finishExam(p: Progress, run: ExamRun, tasks: Task[], now = new Date().toISOString()): Progress {
   let next = p;
   for (const t of tasks) {
     const sicherheit = run.sicherheit?.[t.id];
+    const points = run.scores[t.id] ?? 0;
+    const fehlergrund = points < t.points ? run.fehlergrund?.[t.id] : undefined;
     next = recordAttempt(next, {
       taskId: t.id,
       date: now,
-      points: run.scores[t.id] ?? 0,
+      points,
       max: t.points,
       mode: 'klausur',
       ...(sicherheit ? { sicherheit } : {}),
+      ...(fehlergrund ? { fehlergrund } : {}),
     });
   }
   const total = tasks.reduce((s, t) => s + (run.scores[t.id] ?? 0), 0);
   return { ...next, activeExam: undefined, exams: [...next.exams, { ...run, total, finishedAt: now }] };
+}
+
+/**
+ * Fehlergrund eines gespeicherten Versuchs setzen oder (undefined) entfernen – der Versuch ist durch Aufgabe und Zeitpunkt bestimmt.
+ * Nur unter voller Punktzahl; sonst bleibt alles, wie es ist.
+ */
+export function setzeFehlergrund(p: Progress, taskId: string, date: string, grund: Fehlergrund | undefined): Progress {
+  let geaendert = false;
+  const attempts = p.attempts.map((a) => {
+    if (a.taskId !== taskId || a.date !== date || a.points >= a.max) return a;
+    geaendert = true;
+    const { fehlergrund: _alt, ...rest } = a;
+    return grund ? { ...rest, fehlergrund: grund } : rest;
+  });
+  return geaendert ? { ...p, attempts } : p;
 }
 
 /** Gibt die laufende Klausur ab. Eine bereits abgegebene behält ihren Zeitpunkt (Timer und StrictMode können doppelt auslösen). */
