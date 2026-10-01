@@ -319,6 +319,8 @@ export const nutzwert = vorlage({
       d.alternativen[roh.indexOf(Math.max(...roh))].name,
       'Das ist die Alternative mit den meisten **ungewichteten** Punkten.',
     );
+    for (const a of d.alternativen)
+      b.fehler('beste', a.name, `${a.name} hat einen niedrigeren Nutzwert – vergleiche die gewichteten Summen.`);
     return b.fertig({
       spalten: d.alternativen.map((a) => `Teilnutzen ${a.name}`),
       zeilen: d.kriterien.map((k, ki) => ({
@@ -455,6 +457,13 @@ export const risiko = vorlage({
       return w;
     });
     b.wert('hoechstes', d.risiken[rpz.indexOf(Math.max(...rpz))].name, { label: 'Höchstes Risiko', vergleich: 'text', zusatz: true });
+    const summen = d.risiken.map((r) => r.w + r.s);
+    b.fehler(
+      'hoechstes',
+      d.risiken[summen.indexOf(Math.max(...summen))].name,
+      'Das ist das höchste Risiko nach W **+** S – gerechnet wird W · S.',
+    );
+    for (const r of d.risiken) b.fehler('hoechstes', r.name, `„${r.name}“ hat eine kleinere Risikozahl W · S.`);
     return b.fertig();
   },
 });
