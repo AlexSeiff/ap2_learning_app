@@ -56,6 +56,8 @@ export function useCardSession() {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [gewaehlt, setGewaehlt] = useState<number | null>(null);
+  /** „Deine Antwort“ zur aktuellen Karte (ROADMAP 8.2) – nur in der Runde, nicht gespeichert. */
+  const [eigeneAntwort, setEigeneAntwort] = useState('');
   /** Zufall der Runde: die Reihenfolge der Antworten hängt von ihm und der Position ab – stabil beim erneuten Rendern. */
   const [rundenSeed, setRundenSeed] = useState(1);
   const [done, setDone] = useState({ gewusst: 0, unsicher: 0, nicht: 0 });
@@ -67,6 +69,7 @@ export function useCardSession() {
     setIndex(0);
     setFlipped(false);
     setGewaehlt(null);
+    setEigeneAntwort('');
     setDone({ gewusst: 0, unsicher: 0, nicht: 0 });
   };
   const end = () => setSession(null);
@@ -85,6 +88,7 @@ export function useCardSession() {
     setIndex((i) => i + 1);
     setFlipped(false);
     setGewaehlt(null);
+    setEigeneAntwort('');
   }, []);
 
   const rate = useCallback(
@@ -116,7 +120,8 @@ export function useCardSession() {
     if (!card) return;
     const onKey = (e: KeyboardEvent) => {
       const target = e.target instanceof Element ? e.target : null;
-      if (target?.closest('input, select, textarea')) return;
+      // Beim Tippen (z. B. „Deine Antwort“) keine Tastenkürzel.
+      if (target?.closest('input, select, textarea, [contenteditable="true"]')) return;
       const weiterTaste = e.key === ' ' || e.code === 'Space' || e.key === 'Enter';
       if (optionen) {
         if (gewaehlt === null && /^[1-4]$/.test(e.key)) waehle(Number(e.key) - 1);
@@ -140,5 +145,5 @@ export function useCardSession() {
     return () => window.removeEventListener('keydown', onKey);
   }, [card, flipped, rate, optionen, gewaehlt, waehle, next]);
 
-  return { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next };
+  return { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next, eigeneAntwort, setEigeneAntwort };
 }

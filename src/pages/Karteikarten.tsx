@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { CardType, Flashcard } from '../../shared/types';
+import { AntwortVergleich, EigeneAntwortFeld } from '../components/EigeneAntwort';
 import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
 import { useCardFilters, useCardSession } from '../hooks/useCardSession';
@@ -27,7 +28,8 @@ export function Karteikarten() {
   const { content, progress, update } = useStore();
   const { settings } = progress;
   const { f, set, deck, alle, pool, leicht, leichtModus, auswahl } = useCardFilters();
-  const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next } = useCardSession();
+  const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next, eigeneAntwort, setEigeneAntwort } =
+    useCardSession();
   const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
 
   const due = deck.filter((c) => progress.cards[c.id] && isDue(progress.cards[c.id].due));
@@ -141,13 +143,18 @@ export function Karteikarten() {
           {card.typ === 'rechnung' && !flipped && <p className="hint">✏️ Erst auf Papier rechnen, dann umdrehen.</p>}
           {flipped && (
             <div className="fc-answer">
-              {card.answer ? (
-                <Markdown>{card.answer}</Markdown>
-              ) : (
-                <p className="muted">
-                  Keine Musterantwort im Lernblatt – beantworte die Frage laut und prüfe dich anhand des Theorieteils.
-                </p>
-              )}
+              <AntwortVergleich
+                eigene={eigeneAntwort}
+                muster={
+                  card.answer ? (
+                    <Markdown>{card.answer}</Markdown>
+                  ) : (
+                    <p className="muted">
+                      Keine Musterantwort im Lernblatt – beantworte die Frage laut und prüfe dich anhand des Theorieteils.
+                    </p>
+                  )
+                }
+              />
               {!!card.tags?.length && (
                 <div className="tags">
                   {card.tags.map((t) => (
@@ -159,8 +166,11 @@ export function Karteikarten() {
               )}
             </div>
           )}
-          {!flipped && card.typ !== 'rechnung' && <p className="hint">Antwort im Kopf formulieren, dann klicken oder Leertaste drücken.</p>}
+          {!flipped && card.typ !== 'rechnung' && (
+            <p className="hint">Antwort formulieren – im Kopf oder unten aufschreiben –, dann klicken oder Leertaste drücken.</p>
+          )}
         </div>
+        {!flipped && <EigeneAntwortFeld value={eigeneAntwort} onChange={setEigeneAntwort} onFertig={flip} />}
         {flipped && (
           <div className="rate-buttons">
             <button type="button" className="good" onClick={() => rate('gewusst')}>

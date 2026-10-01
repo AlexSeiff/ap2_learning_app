@@ -557,3 +557,12 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .heute-liste li.aktuell { background: var(--accent-soft); font-weight: 600; }
 .heute-liste li.erledigt { color: var(--muted); }
 .heute-status { width: 1.4em; flex: none; text-align: center; }
+
+/* „Deine Antwort“ auf Karteikarten (ROADMAP 8.2) */
+.eigene-antwort { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 12px; }
+.eigene-antwort label { font-weight: 600; }
+.eigene-antwort textarea { width: 100%; font: inherit; }
+.antwort-vergleich { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.antwort-vergleich h4 { margin-top: 0; }
+.eigene-text { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--accent-soft); border-radius: 8px; padding: 8px 10px; }
+@media (max-width: 600px) { .antwort-vergleich { grid-template-columns: 1fr; } }
