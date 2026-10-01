@@ -8,12 +8,13 @@ import { backupReminder } from '../lib/backupReminder';
 import { formatPoints, ihkGrade } from '../lib/grading';
 import { cardPool } from '../lib/cards';
 import { istFertig } from '../lib/heuteSitzung';
+import { kalibrierung } from '../lib/kalibrierung';
 import { isDue } from '../lib/progress';
 import { rechenSummary } from '../lib/rechnen';
 import { sqlSummary } from '../lib/sql';
 import { daysUntilExam, examTrends, formatIsoDate, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
-import { HEUTE_MINUTEN } from '../../shared/config';
+import { HEUTE_MINUTEN, SICHER_RICHTIG_AB } from '../../shared/config';
 
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
 
@@ -142,6 +143,8 @@ function Uebersicht() {
           </ul>
         </section>
       )}
+
+      <KalibrierungKarte />
 
       <section className="card">
         <h2>Fortschritt je Thema</h2>
@@ -294,6 +297,45 @@ function Delta({ value }: { value?: number }) {
       {rounded > 0 ? '▲ +' : '▼ −'}
       {Math.abs(rounded)} %-Pkt.
     </span>
+  );
+}
+
+/** Selbsteinschätzung (ROADMAP 8.3): Wie oft lagst du bei „sicher“, „teils“, „unsicher“ richtig? */
+function KalibrierungKarte() {
+  const { progress } = useStore();
+  const k = kalibrierung(progress.attempts);
+  if (!k.anzahl) return null;
+  const ab = Math.round(SICHER_RICHTIG_AB * 100);
+  return (
+    <section className="card">
+      <h2>🎯 Selbsteinschätzung</h2>
+      <ul className="plain">
+        {k.stufen
+          .filter((s) => s.anzahl > 0)
+          .reverse()
+          .map((s) => (
+            <li key={s.stufe}>
+              Bei „{s.kurz}“ lagst du in <b>{Math.round(s.quote!)} %</b> richtig{' '}
+              <span className="muted small">
+                ({s.richtig} von {s.anzahl} {s.anzahl === 1 ? 'Aufgabe' : 'Aufgaben'} · Ø {Math.round(s.schnitt!)} % der Punkte)
+              </span>
+            </li>
+          ))}
+      </ul>
+      {k.hinweis === 'zu-sicher' && (
+        <p className="bad">
+          ⚠️ Vorsicht, falsche Sicherheit: Prüf bei „sicher“ genauer, ob du den Operator und alle Teilfragen beantwortet hast.
+        </p>
+      )}
+      {k.hinweis === 'unterschaetzt' && (
+        <p className="ok">💡 Du kannst mehr, als du denkst – auch bei „unsicher“ lagst du meist richtig.</p>
+      )}
+      {k.hinweis === 'passt' && <p className="ok">👍 Deine Einschätzung passt gut zu deinen Ergebnissen.</p>}
+      <p className="hint">
+        „Richtig“ heißt mindestens {ab} % der Punkte. Gezählt werden Aufgaben, bei denen du vor dem Abgeben „Wie sicher bist du?“
+        beantwortet hast.
+      </p>
+    </section>
   );
 }
 

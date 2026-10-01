@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { EXAM_MINUTES } from '../../shared/config';
-import type { ExamRun } from '../../shared/progress';
+import type { ExamRun, Sicherheit } from '../../shared/progress';
 import type { Task } from '../../shared/types';
 import { finishExam, submitExam } from '../lib/progress';
 import { useStore } from '../lib/store';
@@ -63,6 +63,17 @@ export function useExamRun(topicId: string | undefined) {
     [update],
   );
 
+  /** Selbsteinschätzung je Aufgabe (ROADMAP 8.3); undefined entfernt sie. Nur vor der Abgabe. */
+  const setSicherheit = useCallback(
+    (taskId: string, value: Sicherheit | undefined) =>
+      update((p) => {
+        if (!p.activeExam || p.activeExam.submittedAt) return p;
+        const { [taskId]: _alt, ...rest } = p.activeExam.sicherheit ?? {};
+        return { ...p, activeExam: { ...p.activeExam, sicherheit: value ? { ...rest, [taskId]: value } : rest } };
+      }),
+    [update],
+  );
+
   const submit = () => update((p) => submitExam(p));
 
   /** Unbewertete Aufgaben zählen 0 Punkte; Ergebnis landet in der Historie und im Fehlerjournal. */
@@ -94,6 +105,7 @@ export function useExamRun(topicId: string | undefined) {
     start,
     setAnswer,
     setScore,
+    setSicherheit,
     submit,
     finish,
     abort,

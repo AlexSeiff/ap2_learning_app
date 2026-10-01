@@ -566,3 +566,8 @@ tr.diff-extra .diff-mark, .diff-key.extra { color: var(--low); }
 .antwort-vergleich h4 { margin-top: 0; }
 .eigene-text { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--accent-soft); border-radius: 8px; padding: 8px 10px; }
 @media (max-width: 600px) { .antwort-vergleich { grid-template-columns: 1fr; } }
+
+/* „Wie sicher bist du?“ (ROADMAP 8.3) */
+.sicherheit { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+.sicherheit-frage { font-weight: 600; margin-right: 4px; }
+.sicherheit button[aria-pressed='true'] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }

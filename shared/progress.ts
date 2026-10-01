@@ -9,12 +9,22 @@ import { z } from 'zod';
 export type Mode = 'klausur' | 'einzel' | 'wiederholung';
 export type Rating = 'gewusst' | 'unsicher' | 'nicht';
 
+/** „Wie sicher bist du?“ vor dem Abgeben (ROADMAP 8.3): 1 = unsicher, 2 = teils, 3 = sicher. */
+export type Sicherheit = 1 | 2 | 3;
+
+export const isSicherheit = (v: unknown): v is Sicherheit => v === 1 || v === 2 || v === 3;
+
 export type Attempt = {
   taskId: string;
   date: string;
   points: number;
   max: number;
   mode: Mode;
+  /**
+   * Selbsteinschätzung vor dem Abgeben (ROADMAP 8.3); fehlt, wenn nicht angegeben oder bei älteren Versuchen.
+   * Optional und in Version 6 schon zulässig (AttemptSchema ist offen, migrateAttempt behielt unbekannte Felder) – daher keine neue Version.
+   */
+  sicherheit?: Sicherheit;
 };
 
 export type ExamRun = {
@@ -27,6 +37,8 @@ export type ExamRun = {
   scores: Record<string, number>;
   total?: number;
   max: number;
+  /** Selbsteinschätzung je Aufgabe (Task-ID → 1–3), vor der Abgabe gewählt; geht beim Abschließen in die Versuche (ROADMAP 8.3). */
+  sicherheit?: Record<string, Sicherheit>;
 };
 
 export type CardState = {
@@ -181,14 +193,28 @@ function filterRecord<T>(v: unknown, map: (value: unknown, key: string) => T | u
 
 function migrateAttempt(v: unknown): Attempt | undefined {
   if (!isObject(v) || typeof v.taskId !== 'string') return undefined;
-  return { ...v, taskId: v.taskId, date: str(v.date), points: num(v.points), max: num(v.max), mode: str(v.mode, 'einzel') as Mode };
+  const { sicherheit, ...rest } = v;
+  return {
+    ...rest,
+    ...opt('sicherheit', sicherheit, isSicherheit(sicherheit)),
+    taskId: v.taskId,
+    date: str(v.date),
+    points: num(v.points),
+    max: num(v.max),
+    mode: str(v.mode, 'einzel') as Mode,
+  };
 }
 
 function migrateExam(v: unknown, index: number | string): ExamRun | undefined {
   if (!isObject(v)) return undefined;
-  const { submittedAt, finishedAt, total, ...rest } = v;
+  const { submittedAt, finishedAt, total, sicherheit, ...rest } = v;
   return {
     ...rest,
+    ...opt(
+      'sicherheit',
+      filterRecord(sicherheit, (s) => (isSicherheit(s) ? s : undefined)),
+      isObject(sicherheit),
+    ),
     ...opt('submittedAt', submittedAt, typeof submittedAt === 'string'),
     ...opt('finishedAt', finishedAt, typeof finishedAt === 'string'),
     ...opt('total', total, typeof total === 'number' || total === null),
@@ -344,6 +370,7 @@ export const AttemptSchema = z.looseObject({
   points: z.number(),
   max: z.number(),
   mode: z.string(),
+  sicherheit: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
 });
 
 export const ExamRunSchema = z.looseObject({
@@ -357,6 +384,7 @@ export const ExamRunSchema = z.looseObject({
   scores: z.record(z.string(), z.number().nullable()),
   total: z.number().nullable().optional(),
   max: z.number(),
+  sicherheit: z.record(z.string(), z.union([z.literal(1), z.literal(2), z.literal(3)])).optional(),
 });
 
 export const CardStateSchema = z.looseObject({

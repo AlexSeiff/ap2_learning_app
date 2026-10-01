@@ -220,6 +220,36 @@ describe('migrateProgress', () => {
     expect(migrateProgress(migrated)).toEqual(migrated);
   });
 
+  it('Version 6 (vor der Selbsteinschätzung): lädt unverändert, Versuche ohne sicherheit bleiben gültig', () => {
+    const raw = fixture('fortschritt-v6-2026-10-01.json');
+    const migrated = migrateProgress(raw);
+    expect(migrated).toEqual(raw);
+    expect(ProgressSchema.safeParse(raw).success).toBe(true);
+    const r = checkProgressPut(migrated, raw);
+    expect(r).toMatchObject({ ok: true, progress: { version: 6, revision: 35 } });
+  });
+
+  it('Selbsteinschätzung (ROADMAP 8.3): optional ohne neue Version; gültige Werte bleiben, ungültige fallen weg', () => {
+    const raw = fixture('fortschritt-v6-2026-10-01.json');
+    raw.attempts[0].sicherheit = 3;
+    raw.attempts[1].sicherheit = 'sehr';
+    raw.attempts[2].sicherheit = 4;
+    raw.activeExam.sicherheit = { '04-A1': 2, '04-A2': 0, '04-A3': 'x' };
+    raw.exams[0].sicherheit = { '03-C2': 1 };
+    const migrated = migrateProgress(raw);
+    expect(PROGRESS_VERSION).toBe(6);
+    expect(migrated.attempts.map((a) => a.sicherheit)).toEqual([3, undefined, undefined]);
+    expect('sicherheit' in migrated.attempts[1]).toBe(false);
+    expect(migrated.activeExam?.sicherheit).toEqual({ '04-A1': 2 });
+    expect(migrated.exams[0].sicherheit).toEqual({ '03-C2': 1 });
+    expect(ProgressSchema.safeParse(migrated).success).toBe(true);
+    expect(checkProgressPut(migrated, raw).ok).toBe(true);
+    expect(migrateProgress(migrated)).toEqual(migrated);
+    // Ein ungültiger Wert im PUT wird abgelehnt (die App schreibt nur 1–3).
+    const bad = { ...migrated, attempts: [{ ...migrated.attempts[0], sicherheit: 5 }, ...migrated.attempts.slice(1)] };
+    expect(checkProgressPut(bad, raw)).toMatchObject({ ok: false, status: 400 });
+  });
+
   it('alle alten Fixtures laden in das aktuelle Format und erfüllen das Schema', () => {
     for (const name of [
       'fortschritt-alt-ohne-felder.json',
@@ -227,6 +257,7 @@ describe('migrateProgress', () => {
       'fortschritt-v3-2026-09-28.json',
       'fortschritt-v4-2026-09-30.json',
       'fortschritt-v5-2026-09-30.json',
+      'fortschritt-v6-2026-10-01.json',
     ]) {
       const raw = fixture(name);
       const migrated = migrateProgress(raw);

@@ -32,12 +32,28 @@ describe('mergeProgress', () => {
     expect(mergeProgress(a, c).attempts).toHaveLength(3);
   });
 
+  it('Versuche: Selbsteinschätzung bleibt erhalten, fehlt sie hier, kommt sie aus der Sicherung', () => {
+    const a1 = attempt('01-A1', '2026-09-20T10:00:00.000Z');
+    const a = { ...emptyProgress(), attempts: [a1, { ...attempt('01-A2', '2026-09-21T10:00:00.000Z'), sicherheit: 1 as const }] };
+    const b = {
+      ...emptyProgress(),
+      attempts: [
+        { ...a1, sicherheit: 3 as const },
+        { ...attempt('01-A2', '2026-09-21T10:00:00.000Z'), sicherheit: 2 as const },
+      ],
+    };
+    expect(mergeProgress(a, b).attempts.map((x) => x.sicherheit)).toEqual([3, 1]);
+    const ex = exam('ex-1', { sicherheit: { '01-A1': 2 }, finishedAt: '2026-09-20T11:00:00.000Z' });
+    expect(mergeProgress(emptyProgress(), { ...emptyProgress(), exams: [ex] }).exams[0].sicherheit).toEqual({ '01-A1': 2 });
+  });
+
   it('gleiche Stände: kommt unverändert heraus', () => {
     for (const name of [
       'fortschritt-v1-2026-09-22.json',
       'fortschritt-v3-2026-09-28.json',
       'fortschritt-v4-2026-09-30.json',
       'fortschritt-v5-2026-09-30.json',
+      'fortschritt-v6-2026-10-01.json',
     ]) {
       const p = fixture(name);
       expect(mergeProgress(p, p), name).toEqual(p);

@@ -40,3 +40,9 @@ export const HEUTE_ZEITEN = {
 
 /** Höchstens so viele Karten je Karten-Block der Tagesrunde (dazwischen kommen andere Themen). */
 export const HEUTE_KARTEN_BLOCK = 8;
+
+/**
+ * Selbsteinschätzung (ROADMAP 8.3): Ein Versuch gilt für die Kalibrierung als „richtig“, wenn er mindestens diesen Anteil der Punkte hat
+ * (0,8 = 80 % – etwa die Note 2; volle Punkte sind bei offenen Aufgaben selten).
+ */
+export const SICHER_RICHTIG_AB = 0.8;

@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import type { Sicherheit } from '../../shared/progress';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
+import { SicherheitWahl } from '../components/SicherheitWahl';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
 import { formatPoints } from '../lib/grading';
+import { sicherheitLabel } from '../lib/kalibrierung';
 import { isDue, recordAttempt } from '../lib/progress';
 import { useStore } from '../lib/store';
 
@@ -23,6 +26,7 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
   const [revealed, setRevealed] = useState(false);
   const [points, setPoints] = useState<number | undefined>();
   const [saved, setSaved] = useState(false);
+  const [sicherheit, setSicherheit] = useState<Sicherheit | undefined>();
 
   if (!task)
     return (
@@ -49,6 +53,7 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
         points,
         max: task.points,
         mode: repeat ? 'wiederholung' : 'einzel',
+        ...(sicherheit ? { sicherheit } : {}),
       }),
     );
     setSaved(true);
@@ -72,6 +77,11 @@ function AufgabeSeite({ taskId }: { taskId: string | undefined }) {
       <div className="task-card">
         <TaskText task={task} showMeta />
         <AnswerInput task={task} value={answer} onChange={setAnswer} disabled={revealed} />
+        {!revealed ? (
+          <SicherheitWahl value={sicherheit} onChange={setSicherheit} />
+        ) : (
+          sicherheit && <p className="muted small">Deine Einschätzung: {sicherheitLabel(sicherheit)}</p>
+        )}
         {!revealed ? (
           <div className="actions">
             <button type="button" onClick={() => setRevealed(true)}>

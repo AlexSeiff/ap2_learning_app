@@ -42,11 +42,19 @@ export function recordAttempt(p: Progress, attempt: Attempt, today = localDate()
   return { ...p, attempts: [...p.attempts, attempt], journal };
 }
 
-/** Überträgt eine bewertete Klausur in die Historie und alle Einzelergebnisse ins Fehlerjournal. */
+/** Überträgt eine bewertete Klausur in die Historie und alle Einzelergebnisse (mit Selbsteinschätzung) ins Fehlerjournal. */
 export function finishExam(p: Progress, run: ExamRun, tasks: Task[], now = new Date().toISOString()): Progress {
   let next = p;
   for (const t of tasks) {
-    next = recordAttempt(next, { taskId: t.id, date: now, points: run.scores[t.id] ?? 0, max: t.points, mode: 'klausur' });
+    const sicherheit = run.sicherheit?.[t.id];
+    next = recordAttempt(next, {
+      taskId: t.id,
+      date: now,
+      points: run.scores[t.id] ?? 0,
+      max: t.points,
+      mode: 'klausur',
+      ...(sicherheit ? { sicherheit } : {}),
+    });
   }
   const total = tasks.reduce((s, t) => s + (run.scores[t.id] ?? 0), 0);
   return { ...next, activeExam: undefined, exams: [...next.exams, { ...run, total, finishedAt: now }] };

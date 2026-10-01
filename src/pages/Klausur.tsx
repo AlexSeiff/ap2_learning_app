@@ -3,11 +3,13 @@ import type { ExamRun } from '../../shared/progress';
 import type { Topic } from '../../shared/types';
 import { AnswerInput } from '../components/AnswerInput';
 import { Markdown } from '../components/Markdown';
+import { SicherheitWahl } from '../components/SicherheitWahl';
 import { Attachments, GradePanel, TaskText } from '../components/TaskParts';
 import { useConfirm } from '../hooks/useConfirm';
 import { useExamRun } from '../hooks/useExamRun';
 import { formatRemaining, timerAnnouncement } from '../lib/examTimer';
 import { formatPoints, ihkGrade, percent } from '../lib/grading';
+import { sicherheitLabel } from '../lib/kalibrierung';
 import { useStore } from '../lib/store';
 import { EXAM_MINUTES } from '../../shared/config';
 
@@ -69,6 +71,7 @@ export function Klausur() {
     start,
     setAnswer,
     setScore,
+    setSicherheit,
     submit,
     finish,
     abort,
@@ -255,6 +258,11 @@ export function Klausur() {
               <div key={id} className={`task-card ${submitted ? 'review' : ''}`}>
                 <TaskText task={task} />
                 <AnswerInput task={task} value={run.answers[id]} onChange={(v) => setAnswer(id, v)} disabled={submitted} />
+                {!submitted ? (
+                  <SicherheitWahl value={run.sicherheit?.[id]} onChange={(s) => setSicherheit(id, s)} />
+                ) : (
+                  run.sicherheit?.[id] && <p className="muted small">Deine Einschätzung: {sicherheitLabel(run.sicherheit[id])}</p>
+                )}
                 {submitted && <GradePanel task={task} answer={run.answers[id]} points={run.scores[id]} onPoints={(v) => setScore(id, v)} />}
               </div>
             );
