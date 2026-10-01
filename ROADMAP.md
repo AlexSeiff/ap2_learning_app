@@ -119,9 +119,9 @@ Today the solution sheets write formulas as plain text ("770 / 11 = **70,00 Minu
 Implementation notes (4.1–4.3): `<Markdown math>` loads a lazy `MathMarkdown` chunk (Lernen, solutions, `/druck` solution sheet, Material).
 Stray `$` are escaped by the Pandoc rule before parsing (`escapeStrayDollars`); the content has no `$` today. Solution styling is done by the
 rehype plugins in `src/lib/loesungStil.ts` (result box only for bold number + unit after `=`/`→` or a bold equation ending in number + unit).
-`Rechenweg` + `shared/rechenweg.ts` (`RechenSchritt`) are ready for phase 5. Details: DOKUMENTATION § 5. Still open: 4.4 (needs the owner's OK) and 4.5.
+`Rechenweg` + `shared/rechenweg.ts` (`RechenSchritt`) are used by the Rechenübungen (phase 5). Details: DOKUMENTATION § 5. Still open: 4.4 (needs the owner's OK) and 4.5.
 
-## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U]
+## Phase 5 – Rechenübungen (calculation exercises like the SQL exercises) [U] (5.1–5.6 ✅ done)
 
 5.1 **Content file `AP-2/AP2_Rechen_Uebungen.json`** (synced like the SQL file; `isContentFile()` matches `*Rechen_Uebungen*.json`),
     parser `shared/rechenUebungen.ts` (zod, ImportIssues), `Content.rechenUebungen`.
@@ -172,6 +172,24 @@ rehype plugins in `src/lib/loesungStil.ts` (result box only for bold number + un
     DD7 B2 values), property tests over many seeds (no NaN, no division by zero, results in range), checker/Fehlerbild tests.
 5.7 **Starting content**: every "Berechnen" task of the sheets as a fixed exercise + at least one generated variant per template (~60 exercises).
     Write the JSON in `AP-2/` (owner's OK), then sync.
+
+Implementation notes (5.1–5.6):
+- 5.1: format as above plus optional `params`, `neueZahlen`, `erklaerung`; `eingaben` entries may be plain ids; exercises without a template give
+  `loesung` per input. The template check runs at import (`BuildOptions.pruefeRechenUebung`) → ImportIssues. Full format: DOKUMENTATION § 4.4.
+- 5.2: 27 templates (`lagemasse`, `gewichtetes-mittel`, `quartile`, `varianz`, `variationskoeffizient`, `haeufigkeiten`, `korrelation`,
+  `regression`, `gleitender-durchschnitt`, `prozent-veraenderung`, `konfusionsmatrix`, `regressionsguete`, `assoziation`, `kmeans`,
+  `durchlaufzeit`, `fehlerquote`, `amortisation`, `qualitaetsgrad`, `netzplan`, `nutzwert`, `break-even`, `risiko`, `sozialversicherung`,
+  `minijob`, `gleichgewicht`, `datensicherung`, `rpo`). WiSo/DD10/DD13 checked: SV/Netto, Minijob, Gleichgewichtspreis, Inflation, Sicherung,
+  RPO added; Zinsen (only Verzugszinsen as theory in DD14), Kalkulation and Speicherbedarf (beyond the backup volumes) have no calculation tasks in the sheets, so no templates. "Neue Zahlen" keeps the shape of the fixed data.
+  No separate "Pareto" or "Spannweite" template: both are results of `haeufigkeiten` / `lagemasse`.
+- 5.3: also lists (outliers), texts (names, ja/nein) and sets (critical path). Fehlerbilder within the rounding tolerance are dropped.
+- 5.4: Netzplan & co. are entered in a table (`layout`); answers of the last check are restored; KaTeX only loads with the solution.
+  Simplified: no "Ausprobieren" step, no per-field partial points (the exercise is solved only when every field is right).
+- 5.5: `RechenState` also stores the last checked answers (`antworten`); repetition helpers shared with SQL (`src/lib/wiederholung.ts`).
+- 5.6: sheet examples per template (`rechenVorlagen.test.ts`), property tests over 150 seeds per template, content smoke test (fixed exercises
+  must reproduce the numbers in the model solution of their `quelleAufgabe`), page render smoke test. The property tests found one bug
+  (Fehlerbild "arithmetic instead of harmonic mean" for F1 was indistinguishable from the right value when P ≈ R) – fixed.
+- Open: 5.7 (≈ 30 more exercises: generated variants and the remaining "Berechnen" tasks; the starting set has 32, one per template/sheet task).
 
 ## Phase 6 – Leicht-Modus: 4 answers, 1 correct [U]
 
