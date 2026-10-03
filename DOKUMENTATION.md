@@ -3,7 +3,8 @@
 > Merges the earlier working documents `IMPROVEMENTS_PROMPT.md` (refactoring/safety plan, P0–P3) and `SQL_EDITOR_PLAN.md`
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
 > this file describes **the app as it is** (state: all ROADMAP phases 0–8 done incl. 4.4/4.5, without 7.5 (decision Q3), October 2026).
-> Planned changes are in [`ROADMAP.md`](ROADMAP.md). How to install and start the app is in `README.md` (German).
+> `ROADMAP.md` was deleted after completion; comments like "ROADMAP 8.3" refer to it (`git show d21984e:ROADMAP.md`).
+> Only open question: the license of the content (Q4). How to install and start the app is in `README.md` (German).
 
 ---
 
@@ -37,8 +38,8 @@ One React UI, three ways to run it:
 - Public URL: **https://alexseiff.github.io/ap2_learning_app/** (HashRouter, `base: './'`).
 - Every push to `main` runs `.github/workflows/pages.yml`: `npm ci` → `npm test` → `npm run lint` → `npm run build:pages` → deploy.
 - The Pages version is **used by several people**. Each browser has its own progress; there is no shared state and no account.
-- Uncommitted work in progress (not on GitHub): an Electron desktop build (`electron/`, `vite.electron.config.ts`, `src/lib/desktopApi.ts`,
-  `npm run build:desktop`, `npm run dist:win`). See ROADMAP step 0.
+- `AP-2/` = the folder above the repo by default; `LERN_QUELLE` in `.env.local` overrides it (e.g. when the repo lives outside OneDrive).
+- An Electron desktop build existed on a local `desktop` branch; it was dropped in October 2026 – Pages is the version for users.
 
 ## 3. Architecture
 
@@ -600,7 +601,7 @@ print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the 
 - **Manifest** `manifest.webmanifest`: name "AP2 Lern-App", short name "AP2 Lernen", `id`/`start_url`/`scope` `./` (relative, works under
   `/ap2_learning_app/` with the HashRouter), `display: standalone`, theme colour = `--accent`. Icons in `public/icons/`: `icon-192.png`,
   `icon-512.png`, `icon-maskable-512.png` (icon at 80 % on a blue gradient, inside the maskable safe zone) and `apple-touch-icon.png` (180 px,
-  linked in `index.html`). They were generated once from `build/icon.png` of the `desktop` branch (512 × 512) with Windows System.Drawing
+  linked in `index.html`). They were generated once from the icon of the former desktop build (512 × 512) with Windows System.Drawing
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
 - **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
   (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every

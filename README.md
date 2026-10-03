@@ -1,21 +1,23 @@
 # AP2 Lern-App
 
 Lern-App für die **IHK-Abschlussprüfung Teil 2 – Fachinformatiker/-in Daten- und Prozessanalyse**.
-Die App liest die Markdown-Lernblätter aus dem Ordner `AP-2` und macht daraus Übungen mit **getrennten Lösungsblättern**.
+Die App liest die Markdown-Lernblätter (lokal aus dem Ordner `AP-2`, online aus `content/`) und macht daraus Übungen mit **getrennten Lösungsblättern**.
 Sie läuft lokal (mit Server) oder als [Online-Version](#online-version-github-pages) für alle, die sich auf die Prüfung vorbereiten.
 
 ## Starten
 
-**Einfach:** Doppelklick auf `Lern-App starten.cmd` im Ordner `AP-2`.
-Beim ersten Start werden die Abhängigkeiten installiert, danach öffnet sich der Browser unter http://localhost:5178.
+Für die meisten reicht die [Online-Version](#online-version-github-pages) – ohne Installation.
 
-**Per Terminal:**
+**Lokal (mit Server und optionaler KI):**
 
 ```bash
-cd lern-app
 npm install      # nur beim ersten Mal
-npm run dev
+npm run dev      # öffnet http://localhost:5178
 ```
+
+Die Lernblätter liest die lokale App standardmäßig aus dem Ordner **oberhalb** des Repositorys (früher `AP-2/lern-app`).
+Liegt das Repository woanders (z. B. `C:\dev\ap2-lern-app` außerhalb von OneDrive – empfohlen, OneDrive verträgt sich schlecht
+mit `.git`), den Ordner in `.env.local` angeben: `LERN_QUELLE=C:\Users\…\AP-2`.
 
 Beenden: im Terminalfenster `Strg + C`.
 
@@ -190,10 +192,11 @@ Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein an
 ## Entwicklung
 
 Technische Dokumentation (Aufbau, Datenmodell, Regeln für Änderungen): [`DOKUMENTATION.md`](DOKUMENTATION.md).
-Geplante Änderungen: [`ROADMAP.md`](ROADMAP.md).
+Der Umsetzungsplan (`ROADMAP.md`, Phasen 0–8) ist erledigt und wurde gelöscht; Kommentare wie „ROADMAP 8.3“ beziehen sich darauf
+(nachlesen: `git show d21984e:ROADMAP.md`). Offen ist nur die Lizenz der Inhalte (siehe [Online-Version](#online-version-github-pages)).
 
 ```bash
-npm run dev           # Dev-Server mit lokaler API auf http://localhost:5178 (das startet auch Lern-App starten.cmd)
+npm run dev           # Dev-Server mit lokaler API auf http://localhost:5178
 npm start             # bauen (tsc + vite build) und die gebaute App mit lokaler API per vite preview auf Port 5178 starten
 npm test              # Vitest: Parser, Logik, Migration, Statistik (Formattests mit Fixtures, ein Rauchtest mit den echten Lernblättern aus content/)
 npm run typecheck     # tsc -b
