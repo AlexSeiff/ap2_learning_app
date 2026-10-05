@@ -286,6 +286,77 @@
       "erklaerung": "Das Pareto-Prinzip (80/20): Wenige Ursachen erklären den Großteil der Fälle – dort setzt die Prozessoptimierung an. Im Pareto-Diagramm stehen Balken (absolute Häufigkeit) und eine Linie (kumulierter Anteil) zusammen."
     },
     {
+      "id": "RE-ST1-018",
+      "thema": "Deep Dive 3",
+      "titel": "Normalverteilung: 95-%-Bereich und z-Wert",
+      "schwierigkeit": 2,
+      "tags": [
+        "normalverteilung",
+        "z-wert"
+      ],
+      "aufgabe": "Reparaturzeiten sind normalverteilt mit Mittelwert 60 min und Standardabweichung 10 min.\n\nIn welchem Bereich liegen rund 95 % der Reparaturen? Welcher Anteil dauert länger als die obere Grenze? Welchen z-Wert hat ein Auftrag mit 95 min?",
+      "eingaben": [
+        {
+          "id": "untere",
+          "label": "Untere Grenze des 95-%-Bereichs",
+          "einheit": "min",
+          "loesung": 40
+        },
+        {
+          "id": "obere",
+          "label": "Obere Grenze des 95-%-Bereichs",
+          "einheit": "min",
+          "loesung": 80
+        },
+        {
+          "id": "anteil",
+          "label": "Anteil über der oberen Grenze",
+          "einheit": "%",
+          "runden": 1,
+          "loesung": 2.5
+        },
+        {
+          "id": "z",
+          "label": "z-Wert für 95 min",
+          "runden": 1,
+          "loesung": 3.5
+        }
+      ],
+      "hinweise": [
+        "95 % liegen im Bereich Mittelwert ± 2 Standardabweichungen.",
+        "Die übrigen 5 % verteilen sich symmetrisch auf beide Seiten.",
+        "z = (x − Mittelwert) / Standardabweichung."
+      ],
+      "erklaerung": "Ein z-Wert über 3 liegt außerhalb von Mittelwert ± 3 σ, wo nur rund 0,3 % der Werte liegen – nach der 3-Sigma-Regel ein Ausreißerkandidat. Die Regel setzt eine annähernd normalverteilte Größe voraus; bei schiefen Verteilungen ist die 1,5-IQR-Regel robuster.",
+      "quelleAufgabe": "DD3 Teil 7.3"
+    },
+    {
+      "id": "RE-ST1-019",
+      "thema": "Deep Dive 3",
+      "titel": "Erwartungswert einer Garantieverlängerung",
+      "schwierigkeit": 1,
+      "tags": [
+        "wahrscheinlichkeit",
+        "erwartungswert"
+      ],
+      "aufgabe": "Je Garantievertrag tritt mit 5 % Wahrscheinlichkeit ein großer Schaden (400 €) ein, mit 10 % ein kleiner Schaden (150 €) und mit 85 % kein Schaden.\n\nWie hoch sind die erwarteten Kosten je Vertrag?",
+      "eingaben": [
+        {
+          "id": "erwartungswert",
+          "label": "Erwartete Kosten je Vertrag",
+          "einheit": "€",
+          "runden": 2,
+          "loesung": 35
+        }
+      ],
+      "hinweise": [
+        "E(X) = Σ Wert · Wahrscheinlichkeit.",
+        "Wahrscheinlichkeiten als Anteil einsetzen: 5 % = 0,05."
+      ],
+      "erklaerung": "$E(X) = 400 \\cdot 0{,}05 + 150 \\cdot 0{,}10 + 0 \\cdot 0{,}85 = 35$ €. Ein Preis über 35 € deckt die Kosten **im Mittel** vieler Verträge – ein einzelner Vertrag kann trotzdem 400 € kosten.",
+      "quelleAufgabe": "DD3 Teil 7.2"
+    },
+    {
       "id": "RE-ST2-001",
       "thema": "Deep Dive 4",
       "titel": "Korrelationskoeffizient nach Pearson",
@@ -887,6 +958,128 @@
       "erklaerung": "Zur Beurteilung gehört immer der Vergleich mit der Nutzungsdauer und der Blick auf qualitative Faktoren wie Fehlerreduktion, Folgekosten und Akzeptanz."
     },
     {
+      "id": "RE-PA-009",
+      "thema": "Deep Dive 5",
+      "titel": "FMEA: Risikoprioritätszahlen im Reparaturservice",
+      "schwierigkeit": 2,
+      "tags": [
+        "fmea",
+        "prozessoptimierung"
+      ],
+      "vorlage": "fmea",
+      "daten": {
+        "fehler": [
+          {
+            "name": "Ersatzteil falsch bestellt",
+            "a": 4,
+            "b": 6,
+            "e": 5
+          },
+          {
+            "name": "Kundentermin nicht bestätigt",
+            "a": 6,
+            "b": 4,
+            "e": 3
+          },
+          {
+            "name": "Vorschaden bei Abholung nicht dokumentiert",
+            "a": 3,
+            "b": 8,
+            "e": 7
+          }
+        ],
+        "schwelle": 125
+      },
+      "aufgabe": "Mögliche Fehler im Reparaturservice mit Auftreten (A), Bedeutung (B) und Entdeckung (E), je 1–10: {{fehler}}.\n\nBerechne die Risikoprioritätszahlen, bestimme den Fehler mit Vorrang und die Anzahl der Fehler, für die ab einer RPZ von {{schwelle}} Maßnahmen nötig sind.",
+      "eingaben": [
+        "rpz1",
+        "rpz2",
+        "rpz3",
+        "hoechstes",
+        "anzahlKritisch"
+      ],
+      "erklaerung": "Der nicht dokumentierte Vorschaden tritt selten auf, bleibt aber meist unentdeckt (E = 7) und hat schwere Folgen – deshalb hat er trotz kleinem A die höchste RPZ. Eine Fotodokumentation als Pflichtschritt senkt E. Fehler mit sehr hoher Bedeutung (B ≥ 9) werden unabhängig von der RPZ betrachtet.",
+      "quelleAufgabe": "DD5 Teil 6.4"
+    },
+    {
+      "id": "RE-PA-010",
+      "thema": "Deep Dive 5",
+      "titel": "FMEA mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": [
+        "fmea",
+        "prozessoptimierung"
+      ],
+      "vorlage": "fmea",
+      "aufgabe": "Mögliche Fehler mit Auftreten (A), Bedeutung (B) und Entdeckung (E), je 1–10: {{fehler}}.\n\nBerechne die Risikoprioritätszahlen und bestimme den Fehler, der zuerst behandelt wird.",
+      "hinweise": [
+        "RPZ = A · B · E.",
+        "Hohes E heißt: Der Fehler bleibt eher unentdeckt."
+      ],
+      "erklaerung": "Die FMEA ergänzt die Risikozahl W · S aus dem Projektmanagement um die Entdeckbarkeit. Gerade sie lässt sich im Prozess oft am leichtesten verbessern – durch zusätzliche Prüfungen oder Pflichtschritte."
+    },
+    {
+      "id": "RE-PA-011",
+      "thema": "Deep Dive 5",
+      "titel": "ABC-Analyse der Jahresverbrauchswerte",
+      "schwierigkeit": 2,
+      "tags": [
+        "abc-analyse",
+        "prozessoptimierung"
+      ],
+      "vorlage": "haeufigkeiten",
+      "neueZahlen": false,
+      "daten": {
+        "kategorien": [
+          {
+            "name": "Bürostuhl",
+            "h": 48000
+          },
+          {
+            "name": "Schreibtisch",
+            "h": 21000
+          },
+          {
+            "name": "Monitor",
+            "h": 12000
+          },
+          {
+            "name": "Lampe",
+            "h": 6000
+          },
+          {
+            "name": "Kabelkanal",
+            "h": 2000
+          },
+          {
+            "name": "Schrauben",
+            "h": 1000
+          }
+        ]
+      },
+      "aufgabe": "Jahresverbrauchswerte in €: {{kategorien}} – zusammen {{n}} €.\n\nFühre eine ABC-Analyse durch: Sortiere absteigend und berechne Wertanteil und kumulierten Wertanteil (in %, eine Nachkommastelle). Ordne danach die Klassen zu (A bis etwa 80 %, B bis etwa 95 %, C Rest).",
+      "eingaben": [
+        "rel1",
+        "kum1",
+        "rel2",
+        "kum2",
+        "rel3",
+        "kum3",
+        "rel4",
+        "kum4",
+        "rel5",
+        "kum5",
+        "rel6",
+        "kum6"
+      ],
+      "hinweise": [
+        "Zuerst absteigend nach Wert sortieren.",
+        "Wertanteil = Wert / {{n}} · 100 %, kumuliert = laufende Summe. Am Ende stehen 100 %."
+      ],
+      "erklaerung": "A-Artikel: Bürostuhl und Schreibtisch (zusammen 76,7 % des Werts bei 33 % der Artikel), B: Monitor, C: Lampe, Kabelkanal, Schrauben. Auf die A-Artikel konzentrieren sich Preisverhandlungen und Bestandsoptimierung; C-Artikel werden mit möglichst wenig Aufwand beschafft.",
+      "quelleAufgabe": "DD5 Teil 6.5"
+    },
+    {
       "id": "RE-DQ-001",
       "thema": "Deep Dive 9",
       "titel": "Datenqualitäts-Kennzahlen",
@@ -1380,6 +1573,218 @@
       "aufgabe": "Die Sicherung läuft täglich um {{sicherungUm}} Uhr. Am nächsten Tag fällt das System um {{ausfallUm}} Uhr aus.\n\nWie groß ist der maximale Datenverlust in Stunden?",
       "hinweise": ["Verloren geht alles seit der letzten erfolgreichen Sicherung.", "Über Mitternacht: Stunden bis 24:00 plus Stunden ab 0:00."],
       "erklaerung": "Der mögliche Datenverlust muss kleiner sein als die RPO (Recovery Point Objective). Ist er größer, muss häufiger gesichert werden – z. B. zusätzlich die Transaktionsprotokolle."
+    },
+    {
+      "id": "RE-QS-001",
+      "thema": "Deep Dive 16",
+      "titel": "SLA über ein Jahr prüfen",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "sla"
+      ],
+      "vorlage": "verfuegbarkeit",
+      "daten": {
+        "stunden": 8760,
+        "sla": 99.9,
+        "ausfall": 12
+      },
+      "aufgabe": "Ein SLA sichert {{sla}} % Verfügbarkeit pro Jahr zu (rund um die Uhr, {{stunden}} Stunden). Im letzten Jahr fiel das System {{ausfall}} Stunden ungeplant aus.\n\nBerechne die erlaubte Ausfallzeit und die tatsächliche Verfügbarkeit (drei Nachkommastellen) und beurteile, ob das SLA eingehalten wurde.",
+      "erklaerung": "Jede weitere „Neun“ teilt die erlaubte Ausfallzeit durch zehn: 99 % → 87,6 h, 99,9 % → 8,76 h, 99,99 % → rund 53 Minuten im Jahr. Geplante Wartungsfenster zählen meist nicht als Ausfall – das regelt das SLA.",
+      "quelleAufgabe": "DD16 Teil 4.4"
+    },
+    {
+      "id": "RE-QS-002",
+      "thema": "Deep Dive 16",
+      "titel": "SLA im Monat prüfen",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "sla"
+      ],
+      "vorlage": "verfuegbarkeit",
+      "daten": {
+        "stunden": 720,
+        "sla": 99.5,
+        "ausfall": 4.5
+      },
+      "aufgabe": "Das SLA sichert {{sla}} % Verfügbarkeit pro Monat zu (30 Tage rund um die Uhr = {{stunden}} Stunden). Im März fiel das System insgesamt {{ausfall}} Stunden aus.\n\nBerechne die erlaubte Ausfallzeit und die tatsächliche Verfügbarkeit (drei Nachkommastellen) und beurteile, ob das SLA eingehalten wurde.",
+      "quelleAufgabe": "DD16 Übungsklausur D1"
+    },
+    {
+      "id": "RE-QS-003",
+      "thema": "Deep Dive 16",
+      "titel": "SLA prüfen mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "sla"
+      ],
+      "vorlage": "verfuegbarkeit",
+      "aufgabe": "Zugesicherte Verfügbarkeit: {{sla}} % bei einer Betriebszeit von {{stunden}} Stunden (rund um die Uhr). Tatsächlicher Ausfall: {{ausfall}} Stunden.\n\nBerechne die erlaubte Ausfallzeit und die tatsächliche Verfügbarkeit (drei Nachkommastellen) und beurteile, ob das SLA eingehalten wurde.",
+      "erklaerung": "Die Verfügbarkeit bezieht sich immer auf die vereinbarte Servicezeit. 99,9 % bei Mo–Fr 8–18 Uhr ist eine ganz andere Zusage als 99,9 % rund um die Uhr."
+    },
+    {
+      "id": "RE-QS-004",
+      "thema": "Deep Dive 16",
+      "titel": "Verfügbarkeit aus MTBF und MTTR",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "mtbf"
+      ],
+      "vorlage": "mtbf",
+      "daten": {
+        "mtbf": 990,
+        "mttr": 10
+      },
+      "aufgabe": "Ein Server läuft im Mittel {{mtbf}} Stunden zwischen zwei Ausfällen (MTBF), die Wiederherstellung dauert im Mittel {{mttr}} Stunden (MTTR).\n\nBerechne die Verfügbarkeit und die zu erwartende Ausfallzeit pro Jahr ({{stunden}} Stunden).",
+      "quelleAufgabe": "DD16 Teil 4.2"
+    },
+    {
+      "id": "RE-QS-005",
+      "thema": "Deep Dive 16",
+      "titel": "Datenbankserver: MTBF und MTTR",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "mtbf"
+      ],
+      "vorlage": "mtbf",
+      "daten": {
+        "mtbf": 1990,
+        "mttr": 10
+      },
+      "aufgabe": "Für den Datenbankserver gibt der Hersteller eine MTBF von {{mtbf}} Stunden und eine MTTR von {{mttr}} Stunden an.\n\nBerechne die Verfügbarkeit und die zu erwartende Ausfallzeit pro Jahr bei Betrieb rund um die Uhr.",
+      "quelleAufgabe": "DD16 Übungsklausur D2"
+    },
+    {
+      "id": "RE-QS-006",
+      "thema": "Deep Dive 16",
+      "titel": "MTBF und MTTR mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "mtbf"
+      ],
+      "vorlage": "mtbf",
+      "aufgabe": "MTBF: {{mtbf}} Stunden, MTTR: {{mttr}} Stunden.\n\nBerechne die Verfügbarkeit (drei Nachkommastellen) und die erwartete Ausfallzeit in {{stunden}} Betriebsstunden.",
+      "erklaerung": "Die Verfügbarkeit steigt auf zwei Wegen: seltener ausfallen (MTBF hoch) oder schneller wiederherstellen (MTTR niedrig) – etwa durch Ersatzteile vor Ort und einen Bereitschaftsdienst."
+    },
+    {
+      "id": "RE-QS-007",
+      "thema": "Deep Dive 16",
+      "titel": "Gespiegelte Datenbank",
+      "schwierigkeit": 2,
+      "tags": [
+        "verfügbarkeit",
+        "redundanz"
+      ],
+      "vorlage": "systemverfuegbarkeit",
+      "daten": {
+        "komponenten": [
+          {
+            "name": "Webserver",
+            "v": 99.9
+          },
+          {
+            "name": "Datenbank",
+            "v": 99,
+            "anzahl": 2
+          }
+        ]
+      },
+      "aufgabe": "Das Reporting braucht einen Webserver und eine Datenbank; die Datenbank wird auf zwei gleichwertigen Servern gespiegelt: {{komponenten}}.\n\nBerechne die Verfügbarkeit der gespiegelten Datenbank und die Gesamtverfügbarkeit (je drei Nachkommastellen).",
+      "eingaben": [
+        "stufe2",
+        "gesamt"
+      ],
+      "erklaerung": "Ohne Spiegelung läge das System bei 0,999 · 0,99 = 98,901 %. Die Redundanz an der schwächsten Stelle hebt es auf 99,890 % – die Ausfallzeit pro Jahr sinkt von rund 96 auf rund 10 Stunden.",
+      "quelleAufgabe": "DD16 Teil 4.3"
+    },
+    {
+      "id": "RE-QS-008",
+      "thema": "Deep Dive 16",
+      "titel": "Reihenschaltung aus drei Servern",
+      "schwierigkeit": 1,
+      "tags": [
+        "verfügbarkeit",
+        "reihenschaltung"
+      ],
+      "vorlage": "systemverfuegbarkeit",
+      "daten": {
+        "komponenten": [
+          {
+            "name": "Webserver",
+            "v": 99
+          },
+          {
+            "name": "Anwendungsserver",
+            "v": 99.5
+          },
+          {
+            "name": "Datenbank",
+            "v": 98
+          }
+        ]
+      },
+      "aufgabe": "Das Reporting ist nur erreichbar, wenn alle Komponenten laufen: {{komponenten}}.\n\nBerechne die Gesamtverfügbarkeit (drei Nachkommastellen).",
+      "eingaben": [
+        "gesamt"
+      ],
+      "quelleAufgabe": "DD16 Übungsklausur D3"
+    },
+    {
+      "id": "RE-QS-009",
+      "thema": "Deep Dive 16",
+      "titel": "Reihenschaltung mit gespiegelter Datenbank",
+      "schwierigkeit": 2,
+      "tags": [
+        "verfügbarkeit",
+        "redundanz"
+      ],
+      "vorlage": "systemverfuegbarkeit",
+      "daten": {
+        "komponenten": [
+          {
+            "name": "Webserver",
+            "v": 99
+          },
+          {
+            "name": "Anwendungsserver",
+            "v": 99.5
+          },
+          {
+            "name": "Datenbank",
+            "v": 98,
+            "anzahl": 2
+          }
+        ]
+      },
+      "aufgabe": "Die Datenbank wird jetzt durch einen zweiten, gleichwertigen Server gespiegelt: {{komponenten}}.\n\nBerechne die neue Gesamtverfügbarkeit (drei Nachkommastellen).",
+      "eingaben": [
+        "gesamt"
+      ],
+      "erklaerung": "Redundanz lohnt sich an der schwächsten Stelle: Die Datenbank (98 %) steigt auf 99,96 %, das Gesamtsystem von 96,535 % auf 98,466 %.",
+      "quelleAufgabe": "DD16 Übungsklausur D3"
+    },
+    {
+      "id": "RE-QS-010",
+      "thema": "Deep Dive 16",
+      "titel": "Systemverfügbarkeit mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": [
+        "verfügbarkeit",
+        "redundanz"
+      ],
+      "vorlage": "systemverfuegbarkeit",
+      "aufgabe": "Das System besteht aus diesen Stufen in Reihe: {{komponenten}}.\n\nBerechne die Verfügbarkeit jeder Stufe und die Gesamtverfügbarkeit (je drei Nachkommastellen).",
+      "erklaerung": "Reihenschaltung: Verfügbarkeiten multiplizieren. Parallelschaltung: Ausfallwahrscheinlichkeiten multiplizieren, also 1 − (1 − V)ⁿ. Eine Komponente, deren Ausfall allein das System stoppt, ist ein Single Point of Failure.",
+      "eingaben": [
+        "stufe1",
+        "stufe2",
+        "gesamt"
+      ]
     }
   ]
 }

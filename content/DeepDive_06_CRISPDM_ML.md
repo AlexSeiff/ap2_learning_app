@@ -385,6 +385,43 @@ Spediteur?
 
 ---
 
+# Teil 8 – KI, Deep Learning und weitere Verfahren
+
+## 8.1 KI, Machine Learning, Deep Learning
+
+Die drei Begriffe sind ineinander verschachtelt – jede Ebene ist ein Teil der vorherigen:
+
+| Begriff | Bedeutung | Beispiel |
+|---|---|---|
+| **Künstliche Intelligenz (KI)** | Oberbegriff: Systeme, die Aufgaben lösen, für die sonst menschliche Intelligenz nötig ist – auch mit fest programmierten Regeln | Regelbasiertes Expertensystem, Schachprogramm |
+| **Machine Learning (ML)** | Teilgebiet der KI: Das System **lernt Regeln aus Daten**, statt dass sie programmiert werden | Entscheidungsbaum für das Reklamationsrisiko |
+| **Deep Learning (DL)** | Teilgebiet von ML: **neuronale Netze mit vielen Schichten**, die Merkmale selbst aus Rohdaten bilden | Schadenserkennung auf Fotos, Spracherkennung, Sprachmodelle |
+
+**Data Mining** ist der Oberbegriff für das Finden von Mustern in großen Datenbeständen – mit Verfahren aus Statistik und ML: Klassifikation, Clustering, Assoziationsanalyse, Anomalieerkennung, Prognose. CRISP-DM (Teil 1) ist das Vorgehensmodell dafür.
+
+## 8.2 Neuronale Netze
+
+- Aufbau aus **Neuronen** in Schichten: **Eingabeschicht** (je Merkmal ein Neuron), eine oder mehrere **verdeckte Schichten**, **Ausgabeschicht** (z. B. Wahrscheinlichkeit für „Reklamation“).
+- Jede Verbindung hat ein **Gewicht**. Ein Neuron bildet die gewichtete Summe seiner Eingänge und gibt das Ergebnis über eine **Aktivierungsfunktion** weiter.
+- Training: Die Vorhersage wird mit dem richtigen Label verglichen; der Fehler wird rückwärts durch das Netz zurückgerechnet (**Backpropagation**) und die Gewichte werden schrittweise angepasst.
+- Stärken: unstrukturierte Daten (Bilder, Text, Sprache), sehr komplexe Zusammenhänge.
+- Schwächen: braucht **sehr viele Daten** und Rechenleistung, neigt ohne Gegenmaßnahmen zu Overfitting und ist eine **Black Box** – problematisch bei Art. 22 DSGVO (Teil 6.2).
+
+## 8.3 Random Forest und Support Vector Machine
+
+- **Random Forest:** Viele Entscheidungsbäume werden auf **zufälligen Stichproben** der Trainingsdaten und mit **zufälligen Teilmengen der Merkmale** trainiert (Bagging). Für einen neuen Fall stimmen alle Bäume ab, die Mehrheit entscheidet. Einzelne Bäume überanpassen leicht; ihre Fehler gleichen sich im Wald weitgehend aus – das Verfahren ist robust und meist genauer als ein einzelner Baum, verliert aber dessen Lesbarkeit.
+- **Support Vector Machine (SVM):** sucht die Trennlinie (allgemein: Hyperebene) zwischen zwei Klassen, die den **größten Abstand** (Margin) zu den nächstgelegenen Punkten beider Klassen hat. Diese Grenzpunkte heißen **Stützvektoren**. Über den **Kernel-Trick** lassen sich auch nicht geradlinig trennbare Klassen trennen. Gut bei vielen Merkmalen und mittleren Datenmengen, schwer zu erklären.
+
+## 8.4 Generative KI und KI-Verordnung
+
+- **Generative KI** (z. B. große Sprachmodelle) erzeugt neue Inhalte – Texte, Code, Bilder. In der Datenanalyse hilft sie beim Schreiben von SQL oder bei Zusammenfassungen. Risiken: **Halluzinationen** (überzeugend formulierte, aber falsche Aussagen – Ergebnisse immer prüfen), **Datenschutz** (keine personenbezogenen oder vertraulichen Daten in externe Dienste eingeben) und ungeklärte Urheberrechte.
+- Die **EU-KI-Verordnung (AI Act)** regelt KI-Systeme nach ihrem **Risiko**: **verboten** (z. B. Social Scoring durch Behörden), **hohes Risiko** (z. B. KI bei der Bewerberauswahl oder Kreditvergabe – strenge Pflichten zu Datenqualität, Dokumentation, menschlicher Aufsicht), **begrenztes Risiko** (Transparenzpflicht: Nutzer müssen erkennen, dass sie mit einer KI interagieren), **minimales Risiko** (z. B. Spamfilter – keine besonderen Pflichten).
+
+> ❓ **Prüferfrage:** Ihr Fachbereich möchte für die Reklamationsvorhersage „Deep Learning, weil das die modernste KI ist“. Was entgegnen Sie?
+> *Deep Learning spielt seine Stärken bei sehr großen Datenmengen und unstrukturierten Daten wie Bildern oder Texten aus. Für 18.000 tabellarische Aufträge mit wenigen Merkmalen ist ein Entscheidungsbaum oder Random Forest in der Regel ebenso gut, braucht weniger Daten und Rechenleistung und – beim Entscheidungsbaum – bleibt erklärbar. Die Verfahrenswahl richtet sich nach Daten, Ziel und Erklärbarkeit, nicht nach Modernität.*
+
+---
+
 ## Die 8 häufigsten Fehler aus Prüfersicht
 
 1. CRISP-DM als linearen Ablauf dargestellt, ohne Rücksprünge zu erwähnen.
@@ -487,3 +524,4 @@ Zehn Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe):
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
 - [ ] Ich klassifiziere einen neuen Fall mit k-NN von Hand und erkläre, wie die Wahl von k das Ergebnis beeinflusst.
 - [ ] Ich berechne Entropie und Informationsgewinn und bestimme mit ID3 die Wurzel eines Entscheidungsbaums.
+- [ ] Ich grenze KI, Machine Learning und Deep Learning ab und erkläre Aufbau und Grenzen neuronaler Netze, Random Forest und SVM.

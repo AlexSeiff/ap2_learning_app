@@ -213,6 +213,8 @@ Der Begriff **Lakehouse** bezeichnet Ansätze, die Flexibilität des Data Lake m
 
 **Batch- oder Streamverarbeitung?** Batch verarbeitet Daten gesammelt in festen Intervallen (nächtlicher DWH-Lauf) – einfach und robust. Streaming verarbeitet fortlaufend (Betrugserkennung, Bestandswarnung) – aufwendiger, aber nahezu in Echtzeit. Die Wahl richtet sich nach der Frage: **Wie aktuell muss die Information sein, damit die Entscheidung noch etwas nützt?**
 
+Werkzeuge für Big Data: Wenn ein einzelner Server nicht mehr reicht, wird die Arbeit auf viele Rechner verteilt. **Apache Hadoop** speichert große Dateien verteilt (HDFS) und verarbeitet sie parallel nach dem Prinzip **MapReduce**: Teilaufgaben werden auf die Knoten verteilt (Map) und die Teilergebnisse zusammengeführt (Reduce). **Apache Spark** arbeitet nach demselben Grundgedanken, hält die Daten aber im **Arbeitsspeicher** und ist dadurch deutlich schneller – auch für Streaming und Machine Learning. Prüfungsrelevant ist nicht die Bedienung, sondern das Prinzip: **horizontale Skalierung** durch Verteilung von Speicherung und Berechnung.
+
 ---
 
 ## Die 8 häufigsten Fehler aus Prüfersicht

@@ -334,3 +334,87 @@ export const amortisation = vorlage({
     return b.fertig();
   },
 });
+
+// ---------- FMEA: Risikoprioritätszahl A · B · E ----------
+
+const skala = z.number().int().min(1).max(10);
+const fmeaSchema = z.object({
+  fehler: z
+    .array(z.object({ name: z.string().trim().min(1), a: skala, b: skala, e: skala }))
+    .min(1)
+    .max(8),
+  /** Ab dieser RPZ (einschließlich) sind Maßnahmen nötig. */
+  schwelle: z.number().int().min(1).max(1000).optional(),
+});
+
+const FMEA_FEHLER = ['Ersatzteil falsch bestellt', 'Kundentermin nicht bestätigt', 'Vorschaden nicht dokumentiert'];
+
+export const fmea = vorlage({
+  id: 'fmea',
+  titel: 'FMEA: Risikoprioritätszahl',
+  bereich: 'Prozessanalyse',
+  beschreibung: 'RPZ = Auftreten · Bedeutung · Entdeckung je möglichem Fehler, der Fehler mit Vorrang und die Anzahl über der Schwelle.',
+  schema: fmeaSchema,
+  hinweise: [
+    'RPZ = A · B · E – alle drei Werte multiplizieren.',
+    'E ist die Wahrscheinlichkeit, dass der Fehler **unentdeckt** bleibt: 10 = kaum zu entdecken.',
+    'Vorrang hat die höchste RPZ; Maßnahmen ab der vereinbarten Schwelle (einschließlich).',
+  ],
+  erzeuge(z, _params, vorbild) {
+    const namen = vorbild?.fehler.map((f) => f.name) ?? FMEA_FEHLER;
+    for (let versuch = 0; ; versuch++) {
+      const fehler = namen.map((name) => ({ name, a: z.ganz(1, 9), b: z.ganz(2, 9), e: z.ganz(1, 9) }));
+      const rpz = fehler.map((f) => f.a * f.b * f.e);
+      const eindeutig = rpz.filter((x) => x === Math.max(...rpz)).length === 1;
+      const schwelle = vorbild?.schwelle;
+      const nichtAufGrenze = schwelle === undefined || !rpz.includes(schwelle);
+      if ((eindeutig && nichtAufGrenze) || versuch > 200) return { fehler, ...(schwelle !== undefined ? { schwelle } : {}) };
+    }
+  },
+  platzhalter: (d) => ({
+    fehler: d.fehler.map((f) => `${f.name} (A = ${fz(f.a)}, B = ${fz(f.b)}, E = ${fz(f.e)})`).join(' · '),
+    schwelle: d.schwelle === undefined ? '–' : fz(d.schwelle),
+    anzahl: String(d.fehler.length),
+  }),
+  tabelle: (d) => ({ kopf: ['Möglicher Fehler', 'A', 'B', 'E'], zeilen: d.fehler.map((f) => [f.name, fz(f.a), fz(f.b), fz(f.e)]) }),
+  loese(d) {
+    const b = new LoesungsBau();
+    const rpz = d.fehler.map((f, i) => {
+      const w = b.wert(`rpz${i + 1}`, f.a * f.b * f.e, { label: `RPZ: ${f.name}` });
+      b.schritt({ titel: f.name, formel: F.rpz.latex, einsetzen: L`${lz(f.a)} \cdot ${lz(f.b)} \cdot ${lz(f.e)}`, ergebnis: w });
+      b.fehler(`rpz${i + 1}`, f.a + f.b + f.e, 'Du hast addiert – die RPZ ist das **Produkt** A · B · E.');
+      b.fehler(`rpz${i + 1}`, f.a * f.b, 'Hier fehlt die Entdeckung E – das ist nur die Risikozahl aus dem Projektmanagement (W · S).');
+      b.fehler(
+        `rpz${i + 1}`,
+        f.a * f.b * (11 - f.e),
+        'Die Entdeckungsskala ist umgedreht: **hohes** E heißt, der Fehler bleibt eher unentdeckt.',
+      );
+      return w;
+    });
+    const top = rpz.indexOf(Math.max(...rpz));
+    b.wert('hoechstes', d.fehler[top].name, { label: 'Fehler mit Vorrang (höchste RPZ)', vergleich: 'text' });
+    const ohneE = d.fehler.map((f) => f.a * f.b);
+    b.fehler(
+      'hoechstes',
+      d.fehler[ohneE.indexOf(Math.max(...ohneE))].name,
+      'Das wäre der Vorrang nach A · B – die Entdeckung E gehört dazu.',
+    );
+    for (const f of d.fehler) b.fehler('hoechstes', f.name, `„${f.name}“ hat eine kleinere RPZ.`);
+
+    if (d.schwelle !== undefined) {
+      const s = d.schwelle;
+      const anzahl = b.wert('anzahlKritisch', rpz.filter((x) => x >= s).length, {
+        label: `Anzahl Fehler mit RPZ ab ${fz(s)} (Maßnahme nötig)`,
+      });
+      b.schritt({
+        titel: `Maßnahmen ab RPZ ${fz(s)}`,
+        formel: L`RPZ \ge ${lz(s)}`,
+        einsetzen: rpz.map((x) => lz(x)).join(', '),
+        ergebnis: anzahl,
+      });
+      b.fehler('anzahlKritisch', rpz.filter((x) => x > s).length, `Die Schwelle zählt mit: „ab ${fz(s)}“ heißt ≥ ${fz(s)}.`);
+      b.fehler('anzahlKritisch', rpz.filter((x) => x < s).length, 'Das sind die Fehler **unter** der Schwelle.');
+    }
+    return b.fertig();
+  },
+});

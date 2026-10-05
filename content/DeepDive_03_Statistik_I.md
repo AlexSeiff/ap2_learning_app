@@ -203,6 +203,56 @@ Häufungen exakt gleicher Werte (z. B. auffällig viele Datensätze mit Geburtsd
 
 ---
 
+# Teil 7 – Wahrscheinlichkeit, Normalverteilung und Befragungsskalen
+
+## 7.1 Wahrscheinlichkeit
+
+- **Laplace-Wahrscheinlichkeit** (alle Ergebnisse gleich wahrscheinlich): $P(A) = \frac{\text{günstige Fälle}}{\text{mögliche Fälle}}$. In der Praxis schätzt man Wahrscheinlichkeiten über **relative Häufigkeiten**: 3 von 60 Aufträgen wurden reklamiert → geschätzte Reklamationswahrscheinlichkeit 5 %.
+- **Gegenereignis:** $P(\text{nicht } A) = 1 - P(A)$ – mit 95 % Wahrscheinlichkeit wird ein Auftrag nicht reklamiert.
+- **Unabhängige Ereignisse, die beide eintreten** („und“): **multiplizieren**. Zwei voneinander unabhängige Prüfungen übersehen einen Fehler jeweils mit 10 % Wahrscheinlichkeit; beide übersehen ihn mit $0{,}1 \cdot 0{,}1 = 0{,}01$, also 1 %.
+- Sich ausschließende Ereignisse („oder“): **addieren**.
+
+Eine **Zufallsvariable** ordnet jedem Ergebnis eines Zufallsvorgangs eine Zahl zu – etwa die Reparaturkosten eines Auftrags.
+
+## 7.2 Erwartungswert
+
+Der **Erwartungswert** ist der Wert, der sich im Durchschnitt vieler Wiederholungen einstellt: $E(X) = \sum x_i \cdot p_i$
+
+**Beispiel:** Das Möbelhaus erwägt eine Garantieverlängerung. Aus den Daten ergibt sich je Vertrag: mit 5 % Wahrscheinlichkeit ein großer Schaden (400 €), mit 10 % ein kleiner (150 €), mit 85 % kein Schaden (0 €).
+$E(X) = 400 \cdot 0{,}05 + 150 \cdot 0{,}10 + 0 \cdot 0{,}85 = 20 + 15 + 0$ = **35 €** je Vertrag. Ein Preis über 35 € deckt die Kosten **im Mittel** – einzelne Verträge können trotzdem 400 € kosten.
+
+## 7.3 Normalverteilung
+
+Viele Messgrößen (Bearbeitungszeiten, Messfehler, Körpergrößen) verteilen sich annähernd **glockenförmig**:
+- symmetrisch um den Mittelwert; **Mittelwert = Median = Modus**
+- beschrieben durch nur zwei Kennzahlen: Mittelwert $\mu$ und Standardabweichung $\sigma$
+- die Fläche unter der **Dichtefunktion** zwischen zwei Werten ist die Wahrscheinlichkeit für diesen Bereich
+
+**Die 68-95-99,7-Regel:**
+
+| Bereich | Anteil der Werte |
+|---|---|
+| Mittelwert ± 1 σ | rund 68 % |
+| Mittelwert ± 2 σ | rund 95 % |
+| Mittelwert ± 3 σ | rund 99,7 % |
+
+**Beispiel:** Reparaturzeiten sind normalverteilt mit Mittelwert 60 min und Standardabweichung 10 min.
+- 95 % der Reparaturen dauern zwischen 60 − 2 · 10 = **40** und 60 + 2 · 10 = **80** Minuten.
+- Länger als 80 Minuten dauern rund (100 % − 95 %) / 2 = **2,5 %** – die 5 % außerhalb verteilen sich symmetrisch auf beide Seiten.
+- Ein Auftrag mit 95 Minuten hat den **z-Wert** $z = \frac{x - \bar{x}}{s} = \frac{95 - 60}{10}$ = **3,5** – er liegt mehr als 3 Standardabweichungen vom Mittelwert entfernt und ist nach der **3-Sigma-Regel** ein Ausreißerkandidat (vgl. Teil 6: x̄ ± 3σ).
+
+⚠️ **Achtung:** Die 3-Sigma-Regel setzt eine annähernd **normalverteilte** Größe voraus. Bei **schiefen Verteilungen** – etwa Einkommen oder Bestellwerte mit wenigen sehr großen Werten (**rechtsschief**: Mittelwert > Median) – ist die 1,5-IQR-Regel aus Teil 5 robuster.
+
+## 7.4 Befragungsskalen
+
+- **Likert-Skala:** Zustimmung zu Aussagen in meist fünf Stufen („stimme gar nicht zu“ bis „stimme voll zu“). Streng genommen **ordinal** – Median und Modus sind immer zulässig; ein Mittelwert nur, wenn man gleiche Abstände zwischen den Stufen unterstellt (in der Praxis üblich, aber in der Prüfung erwähnen).
+- **Polaritätsprofil** (semantisches Differenzial): Ein Gegenstand wird auf mehreren Skalen zwischen **Gegensatzpaaren** bewertet („übersichtlich – unübersichtlich“, „schnell – langsam“). Die Profile mehrerer Varianten lassen sich als Linien übereinanderlegen und direkt vergleichen – etwa zwei Dashboard-Entwürfe im Usability-Test.
+
+> ❓ **Prüferfrage:** In einer Mitarbeiterbefragung ergibt sich auf einer fünfstufigen Likert-Skala ein Mittelwert von 3,4. Was ist an dieser Angabe kritisch?
+> *Die Likert-Skala ist ordinal: Die Abstände zwischen „stimme eher zu“ und „stimme voll zu“ sind nicht zwingend gleich. Ein Mittelwert unterstellt gleiche Abstände und kann zudem eine polarisierte Verteilung (viele 1er und viele 5er) verdecken. Besser sind Median und die Häufigkeitsverteilung der Antworten, ergänzend der Mittelwert mit ausdrücklichem Hinweis auf die Annahme.*
+
+---
+
 ## Die 8 häufigsten Fehler aus Prüfersicht
 
 1. Mittelwert auf ordinal oder nominal skalierte Daten angewendet.
@@ -293,3 +343,5 @@ Von 50 Reklamationen entfallen: Transportschaden 18, Montagefehler 15, Falschlie
 - [ ] Ich kann den Umgang mit Ausreißern in drei Schritten fachlich begründen.
 - [ ] Ich verbinde jede Kennzahl mit einer Datenqualitätsdimension.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich rechne mit Wahrscheinlichkeiten (Gegenereignis, unabhängige Ereignisse) und berechne einen Erwartungswert.
+- [ ] Ich wende die 68-95-99,7-Regel und den z-Wert an und beurteile Likert-Skala und Polaritätsprofil.

@@ -486,3 +486,71 @@ describe('Rechenweg-Formeln', () => {
     }
   });
 });
+
+describe('Prozessoptimierung (DD5 Teil 6) und Verfügbarkeit (DD16)', () => {
+  it('DD5 6.4 FMEA: RPZ 120 / 72 / 168, Vorrang Vorschaden, ab 125 ein Fehler', () => {
+    const w = loese('fmea', {
+      fehler: [
+        { name: 'Ersatzteil falsch bestellt', a: 4, b: 6, e: 5 },
+        { name: 'Kundentermin nicht bestätigt', a: 6, b: 4, e: 3 },
+        { name: 'Vorschaden bei Abholung nicht dokumentiert', a: 3, b: 8, e: 7 },
+      ],
+      schwelle: 125,
+    });
+    expect([w.rpz1, w.rpz2, w.rpz3, w.anzahlKritisch]).toEqual([120, 72, 168, 1]);
+    expect(w.hoechstes).toBe('Vorschaden bei Abholung nicht dokumentiert');
+  });
+
+  it('FMEA: Fehlerbilder für addiert, ohne E und umgedrehte Entdeckungsskala', () => {
+    const v = VORLAGEN.fmea;
+    const l = v.loese(v.schema.parse({ fehler: [{ name: 'X', a: 4, b: 6, e: 5 }] }));
+    expect(l.fehlerbilder.filter((f) => f.eingabe === 'rpz1').map((f) => f.wert)).toEqual([15, 24, 144]);
+  });
+
+  it('DD16 4.4 SLA 99,9 % im Jahr: erlaubt 8,76 h, 12 h Ausfall → 99,863 %, nicht eingehalten', () => {
+    const w = loese('verfuegbarkeit', { stunden: 8760, sla: 99.9, ausfall: 12 });
+    expect([r(w.erlaubt), r(w.verfuegbarkeit, 3), w.eingehalten]).toEqual([8.76, 99.863, 'nein']);
+  });
+
+  it('DD16 D1 SLA 99,5 % im Monat: erlaubt 3,6 h, 4,5 h → 99,375 %; D2 MTBF 1.990 / MTTR 10 → 99,5 %, 43,8 h', () => {
+    const w = loese('verfuegbarkeit', { stunden: 720, sla: 99.5, ausfall: 4.5 });
+    expect([r(w.erlaubt), r(w.verfuegbarkeit, 3), w.eingehalten]).toEqual([3.6, 99.375, 'nein']);
+    expect(loese('verfuegbarkeit', { stunden: 720, sla: 99.5, ausfall: 3 }).eingehalten).toBe('ja');
+    const m = loese('mtbf', { mtbf: 1990, mttr: 10 });
+    expect([r(m.verfuegbarkeit, 3), r(m.ausfallJahr)]).toEqual([99.5, 43.8]);
+  });
+
+  it('DD16 4.3/D3 Systemverfügbarkeit: Reihe 98,901 %, gespiegelt 99,890 %; D3 96,535 % → 98,466 %', () => {
+    expect(
+      r(
+        loese('systemverfuegbarkeit', {
+          komponenten: [
+            { name: 'Web', v: 99.9 },
+            { name: 'DB', v: 99 },
+          ],
+        }).gesamt,
+        3,
+      ),
+    ).toBe(98.901);
+    const gespiegelt = loese('systemverfuegbarkeit', {
+      komponenten: [
+        { name: 'Web', v: 99.9 },
+        { name: 'DB', v: 99, anzahl: 2 },
+      ],
+    });
+    expect([r(gespiegelt.stufe2, 3), r(gespiegelt.gesamt, 3)]).toEqual([99.99, 99.89]);
+    const drei = [
+      { name: 'Web', v: 99 },
+      { name: 'App', v: 99.5 },
+    ];
+    expect(r(loese('systemverfuegbarkeit', { komponenten: [...drei, { name: 'DB', v: 98 }] }).gesamt, 3)).toBe(96.535);
+    expect(r(loese('systemverfuegbarkeit', { komponenten: [...drei, { name: 'DB', v: 98, anzahl: 2 }] }).gesamt, 3)).toBe(98.466);
+  });
+
+  it('Systemverfügbarkeit: Fehlerbild „Verfügbarkeiten statt Ausfallwahrscheinlichkeiten multipliziert“', () => {
+    const v = VORLAGEN.systemverfuegbarkeit;
+    const l = v.loese(v.schema.parse({ komponenten: [{ name: 'DB', v: 98, anzahl: 2 }] }));
+    const fb = l.fehlerbilder.find((f) => typeof f.wert === 'number' && Math.abs(f.wert - 96.04) < 1e-9);
+    expect(fb?.text).toContain('Ausfall');
+  });
+});

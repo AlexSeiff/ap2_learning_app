@@ -6,23 +6,23 @@
     "aktualisiert_am": "2026-10-05",
     "version": "1.1",
     "sprache": "de",
-    "anzahl_decks": 24,
-    "anzahl_karten": 414,
+    "anzahl_decks": 25,
+    "anzahl_karten": 456,
     "karten_nach_typ": {
-      "abgrenzung": 55,
-      "anwendung": 49,
-      "falle": 64,
-      "rechnung": 27,
-      "wissen": 219
+      "abgrenzung": 61,
+      "anwendung": 53,
+      "falle": 69,
+      "rechnung": 32,
+      "wissen": 241
     },
     "karten_nach_status": {
-      "behandelt": 402,
+      "behandelt": 444,
       "offen": 12
     },
     "karten_nach_schwierigkeit": {
-      "1": 187,
-      "2": 209,
-      "3": 18
+      "1": 204,
+      "2": 233,
+      "3": 19
     },
     "felder": {
       "id": "Eindeutige Karten-ID aus Deck-Kürzel und laufender Nummer",
@@ -600,7 +600,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 3",
       "status": "behandelt",
-      "anzahl_karten": 21,
+      "anzahl_karten": 24,
       "karten": [
         {
           "id": "ST1-001",
@@ -816,6 +816,38 @@
           "tags": [
             "normalverteilung"
           ]
+        },
+        {
+          "id": "ST1-022",
+          "frage": "Was besagt die 68-95-99,7-Regel der Normalverteilung?",
+          "antwort": "Rund 68 % der Werte liegen im Bereich Mittelwert ± 1 σ, 95 % in ± 2 σ und 99,7 % in ± 3 σ. Beispiel: Mittel 60 min, σ = 10 min → 95 % zwischen 40 und 80 min, je 2,5 % darunter und darüber.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "normalverteilung"
+          ]
+        },
+        {
+          "id": "ST1-023",
+          "frage": "Wie berechnet man einen Erwartungswert?",
+          "antwort": "E(X) = Σ Wert · Wahrscheinlichkeit. Beispiel: 400 € · 0,05 + 150 € · 0,10 + 0 € · 0,85 = 35 € je Vertrag – der Durchschnitt über viele Wiederholungen, nicht der Wert im Einzelfall.",
+          "typ": "rechnung",
+          "schwierigkeit": 1,
+          "tags": [
+            "erwartungswert",
+            "wahrscheinlichkeit"
+          ]
+        },
+        {
+          "id": "ST1-024",
+          "frage": "Darf man von einer Likert-Skala den Mittelwert bilden?",
+          "antwort": "Streng genommen ist sie ordinal – zulässig sind Median und Modus. Ein Mittelwert unterstellt gleiche Abstände zwischen den Stufen und kann polarisierte Antworten verdecken; wenn, dann mit Hinweis auf die Annahme und zusammen mit der Verteilung.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "skalenniveau",
+            "befragung"
+          ]
         }
       ]
     },
@@ -1017,7 +1049,7 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 5 + BPMN-Vertiefung",
       "status": "behandelt",
-      "anzahl_karten": 33,
+      "anzahl_karten": 41,
       "karten": [
         {
           "id": "PRZ-001",
@@ -1369,6 +1401,87 @@
             "recht",
             "betriebsrat"
           ]
+        },
+        {
+          "id": "PRZ-034",
+          "frage": "Was unterscheidet Aufbau- und Ablauforganisation?",
+          "antwort": "Aufbauorganisation: wer ist wofür zuständig – Stellen, Abteilungen, Weisungswege (Organigramm; Einlinien-, Stablinien-, Matrixorganisation). Ablauforganisation: wie läuft die Arbeit zeitlich und räumlich ab – die Prozesse.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "organisation"
+          ]
+        },
+        {
+          "id": "PRZ-035",
+          "frage": "Welche sieben Verschwendungsarten kennt Lean Management?",
+          "antwort": "Überproduktion, Wartezeit, Transport, Überbearbeitung, Bestände, Bewegung, Fehler/Nacharbeit – oft ergänzt um ungenutztes Wissen der Beschäftigten.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "lean"
+          ]
+        },
+        {
+          "id": "PRZ-036",
+          "frage": "Kaizen/KVP oder Business Process Reengineering?",
+          "antwort": "Kaizen/KVP: viele kleine, ständige Verbesserungen durch die Beschäftigten, geringes Risiko. BPR: radikale Neugestaltung eines Prozesses „auf der grünen Wiese“ – große Wirkung, aber hohes Risiko und Widerstand.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "kvp",
+            "bpr"
+          ]
+        },
+        {
+          "id": "PRZ-037",
+          "frage": "Wofür stehen DMAIC und Six Sigma?",
+          "antwort": "Six Sigma verringert datengetrieben die Streuung von Prozessergebnissen (Ziel: 3,4 Fehler pro Million Möglichkeiten). Vorgehen DMAIC: Define, Measure, Analyze, Improve, Control.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "six sigma"
+          ]
+        },
+        {
+          "id": "PRZ-038",
+          "frage": "Wie berechnet man die RPZ einer FMEA, und was bedeutet ein hohes E?",
+          "antwort": "RPZ = A · B · E (je 1–10: Auftreten, Bedeutung, Entdeckung). Ein hohes E heißt, dass der Fehler wahrscheinlich unentdeckt bleibt – also schlecht. Beispiel: 3 · 8 · 7 = 168.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "fmea"
+          ]
+        },
+        {
+          "id": "PRZ-039",
+          "frage": "Wie führt man eine ABC-Analyse durch?",
+          "antwort": "Wert je Objekt berechnen, absteigend sortieren, Wertanteil und kumulierten Anteil bilden, Klassen zuordnen: A bis etwa 80 % des Werts, B bis etwa 95 %, C Rest. Wenige A-Objekte machen den Großteil des Werts aus.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "abc-analyse"
+          ]
+        },
+        {
+          "id": "PRZ-040",
+          "frage": "Was zeigt eine SWOT-Analyse?",
+          "antwort": "Interne Stärken und Schwächen gegenüber externen Chancen und Risiken; aus den Kombinationen werden Strategien abgeleitet (z. B. SO: Stärken nutzen, um Chancen zu ergreifen; WT: Schwächen abbauen, um Risiken zu vermeiden).",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "swot"
+          ]
+        },
+        {
+          "id": "PRZ-041",
+          "frage": "Was ist ein KPI, und was ist eine Balanced Scorecard?",
+          "antwort": "Ein KPI ist eine der wenigen zentralen Kennzahlen eines Prozesses mit Zielwert, Messvorschrift und Verantwortlichem. Die Balanced Scorecard ordnet Kennzahlen vier Perspektiven zu: Finanzen, Kunden, interne Prozesse, Lernen und Entwicklung.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "kennzahlen"
+          ]
         }
       ]
     },
@@ -1378,7 +1491,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 6",
       "status": "behandelt",
-      "anzahl_karten": 32,
+      "anzahl_karten": 36,
       "karten": [
         {
           "id": "ML-001",
@@ -1709,6 +1822,48 @@
           "tags": [
             "id3",
             "overfitting"
+          ]
+        },
+        {
+          "id": "ML-033",
+          "frage": "Wie hängen KI, Machine Learning und Deep Learning zusammen?",
+          "antwort": "Verschachtelt: KI ist der Oberbegriff (auch regelbasierte Systeme), ML ist der Teil der KI, der Regeln aus Daten lernt, Deep Learning ist der Teil von ML mit vielschichtigen neuronalen Netzen.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "ki"
+          ]
+        },
+        {
+          "id": "ML-034",
+          "frage": "Wie lernt ein neuronales Netz, und wo liegen seine Grenzen?",
+          "antwort": "Gewichtete Verbindungen zwischen Neuronen in Schichten; der Fehler der Vorhersage wird per Backpropagation zurückgerechnet und die Gewichte werden angepasst. Grenzen: großer Daten- und Rechenbedarf, Overfitting-Gefahr, Black Box.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronale netze"
+          ]
+        },
+        {
+          "id": "ML-035",
+          "frage": "Wie arbeitet eine Support Vector Machine?",
+          "antwort": "Sie sucht die Trennlinie (Hyperebene) zwischen zwei Klassen mit dem größten Abstand (Margin) zu den nächstgelegenen Punkten, den Stützvektoren. Mit dem Kernel-Trick trennt sie auch nicht geradlinig trennbare Klassen.",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "svm",
+            "klassifikation"
+          ]
+        },
+        {
+          "id": "ML-036",
+          "frage": "Wie stuft die EU-KI-Verordnung KI-Systeme ein?",
+          "antwort": "Nach Risiko: verboten (z. B. Social Scoring durch Behörden), hohes Risiko (z. B. Bewerberauswahl, Kreditvergabe – strenge Pflichten), begrenztes Risiko (Transparenzpflicht), minimales Risiko (z. B. Spamfilter).",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "ki",
+            "recht"
           ]
         }
       ]
@@ -2494,7 +2649,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 10",
       "status": "behandelt",
-      "anzahl_karten": 16,
+      "anzahl_karten": 21,
       "karten": [
         {
           "id": "ITS-001",
@@ -2657,6 +2812,57 @@
           "tags": [
             "angriffe"
           ]
+        },
+        {
+          "id": "ITS-017",
+          "frage": "Wie läuft das Vorgehen nach BSI-IT-Grundschutz ab?",
+          "antwort": "Strukturanalyse → Schutzbedarfsfeststellung (normal, hoch, sehr hoch je Schutzziel) → Modellierung mit Bausteinen → IT-Grundschutz-Check (Soll-Ist) → Risikoanalyse bei hohem Schutzbedarf → Umsetzung und Überprüfung.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "grundschutz"
+          ]
+        },
+        {
+          "id": "ITS-018",
+          "frage": "Was besagt das Maximumprinzip?",
+          "antwort": "Ein IT-System übernimmt den höchsten Schutzbedarf der Anwendungen und Daten, die auf ihm laufen. Läuft die Gehaltsauswertung neben öffentlichen Daten, gilt für den ganzen Server der hohe Schutzbedarf.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "grundschutz",
+            "schutzbedarf"
+          ]
+        },
+        {
+          "id": "ITS-019",
+          "frage": "Was ist ein DDoS-Angriff, und welches Schutzziel trifft er?",
+          "antwort": "Viele gekaperte Rechner (Botnetz) überfluten einen Dienst mit Anfragen, bis er nicht mehr erreichbar ist – Angriff auf die Verfügbarkeit. Gegenmaßnahmen: DDoS-Schutz des Providers, Rate Limiting, Lastverteilung, Notfallplan.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "angriffe"
+          ]
+        },
+        {
+          "id": "ITS-020",
+          "frage": "Penetrationstest oder Schwachstellenscan?",
+          "antwort": "Der Schwachstellenscan prüft automatisiert auf bekannte Lücken. Der Penetrationstest ist ein beauftragter, simulierter Angriff, der Lücken auch ausnutzt und verkettet – ohne schriftliche Beauftragung strafbar.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "pentest"
+          ]
+        },
+        {
+          "id": "ITS-021",
+          "frage": "Welche Schritte hat die Behandlung eines Sicherheitsvorfalls?",
+          "antwort": "Erkennen und melden → bewerten → eindämmen (Systeme trennen, Konten sperren) → beseitigen und wiederherstellen → nachbereiten (Ursache, Lessons Learned). Bei personenbezogenen Daten parallel die 72-Stunden-Meldung nach Art. 33 DSGVO.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "incident management"
+          ]
         }
       ]
     },
@@ -2666,7 +2872,7 @@
       "pruefungsbereich": "Prozessanalyse und Datenqualität",
       "quelle": "Deep Dive 11",
       "status": "behandelt",
-      "anzahl_karten": 10,
+      "anzahl_karten": 12,
       "karten": [
         {
           "id": "VIS-001",
@@ -2766,6 +2972,26 @@
           "schwierigkeit": 1,
           "tags": [
             "gestaltung"
+          ]
+        },
+        {
+          "id": "VIS-011",
+          "frage": "Nenne die sieben Interaktionsprinzipien der ISO 9241-110.",
+          "antwort": "Aufgabenangemessenheit, Selbstbeschreibungsfähigkeit, Erwartungskonformität, Erlernbarkeit, Steuerbarkeit, Robustheit gegen Benutzungsfehler, Benutzerbindung.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "softwareergonomie"
+          ]
+        },
+        {
+          "id": "VIS-012",
+          "frage": "Worauf achtest du bei einem barrierefreien Dashboard?",
+          "antwort": "Information nie nur über Farbe (zusätzlich Beschriftung/Symbol), ausreichender Kontrast (Text mindestens 4,5 : 1), Alternativtext oder Datentabelle zu jeder Grafik, Bedienbarkeit per Tastatur, skalierbare Schrift. Grundlage: WCAG, BITV 2.0, BFSG.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "barrierefreiheit"
           ]
         }
       ]
@@ -2898,7 +3124,7 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 12",
       "status": "behandelt",
-      "anzahl_karten": 20,
+      "anzahl_karten": 22,
       "karten": [
         {
           "id": "PM-001",
@@ -3100,6 +3326,27 @@
           "schwierigkeit": 1,
           "tags": [
             "planung"
+          ]
+        },
+        {
+          "id": "PM-021",
+          "frage": "Wie funktioniert Planning Poker, und warum verdeckt?",
+          "antwort": "Jedes Teammitglied schätzt eine User Story verdeckt in Story Points (z. B. Fibonacci-Folge), alle decken gleichzeitig auf; die Extremschätzer begründen, dann wird neu geschätzt. Verdeckt, damit sich niemand an der ersten genannten Zahl orientiert (Ankereffekt).",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "scrum",
+            "schätzung"
+          ]
+        },
+        {
+          "id": "PM-022",
+          "frage": "Was kennzeichnet PRINCE2?",
+          "antwort": "Fortlaufende geschäftliche Rechtfertigung (Business Case in jeder Phase geprüft), Steuerung über Managementphasen, definierte Rollen, Management nach Ausnahmen über Toleranzen, Produktorientierung.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "vorgehensmodelle"
           ]
         }
       ]
@@ -3406,6 +3653,174 @@
           "schwierigkeit": 2,
           "tags": [
             "kodierung"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qs",
+      "titel": "Qualitätssicherung, Testen & Verfügbarkeit",
+      "pruefungsbereich": "Prozessanalyse und Datenqualität",
+      "quelle": "Deep Dive 16",
+      "status": "behandelt",
+      "anzahl_karten": 15,
+      "karten": [
+        {
+          "id": "QS-001",
+          "frage": "Was unterscheidet konstruktive von analytischer Qualitätssicherung?",
+          "antwort": "Konstruktive QS vermeidet Fehler von vornherein (Richtlinien, Vorlagen, Namenskonventionen, Validierungsregeln, Versionsverwaltung, Schulung). Analytische QS findet vorhandene Fehler durch Prüfen der Ergebnisse (Tests, Reviews, statische Codeanalyse, Datenabgleich).",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "qualitätssicherung"
+          ]
+        },
+        {
+          "id": "QS-002",
+          "frage": "Welche vier Teststufen kennt das V-Modell, und wer testet jeweils wogegen?",
+          "antwort": "Komponententest (Entwickler, einzelne Funktion gegen den Entwurf) · Integrationstest (Zusammenspiel und Schnittstellen) · Systemtest (Testteam, Gesamtsystem gegen das Pflichtenheft) · Abnahmetest (Auftraggeber, gegen Lastenheft und Abnahmekriterien).",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "teststufen",
+            "v-modell"
+          ]
+        },
+        {
+          "id": "QS-003",
+          "frage": "Black-Box- oder White-Box-Test – worin liegt der Unterschied?",
+          "antwort": "Black-Box: Grundlage ist die Spezifikation, der Code ist unbekannt; Verfahren: Äquivalenzklassen, Grenzwertanalyse. White-Box: Grundlage ist der Quellcode; Verfahren: Anweisungsüberdeckung (C0), Zweigüberdeckung (C1 – strenger, auch leere Else-Zweige).",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "testverfahren"
+          ]
+        },
+        {
+          "id": "QS-004",
+          "frage": "Was ist eine Äquivalenzklasse – und was wird oft vergessen?",
+          "antwort": "Eine Menge von Eingaben, bei denen sich das System gleich verhalten soll; aus jeder Klasse genügt ein Repräsentant. Vergessen werden oft die ungültigen Klassen (negative Werte, Text, leere Eingabe) – sie gehören immer dazu.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "testverfahren",
+            "äquivalenzklassen"
+          ]
+        },
+        {
+          "id": "QS-005",
+          "frage": "Rabatt ab 500 €, 10 % ab 2.000 €, negative Werte ungültig. Welche Grenzwerte testest du?",
+          "antwort": "−0,01 und 0,00 (untere Grenze) · 499,99 und 500,00 · 1.999,99 und 2.000,00 – je Grenze der letzte Wert der einen und der erste Wert der nächsten Klasse. So fällt ein „> 500“ statt „>= 500“ im Code auf.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "grenzwertanalyse"
+          ]
+        },
+        {
+          "id": "QS-006",
+          "frage": "Was ist ein Regressionstest, und warum wird er automatisiert?",
+          "antwort": "Nach jeder Änderung werden bereits bestandene Tests wiederholt, um ungewollte Nebenwirkungen zu finden. Da dieselben Testfälle mit festen erwarteten Ergebnissen immer wieder laufen müssen, lohnt sich die Automatisierung.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "testarten"
+          ]
+        },
+        {
+          "id": "QS-007",
+          "frage": "Welche Bestandteile hat ein vollständiger Testfall?",
+          "antwort": "ID, Testobjekt bzw. Anforderung, Vorbedingung, Eingabe/Testdaten, erwartetes Ergebnis (vor der Durchführung festgelegt!), tatsächliches Ergebnis, Status (bestanden/nicht bestanden).",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "testfall"
+          ]
+        },
+        {
+          "id": "QS-008",
+          "frage": "Mit welchen Prüfungen sicherst du eine ETL-Strecke ab?",
+          "antwort": "Datenabgleich Quelle ↔ Ziel (Anzahl Datensätze, Summenabgleich), Dublettenprüfung, NULL-Prüfung in Pflichtfeldern, Plausibilitätsprüfungen, Referenzprüfung, Abfragen gegen eine von Hand nachgerechnete Testdatenmenge – mit anonymisierten oder synthetischen Testdaten.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "etl",
+            "testen"
+          ]
+        },
+        {
+          "id": "QS-009",
+          "frage": "Welche Rechtsfolgen hat die Abnahme beim Werkvertrag?",
+          "antwort": "Die Vergütung wird fällig, die Gewährleistungsfrist beginnt, die Gefahr geht auf den Auftraggeber über, und die Beweislast kehrt sich um – nach der Abnahme muss der Auftraggeber einen Mangel nachweisen.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "abnahme"
+          ]
+        },
+        {
+          "id": "QS-010",
+          "frage": "SLA 99,9 % pro Jahr (24/7). Wie viel Ausfall ist erlaubt?",
+          "antwort": "8.760 h · (1 − 0,999) = 8,76 Stunden. Merkreihe: 99 % → 87,6 h, 99,9 % → 8,76 h, 99,99 % → 52,56 min, 99,999 % → 5,26 min.",
+          "typ": "rechnung",
+          "schwierigkeit": 1,
+          "tags": [
+            "verfügbarkeit",
+            "sla"
+          ]
+        },
+        {
+          "id": "QS-011",
+          "frage": "Wie berechnet man die Verfügbarkeit aus MTBF und MTTR?",
+          "antwort": "V = MTBF / (MTBF + MTTR). Beispiel: 990 / (990 + 10) = 99 %. MTBF misst die Zuverlässigkeit, MTTR die Geschwindigkeit der Wiederherstellung.",
+          "typ": "rechnung",
+          "schwierigkeit": 1,
+          "tags": [
+            "verfügbarkeit",
+            "mtbf"
+          ]
+        },
+        {
+          "id": "QS-012",
+          "frage": "Reihen- oder Parallelschaltung – wie rechnet man die Verfügbarkeit?",
+          "antwort": "Reihe (alle müssen laufen): Verfügbarkeiten multiplizieren, z. B. 0,999 · 0,99 = 98,901 %. Parallel (eine genügt): Ausfallwahrscheinlichkeiten multiplizieren, 1 − (1 − 0,99)² = 99,99 %.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "verfügbarkeit",
+            "redundanz"
+          ]
+        },
+        {
+          "id": "QS-013",
+          "frage": "Zwei gespiegelte Server mit je 98 %: Ist die Verfügbarkeit 0,98 · 0,98?",
+          "antwort": "Nein – das wäre eine Reihenschaltung, die Verfügbarkeit würde durch Redundanz sinken. Parallel werden die Ausfallwahrscheinlichkeiten multipliziert: 1 − 0,02 · 0,02 = 99,96 %.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "verfügbarkeit",
+            "redundanz"
+          ]
+        },
+        {
+          "id": "QS-014",
+          "frage": "Welche Inhalte gehören in ein SLA?",
+          "antwort": "Leistungsbeschreibung, Servicezeit und Verfügbarkeit, Reaktions- und Wiederherstellungszeiten je Priorität, Messverfahren und Reporting, Eskalation, Vertragsstrafen, Wartungsfenster. Reaktionszeit = bis zum Bearbeitungsbeginn, Wiederherstellungszeit = bis der Dienst wieder läuft.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "sla"
+          ]
+        },
+        {
+          "id": "QS-015",
+          "frage": "Was ist ein Single Point of Failure – und ersetzt Redundanz ein Backup?",
+          "antwort": "Eine Komponente, deren Ausfall allein das ganze System stoppt (z. B. der einzige Datenbankserver). Redundanz ersetzt kein Backup: Löschungen, fehlerhafte Ladeläufe oder Ransomware werden sofort auf alle Spiegel übertragen.",
+          "typ": "falle",
+          "schwierigkeit": 1,
+          "tags": [
+            "redundanz",
+            "backup"
           ]
         }
       ]
@@ -4102,7 +4517,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 14",
       "status": "behandelt",
-      "anzahl_karten": 20,
+      "anzahl_karten": 23,
       "karten": [
         {
           "id": "WS4-001",
@@ -4303,6 +4718,36 @@
           "schwierigkeit": 3,
           "tags": [
             "unternehmensformen"
+          ]
+        },
+        {
+          "id": "WS4-021",
+          "frage": "Wem gehören die Rechte an Software, die ein Arbeitnehmer im Job programmiert?",
+          "antwort": "Urheber bleibt der Arbeitnehmer, aber die wirtschaftlichen Nutzungsrechte stehen dem Arbeitgeber zu (§ 69b UrhG). Der Urheberschutz entsteht automatisch und endet 70 Jahre nach dem Tod des Urhebers.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "urheberrecht"
+          ]
+        },
+        {
+          "id": "WS4-022",
+          "frage": "Darf man Open-Source-Software beliebig verwenden?",
+          "antwort": "Nein – die Lizenzbedingungen gelten. Permissive Lizenzen (MIT, Apache) verlangen im Kern die Nennung des Urhebers; Copyleft-Lizenzen (GPL) verlangen, dass veränderte und weitergegebene Software wieder unter derselben Lizenz steht.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "lizenzen"
+          ]
+        },
+        {
+          "id": "WS4-023",
+          "frage": "Was regelt das UWG, und wann sind Werbe-E-Mails zulässig?",
+          "antwort": "Das Gesetz gegen den unlauteren Wettbewerb verbietet z. B. irreführende Werbung und unzumutbare Belästigung. Werbe-E-Mails sind grundsätzlich nur mit vorheriger Einwilligung zulässig (§ 7 UWG); bei Verstößen drohen Abmahnung und Unterlassung.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "uwg"
           ]
         }
       ]

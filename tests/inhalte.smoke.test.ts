@@ -12,8 +12,25 @@ describe('Echte Lernblätter in content/', () => {
     expect(content.issues).toEqual([]);
   });
 
-  it('enthalten alle 15 Deep Dives mit Lösungsdatei, Übungsklausur und Lernzielen', () => {
-    expect(sheets.map((t) => t.id)).toEqual(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15']);
+  it('enthalten alle 16 Deep Dives mit Lösungsdatei, Übungsklausur und Lernzielen', () => {
+    expect(sheets.map((t) => t.id)).toEqual([
+      '01',
+      '02',
+      '03',
+      '04',
+      '05',
+      '06',
+      '07',
+      '08',
+      '09',
+      '10',
+      '11',
+      '12',
+      '13',
+      '14',
+      '15',
+      '16',
+    ]);
     for (const t of sheets) {
       expect(t.solutionFile, t.file).toBe(t.file.replace('.md', '_Loesungen.md'));
       expect(t.exam?.blocks.length, t.file).toBeGreaterThan(0);

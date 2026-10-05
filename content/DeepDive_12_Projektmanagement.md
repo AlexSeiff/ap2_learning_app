@@ -73,6 +73,12 @@ Vier Strategien: **vermeiden** (Ursache ausschalten), **vermindern** (Wahrschein
 
 **Auswahlbegründung in Prüfungen:** Sind die Anforderungen **klar und stabil**, passt ein klassisches Modell. Sind sie **unklar oder veränderlich** und ist der Fachbereich laufend verfügbar, passt ein agiles Modell. Bei Ausbildungsprojekten mit fester IHK-Frist ist oft ein **hybrides** Vorgehen sinnvoll: klassischer Rahmen mit festen Meilensteinen, iterative Umsetzung im Inneren.
 
+**Schätzen im agilen Team – Planning Poker:** Jedes Teammitglied schätzt eine User Story verdeckt mit einer Karte in **Story Points** (relative Größe, meist Fibonacci-Folge 1, 2, 3, 5, 8, 13 …). Alle decken gleichzeitig auf; weichen die Werte stark ab, begründen der höchste und der niedrigste Schätzer, dann wird erneut geschätzt. So wird verhindert, dass sich alle an der ersten genannten Zahl orientieren (Ankereffekt), und unterschiedliches Wissen kommt ans Licht.
+
+**PRINCE2** (PRojects IN Controlled Environments) ist ein prozessorientiertes Projektmanagement-Rahmenwerk aus Großbritannien. Kennzeichen: **fortlaufende geschäftliche Rechtfertigung** (der Business Case wird in jeder Phase neu geprüft – fällt er weg, wird das Projekt beendet), Steuerung über **Managementphasen** mit Entscheidungspunkten, klar definierte Rollen (Lenkungsausschuss, Projektmanager, Teammanager), **Management nach Ausnahmen** (der Lenkungsausschuss greift nur ein, wenn Toleranzen bei Zeit, Kosten oder Qualität überschritten werden) und Produktorientierung (geplant wird über die zu liefernden Ergebnisse).
+
+**Machbarkeitsstudie:** Vor größeren Projekten wird geprüft, ob das Vorhaben **technisch** (Daten vorhanden, Systeme anbindbar?), **wirtschaftlich** (Kosten-Nutzen-Analyse), **organisatorisch** (Personal, Know-how, Akzeptanz) und **rechtlich** (Datenschutz, Mitbestimmung) umsetzbar ist. Ergebnis ist eine begründete Empfehlung: durchführen, anpassen oder verwerfen.
+
 ---
 
 # Teil 3 – Planung und Netzplantechnik
@@ -278,3 +284,4 @@ b) *Beurteilen* Sie das Ergebnis kritisch. (4 P)
 - [ ] Ich berechne Amortisation, ROI, Break-even und Nutzwertanalyse – und beurteile das Ergebnis.
 - [ ] Ich erkläre TCO, Risikoprioritätszahl, die vier Risikostrategien und Scope Creep.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich erkläre Planning Poker, die Kennzeichen von PRINCE2 und die Prüffelder einer Machbarkeitsstudie.

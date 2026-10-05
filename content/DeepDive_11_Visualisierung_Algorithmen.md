@@ -76,6 +76,30 @@ Ein Dashboard ist kein Diagrammfriedhof, sondern beantwortet **eine definierte F
 - **Einheitliche Skalen** bei nebeneinanderliegenden Diagrammen, sonst sind sie nicht vergleichbar.
 - **Aktualitätsstempel:** Wann wurden die Daten zuletzt geladen? Ohne diese Angabe weiß niemand, worauf er schaut.
 
+## A5 – Softwareergonomie, Barrierefreiheit und Prototypen
+
+**Gebrauchstauglichkeit** (Usability, ISO 9241-11) heißt: Nutzer erreichen ihre Ziele **effektiv** (vollständig und richtig), **effizient** (mit angemessenem Aufwand) und **zufriedenstellend**.
+
+**Die sieben Interaktionsprinzipien der ISO 9241-110** – mit Dashboard-Beispiel:
+
+| Prinzip | Bedeutung | Beispiel |
+|---|---|---|
+| **Aufgabenangemessenheit** | unterstützt die Aufgabe ohne unnötige Schritte | Monatsauswahl mit einem Klick statt Datumsformular |
+| **Selbstbeschreibungsfähigkeit** | jederzeit klar, wo man ist und was möglich ist | Titel, Einheiten und aktiver Filter sichtbar |
+| **Erwartungskonformität** | verhält sich wie gewohnt und einheitlich | Rot bedeutet überall „schlecht“, Bedienelemente immer an derselben Stelle |
+| **Erlernbarkeit** | leicht zu erlernen | Hilfetexte und Tooltips zu jeder Kennzahl |
+| **Steuerbarkeit** | Nutzer bestimmt Ablauf und Tempo | Filter zurücksetzen, Ansicht wechseln, Export abbrechen |
+| **Robustheit gegen Benutzungsfehler** | Fehler werden verhindert oder leicht korrigiert | ungültiger Zeitraum wird abgefangen statt leerer Grafik |
+| **Benutzerbindung** | motiviert zur weiteren Nutzung | übersichtliche, ansprechende Gestaltung |
+
+**Barrierefreiheit:** Das Angebot muss auch für Menschen mit Einschränkungen nutzbar sein – Grundlage sind die **WCAG** (Web Content Accessibility Guidelines) mit den vier Prinzipien **wahrnehmbar, bedienbar, verständlich, robust**. Öffentliche Stellen sind über die **BITV 2.0** verpflichtet, viele Unternehmen mit Angeboten für Verbraucher seit Juni 2025 über das **Barrierefreiheitsstärkungsgesetz (BFSG)**. Für Diagramme und Dashboards heißt das konkret:
+- Information **nie nur über Farbe** vermitteln (rund 8 % der Männer haben eine Rot-Grün-Sehschwäche) – zusätzlich Beschriftung, Symbol oder Muster
+- ausreichender **Kontrast** (für Text mindestens 4,5 : 1)
+- **Alternativtexte** bzw. eine Datentabelle zu jeder Grafik für Screenreader
+- vollständige Bedienbarkeit **per Tastatur**, skalierbare Schrift
+
+Vom Entwurf zum Prototyp: Ein **Wireframe** ist eine grobe Skizze der Anordnung (Kästen statt Diagramme), ein **Mock-up** ein statischer, realistisch gestalteter Entwurf, ein **Prototyp** ist bereits klickbar. Wer früh einen Mock-up mit dem Fachbereich bespricht, findet Missverständnisse, bevor eine Zeile SQL geschrieben ist – die beste und billigste Qualitätssicherung (→ Deep Dive 16). Bewertet werden Entwürfe im **Usability-Test**: echte Nutzer lösen typische Aufgaben, man beobachtet, wo sie stocken.
+
 ---
 
 # TEIL B – ALGORITHMEN UND PSEUDOCODE
@@ -288,3 +312,4 @@ AUSGABE max, anzahl
 - [ ] Ich zeichne Struktogramme mit Sequenz, Verzweigung und Schleife.
 - [ ] Ich finde Logikfehler in gegebenem Pseudocode, insbesondere Off-by-one und fehlende Initialisierung.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich wende die Interaktionsprinzipien der ISO 9241-110 und die Regeln der Barrierefreiheit auf ein Dashboard an.

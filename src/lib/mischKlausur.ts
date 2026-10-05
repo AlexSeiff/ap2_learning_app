@@ -68,6 +68,7 @@ export const UNTERBEREICHE: Unterbereich[] = [
     quellen: [
       { topicId: '12', bloecke: ['D'] },
       { topicId: '05', bloecke: ['D'] },
+      { topicId: '16', bloecke: ['A', 'B', 'C'] },
     ],
   },
   {
@@ -91,7 +92,15 @@ export const UNTERBEREICHE: Unterbereich[] = [
     titel: 'Datenqualität prüfen und sicherstellen',
     quellen: [{ topicId: '09' }, { topicId: '03' }, { topicId: '04' }, { topicId: '06' }, { topicId: '07' }, { topicId: '11' }],
   },
-  { id: 'B3', bereich: 'qualitaet', titel: 'Zugriff und Verfügbarkeit gewährleisten', quellen: [{ topicId: '10', bloecke: ['D', 'E'] }] },
+  {
+    id: 'B3',
+    bereich: 'qualitaet',
+    titel: 'Zugriff und Verfügbarkeit gewährleisten',
+    quellen: [
+      { topicId: '10', bloecke: ['D', 'E'] },
+      { topicId: '16', bloecke: ['D', 'E'] },
+    ],
+  },
   { id: 'B4', bereich: 'qualitaet', titel: 'Datenschutz & Datensicherheit', quellen: [{ topicId: '10', bloecke: ['A', 'B', 'C'] }] },
 ];
 

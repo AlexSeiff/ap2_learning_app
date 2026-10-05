@@ -160,6 +160,24 @@ Ein Vertrag entsteht durch zwei übereinstimmende Willenserklärungen: **Antrag 
 - **Widerrufsrecht** bei Fernabsatz (Onlineshop) und Verträgen außerhalb von Geschäftsräumen: **14 Tage ohne Angabe von Gründen**, bei Waren **ab Erhalt**; gilt nur für Verbraucher.
 - **AGB:** Überraschende Klauseln werden nicht Vertragsbestandteil; individuelle Vereinbarungen gehen vor.
 
+## 2.7 Urheberrecht, Lizenzen und Wettbewerbsrecht
+
+**Urheberrecht (UrhG):**
+- Geschützt sind persönliche geistige Schöpfungen – ausdrücklich auch **Computerprogramme** (§ 69a UrhG). Der Schutz entsteht **automatisch** mit der Schöpfung, ohne Anmeldung, und endet **70 Jahre nach dem Tod** des Urhebers.
+- Erstellt ein Arbeitnehmer Software in Erfüllung seiner Aufgaben, stehen die wirtschaftlichen **Nutzungsrechte dem Arbeitgeber** zu (§ 69b UrhG) – das gilt auch für Skripte und Auswertungen im Ausbildungsprojekt.
+- **Datenbankherstellerrecht** (§ 87a ff. UrhG): Wer wesentlich in den Aufbau einer Datenbank investiert hat, ist **15 Jahre** gegen die Übernahme wesentlicher Teile geschützt – wichtig beim massenhaften Auslesen fremder Webseiten (Scraping).
+
+Lizenzen:
+- **Proprietäre Software:** Nutzung nur im Rahmen der gekauften Lizenz (Einzelplatz, Mehrplatz, Volumenlizenz) oder als **Abonnement** bzw. **Software as a Service** (laufende Gebühr, Betrieb beim Anbieter).
+- **Open Source:** Quellcode offen, Nutzung und Änderung erlaubt – aber **nicht bedingungslos**. **Permissive** Lizenzen (MIT, Apache) verlangen im Kern die Nennung des Urhebers; **Copyleft**-Lizenzen (GPL) verlangen, dass veränderte und weitergegebene Software wieder unter derselben Lizenz steht.
+- **Open Data:** frei nutzbare Daten, meist öffentlicher Stellen, unter offenen Lizenzen (z. B. Datenlizenz Deutschland, Creative Commons CC BY – Namensnennung erforderlich). Auch hier gilt: Lizenz lesen und Quelle angeben.
+
+**Patentrecht:** Patente schützen **technische Erfindungen** – angemeldet, geprüft, höchstens 20 Jahre. Software „als solche“ ist in Europa nicht patentierbar, nur softwaregestützte technische Lösungen.
+
+**Gesetz gegen den unlauteren Wettbewerb (UWG):** verbietet unlautere geschäftliche Handlungen, z. B. **irreführende Werbung**, aggressive Verkaufsmethoden und **unzumutbare Belästigung** – Werbe-E-Mails ohne vorherige Einwilligung sind grundsätzlich unzulässig (§ 7 UWG). Bei Verstößen drohen Abmahnung und Unterlassungsanspruch durch Mitbewerber und Verbände.
+
+**AGB-Recht (§§ 305 ff. BGB):** AGB sind für viele Verträge vorformulierte Bedingungen. Sie werden nur Vertragsbestandteil, wenn auf sie **hingewiesen** wurde und der Vertragspartner sie **zumutbar zur Kenntnis nehmen** konnte. Klauseln, die den Vertragspartner **unangemessen benachteiligen**, sind unwirksam (Inhaltskontrolle) – der Vertrag bleibt im Übrigen wirksam, an die Stelle der Klausel tritt das Gesetz.
+
 ---
 
 # Teil 3 – Unternehmen und Rechtsformen
@@ -478,3 +496,4 @@ a) Löschversuch unternehmen · b) Brand melden · c) Ruhe bewahren · d) in Sic
 - [ ] Ich bestimme den Gleichgewichtspreis, berechne die Inflationsrate und erkläre Geld- und Fiskalpolitik.
 - [ ] Ich kenne STOP-Prinzip, Sicherheitszeichen, Unterweisungsfristen, Brandfallverhalten und Abfallhierarchie.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich kenne Urheberrecht an Software, Lizenzarten (proprietär, Open Source, Copyleft), Patent, UWG und die Grenzen von AGB.

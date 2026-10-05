@@ -6,9 +6,10 @@ import { qualitaetsgrad } from './datenqualitaet';
 import { id3, knn } from './klassifikation';
 import { konfusionsmatrix, regressionsguete } from './modellguete';
 import { breakEven, netzplan, nutzwert, pert, risiko } from './projekt';
-import { amortisation, durchlaufzeit, fehlerquote } from './prozess';
+import { amortisation, durchlaufzeit, fehlerquote, fmea } from './prozess';
 import { datensicherung, rpo } from './sicherung';
 import { gewichtetesMittel, haeufigkeiten, lagemasse, quartile, varianz, variationskoeffizient } from './statistik1';
+import { mtbf, systemverfuegbarkeit, verfuegbarkeit } from './verfuegbarkeit';
 import { gleitenderDurchschnitt, korrelation, prozentVeraenderung, regression } from './statistik2';
 import { gleichgewicht, minijob, sozialversicherung } from './wiso';
 
@@ -32,6 +33,7 @@ const alle = [
   durchlaufzeit,
   fehlerquote,
   amortisation,
+  fmea,
   qualitaetsgrad,
   netzplan,
   nutzwert,
@@ -43,6 +45,9 @@ const alle = [
   gleichgewicht,
   datensicherung,
   rpo,
+  verfuegbarkeit,
+  mtbf,
+  systemverfuegbarkeit,
 ] as unknown as Vorlage<unknown>[];
 
 export const VORLAGEN: Record<string, Vorlage<unknown>> = Object.fromEntries(alle.map((v) => [v.id, v]));

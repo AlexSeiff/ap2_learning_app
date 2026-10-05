@@ -81,7 +81,7 @@ describe('Formeln (src/rechnen/formeln.ts)', () => {
 
   it('Gruppen nach Thema und Links zu den Übungen', () => {
     const gruppen = formelnNachThema();
-    expect(gruppen.map((g) => g.thema)).toEqual(['03', '04', '05', '06', '07', '09', '10', '12', '14']);
+    expect(gruppen.map((g) => g.thema)).toEqual(['03', '04', '05', '06', '07', '09', '10', '12', '14', '16']);
     expect(gruppen.reduce((s, g) => s + g.formeln.length, 0)).toBe(FORMELN.length);
     expect(uebungenLink(F.mittel)).toBe('/rechnen?vorlage=lagemasse,varianz');
   });

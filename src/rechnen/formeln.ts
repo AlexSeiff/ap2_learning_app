@@ -303,6 +303,18 @@ export const F = {
     variablen: [v(L`\text{jährliche Einsparung}`, 'eingesparte Stunden · Kostensatz (bzw. jährlicher Rückfluss)')],
     vorlagen: ['amortisation'],
   },
+  rpz: {
+    name: 'Risikoprioritätszahl (FMEA)',
+    thema: '05',
+    latex: L`RPZ = A \cdot B \cdot E`,
+    erklaerung: 'Je 1–10 bewertet. Hohes E heißt: Der Fehler bleibt eher unentdeckt. Maßnahmen ab einer vereinbarten Schwelle.',
+    variablen: [
+      v(L`A`, 'Auftretenswahrscheinlichkeit'),
+      v(L`B`, 'Bedeutung der Folgen'),
+      v(L`E`, 'Wahrscheinlichkeit, dass der Fehler unentdeckt bleibt'),
+    ],
+    vorlagen: ['fmea'],
+  },
 
   // ---------- CRISP-DM / Machine Learning (DD6) ----------
   euklid: {
@@ -616,6 +628,49 @@ export const F = {
     variablen: [v(L`VPI`, 'Verbraucherpreisindex')],
     vorlagen: ['prozent-veraenderung'],
   },
+
+  // ---------- Qualitätssicherung und Verfügbarkeit (DD16) ----------
+  verfuegbarkeit: {
+    name: 'Verfügbarkeit',
+    thema: '16',
+    latex: L`V = \frac{\text{Betriebszeit} - \text{Ausfallzeit}}{\text{Betriebszeit}} \cdot 100\,\%`,
+    erklaerung: 'Anteil der vereinbarten Betriebszeit, in der das System nutzbar war. Bezugsgröße ist die Servicezeit aus dem SLA.',
+    variablen: [v(L`\text{Betriebszeit}`, 'vereinbarte Servicezeit, z. B. 720 h im Monat oder 8.760 h im Jahr (24/7)')],
+    vorlagen: ['verfuegbarkeit'],
+  },
+  ausfallzeit: {
+    name: 'Erlaubte bzw. erwartete Ausfallzeit',
+    thema: '16',
+    latex: L`\text{Ausfall} = \text{Betriebszeit} \cdot (1 - V)`,
+    erklaerung: 'Bei 99,9 % im Jahr (24/7) sind das 8,76 Stunden. Jede weitere „Neun“ teilt die Ausfallzeit durch zehn.',
+    variablen: [v(L`V`, 'Verfügbarkeit als Anteil (99,9 % = 0,999)')],
+    vorlagen: ['verfuegbarkeit', 'mtbf'],
+  },
+  mtbf: {
+    name: 'Verfügbarkeit aus MTBF und MTTR',
+    thema: '16',
+    latex: L`V = \frac{MTBF}{MTBF + MTTR}`,
+    erklaerung: 'Höhere Verfügbarkeit durch seltenere Ausfälle (MTBF hoch) oder schnellere Wiederherstellung (MTTR niedrig).',
+    variablen: [v(L`MTBF`, 'mittlere Betriebszeit zwischen zwei Ausfällen'), v(L`MTTR`, 'mittlere Reparatur- bzw. Wiederherstellungszeit')],
+    vorlagen: ['mtbf'],
+  },
+  reihenschaltung: {
+    name: 'Reihenschaltung',
+    thema: '16',
+    latex: L`V_{ges} = V_1 \cdot V_2 \cdot \ldots \cdot V_n`,
+    erklaerung: 'Alle Komponenten müssen laufen – das Ergebnis ist immer schlechter als die schwächste Komponente.',
+    variablen: [v(L`V_i`, 'Verfügbarkeit der Komponente bzw. Stufe i als Anteil')],
+    vorlagen: ['systemverfuegbarkeit'],
+  },
+  parallelschaltung: {
+    name: 'Parallelschaltung (Redundanz)',
+    thema: '16',
+    latex: L`V_{ges} = 1 - (1 - V_1) \cdot (1 - V_2) \cdot \ldots`,
+    erklaerung:
+      'Mindestens eine Komponente muss laufen – multipliziert werden die Ausfallwahrscheinlichkeiten. Bei n gleichen: 1 − (1 − V)ⁿ.',
+    variablen: [v(L`1 - V_i`, 'Ausfallwahrscheinlichkeit der Komponente i')],
+    vorlagen: ['systemverfuegbarkeit'],
+  },
 } satisfies Record<string, FormelDef>;
 
 /** Alle Formeln als Liste (Reihenfolge wie oben). */
@@ -637,6 +692,7 @@ export const THEMA_NAMEN: Record<string, string> = {
   '10': 'Datenschutz und IT-Sicherheit',
   '12': 'Projektmanagement',
   '14': 'WiSo II',
+  '16': 'Qualitätssicherung und Verfügbarkeit',
 };
 
 /** Formeln nach Thema gruppiert, Themen aufsteigend. */

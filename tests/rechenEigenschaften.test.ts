@@ -92,6 +92,19 @@ function plausibel(id: string, l: Loesung): string[] {
         if (/^(rest|gewinn)/.test(k)) le(k, 'entropie');
       }
       break;
+    case 'verfuegbarkeit':
+    case 'mtbf':
+    case 'systemverfuegbarkeit':
+      for (const k of Object.keys(w).filter((x) => /^(verfuegbarkeit|gesamt|stufe\d+)$/.test(x))) {
+        if (!(num(k) > 0 && num(k) <= 100 + 1e-9)) fehler.push(`${k} = ${num(k)} nicht in 0–100 %`);
+      }
+      for (const k of Object.keys(w).filter((x) => /^stufe\d+$/.test(x))) le('gesamt', k);
+      break;
+    case 'fmea':
+      for (const k of Object.keys(w).filter((x) => /^rpz\d+$/.test(x))) {
+        if (!(Number.isInteger(num(k)) && num(k) >= 1 && num(k) <= 1000)) fehler.push(`${k} = ${num(k)} keine RPZ`);
+      }
+      break;
   }
   return fehler;
 }

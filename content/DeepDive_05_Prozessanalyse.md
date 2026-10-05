@@ -255,6 +255,120 @@ Ein Event Log mit dem Feld *Resource* enthält **personenbezogene Daten** und er
 
 ---
 
+# Teil 6 – Organisation und Methoden der Prozessoptimierung
+
+## 6.1 Aufbau- und Ablauforganisation
+
+- **Aufbauorganisation:** *Wer* ist wofür zuständig? Stellen, Abteilungen, Weisungsbeziehungen – dargestellt im **Organigramm**.
+- **Ablauforganisation:** *Wie* läuft die Arbeit zeitlich und räumlich ab? Das sind die Prozesse aus Teil 1 bis 3.
+
+| Organisationsform | Merkmal | Vorteil | Nachteil |
+|---|---|---|---|
+| **Einliniensystem** | jede Stelle hat genau einen Vorgesetzten | klare Zuständigkeit | lange Dienstwege |
+| **Stabliniensystem** | Einlinie plus beratende Stäbe ohne Weisungsrecht (z. B. Datenschutz, Controlling) | Fachwissen ohne Bruch der Linie | Stäbe können nur empfehlen |
+| **Mehrliniensystem** | mehrere fachliche Vorgesetzte | kurze Wege, Spezialisierung | Kompetenzkonflikte |
+| **Matrixorganisation** | Funktion (z. B. IT) **und** Objekt bzw. Projekt kreuzen sich | flexibel, gut für Projekte | doppelte Unterstellung, Abstimmungsaufwand |
+
+**Funktions- oder prozessorientiert?** Eine funktionsorientierte Organisation schneidet die Arbeit nach Abteilungen; ein Prozess wie der Reparaturservice läuft dann durch viele Abteilungen mit Liegezeiten an jeder Schnittstelle. Die **prozessorientierte** Organisation gibt jedem Prozess einen **Prozesseigner**, der für das Ergebnis vom Auftrag bis zur Rechnung verantwortlich ist. Eine **Prozesslandkarte** zeigt alle Führungs-, Kern- und Unterstützungsprozesse eines Unternehmens auf einen Blick.
+
+## 6.2 Lean Management und Kaizen
+
+**Lean Management** richtet alles am Kundennutzen aus und beseitigt **Verschwendung** (japanisch *Muda*) – alles, wofür der Kunde nicht bezahlen würde. Die **sieben Verschwendungsarten:**
+
+| Verschwendung | Beispiel im Reparaturservice |
+|---|---|
+| Überproduktion | Berichte, die niemand liest |
+| Wartezeit | Auftrag liegt zwei Tage im Postfach der Disposition |
+| Transport | Unterlagen werden zwischen Standorten verschickt |
+| Überbearbeitung | dieselben Kundendaten in drei Systemen gepflegt |
+| Bestände | Ersatzteillager mit selten benötigten Teilen |
+| Bewegung | Techniker sucht Werkzeug und Unterlagen |
+| Fehler / Nacharbeit | zweiter Technikertermin wegen falsch bestelltem Teil |
+
+Oft wird als achte Art **ungenutztes Wissen der Beschäftigten** ergänzt.
+
+- **Kaizen** (japanisch „Veränderung zum Besseren“) ist die Haltung hinter dem **KVP**: viele kleine Verbesserungen durch die Beschäftigten selbst, ständig statt einmalig.
+- Der **SDCA-Zyklus** (Standardize – Do – Check – Act) sichert das Erreichte: Erst wenn eine Verbesserung als Standard festgeschrieben ist, startet der nächste PDCA-Zyklus. Ohne Standard fällt der Prozess in alte Gewohnheiten zurück.
+- **Business Process Reengineering (BPR)** ist das Gegenmodell: **radikale** Neugestaltung eines Prozesses „auf der grünen Wiese“ statt schrittweiser Verbesserung – große Wirkung, aber hohes Risiko und Widerstand.
+
+## 6.3 Six Sigma und Total Quality Management
+
+**Six Sigma** ist ein datengetriebener Ansatz, der die **Streuung** von Prozessergebnissen verringert. Ziel ist eine Fehlerquote von höchstens **3,4 Fehlern pro einer Million Möglichkeiten**. Vorgehen nach **DMAIC:**
+1. Define – Problem, Ziel und Kunden festlegen
+2. Measure – Ist-Zustand mit Kennzahlen messen
+3. Analyze – Ursachen mit Daten nachweisen (Ishikawa, Korrelation, Regression)
+4. Improve – Lösungen entwickeln und erproben
+5. Control – Verbesserung dauerhaft absichern und überwachen
+
+Als Datenanalyst bist du hier in deinem Element: Measure und Analyze sind Statistik (→ Deep Dive 3 und 4).
+
+**Total Quality Management (TQM)** ist die umfassendste Sicht: Qualität ist Aufgabe **aller** Beschäftigten und aller Prozesse, ausgerichtet auf Kundenzufriedenheit und ständige Verbesserung. Normgrundlage für ein Qualitätsmanagementsystem ist die **ISO 9001**.
+
+## 6.4 FMEA – Fehler vorbeugen, bevor sie passieren
+
+Die **FMEA** (Fehlermöglichkeits- und -einflussanalyse) bewertet **mögliche** Fehler eines Prozesses oder Produkts **vorbeugend**. Jeder Fehler erhält drei Bewertungen von 1 bis 10:
+
+| Kennzahl | Frage | 1 | 10 |
+|---|---|---|---|
+| **A** – Auftreten | Wie wahrscheinlich tritt der Fehler auf? | unwahrscheinlich | sehr häufig |
+| **B** – Bedeutung | Wie schwer wiegen die Folgen? | kaum spürbar | gefährlich, existenzbedrohend |
+| **E** – Entdeckung | Wie wahrscheinlich bleibt der Fehler **unentdeckt**? | wird sicher entdeckt | wird kaum entdeckt |
+
+**Risikoprioritätszahl:** $RPZ = A \cdot B \cdot E$ (Wertebereich 1 bis 1.000)
+
+⚠️ **Achtung:** Bei **E** bedeutet ein **hoher** Wert eine **schlechte** Entdeckung. Ein Fehler, der vor Auslieferung fast sicher auffällt, bekommt E = 1.
+
+**Durchgerechnetes Beispiel** (Reparaturservice, Maßnahmen ab einer RPZ von 125):
+
+| Möglicher Fehler | A | B | E | RPZ |
+|---|---|---|---|---|
+| Ersatzteil falsch bestellt | 4 | 6 | 5 | 120 |
+| Kundentermin nicht bestätigt | 6 | 4 | 3 | 72 |
+| Vorschaden bei Abholung nicht dokumentiert | 3 | 8 | 7 | 168 |
+
+Vorrang hat der **nicht dokumentierte Vorschaden** (RPZ 168): Er tritt selten auf, wird aber kaum entdeckt und führt zu teuren Streitfällen um die Haftung. Maßnahme: Fotodokumentation als Pflichtschritt in der App vor der Abholung – das senkt E deutlich. Unabhängig von der RPZ werden Fehler mit sehr hoher Bedeutung (B ≥ 9) immer betrachtet.
+
+**Abgrenzung zur Risikoanalyse im Projekt** (→ Deep Dive 12): Dort zählen nur Eintrittswahrscheinlichkeit · Schadensausmaß. Die FMEA nimmt die **Entdeckbarkeit** als dritten Faktor dazu.
+
+## 6.5 Strategische Analysemethoden
+
+**SWOT-Analyse:** Gegenüberstellung von **internen** Stärken (Strengths) und Schwächen (Weaknesses) mit **externen** Chancen (Opportunities) und Risiken (Threats). Aus den Kombinationen werden Strategien abgeleitet: Stärken nutzen, um Chancen zu ergreifen (SO); Schwächen abbauen, um Risiken zu begegnen (WT) usw.
+
+| | Chancen (extern) | Risiken (extern) |
+|---|---|---|
+| **Stärken** (intern) | SO: Stärken einsetzen, um Chancen zu nutzen | ST: Stärken nutzen, um Risiken abzuwehren |
+| **Schwächen** (intern) | WO: Schwächen abbauen, um Chancen zu nutzen | WT: Schwächen abbauen, um Risiken zu vermeiden |
+
+**ABC-Analyse:** teilt Objekte (Artikel, Kunden, Lieferanten) nach ihrem **Wertanteil** in drei Klassen. Vorgehen: Wert je Objekt berechnen, **absteigend sortieren**, Anteil am Gesamtwert und kumulierten Anteil bilden. Übliche Grenzen: **A** bis etwa 80 % des Werts, **B** bis etwa 95 %, **C** der Rest.
+
+| Artikel | Jahresverbrauchswert | Wertanteil | kumuliert | Klasse |
+|---|---|---|---|---|
+| Bürostuhl | 48.000 € | 53,3 % | 53,3 % | A |
+| Schreibtisch | 21.000 € | 23,3 % | 76,7 % | A |
+| Monitor | 12.000 € | 13,3 % | 90,0 % | B |
+| Lampe | 6.000 € | 6,7 % | 96,7 % | C |
+| Kabelkanal | 2.000 € | 2,2 % | 98,9 % | C |
+| Schrauben | 1.000 € | 1,1 % | 100,0 % | C |
+
+Zwei von sechs Artikeln (33 %) machen 76,7 % des Werts aus – auf sie konzentrieren sich Preisverhandlungen und Bestandsoptimierung. Die ABC-Analyse ist die betriebswirtschaftliche Schwester der **Pareto-Analyse** (Teil 4.1).
+
+**Benchmarking:** systematischer Vergleich von Kennzahlen und Prozessen mit einem Vorbild – **intern** (Filiale gegen Filiale), mit **Wettbewerbern** oder **branchenübergreifend** mit dem Klassenbesten eines Prozesses (z. B. Versandabwicklung eines Onlinehändlers). Ziel ist nicht Kopieren, sondern zu verstehen, *warum* der andere besser ist.
+
+**Wertschöpfungskette nach Porter:** gliedert ein Unternehmen in **primäre Aktivitäten**, die direkt zum Produkt beitragen (Eingangslogistik, Produktion, Ausgangslogistik, Marketing und Vertrieb, Kundendienst), und **unterstützende Aktivitäten** (Unternehmensinfrastruktur, Personalwirtschaft, Technologieentwicklung, Beschaffung). Sie zeigt, wo Wert entsteht – und wo Kosten ohne Wertbeitrag anfallen.
+
+**Portfolioanalyse (BCG-Matrix):** ordnet Produkte nach **Marktwachstum** und **relativem Marktanteil** in vier Felder: **Stars** (hoch/hoch – investieren), **Cash Cows** (niedriges Wachstum, hoher Anteil – Gewinne abschöpfen), **Question Marks** (hohes Wachstum, niedriger Anteil – entscheiden: ausbauen oder aufgeben), **Poor Dogs** (niedrig/niedrig – abbauen).
+
+## 6.6 Kennzahlensysteme und Reifegrad
+
+- **KPI** (Key Performance Indicator): eine der **wenigen** Kennzahlen, an denen der Erfolg eines Prozesses gemessen wird – mit Zielwert, Messvorschrift und Verantwortlichem. Zehn KPIs für einen Prozess sind keine KPIs mehr.
+- **Balanced Scorecard:** Kennzahlensystem in vier Perspektiven – **Finanzen**, **Kunden**, **interne Prozesse**, **Lernen und Entwicklung**. Sie verhindert, dass nur auf Finanzkennzahlen gesteuert wird.
+- **Reifegradmodelle** (z. B. CMMI mit fünf Stufen von „initial“ bis „optimierend“) bewerten, wie gut ein Prozess beherrscht wird: von „läuft irgendwie, abhängig von Einzelpersonen“ bis „wird gemessen und ständig verbessert“.
+
+> ❓ **Prüferfrage:** Warum reicht es nicht, bei der FMEA nur auf Auftreten und Bedeutung zu schauen?
+> *Ein Fehler, der zwar selten auftritt, aber vor dem Kunden kaum entdeckt wird, richtet oft mehr Schaden an als ein häufiger Fehler, den eine Kontrolle zuverlässig abfängt. Die Entdeckungswahrscheinlichkeit zeigt, wo zusätzliche Prüfungen den größten Nutzen bringen – sie ist der Hebel, den man im Prozess am leichtesten beeinflussen kann.*
+
+---
+
 ## Die 8 häufigsten Fehler aus Prüfersicht
 
 1. Durchgezogener Sequenzfluss zwischen zwei Pools statt gestricheltem Nachrichtenfluss.
@@ -363,6 +477,10 @@ Weitere Daten: 200 Aufträge im Betrachtungsmonat, davon 24 mit erforderlicher N
 - [ ] Ich kenne Aufbau und Datenqualitätsprobleme eines Event Logs sowie die drei Process-Mining-Anwendungsarten.
 - [ ] Ich benenne bei jeder Auswertung personenbezogener Prozessdaten Betriebsrat (§ 87 BetrVG) und DSGVO.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich unterscheide Aufbau- und Ablauforganisation und kenne Einlinien-, Stablinien- und Matrixorganisation.
+- [ ] Ich erkläre Lean (sieben Verschwendungsarten), Kaizen, SDCA, BPR, Six Sigma (DMAIC) und TQM.
+- [ ] Ich berechne die RPZ einer FMEA und begründe, welcher Fehler Vorrang hat.
+- [ ] Ich führe eine ABC-Analyse durch und wende SWOT, Benchmarking, Wertschöpfungskette und BCG-Matrix an.
 
 ---
 

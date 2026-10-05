@@ -179,6 +179,60 @@ SQL-Injection ist für deine Fachrichtung die relevanteste: Wer Daten aus Eingab
 
 ---
 
+# Teil 5 – Sicherheitsmanagement, Prävention und Notfälle
+
+## 5.1 IT-Grundschutz und Informationssicherheitsmanagement
+
+Der **IT-Grundschutz** des **BSI** (Bundesamt für Sicherheit in der Informationstechnik) ist eine Methode, mit Standardmaßnahmen ein angemessenes Sicherheitsniveau zu erreichen. Das Vorgehen:
+1. **Strukturanalyse:** Geschäftsprozesse, Anwendungen, IT-Systeme, Räume und Netze erfassen
+2. **Schutzbedarfsfeststellung:** je Objekt und Schutzziel (Vertraulichkeit, Integrität, Verfügbarkeit) den Schutzbedarf **normal**, **hoch** oder **sehr hoch** bestimmen – anhand der möglichen Schäden (Gesetzesverstöße, finanzielle Folgen, Imageschaden, Beeinträchtigung der Aufgabe)
+3. Modellierung: passende **Bausteine** aus dem IT-Grundschutz-Kompendium zuordnen
+4. **IT-Grundschutz-Check:** Soll-Ist-Vergleich der Anforderungen
+5. Risikoanalyse für Objekte mit hohem oder sehr hohem Schutzbedarf
+6. Umsetzung und regelmäßige Überprüfung
+
+**Maximumprinzip:** Ein Server erbt den **höchsten** Schutzbedarf der Anwendungen, die auf ihm laufen. Läuft die Gehaltsabrechnung neben dem Kantinenplan, gilt für den ganzen Server „sehr hoch“.
+
+Ein **ISMS** (Informationssicherheits-Managementsystem) nach **ISO/IEC 27001** organisiert Sicherheit als dauerhaften Prozess mit Verantwortlichen, Richtlinien und PDCA-Kreislauf; ISO 27001 auf Basis von IT-Grundschutz ist die deutsche Zertifizierungsvariante. **Compliance** heißt, Gesetze, Verträge und interne Regeln nachweisbar einzuhalten – das ISMS liefert die Nachweise.
+
+## 5.2 Weitere Bedrohungen
+
+| Bedrohung | Prinzip | Gegenmaßnahme |
+|---|---|---|
+| **DDoS** (Distributed Denial of Service) | Tausende gekaperte Rechner (Botnetz) überfluten einen Dienst mit Anfragen – Ziel ist die **Verfügbarkeit** | DDoS-Schutzdienst des Providers, Rate Limiting, Lastverteilung, Notfallplan |
+| **Schadsoftware** | Virus (hängt sich an Dateien), Wurm (verbreitet sich selbst im Netz), Trojaner (getarnt als nützliches Programm) | Virenschutz, Patchmanagement, keine Administratorrechte im Alltag |
+| **Zero-Day-Exploit** | Angriff über eine Lücke, für die es noch kein Update gibt | Segmentierung, Least Privilege, Überwachung auf Auffälligkeiten |
+| **Datendiebstahl durch Innentäter** | Berechtigte kopieren Daten unbefugt | Need-to-know, Protokollierung, Data Loss Prevention, Sperre für USB-Speicher |
+
+## 5.3 Präventive Maßnahmen
+
+- Technisch: Firewall, Netzsegmentierung (Produktions- und Büronetz trennen), **Patchmanagement**, Virenschutz, **Härtung** (unnötige Dienste und Konten abschalten), Verschlüsselung, **VPN** – ein verschlüsselter **Tunnel** durch das Internet, z. B. für mobiles Arbeiten oder die Anbindung von Filialen.
+- Organisatorisch: Sicherheitsrichtlinie, Schulung und Sensibilisierung, Rechtevergabe und regelmäßige Rechteprüfung, Vier-Augen-Prinzip.
+- **Security by Design:** Sicherheit von Anfang an in den Entwurf einbauen statt nachträglich ergänzen – das Gegenstück zu Privacy by Design aus Art. 25 DSGVO.
+- **Penetrationstest:** ein **beauftragter**, simulierter Angriff, um Schwachstellen zu finden, bevor es Angreifer tun – als Black-Box-Test (ohne Vorwissen, wie ein externer Angreifer) oder White-Box-Test (mit Zugang zu Dokumentation und Code). Ein **Schwachstellenscan** prüft dagegen automatisiert auf bekannte Lücken. Ohne **schriftliche Beauftragung** ist ein Pentest eine Straftat (§ 202a ff. StGB).
+
+## 5.4 Incident- und Notfallmanagement
+
+**Sicherheitsvorfall (Incident)** – der Ablauf:
+1. Erkennen und melden (Monitoring, Hinweis von Beschäftigten – eine Meldestelle muss bekannt sein)
+2. Bewerten und priorisieren
+3. Eindämmen (betroffene Systeme vom Netz trennen, Konten sperren)
+4. Beseitigen und wiederherstellen
+5. Nachbereiten: Ursache klären, Lessons Learned, Maßnahmen anpassen
+
+Sind personenbezogene Daten betroffen, läuft parallel die **72-Stunden-Meldefrist** an die Aufsichtsbehörde (Art. 33 DSGVO).
+
+**Notfallmanagement (Business Continuity Management)** sorgt dafür, dass kritische Geschäftsprozesse auch bei schweren Ausfällen weiterlaufen oder schnell wieder anlaufen:
+- **Business-Impact-Analyse:** Welche Prozesse sind kritisch, wie lange darf ein Ausfall dauern? Daraus folgen **RTO** und **RPO** (Teil 4.4).
+- **Notfallhandbuch** mit Alarmierungsketten, Zuständigkeiten, Ersatzlösungen und **Wiederanlaufplänen**
+- **Disaster Recovery:** Wiederherstellung der IT nach einer Katastrophe (Brand, Hochwasser) – Ausweichrechenzentrum, Rücksicherung, Reihenfolge des Wiederanlaufs
+- Notfallübungen: Ein Plan, der nie geübt wurde, funktioniert im Ernstfall selten. Auch die Rücksicherung eines Backups muss regelmäßig getestet werden.
+
+> ❓ **Prüferfrage:** Ein Dashboard-Server enthält nur öffentliche Produktdaten, auf ihm läuft aber auch die Auswertung der Gehaltsdaten. Welchen Schutzbedarf hat der Server?
+> *Nach dem Maximumprinzip übernimmt der Server den höchsten Schutzbedarf der auf ihm verarbeiteten Daten – hier also mindestens „hoch“, bei Gehaltsdaten in der Regel „sehr hoch“ für die Vertraulichkeit. Besser ist es, die Anwendungen zu trennen, damit nicht der gesamte Server mit dem höchsten Aufwand geschützt werden muss.*
+
+---
+
 ## Die 8 häufigsten Fehler aus Prüfersicht
 
 1. Einwilligung als einzige Rechtsgrundlage genannt – es gibt sechs.
@@ -269,3 +323,6 @@ Das Unternehmen sichert sonntags vollständig (800 GB) und montags bis samstags 
 - [ ] Ich erkläre die Schutzziele, Verschlüsselungsarten, Hashing und RBAC.
 - [ ] Ich unterscheide differenzielle und inkrementelle Sicherung und kenne RTO/RPO und die 3-2-1-Regel.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich beschreibe das Vorgehen nach IT-Grundschutz, die Schutzbedarfskategorien und das Maximumprinzip.
+- [ ] Ich nenne DDoS, Schadsoftwarearten und präventive Maßnahmen und grenze Penetrationstest und Schwachstellenscan ab.
+- [ ] Ich beschreibe den Ablauf bei einem Sicherheitsvorfall und die Bausteine des Notfallmanagements.

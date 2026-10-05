@@ -129,7 +129,7 @@ lern-app/
                "karten": [ { "id": "SQL-001", "frage": "…", "antwort": "…", "typ": "wissen", "schwierigkeit": 1, "tags": ["join"] } ] } ] }
 ```
 
-- Currently 24 decks and 407 cards (typ: wissen 216, falle 62, abgrenzung 55, anwendung 48, rechnung 26).
+- Currently 25 decks and 456 cards (typ: wissen 241, falle 69, abgrenzung 61, anwendung 53, rechnung 32).
 - `quelle` containing "Deep Dive N" maps the deck to a topic; decks without one (WiSo, project work) are reachable via the deck filter.
 - Progress is keyed by card `id`. **Never change IDs.**
 - Optional **`mc`** block per card for the Leicht-Modus (phase 6): `{ "richtig": "…", "falsch": ["…", "…", "…"], "erklaerung"?: "…" }`.
@@ -250,6 +250,7 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 | `durchlaufzeit` | `{ schritte: [{ name, bearbeitung, liege }] (1–15), einheit? (default "h") }` | `bearbeitung`, `liegezeit`, `durchlaufzeit` (r2), `wertschoepfung` (% r2) | `schritte` (count) | `einheit` |
 | `fehlerquote` | `{ gesamt (int), fehler (int ≤ gesamt), nacharbeitJe? (h), kostensatz? (€/h) }` | `fehlerquote`, `fpy` (% r2); with both optional fields: `nacharbeitskosten`, `zuschlag` (€ r2), `nacharbeitZeit*` | `gesamt`, `kosten` (bool) | `gesamt`, `fehler`, `nacharbeitJe`, `kostensatz` |
 | `amortisation` | `{ investition, einsparung? \| (auftraege + minutenJeAuftrag + kostensatz), nutzungsdauer? }` | `amortisation` (Jahre r2), `amortisationMonate*`; from orders: `stunden`, `einsparung` (else `einsparung*`); with `nutzungsdauer`: `roi` (% r2), `gesamtersparnis*`, `gewinn*`, `roiJahr*` | `auftraege` (bool) | `investition`, `einsparung`, `auftraege`, `minutenJeAuftrag`, `kostensatz`, `nutzungsdauer` |
+| `fmea` | `{ fehler: [{ name, a, b, e }] (1–8, each int 1–10), schwelle? (int) }` | `rpzN` (A · B · E), `hoechstes` (text); with `schwelle`: `anzahlKritisch` (count with RPZ ≥ schwelle) | – | `fehler`, `schwelle`, `anzahl` |
 | `break-even` | `{ fixkosten, preis > variabel, variabel, menge? }` | `db` (€ r2), `breakEven` (Stück, rounded **up**), with `menge`: `gewinn` (€) | – | `fixkosten`, `preis`, `variabel`, `menge` |
 | **Datenqualität** (DD9) | | | | |
 | `qualitaetsgrad` | `{ kennzahlen: [{ id, name, gut (int), gesamt (int) }] (1–10) }` | one result per kennzahl `id` (% r2) | – | `gesamt`, `name_<id>`, `gut_<id>`, `gesamt_<id>`, `schlecht_<id>` |
@@ -262,6 +263,10 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 | `sozialversicherung` | `{ brutto, zusatzbeitrag, kinderlos, azubi?, lohnsteuer?, kirchensteuersatz?, soli?, saetze? }` (rates of the sheet in `SAETZE`: KV 14,6 %, PV 3,6 % + 0,6 % kinderlos, RV 18,6 %, ALV 2,6 %, Geringverdiener 325 €; `saetze` overrides) | `kv`, `pv`, `rv`, `alv`, `sv` (€ r2, each rounded to cents), `svSatz*`; with `lohnsteuer`: `kirchensteuer`, `netto` | `brutto` | `brutto`, `zusatzbeitrag`, `kinderlos`, `lohnsteuer`, `kirchensteuersatz` |
 | `minijob` | `{ grenze, stundenlohn }` | `stunden` (rounded down), `verdienst*` (€) | – | `grenze`, `stundenlohn` |
 | `gleichgewicht` | `{ zeilen: [{ preis, nachfrage, angebot }] (2–12), one row with nachfrage = angebot }` | `preis` (€), `menge*` | `zeilen` | `tabelle` |
+| **Verfügbarkeit** (DD16) | | | | |
+| `verfuegbarkeit` | `{ stunden (operating time, e.g. 720 or 8760), sla (% 0–100), ausfall (h ≤ stunden) }` | `erlaubt` (h r2), `verfuegbarkeit` (% r3), `eingehalten` (ja/nein), `erlaubtMin*` (min r1) | – | `stunden`, `sla`, `ausfall` |
+| `mtbf` | `{ mtbf, mttr, stunden? (default 8760) }` | `verfuegbarkeit` (% r3, MTBF / (MTBF + MTTR)), `ausfallJahr` (h r2) | – | `mtbf`, `mttr`, `stunden` |
+| `systemverfuegbarkeit` | `{ komponenten: [{ name, v (%), anzahl? (1–4 identical in parallel) }] (1–6, in series) }` | `gesamt` (% r3), `stufeN*` (% r3, 1 − (1 − V)ⁿ), `ausfallJahr*` (h r2) | – | `komponenten`, `anzahl` |
 | **Datensicherung** (DD10) | | | | |
 | `datensicherung` | `{ voll, aenderung (per day), tage (1–30), einheit? (default "GB") }` | `volumenInkrementell`, `volumenDifferenziell`, `medienInkrementell`, `medienDifferenziell` | – | `voll`, `aenderung`, `tage`, `einheit` |
 | `rpo` | `{ sicherungUm (0–24, 22.5 = 22:30), ausfallUm (next day if earlier), rpo? (h) }` | `verlust` (h r2), with `rpo`: `eingehalten` (ja/nein) | – | `sicherungUm`, `ausfallUm`, `rpo` |
@@ -269,12 +274,12 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 `(r2)` = rounded to 2 decimals by default; every result has a default label and unit, which `eingaben` can override.
 The exact ids for given data are easiest to see in the solution table of the exercise page or with
 `VORLAGEN[id].loese(VORLAGEN[id].schema.parse(daten)).felder` (e.g. in a Vitest test). Look at `content/AP2_Rechen_Uebungen.json`
-for worked examples. **Content today: 90 exercises** – 60 fixed (56 with a template, 4 without: JArbSchG/BUrlG/Reallohn) and 30 generated
+for worked examples. **Content today: 105 exercises** – 71 fixed (65 with a template, 6 without: JArbSchG/BUrlG/Reallohn, normal distribution, expected value) and 34 generated
 (no `daten`, one per template). Fixed exercises cover every calculation task of the sheets: the Übungsklausur tasks (`quelleAufgabe`
 "DDn Übungsklausur X1") and the calculation examples in the theory parts (`quelleAufgabe` "DDn Teil 4.3" etc. – the smoke test then
-looks for the numbers in the theory sections of that sheet). Per sheet: DD3 17, DD4 12, DD5 8, DD6 12, DD7 7, DD9 3, DD10 4, DD11 1, DD12 13,
-DD13 3, DD14 10. IDs: `RE-ST1`/`ST2` (DD3/DD4), `MG` (DD7), `ML` (DD6), `PA` (DD5), `DQ` (DD9), `VI` (DD11), `PM` (DD12), `WI` (DD13/DD14),
-`IT` (DD10); the file is sorted in this order. Not included (no arithmetic or no number to check): pure lookups in DD13 (Pausen B1/B5,
+looks for the numbers in the theory sections of that sheet). Per sheet: DD3 19, DD4 12, DD5 11, DD6 12, DD7 7, DD9 3, DD10 4, DD11 1, DD12 13,
+DD13 3, DD14 10, DD16 10. IDs: `RE-ST1`/`ST2` (DD3/DD4), `MG` (DD7), `ML` (DD6), `PA` (DD5), `DQ` (DD9), `VI` (DD11), `PM` (DD12), `WI` (DD13/DD14),
+`IT` (DD10), `QS` (DD16); the file is sorted in this order. Not included (no arithmetic or no number to check): pure lookups in DD13 (Pausen B1/B5,
 Betriebsrat D1, Günstigkeitsprinzip E3), Kündigungstermine (dates), DD11 algorithm/pseudocode tasks.
 
 **New template**: file in `src/rechnen/vorlagen/`, defined with `vorlage({ id, titel, bereich, beschreibung, schema, erzeuge, loese, platzhalter,
@@ -353,7 +358,7 @@ drops the mention.
     Markdown, Markdown download) and the number is still plain text for the Rechenübungen smoke test. Never put the result into the
     formula (`\mathbf`, `\boxed`): it would not be boxed (test in `tests/math.test.ts`). Labels like `**F1** = $…$` keep the colon out of
     the bold text – `**F1:**` would be parsed as the solution of task F1. Prüferfragen (flashcards render no math), tables, points,
-    Prüferkommentare and task texts stay plain text. Content today: 182 formulas (94 in solutions, 88 in theory; DD3–DD7, DD9–DD14).
+    Prüferkommentare and task texts stay plain text. Content today: about 220 formulas (102 in solutions, 119 in theory; DD3–DD7, DD9–DD14, DD16).
     A paragraph starting with `*Prüferkommentar: …*` (also inside a blockquote, as on the solution sheet) → callout `aside.pk-box`
     "🧑‍🏫 Prüferkommentar"; `GradePanel` renders `Solution.kommentar` in the same box.
   - `rehypeTabellen` (every `<Markdown>`): columns whose body cells are all numbers (German format, optional `Σ`, `%`, `€`, `P`; empty/`–` ignored)
@@ -494,8 +499,8 @@ only in `useCardSession` state and is cleared for the next card – **not persis
 - **Weights** = number of checklist items (`- [ ]`) under each `### A1 …` heading of the topic list (MaterialDoc `themenliste-beispielfragen`,
   `gewichteAusThemenliste`; today A1 7, A2 6, A3 5, A4 3, B1 7, B2 8, B3 4, B4 6; `FALLBACK_GEWICHTE` if the file is missing). 100 points are
   distributed by largest remainder (`verteile`; e.g. Prozessanalyse 33/29/24/14).
-- **Sources** (`UNTERBEREICHE`, checked by a test against `content/`): A1 → DD5 A–C; A2 → DD12 A, B, C, E + DD15 D; A3 → DD12 D, DD5 D;
-  A4 → DD5 E, DD10 C; B1 → DD1, SQL-Zusatz, DD2, DD8, DD15 A–C/E; B2 → DD9, DD3, DD4, DD6, DD7, DD11; B3 → DD10 D, E; B4 → DD10 A–C.
+- **Sources** (`UNTERBEREICHE`, checked by a test against `content/`): A1 → DD5 A–C; A2 → DD12 A, B, C, E + DD15 D; A3 → DD12 D, DD5 D, DD16 A–C;
+  A4 → DD5 E, DD10 C; B1 → DD1, SQL-Zusatz, DD2, DD8, DD15 A–C/E; B2 → DD9, DD3, DD4, DD6, DD7, DD11; B3 → DD10 D, E + DD16 D, E; B4 → DD10 A–C.
 - **Filling**: each sub-area becomes one block (A, B, …). Its candidate blocks are shuffled with the seed (`erzeugeZufall`); from each block
   the longest **prefix** of tasks (A1, A1+A2, …) that still fits the target is taken – prefixes keep tasks that build on each other together,
   and the block intro (data, scenario) comes along. A second pass fills missing points in the sub-area furthest below its target, with
@@ -547,8 +552,8 @@ only in `useCardSession` state and is cleared for the next card – **not persis
   "✅ Musterlösung", own entry linking to the task – so terms that only occur in a `*_Loesungen.md` are found without the task snippet
   giving the solution away), SQL exercises, Rechenübungen, formulas
   (`/material/formeln?stelle=formel-<id>`), operators (`/material/operatoren?stelle=op-<id>`) and the glossary (8.9). With Prüferfragen off,
-  their blockquotes are also stripped from the section text. Today **2,142 entries** (305 sections, 2 material docs, 512 cards, 258 tasks,
-  258 solutions, 59 SQL, 90 Rechnen, 70 formulas, 29 operators, 559 glossary terms); built in about 30 ms, a query takes a few ms.
+  their blockquotes are also stripped from the section text. Today **2,384 entries** (352 sections, 2 material docs, 565 cards, 273 tasks,
+  273 solutions, 59 SQL, 105 Rechnen, 76 formulas, 29 operators, 650 glossary terms); built in about 30 ms, a query takes a few ms.
 - **Normalisation** `normalisiere` (`src/lib/normalisiere.ts`): lower case, accents removed, ä/ae → a, ö/oe → o, ü/ue → u, ß → ss, everything else
   → space. So "Pruefung", "Prüfung" and "prufung" match, "Groesse" finds "Größe".
   Hyphenated words are indexed a second time joined (`zusammen`: "k-NN" → "knn", "E-Mail" → "email"), and the snippet also matches the joined form.
@@ -574,7 +579,7 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
   - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); card definition
     before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
-    normalised letter (Ä → A), `#` otherwise. Today **559 terms, 422 with a definition**. Some noise remains (e.g. names from WiSo scenarios).
+    normalised letter (Ä → A), `#` otherwise. Today **650 terms, 483 with a definition**. Some noise remains (e.g. names from WiSo scenarios).
 - **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
   term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material` (`navigation.ts` unchanged).
