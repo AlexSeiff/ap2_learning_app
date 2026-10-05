@@ -86,6 +86,12 @@ function plausibel(id: string, l: Loesung): string[] {
     case 'datensicherung':
       le('volumenInkrementell', 'volumenDifferenziell');
       break;
+    case 'id3':
+      for (const k of Object.keys(w).filter((x) => /^(entropie|rest|gewinn)/.test(x))) {
+        if (num(k) < -1e-9) fehler.push(`${k} negativ`);
+        if (/^(rest|gewinn)/.test(k)) le(k, 'entropie');
+      }
+      break;
   }
   return fehler;
 }

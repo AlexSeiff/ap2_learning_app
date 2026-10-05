@@ -7,7 +7,7 @@
 
 CRISP-DM ist das **Vorgehensmodell deiner Fachrichtung** – und damit gleich doppelt wichtig: Es kommt im Prüfungsbereich „Sicherstellen der Datenqualität" vor **und** es ist die natürliche Gliederung für deine **Projektdokumentation** (50 % der Gesamtnote). Wer im Fachgespräch sein Projekt sauber entlang der sechs Phasen erzählen kann, wirkt sofort strukturiert.
 
-Der Machine-Learning-Teil wird auf **Verständnisebene** geprüft, nicht auf Programmierebene: Verfahren zuordnen, Auswahl begründen, kleine Rechnungen von Hand durchführen (k-Means, Assoziationsanalyse), Grenzen und rechtliche Anforderungen benennen. Niemand verlangt Python-Code auf dem Papier.
+Der Machine-Learning-Teil wird auf **Verständnisebene** geprüft, nicht auf Programmierebene: Verfahren zuordnen, Auswahl begründen, kleine Rechnungen von Hand durchführen (k-Means, Assoziationsanalyse, k-NN, Entropie und Informationsgewinn bei ID3), Grenzen und rechtliche Anforderungen benennen. Niemand verlangt Python-Code auf dem Papier.
 
 Szenario: **Möbelhaus Nordholz GmbH**.
 
@@ -232,6 +232,159 @@ Diese Phase entscheidet über die Qualität des Ergebnisses – „Garbage in, g
 
 ---
 
+# Teil 7 – Klassifikation von Hand: k-NN und ID3
+
+Zwei Klassifikationsverfahren aus Teil 2.4, die sich mit Taschenrechner auf Papier durchrechnen lassen. Beide brauchen **gelabelte Trainingsdaten** (überwachtes Lernen) und sagen eine **Kategorie** vorher.
+
+## 7.1 k-Nächste-Nachbarn (k-NN)
+
+**Die Idee:** Ähnliche Fälle haben meist dieselbe Klasse. Ein neuer Fall bekommt die Klasse, die unter seinen k ähnlichsten Trainingsfällen am häufigsten vorkommt.
+
+1. Abstand des neuen Falls zu **jedem** Trainingsfall berechnen (meist euklidisch, wie bei k-Means)
+2. Sortieren und die **k nächsten Nachbarn** auswählen
+3. **Mehrheitsentscheid:** Die häufigste Klasse unter den k Nachbarn ist die Vorhersage
+
+Abstand wie bei k-Means: $d = \sqrt{(x - x_N)^2 + (y - y_N)^2}$ mit $(x_N \mid y_N)$ als neuem Fall. Auch hier gilt der Rechentrick aus Teil 3: Zum reinen Sortieren reichen die quadrierten Abstände.
+
+**Die Wahl von k:**
+- **k zu klein** (k = 1): Ein einzelner Ausreißer in den Trainingsdaten entscheidet – das Modell ist anfällig für Rauschen.
+- **k zu groß:** Es zählen auch weit entfernte Fälle; im Extremfall gewinnt immer die häufigste Klasse des ganzen Datensatzes.
+- Bei zwei Klassen ein **ungerades k** wählen, damit es keinen Stimmengleichstand gibt. Das passende k wird – wie bei jedem Parameter – mit Testdaten bzw. Kreuzvalidierung bestimmt (→ Deep Dive 7).
+
+**Eigenschaften, die Prüfer hören wollen:**
+- **Lazy Learner:** k-NN hat keine Trainingsphase im eigentlichen Sinn – das Modell sind die gespeicherten Trainingsdaten. Dafür ist jede Vorhersage aufwendig, weil zu allen Fällen der Abstand berechnet wird.
+- Skalierung ist **Pflicht** – aus demselben Grund wie bei k-Means (Teil 3.3): Sonst entscheidet allein das Merkmal mit der größten Zahlenspanne.
+- Erklärbar nur am Einzelfall („Die drei ähnlichsten Aufträge wurden nicht reklamiert") – ein allgemeines Regelwerk wie beim Entscheidungsbaum gibt es nicht.
+
+⚠️ **Achtung:** **k-NN ≠ k-Means.** k-NN ist **überwacht** und klassifiziert (k = Anzahl Nachbarn), k-Means ist **unüberwacht** und bildet Cluster (k = Anzahl Cluster). Gemeinsam ist nur der Abstandsbegriff.
+
+## 7.2 Durchgerechnetes Beispiel k-NN
+
+Sechs vergangene Aufträge der Möbelhaus Nordholz GmbH mit x = Lieferdauer in Tagen, y = Anzahl Packstücke und dem Label „Reklamation". Beide Merkmale liegen im selben kleinen Wertebereich, deshalb wird hier ausnahmsweise nicht skaliert.
+
+| Auftrag | x | y | Reklamation |
+|---|---|---|---|
+| P1 | 1 | 2 | nein |
+| P2 | 3 | 2 | nein |
+| P3 | 5 | 3 | ja |
+| P4 | 6 | 5 | ja |
+| P5 | 3 | 5 | nein |
+| P6 | 7 | 5 | ja |
+
+Neuer Auftrag: **N(4|3)**, k = 3. Wird er reklamiert?
+
+**Schritt 1 – Abstände zu N(4|3):**
+
+| Auftrag | Rechnung | d | Rang |
+|---|---|---|---|
+| P1(1\|2) | √((1−4)² + (2−3)²) = √10 | 3,16 | 5 |
+| P2(3\|2) | √((3−4)² + (2−3)²) = √2 | 1,41 | 2 |
+| P3(5\|3) | √((5−4)² + (3−3)²) = √1 | 1,00 | 1 |
+| P4(6\|5) | √((6−4)² + (5−3)²) = √8 | 2,83 | 4 |
+| P5(3\|5) | √((3−4)² + (5−3)²) = √5 | 2,24 | 3 |
+| P6(7\|5) | √((7−4)² + (5−3)²) = √13 | 3,61 | 6 |
+
+**Schritt 2 – die drei nächsten Nachbarn:** P3, P2, P5
+
+**Schritt 3 – Mehrheitsentscheid:** P3 = ja, P2 = nein, P5 = nein → 2 : 1 für **nein**. Der neue Auftrag wird voraussichtlich **nicht reklamiert**.
+
+**Der Einfluss von k:** Mit k = 1 entscheidet allein P3 → Vorhersage **ja**. Mit k = 5 kommen P4 (ja) und P1 (nein) dazu → 3 : 2 für **nein**. Dieselben Daten liefern je nach k ein anderes Ergebnis – deshalb muss die Wahl von k begründet und mit Testdaten geprüft werden.
+
+## 7.3 Entscheidungsbäume mit ID3
+
+**ID3** (Iterative Dichotomiser 3) baut einen Entscheidungsbaum von oben nach unten auf. An jedem Knoten wählt er das Merkmal, das die Daten **am saubersten nach der Zielklasse trennt**. Gemessen wird das mit Entropie und Informationsgewinn.
+
+**Entropie:** Maß für die Unordnung (Unreinheit) einer Datenmenge bezogen auf die Zielklasse. 0 = alle Fälle in derselben Klasse (rein), 1 = bei zwei Klassen genau halbe-halbe (maximal gemischt). Formel: $H(S) = -\sum_i p_i \cdot \log_2 p_i$ mit $p_i$ als Anteil der Klasse i.
+
+**Informationsgewinn:** Um wie viel die Entropie sinkt, wenn man die Daten nach Merkmal A aufteilt. Die Entropien der Teilmengen werden dabei **nach ihrem Anteil gewichtet**. Formel: $IG(S, A) = H(S) - \sum_v \frac{|S_v|}{|S|} \cdot H(S_v)$ mit $S_v$ als Teilmenge mit Ausprägung v.
+
+**Der Algorithmus:**
+1. Entropie der Gesamtmenge berechnen
+2. Für **jedes** Merkmal den Informationsgewinn berechnen
+3. Das Merkmal mit dem **größten Informationsgewinn** wird Knoten (an der Wurzel: Wurzel des Baums); für jede Ausprägung entsteht ein Ast
+4. Für jeden Ast mit den dort verbliebenen Fällen und Merkmalen wiederholen – bis eine Teilmenge **rein** ist (Entropie 0, wird ein Blatt) oder keine Merkmale mehr übrig sind (Blatt mit Mehrheitsklasse)
+
+**Rechentrick für die Klausur:** Viele Taschenrechner haben kein log₂. Es gilt $\log_2 x = \frac{\ln x}{\ln 2}$. Für zwei Klassen lohnt es sich, diese Werte zu kennen:
+
+| Verteilung | 1 : 1 | 1 : 2 | 1 : 3 | 1 : 4 | 2 : 3 | rein |
+|---|---|---|---|---|---|---|
+| Entropie | 1,000 | 0,918 | 0,811 | 0,722 | 0,971 | 0 |
+
+**Schwächen von ID3:**
+- Der Informationsgewinn **bevorzugt Merkmale mit vielen Ausprägungen** – eine Auftragsnummer trennt perfekt (jede Teilmenge hat einen Fall), ist aber für neue Fälle wertlos. Abhilfe: Nachfolger **C4.5** mit dem Gain Ratio.
+- Nur **kategoriale Merkmale**: Zahlen wie die Lieferdauer müssen vorher in Klassen eingeteilt werden (z. B. kurz/lang).
+- Ohne Begrenzung wächst der Baum, bis jedes Blatt rein ist → **Overfitting**. Gegenmaßnahme: Baumtiefe begrenzen bzw. **Pruning** (Zurückschneiden, → Deep Dive 7).
+
+## 7.4 Durchgerechnetes Beispiel ID3
+
+Zehn Aufträge mit drei Merkmalen; Zielklasse ist „Reklamation" (4 × ja, 6 × nein):
+
+| Nr | Spediteur | Lieferdauer | Verpackung | Reklamation |
+|---|---|---|---|---|
+| 1 | Nordtrans | lang | Standard | ja |
+| 2 | Nordtrans | lang | Spezial | ja |
+| 3 | Nordtrans | lang | Standard | ja |
+| 4 | Nordtrans | kurz | Spezial | nein |
+| 5 | Rheinlogistik | kurz | Spezial | ja |
+| 6 | Rheinlogistik | lang | Standard | nein |
+| 7 | Rheinlogistik | kurz | Standard | nein |
+| 8 | Eigenlieferung | kurz | Standard | nein |
+| 9 | Eigenlieferung | lang | Spezial | nein |
+| 10 | Eigenlieferung | kurz | Standard | nein |
+
+**Schritt 1 – Entropie der Gesamtmenge** (4 ja, 6 nein):
+$H(S) = -\frac{4}{10} \log_2 \frac{4}{10} - \frac{6}{10} \log_2 \frac{6}{10}$ = **0,971**
+
+**Schritt 2 – Informationsgewinn je Merkmal:**
+
+*Spediteur:* Nordtrans 3 ja / 1 nein → H = 0,811 · Rheinlogistik 1 ja / 2 nein → H = 0,918 · Eigenlieferung 0 ja / 3 nein → H = 0 (rein)
+Rest-Entropie: $\frac{4}{10} \cdot 0{,}811 + \frac{3}{10} \cdot 0{,}918 + \frac{3}{10} \cdot 0$ = **0,600**
+IG(Spediteur) = 0,971 − 0,600 = **0,371**
+
+*Lieferdauer:* lang 3 ja / 2 nein → H = 0,971 · kurz 1 ja / 4 nein → H = 0,722
+Rest-Entropie: $\frac{5}{10} \cdot 0{,}971 + \frac{5}{10} \cdot 0{,}722$ = **0,846**
+IG(Lieferdauer) = 0,971 − 0,846 = **0,125**
+
+*Verpackung:* Standard 2 ja / 4 nein → H = 0,918 · Spezial 2 ja / 2 nein → H = 1
+Rest-Entropie: $\frac{6}{10} \cdot 0{,}918 + \frac{4}{10} \cdot 1$ = **0,951**
+IG(Verpackung) = 0,971 − 0,951 = **0,020**
+
+**Schritt 3 – Wurzel:** Der größte Informationsgewinn gehört zu **Spediteur** (0,371) → Wurzel des Baums. Der Ast **Eigenlieferung** ist bereits rein und wird zum Blatt „nein".
+
+**Schritt 4 – nächste Ebene:** Für den Ast **Nordtrans** (Aufträge 1–4, H = 0,811) wird mit den verbliebenen Merkmalen neu gerechnet: IG(Lieferdauer) = 0,811 (lang → 3 × ja, kurz → 1 × nein, beide rein) gegenüber IG(Verpackung) = 0,311. Gewählt wird **Lieferdauer**. Im Ast **Rheinlogistik** (Aufträge 5–7) trennt die **Verpackung** perfekt (Spezial → ja, Standard → nein).
+
+**Der fertige Baum:**
+
+```
+Spediteur?
+├─ Eigenlieferung → Reklamation: nein
+├─ Nordtrans      → Lieferdauer?
+│                    ├─ lang → ja
+│                    └─ kurz → nein
+└─ Rheinlogistik  → Verpackung?
+                     ├─ Spezial  → ja
+                     └─ Standard → nein
+```
+
+**Was der Baum aussagt:** Er ist direkt als Regelwerk lesbar – „Lange Lieferungen mit Nordtrans werden reklamiert" – und liefert der Logistik einen konkreten Ansatzpunkt. Genau diese Erklärbarkeit ist das Argument für Entscheidungsbäume aus Teil 2.4. Aber Vorsicht: Zehn Aufträge sind viel zu wenig für belastbare Regeln; jedes Blatt beruht hier auf ein bis drei Fällen.
+
+## 7.5 k-NN, ID3 und k-Means im Vergleich
+
+| | k-NN | ID3 (Entscheidungsbaum) | k-Means |
+|---|---|---|---|
+| Lernart | überwacht | überwacht | unüberwacht |
+| Aufgabe | Klassifikation | Klassifikation | Clustering |
+| Bedeutung von k | Anzahl Nachbarn | – | Anzahl Cluster |
+| Merkmale | Zahlen, skaliert | kategorial | Zahlen, skaliert |
+| Modell | gespeicherte Trainingsdaten | Baum aus Wenn-dann-Regeln | k Clusterzentren |
+| Erklärbarkeit | am Einzelfall („ähnliche Fälle") | sehr gut (Regelwerk) | über die Zentren |
+| Rechnung in der Klausur | Abstände, Mehrheit | Entropie, Informationsgewinn | Abstände, Mittelwerte |
+
+> ❓ **Prüferfrage:** Warum würde ID3 eine Spalte „Auftragsnummer" als Wurzel wählen, und warum ist das falsch?
+> *Jede Auftragsnummer kommt nur einmal vor, jede Teilmenge enthält also genau einen Fall und ist rein – die Rest-Entropie ist 0 und der Informationsgewinn maximal. Der Baum lernt damit nur die Trainingsdaten auswendig und kann für einen neuen Auftrag mit unbekannter Nummer nichts vorhersagen. Identifikationsmerkmale gehören nicht ins Modell; C4.5 bremst solche Merkmale mit dem Gain Ratio aus.*
+
+---
+
 ## Die 8 häufigsten Fehler aus Prüfersicht
 
 1. CRISP-DM als linearen Ablauf dargestellt, ohne Rücksprünge zu erwähnen.
@@ -332,3 +485,5 @@ Zehn Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe):
 - [ ] Ich erkläre One-Hot-Encoding, Skalierung und Data Leakage an einem Beispiel.
 - [ ] Ich benenne bei automatisierten Entscheidungen Art. 22 DSGVO und die Notwendigkeit menschlicher Kontrolle.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich klassifiziere einen neuen Fall mit k-NN von Hand und erkläre, wie die Wahl von k das Ergebnis beeinflusst.
+- [ ] Ich berechne Entropie und Informationsgewinn und bestimme mit ID3 die Wurzel eines Entscheidungsbaums.

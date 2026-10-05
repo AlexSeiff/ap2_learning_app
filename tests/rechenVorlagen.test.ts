@@ -209,6 +209,70 @@ describe('Modellgüte (DD7) und CRISP-DM (DD6)', () => {
     expect([1, 2, 3, 4, 5, 6].map((i) => w[`cluster${i}`])).toEqual([1, 1, 1, 2, 2, 2]);
     expect([w.zentrum1x, w.zentrum1y, w.zentrum2x, w.zentrum2y]).toEqual([2, 2, 8, 8]);
   });
+
+  const knnDaten = (k: number) => ({
+    punkte: [
+      [1, 2],
+      [3, 2],
+      [5, 3],
+      [6, 5],
+      [3, 5],
+      [7, 5],
+    ],
+    klassen: ['nein', 'nein', 'ja', 'ja', 'nein', 'ja'],
+    neu: [4, 3],
+    k,
+  });
+
+  it('Teil 7.2 k-NN: Abstände 3,16 / 1,41 / 1,00 / 2,83 / 2,24 / 3,61, Nachbarn P3, P2, P5 → nein; k = 1 → ja', () => {
+    const w = loese('knn', knnDaten(3));
+    expect([1, 2, 3, 4, 5, 6].map((i) => r(w[`abstand${i}`]))).toEqual([3.16, 1.41, 1, 2.83, 2.24, 3.61]);
+    expect(w.nachbarn).toBe('P3, P2, P5');
+    expect([w.stimmen_ja, w.stimmen_nein, w.klasse]).toEqual([1, 2, 'nein']);
+    expect(loese('knn', knnDaten(1)).klasse).toBe('ja');
+    expect(loese('knn', knnDaten(5)).klasse).toBe('nein');
+  });
+
+  it('k-NN: Fehlerbild „nur der nächste Nachbar“ für die Klasse', () => {
+    const l = VORLAGEN.knn.loese(VORLAGEN.knn.schema.parse(knnDaten(3)));
+    expect(l.fehlerbilder.find((f) => f.eingabe === 'klasse')).toMatchObject({ wert: 'ja', text: expect.stringContaining('k = 1') });
+  });
+
+  it('Teil 7.4 ID3: H = 0,971; Gewinn Spediteur 0,371, Lieferdauer 0,125, Verpackung 0,020 → Wurzel Spediteur', () => {
+    const w = loese('id3', {
+      merkmale: ['Spediteur', 'Lieferdauer', 'Verpackung'],
+      ziel: 'Reklamation',
+      zeilen: [
+        ['Nordtrans', 'lang', 'Standard', 'ja'],
+        ['Nordtrans', 'lang', 'Spezial', 'ja'],
+        ['Nordtrans', 'lang', 'Standard', 'ja'],
+        ['Nordtrans', 'kurz', 'Spezial', 'nein'],
+        ['Rheinlogistik', 'kurz', 'Spezial', 'ja'],
+        ['Rheinlogistik', 'lang', 'Standard', 'nein'],
+        ['Rheinlogistik', 'kurz', 'Standard', 'nein'],
+        ['Eigenlieferung', 'kurz', 'Standard', 'nein'],
+        ['Eigenlieferung', 'lang', 'Spezial', 'nein'],
+        ['Eigenlieferung', 'kurz', 'Standard', 'nein'],
+      ],
+    });
+    expect([w.entropie, w.gewinn1, w.gewinn2, w.gewinn3].map((x) => r(x, 3))).toEqual([0.971, 0.371, 0.125, 0.02]);
+    expect([w.entropie1_1, w.entropie1_2, w.entropie1_3, w.rest1].map((x) => r(x, 3))).toEqual([0.811, 0.918, 0, 0.6]);
+    expect(w.wurzel).toBe('Spediteur');
+  });
+
+  it('ID3: reine Teilmengen haben die Entropie 0, der Gewinn ist dann die ganze Entropie (Ast Nordtrans)', () => {
+    const w = loese('id3', {
+      merkmale: ['Lieferdauer', 'Verpackung'],
+      zeilen: [
+        ['lang', 'Standard', 'ja'],
+        ['lang', 'Spezial', 'ja'],
+        ['lang', 'Standard', 'ja'],
+        ['kurz', 'Spezial', 'nein'],
+      ],
+    });
+    expect([w.entropie, w.gewinn1, w.gewinn2].map((x) => r(x, 3))).toEqual([0.811, 0.811, 0.311]);
+    expect(w.wurzel).toBe('Lieferdauer');
+  });
 });
 
 describe('Prozessanalyse (DD5), Datenqualität (DD9), Projektmanagement (DD12)', () => {

@@ -58,6 +58,18 @@ describe('Index', () => {
     expect(index.filter((e) => e.art === 'sql')).toHaveLength(content.sqlExercises.length);
     expect(index.filter((e) => e.art === 'rechnen')).toHaveLength(content.rechenUebungen.length);
     expect(index.filter((e) => e.art === 'karte')).toHaveLength(content.flashcards.length);
+    const mitLoesung = Object.values(content.tasks).filter((t) => t.solution?.markdown.trim());
+    expect(index.filter((e) => e.art === 'loesung')).toHaveLength(mitLoesung.length);
+  });
+
+  it('findet Begriffe, die nur in einer Musterlösung stehen – als eigener Treffer zur Aufgabe', () => {
+    // „Informationsdurchsickern“ steht nur in der Lösung zu DD6 E2 (Data Leakage), nicht in der Aufgabe.
+    const treffer = suche(index, 'Informationsdurchsickern');
+    expect(treffer.some((t) => t.eintrag.art === 'aufgabe')).toBe(false);
+    const l = treffer.find((t) => t.eintrag.art === 'loesung')!;
+    expect(l.eintrag.link).toBe('/aufgabe/06-E2');
+    expect(l.eintrag.kontext).toBe('Musterlösung · Deep Dive 6 · CRISP-DM & Machine Learning');
+    expect(l.ausschnitt).toContain('Informationsdurchsickern');
   });
 
   it('respektiert die Einstellungen Prüferfragen und Fachgespräch', () => {
@@ -91,6 +103,12 @@ describe('Rangfolge', () => {
     expect(suche(index, 'x')).toEqual([]);
     expect(suche(index, 'qqqqzzzz')).toEqual([]);
     expect(suche(index, 'daten', 7)).toHaveLength(7);
+  });
+
+  it('Bindestrich-Wörter auch zusammengeschrieben: „knn“ findet „k-NN“', () => {
+    const titel = (q: string) => suche(index, q, 10).map((t) => t.eintrag.titel);
+    expect(titel('knn')).toContain('7.1 k-Nächste-Nachbarn (k-NN)');
+    expect(ausschnitt('Verfahren wie k-NN (überwacht) und mehr', ['knn'])).toContain('k-NN');
   });
 
   it('Ausschnitt um den ersten Treffer', () => {

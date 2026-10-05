@@ -1,4 +1,4 @@
-// Globale Suche (ROADMAP 8.8, Strg+K): Index über Lernblätter (Abschnitte), Material, Karteikarten, Aufgaben, SQL- und
+// Globale Suche (ROADMAP 8.8, Strg+K): Index über Lernblätter (Abschnitte), Material, Karteikarten, Aufgaben samt Musterlösungen, SQL- und
 // Rechenübungen, Formeln, Operatoren und Glossar – und die Rangfolge der Treffer. Rein, ohne React; geladen wird das Modul
 // erst mit dem Suchdialog (lazy), der Index entsteht beim ersten Öffnen.
 //
@@ -6,7 +6,7 @@
 // ü/ue → u), ß → ss, Satzzeichen → Leerzeichen. So findet „Pruefung“, „Prüfung“ und „prufung“ dasselbe, „Groesse“ auch „Größe“.
 // Rangfolge: Jedes Suchwort muss vorkommen (UND). Punkte je Wort: Titel-Wort genau 12, Titel-Wortanfang 8, im Titel 5,
 // Text-Wortanfang 2, im Text 1; der ganze Suchtext im Titel +10, Titel beginnt damit +6; dazu ein kleiner Bonus je Art
-// (Glossar, Formel, Operator, Abschnitt vor Karte, Aufgabe, Übung). Gleichstand → kürzerer Titel, dann Index-Reihenfolge.
+// (Glossar, Formel, Operator, Abschnitt vor Karte, Aufgabe, Musterlösung, Übung). Gleichstand → kürzerer Titel, dann Index-Reihenfolge.
 
 import { stripPrueferfragen } from '../../shared/prueferfragen';
 import type { Settings } from '../../shared/progress';
@@ -18,7 +18,7 @@ import { OPERATOREN } from './operatoren';
 
 export { normalisiere };
 
-export type SuchArt = 'glossar' | 'abschnitt' | 'formel' | 'operator' | 'material' | 'karte' | 'aufgabe' | 'sql' | 'rechnen';
+export type SuchArt = 'glossar' | 'abschnitt' | 'formel' | 'operator' | 'material' | 'karte' | 'aufgabe' | 'loesung' | 'sql' | 'rechnen';
 
 export const SUCH_ART: Record<SuchArt, { icon: string; name: string; bonus: number }> = {
   glossar: { icon: '📚', name: 'Glossar', bonus: 3 },
@@ -28,6 +28,7 @@ export const SUCH_ART: Record<SuchArt, { icon: string; name: string; bonus: numb
   material: { icon: '📄', name: 'Material', bonus: 1 },
   karte: { icon: '🃏', name: 'Karteikarte', bonus: 1 },
   aufgabe: { icon: '📝', name: 'Aufgabe', bonus: 0 },
+  loesung: { icon: '✅', name: 'Musterlösung', bonus: 0 },
   sql: { icon: '🧮', name: 'SQL-Übung', bonus: 0 },
   rechnen: { icon: '📐', name: 'Rechenübung', bonus: 0 },
 };
@@ -66,14 +67,18 @@ export function klartext(md: string): string {
     .trim();
 }
 
+/** Bindestrich-Wörter zusätzlich zusammengeschrieben („k-NN“ → „knn“, „E-Mail“ → „email“), damit auch „knn“ sie findet. */
+const zusammen = (s: string) =>
+  (s.match(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu) ?? []).map((w) => normalisiere(w).replace(/ /g, '')).join(' ');
+
 const eintrag = (art: SuchArt, titel: string, kontext: string, text: string, link: string): SuchEintrag => ({
   art,
   titel,
   kontext,
   text,
   link,
-  titelN: ` ${normalisiere(titel)} `,
-  textN: ` ${normalisiere(text)} `,
+  titelN: ` ${normalisiere(titel)} ${zusammen(titel)} `,
+  textN: ` ${normalisiere(text)} ${zusammen(text)} `,
 });
 
 /** Kurztext für Titel aus einem längeren Text (erste Zeile, gekürzt). */
@@ -138,6 +143,19 @@ export function baueSuchIndex(
         `/aufgabe/${encodeURIComponent(task.id)}`,
       ),
     );
+    // Musterlösung als eigener Treffer: Begriffe, die nur in der Lösung stehen (z. B. aus den *_Loesungen.md), werden gefunden,
+    // ohne dass der Ausschnitt beim Treffer „Aufgabe“ die Lösung verrät.
+    if (task.solution?.markdown.trim()) {
+      out.push(
+        eintrag(
+          'loesung',
+          `${task.code}: ${kurz(task.markdown, 80)}`,
+          `Musterlösung · ${ddName(content, task.topicId) || 'KI-Aufgabe'}`,
+          klartext(task.solution.markdown),
+          `/aufgabe/${encodeURIComponent(task.id)}`,
+        ),
+      );
+    }
   }
   for (const e of content.sqlExercises) {
     out.push(
@@ -199,7 +217,8 @@ export function ausschnitt(text: string, woerter: string[], laenge = 160): strin
   let zeichen = 0;
   for (const t of teile) {
     const n = normalisiere(t);
-    if (n && woerter.some((w) => n.includes(w))) {
+    const z = n.replace(/ /g, '');
+    if (n && woerter.some((w) => n.includes(w) || z.includes(w))) {
       pos = zeichen;
       break;
     }

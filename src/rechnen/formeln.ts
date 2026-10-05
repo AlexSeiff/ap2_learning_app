@@ -309,9 +309,10 @@ export const F = {
     name: 'Euklidischer Abstand',
     thema: '06',
     latex: L`d = \sqrt{(x - x_Z)^2 + (y - y_Z)^2}`,
-    erklaerung: 'Abstand eines Punkts zu einem Zentrum (k-Means). Zum reinen Vergleichen darf die Wurzel weggelassen werden.',
-    variablen: [v(L`(x \mid y)`, 'Datenpunkt'), v(L`(x_Z \mid y_Z)`, 'Clusterzentrum')],
-    vorlagen: ['kmeans'],
+    erklaerung:
+      'Abstand eines Punkts zu einem Zentrum (k-Means) bzw. zum neuen Fall (k-NN). Zum reinen Vergleichen darf die Wurzel weggelassen werden.',
+    variablen: [v(L`(x \mid y)`, 'Datenpunkt'), v(L`(x_Z \mid y_Z)`, 'Clusterzentrum (k-Means) bzw. neuer Fall (k-NN)')],
+    vorlagen: ['kmeans', 'knn'],
   },
   zentrum: {
     name: 'Neues Clusterzentrum',
@@ -344,6 +345,23 @@ export const F = {
     erklaerung: 'Wie viel besser als der Zufall: > 1 positiver, < 1 negativer Zusammenhang. Symmetrisch.',
     variablen: [v(L`\text{Support}(Y)`, 'Anteil der Transaktionen mit Y')],
     vorlagen: ['assoziation'],
+  },
+  entropie: {
+    name: 'Entropie',
+    thema: '06',
+    latex: L`H(S) = -\sum_i p_i \cdot \log_2 p_i`,
+    erklaerung:
+      'Unreinheit einer Menge bezogen auf die Zielklasse (ID3): 0 = rein, 1 = bei zwei Klassen halbe-halbe. Ohne log₂-Taste: log₂ x = ln x / ln 2.',
+    variablen: [v(L`p_i`, 'Anteil der Fälle in Klasse i')],
+    vorlagen: ['id3'],
+  },
+  informationsgewinn: {
+    name: 'Informationsgewinn',
+    thema: '06',
+    latex: L`IG(S, A) = H(S) - \sum_v \frac{|S_v|}{|S|} \cdot H(S_v)`,
+    erklaerung: 'Wie stark Merkmal A die Entropie senkt. ID3 wählt für jeden Knoten das Merkmal mit dem größten Gewinn.',
+    variablen: [v(L`S_v`, 'Teilmenge mit Ausprägung v von A'), v(L`|S_v| / |S|`, 'Anteil der Teilmenge')],
+    vorlagen: ['id3'],
   },
 
   // ---------- Modellgüte (DD7) ----------

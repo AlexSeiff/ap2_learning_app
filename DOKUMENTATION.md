@@ -38,7 +38,8 @@ One React UI, three ways to run it:
 - Public URL: **https://alexseiff.github.io/ap2_learning_app/** (HashRouter, `base: './'`).
 - Every push to `main` runs `.github/workflows/pages.yml`: `npm ci` → `npm test` → `npm run lint` → `npm run build:pages` → deploy.
 - The Pages version is **used by several people**. Each browser has its own progress; there is no shared state and no account.
-- `AP-2/` = the folder above the repo by default; `LERN_QUELLE` in `.env.local` overrides it (e.g. when the repo lives outside OneDrive).
+- `AP-2/` = the folder above the repo by default; `LERN_QUELLE` in `.env.local` overrides it (e.g. when the repo lives outside OneDrive);
+  `sync-content`, `import-report` and the `mc-*` scripts read it via `server/ladeEnv.ts`.
 - An Electron desktop build existed on a local `desktop` branch; it was dropped in October 2026 – Pages is the version for users.
 
 ## 3. Architecture
@@ -243,6 +244,8 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 | `regressionsguete` | `{ y: number[2–30], yDach: number[same length], einheit? }` | `mae`, `rmse` (r2), `mse*`, `summeBetraege*`, `summeQuadrate*`, `r2*` | `n` | `y`, `yDach`, `n` |
 | `assoziation` | `{ transaktionen: string[][] (2–40), wenn: string[], dann: string[] }` | `support`, `konfidenz` (% r2), `lift` (r2), `support_<Artikel>*` (%, non-letters → `_`), `supportWenn*`, `supportDann*`, `anzahlGemeinsam*` | `n` | `wenn`, `dann`, `n`, `regel` |
 | `kmeans` | `{ punkte: [x, y][2–20], zentren: [x, y][2–5] }` | `abstandI_J` (r2, point I to centre J), `clusterI` (number of the centre), `zentrumJx`, `zentrumJy` (r2) | `n` | `punkte`, `zentren`, `k` |
+| `knn` | `{ punkte: [x, y][3–20], klassen: string[same length, ≥ 2 distinct], neu: [x, y], k (1–15, < n) }` | `abstandI` (r2, point I to the new case), `nachbarn` (menge, "P3, P2, P5" by distance; ties → lower number), `klasse` (text; vote tie → class of the nearest tied neighbour), `stimmen_<Klasse>*` | `n`, `k` | `punkte` (with class), `neu`, `k`, `n`, `klassen` |
+| `id3` | `{ merkmale: string[1–5], ziel?, zeilen: string[][4–24] (one value per feature, class last, ≥ 2 classes) }` | `entropie` (r3), `gewinnJ` (r3, information gain of feature J), `wurzel` (text, feature with the largest gain), `entropieJ_V*` (r3, value V in order of first occurrence), `restJ*` (r3, weighted entropy) | – (keeps features, values and n of the data; without `daten` the DD6 7.4 example gives the shape) | `n`, `ziel`, `merkmale`, `klassen` |
 | **Prozessanalyse / Wirtschaftlichkeit** (DD5, DD12) | | | | |
 | `durchlaufzeit` | `{ schritte: [{ name, bearbeitung, liege }] (1–15), einheit? (default "h") }` | `bearbeitung`, `liegezeit`, `durchlaufzeit` (r2), `wertschoepfung` (% r2) | `schritte` (count) | `einheit` |
 | `fehlerquote` | `{ gesamt (int), fehler (int ≤ gesamt), nacharbeitJe? (h), kostensatz? (€/h) }` | `fehlerquote`, `fpy` (% r2); with both optional fields: `nacharbeitskosten`, `zuschlag` (€ r2), `nacharbeitZeit*` | `gesamt`, `kosten` (bool) | `gesamt`, `fehler`, `nacharbeitJe`, `kostensatz` |
@@ -266,10 +269,10 @@ Ids with a running number (`rel1`, `FAZ_A`, `teil1_2`) follow the data order giv
 `(r2)` = rounded to 2 decimals by default; every result has a default label and unit, which `eingaben` can override.
 The exact ids for given data are easiest to see in the solution table of the exercise page or with
 `VORLAGEN[id].loese(VORLAGEN[id].schema.parse(daten)).felder` (e.g. in a Vitest test). Look at `content/AP2_Rechen_Uebungen.json`
-for worked examples. **Content today: 85 exercises** – 57 fixed (53 with a template, 4 without: JArbSchG/BUrlG/Reallohn) and 28 generated
+for worked examples. **Content today: 90 exercises** – 60 fixed (56 with a template, 4 without: JArbSchG/BUrlG/Reallohn) and 30 generated
 (no `daten`, one per template). Fixed exercises cover every calculation task of the sheets: the Übungsklausur tasks (`quelleAufgabe`
 "DDn Übungsklausur X1") and the calculation examples in the theory parts (`quelleAufgabe` "DDn Teil 4.3" etc. – the smoke test then
-looks for the numbers in the theory sections of that sheet). Per sheet: DD3 17, DD4 12, DD5 8, DD6 7, DD7 7, DD9 3, DD10 4, DD11 1, DD12 13,
+looks for the numbers in the theory sections of that sheet). Per sheet: DD3 17, DD4 12, DD5 8, DD6 12, DD7 7, DD9 3, DD10 4, DD11 1, DD12 13,
 DD13 3, DD14 10. IDs: `RE-ST1`/`ST2` (DD3/DD4), `MG` (DD7), `ML` (DD6), `PA` (DD5), `DQ` (DD9), `VI` (DD11), `PM` (DD12), `WI` (DD13/DD14),
 `IT` (DD10); the file is sorted in this order. Not included (no arithmetic or no number to check): pure lookups in DD13 (Pausen B1/B5,
 Betriebsrat D1, Günstigkeitsprinzip E3), Kündigungstermine (dates), DD11 algorithm/pseudocode tasks.
@@ -540,12 +543,15 @@ only in `useCardSession` state and is cleared for the next card – **not persis
 
 - **Index** `baueSuchIndex(content, settings, zusatz)` (`src/lib/suche.ts`, pure, `tests/suche.test.ts`): theory sections of every sheet (link
   `/lernen/<topic>?stelle=<section id>`), material docs, flashcards (`cardPool` → the Prüferfragen/Fachgespräch switches apply; link
-  `/karteikarten?karten=<id>&von=suche`, shown as "🔎 Aus der Suche: 1 Karte."), tasks, SQL exercises, Rechenübungen, formulas
+  `/karteikarten?karten=<id>&von=suche`, shown as "🔎 Aus der Suche: 1 Karte."), tasks, their model solutions (kind `loesung`,
+  "✅ Musterlösung", own entry linking to the task – so terms that only occur in a `*_Loesungen.md` are found without the task snippet
+  giving the solution away), SQL exercises, Rechenübungen, formulas
   (`/material/formeln?stelle=formel-<id>`), operators (`/material/operatoren?stelle=op-<id>`) and the glossary (8.9). With Prüferfragen off,
-  their blockquotes are also stripped from the section text. Today **1,858 entries** (299 sections, 2 material docs, 504 cards, 258 tasks,
-  59 SQL, 85 Rechnen, 68 formulas, 29 operators, 554 glossary terms); built in about 30 ms, a query takes a few ms.
+  their blockquotes are also stripped from the section text. Today **2,142 entries** (305 sections, 2 material docs, 512 cards, 258 tasks,
+  258 solutions, 59 SQL, 90 Rechnen, 70 formulas, 29 operators, 559 glossary terms); built in about 30 ms, a query takes a few ms.
 - **Normalisation** `normalisiere` (`src/lib/normalisiere.ts`): lower case, accents removed, ä/ae → a, ö/oe → o, ü/ue → u, ß → ss, everything else
   → space. So "Pruefung", "Prüfung" and "prufung" match, "Groesse" finds "Größe".
+  Hyphenated words are indexed a second time joined (`zusammen`: "k-NN" → "knn", "E-Mail" → "email"), and the snippet also matches the joined form.
 - **Ranking** `suche(index, query, max = 40)`: every query word must occur (AND). Per word: exact title word 12, title word start 8, in title 5,
   text word start 2, in text 1; whole query in the title +10, title starts with it +6; small bonus per kind (glossary 3, section/formula/operator 2,
   material/card 1). Ties → shorter title, then index order. Snippet (`ausschnitt`) around the first matching word. Fewer than 2 characters → nothing.
@@ -568,7 +574,7 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
   - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); card definition
     before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
-    normalised letter (Ä → A), `#` otherwise. Today **554 terms, 418 with a definition**. Some noise remains (e.g. names from WiSo scenarios).
+    normalised letter (Ä → A), `#` otherwise. Today **559 terms, 422 with a definition**. Some noise remains (e.g. names from WiSo scenarios).
 - **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
   term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material` (`navigation.ts` unchanged).

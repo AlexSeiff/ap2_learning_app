@@ -82,6 +82,8 @@ ORDER BY umsatz DESC;
 
 **Lernarten:**
 - **Überwacht** (gelabelte Daten): **Klassifikation** (diskrete Klassen, z. B. Spam/kein Spam – Verfahren: Entscheidungsbaum, k-NN, logistische Regression, Random Forest) und **Regression** (stetige Zielgröße, z. B. Umsatzprognose).
+  - **k-NN:** Abstand des neuen Falls zu allen Trainingsfällen → k nächste Nachbarn → Mehrheitsklasse (Merkmale skalieren, bei zwei Klassen ungerades k).
+  - **ID3:** baut einen Entscheidungsbaum; Knoten = Merkmal mit dem größten **Informationsgewinn** IG = H(S) − gewichtete Entropie der Teilmengen, **Entropie** H = −Σ pᵢ · log₂ pᵢ (0 = rein, 1 = halbe-halbe).
 - **Unüberwacht** (keine Labels): **Clustering** (k-Means: k Zentren wählen → Punkte dem nächsten Zentrum zuordnen → Zentren neu berechnen → wiederholen bis stabil), **Assoziationsanalyse** (Warenkorb: Support, Konfidenz, Lift), Dimensionsreduktion.
 - **Bestärkendes Lernen:** Agent lernt über Belohnung/Bestrafung.
 

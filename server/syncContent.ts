@@ -2,6 +2,7 @@
 // content/ wird committet und ist die Quelle für die GitHub-Pages-Version und die Tests.
 // Der Ordner AP-2 wird nur gelesen; in content/ werden nur Lernblatt-Dateien angelegt, ersetzt oder gelöscht.
 
+import './ladeEnv';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { CONTENT_DIR, listContentFiles, SOURCE_DIR } from './loadContent';

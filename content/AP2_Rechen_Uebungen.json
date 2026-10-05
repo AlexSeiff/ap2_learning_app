@@ -653,6 +653,126 @@
       "erklaerung": "k-Means wiederholt Zuordnen und Neuberechnen, bis sich die Zentren nicht mehr ändern. Merkmale mit großer Zahlenspanne dominieren den Abstand – deshalb vorher skalieren."
     },
     {
+      "id": "RE-ML-008",
+      "thema": "Deep Dive 6",
+      "titel": "k-NN: Wird der Auftrag reklamiert?",
+      "schwierigkeit": 2,
+      "tags": ["klassifikation", "k-nn"],
+      "vorlage": "knn",
+      "daten": {
+        "punkte": [
+          [1, 2],
+          [3, 2],
+          [5, 3],
+          [6, 5],
+          [3, 5],
+          [7, 5]
+        ],
+        "klassen": ["nein", "nein", "ja", "ja", "nein", "ja"],
+        "neu": [4, 3],
+        "k": 3
+      },
+      "aufgabe": "Vergangene Aufträge (x = Lieferdauer in Tagen, y = Anzahl Packstücke, dahinter die Klasse „Reklamation“): {{punkte}}.\n\nKlassifiziere den neuen Auftrag **{{neu}}** mit k-NN und k = {{k}}: Berechne die euklidischen Abstände, bestimme die {{k}} nächsten Nachbarn und die vorhergesagte Klasse.",
+      "hinweise": [
+        "Abstand = √((x − xN)² + (y − yN)²) mit {{neu}} als neuem Auftrag – für jeden der {{n}} Aufträge.",
+        "Zum Sortieren reichen die quadrierten Abstände.",
+        "Unter den {{k}} nächsten Nachbarn entscheidet die Mehrheit."
+      ],
+      "erklaerung": "Mit k = 1 würde allein P3 entscheiden (ja), mit k = 3 und k = 5 gewinnt „nein“. Die Wahl von k verändert das Ergebnis – sie muss begründet und mit Testdaten geprüft werden. Bei zwei Klassen ein ungerades k nehmen, damit es keinen Gleichstand gibt.",
+      "quelleAufgabe": "DD6 Teil 7.2"
+    },
+    {
+      "id": "RE-ML-009",
+      "thema": "Deep Dive 6",
+      "titel": "k-NN mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["klassifikation", "k-nn"],
+      "vorlage": "knn",
+      "aufgabe": "Trainingsfälle mit den Merkmalen x und y und ihrer Klasse ({{klassen}}): {{punkte}}.\n\nKlassifiziere den neuen Fall **{{neu}}** mit k-NN und k = {{k}}.",
+      "hinweise": [
+        "Abstand = √((x − xN)² + (y − yN)²) zu jedem Trainingsfall.",
+        "Sortiere aufsteigend und nimm die {{k}} kleinsten Abstände.",
+        "Die häufigste Klasse unter diesen Nachbarn ist die Vorhersage."
+      ],
+      "erklaerung": "k-NN lernt nichts im Voraus („lazy learner“): Das Modell sind die gespeicherten Trainingsfälle, gerechnet wird erst bei der Vorhersage. Wie bei k-Means müssen die Merkmale vorher skaliert werden."
+    },
+    {
+      "id": "RE-ML-010",
+      "thema": "Deep Dive 6",
+      "titel": "ID3: Welches Merkmal wird die Wurzel?",
+      "schwierigkeit": 3,
+      "tags": ["entscheidungsbaum", "id3", "entropie"],
+      "vorlage": "id3",
+      "daten": {
+        "merkmale": ["Spediteur", "Lieferdauer", "Verpackung"],
+        "ziel": "Reklamation",
+        "zeilen": [
+          ["Nordtrans", "lang", "Standard", "ja"],
+          ["Nordtrans", "lang", "Spezial", "ja"],
+          ["Nordtrans", "lang", "Standard", "ja"],
+          ["Nordtrans", "kurz", "Spezial", "nein"],
+          ["Rheinlogistik", "kurz", "Spezial", "ja"],
+          ["Rheinlogistik", "lang", "Standard", "nein"],
+          ["Rheinlogistik", "kurz", "Standard", "nein"],
+          ["Eigenlieferung", "kurz", "Standard", "nein"],
+          ["Eigenlieferung", "lang", "Spezial", "nein"],
+          ["Eigenlieferung", "kurz", "Standard", "nein"]
+        ]
+      },
+      "aufgabe": "{{n}} Aufträge mit den Merkmalen {{merkmale}} und der Zielklasse „{{ziel}}“ stehen in der Tabelle.\n\nBerechne die Entropie der Gesamtmenge und den Informationsgewinn jedes Merkmals (drei Nachkommastellen) und bestimme das Merkmal für die Wurzel des Entscheidungsbaums nach ID3.",
+      "eingaben": ["entropie", "gewinn1", "gewinn2", "gewinn3", "wurzel"],
+      "hinweise": [
+        "Zähle die Klassen der Gesamtmenge: H = −Σ pᵢ · log₂ pᵢ (log₂ x = ln x / ln 2).",
+        "Je Merkmal: Entropie jeder Teilmenge, gewichtet mit ihrem Anteil – das ist die Rest-Entropie.",
+        "Informationsgewinn = H(S) − Rest-Entropie; die Wurzel hat den größten Gewinn."
+      ],
+      "erklaerung": "Spediteur trennt am besten: Eigenlieferung ist bereits rein (nur „nein“), die anderen Äste werden mit den verbliebenen Merkmalen weiter aufgeteilt. Die Verpackung bringt mit 0,020 praktisch keine Information.",
+      "quelleAufgabe": "DD6 Teil 7.4"
+    },
+    {
+      "id": "RE-ML-011",
+      "thema": "Deep Dive 6",
+      "titel": "ID3: nächste Ebene im Ast Nordtrans",
+      "schwierigkeit": 2,
+      "tags": ["entscheidungsbaum", "id3", "entropie"],
+      "vorlage": "id3",
+      "neueZahlen": false,
+      "daten": {
+        "merkmale": ["Lieferdauer", "Verpackung"],
+        "ziel": "Reklamation",
+        "zeilen": [
+          ["lang", "Standard", "ja"],
+          ["lang", "Spezial", "ja"],
+          ["lang", "Standard", "ja"],
+          ["kurz", "Spezial", "nein"]
+        ]
+      },
+      "aufgabe": "Nach der Wurzel „Spediteur“ bleiben im Ast **Nordtrans** {{n}} Aufträge mit den Merkmalen {{merkmale}} übrig (Tabelle).\n\nBerechne die Entropie dieser Teilmenge und den Informationsgewinn beider Merkmale und bestimme das Merkmal für den nächsten Knoten.",
+      "eingaben": ["entropie", "gewinn1", "gewinn2", "wurzel"],
+      "hinweise": [
+        "Zähle zuerst ja und nein in der Teilmenge – Verteilung 1 : 3 ergibt H = 0,811.",
+        "Eine Teilmenge mit nur einer Klasse hat die Entropie 0.",
+        "Das Merkmal mit dem größten Informationsgewinn wird der nächste Knoten."
+      ],
+      "erklaerung": "Die Lieferdauer trennt den Ast perfekt (lang → ja, kurz → nein): Beide Teilmengen sind rein, der Gewinn entspricht der gesamten Entropie 0,811. Danach ist der Ast fertig – jedes Blatt hat eine eindeutige Klasse.",
+      "quelleAufgabe": "DD6 Teil 7.4"
+    },
+    {
+      "id": "RE-ML-012",
+      "thema": "Deep Dive 6",
+      "titel": "ID3 mit Zufallsdaten",
+      "schwierigkeit": 3,
+      "tags": ["entscheidungsbaum", "id3", "entropie"],
+      "vorlage": "id3",
+      "aufgabe": "{{n}} Aufträge mit den Merkmalen {{merkmale}} und der Zielklasse „{{ziel}}“ ({{klassen}}) stehen in der Tabelle.\n\nBerechne die Entropie, den Informationsgewinn jedes Merkmals (drei Nachkommastellen) und bestimme die Wurzel des Entscheidungsbaums nach ID3.",
+      "hinweise": [
+        "H = −Σ pᵢ · log₂ pᵢ, log₂ x = ln x / ln 2. Merkwerte: 1 : 1 → 1, 1 : 3 → 0,811, 2 : 3 → 0,971.",
+        "Rest-Entropie = Σ (|Sᵥ| / |S|) · H(Sᵥ) über alle Ausprägungen des Merkmals.",
+        "Informationsgewinn = H(S) − Rest-Entropie; die Wurzel hat den größten Gewinn."
+      ],
+      "erklaerung": "ID3 wählt gierig an jedem Knoten das Merkmal mit dem größten Informationsgewinn und rechnet in jedem Ast mit den verbliebenen Fällen weiter. Schwäche: Merkmale mit vielen Ausprägungen werden bevorzugt (Abhilfe: Gain Ratio in C4.5)."
+    },
+    {
       "id": "RE-PA-001",
       "thema": "Deep Dive 5",
       "titel": "Durchlaufzeit und Wertschöpfungsanteil",

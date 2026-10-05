@@ -1,4 +1,5 @@
 // Importbericht: `npm run import-report`
+import './ladeEnv';
 import { loadContent, SOURCE_DIR } from './loadContent';
 
 const c = loadContent();

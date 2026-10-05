@@ -3,6 +3,7 @@
 import type { Vorlage } from '../typen';
 import { assoziation, kmeans } from './crispdm';
 import { qualitaetsgrad } from './datenqualitaet';
+import { id3, knn } from './klassifikation';
 import { konfusionsmatrix, regressionsguete } from './modellguete';
 import { breakEven, netzplan, nutzwert, pert, risiko } from './projekt';
 import { amortisation, durchlaufzeit, fehlerquote } from './prozess';
@@ -26,6 +27,8 @@ const alle = [
   regressionsguete,
   assoziation,
   kmeans,
+  knn,
+  id3,
   durchlaufzeit,
   fehlerquote,
   amortisation,

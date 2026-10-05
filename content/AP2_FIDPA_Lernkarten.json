@@ -3,26 +3,26 @@
     "titel": "AP2 Lernkarten – Fachinformatiker/-in Daten- und Prozessanalyse",
     "pruefung": "IHK Abschlussprüfung Teil 2",
     "erstellt_am": "2026-09-21",
-    "aktualisiert_am": "2026-09-28",
+    "aktualisiert_am": "2026-10-05",
     "version": "1.1",
     "sprache": "de",
     "anzahl_decks": 24,
-    "anzahl_karten": 407,
+    "anzahl_karten": 414,
     "karten_nach_typ": {
       "abgrenzung": 55,
-      "anwendung": 48,
-      "falle": 62,
-      "rechnung": 26,
-      "wissen": 216
+      "anwendung": 49,
+      "falle": 64,
+      "rechnung": 27,
+      "wissen": 219
     },
     "karten_nach_status": {
-      "behandelt": 395,
+      "behandelt": 402,
       "offen": 12
     },
     "karten_nach_schwierigkeit": {
-      "1": 185,
-      "2": 205,
-      "3": 17
+      "1": 187,
+      "2": 209,
+      "3": 18
     },
     "felder": {
       "id": "Eindeutige Karten-ID aus Deck-Kürzel und laufender Nummer",
@@ -1378,7 +1378,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 6",
       "status": "behandelt",
-      "anzahl_karten": 25,
+      "anzahl_karten": 32,
       "karten": [
         {
           "id": "ML-001",
@@ -1632,6 +1632,83 @@
           "schwierigkeit": 3,
           "tags": [
             "bias"
+          ]
+        },
+        {
+          "id": "ML-026",
+          "frage": "In welchen drei Schritten klassifiziert k-NN einen neuen Fall?",
+          "antwort": "1. Abstand des neuen Falls zu jedem Trainingsfall berechnen (meist euklidisch). 2. Die k Fälle mit dem kleinsten Abstand auswählen. 3. Mehrheitsentscheid: Die häufigste Klasse unter diesen k Nachbarn ist die Vorhersage.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "k-nn",
+            "klassifikation"
+          ]
+        },
+        {
+          "id": "ML-027",
+          "frage": "Wie beeinflusst die Wahl von k das Ergebnis von k-NN?",
+          "antwort": "k zu klein (k = 1): Ein einzelner Ausreißer entscheidet, das Modell ist anfällig für Rauschen. k zu groß: Auch weit entfernte Fälle stimmen mit, im Extremfall gewinnt immer die häufigste Klasse. Bei zwei Klassen ein ungerades k wählen (kein Gleichstand); das passende k mit Testdaten bzw. Kreuzvalidierung bestimmen.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "k-nn"
+          ]
+        },
+        {
+          "id": "ML-028",
+          "frage": "k-NN und k-Means – was ist der Unterschied?",
+          "antwort": "k-NN ist überwacht und klassifiziert neue Fälle (k = Anzahl der Nachbarn, die abstimmen). k-Means ist unüberwacht und bildet Gruppen (k = Anzahl der Cluster). Gemeinsam: Beide rechnen mit Abständen und brauchen skalierte Merkmale.",
+          "typ": "falle",
+          "schwierigkeit": 1,
+          "tags": [
+            "k-nn",
+            "k-means"
+          ]
+        },
+        {
+          "id": "ML-029",
+          "frage": "Was misst die Entropie beim ID3-Algorithmus?",
+          "antwort": "Die Unreinheit einer Datenmenge bezogen auf die Zielklasse: H = −Σ pᵢ · log₂ pᵢ. 0 = alle Fälle in einer Klasse (rein), 1 = bei zwei Klassen genau halbe-halbe. Ohne log₂-Taste: log₂ x = ln x / ln 2.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "id3",
+            "entropie",
+            "entscheidungsbaum"
+          ]
+        },
+        {
+          "id": "ML-030",
+          "frage": "Nach welchem Kriterium wählt ID3 das Merkmal für einen Knoten?",
+          "antwort": "Nach dem größten Informationsgewinn: IG = H(S) − Σ (|Sᵥ| / |S|) · H(Sᵥ), also Entropie vorher minus gewichtete Entropie der Teilmengen. Danach wird jeder Ast mit seinen Fällen weiter aufgeteilt, bis die Teilmengen rein sind.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "id3",
+            "entscheidungsbaum"
+          ]
+        },
+        {
+          "id": "ML-031",
+          "frage": "10 Aufträge: 4 reklamiert, 6 nicht. Wie hoch ist die Entropie?",
+          "antwort": "H = −0,4 · log₂ 0,4 − 0,6 · log₂ 0,6 = 0,4 · 1,322 + 0,6 · 0,737 = 0,529 + 0,442 = 0,971. Merkwerte für zwei Klassen: 1 : 1 → 1, 1 : 2 → 0,918, 1 : 3 → 0,811, 1 : 4 → 0,722, 2 : 3 → 0,971.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "id3",
+            "entropie"
+          ]
+        },
+        {
+          "id": "ML-032",
+          "frage": "Warum ist eine Auftragsnummer als Merkmal für ID3 eine Falle?",
+          "antwort": "Jede Nummer kommt nur einmal vor – jede Teilmenge ist rein, der Informationsgewinn maximal. Der Baum lernt die Trainingsdaten auswendig und kann neue Aufträge nicht vorhersagen. ID3 bevorzugt generell Merkmale mit vielen Ausprägungen; Abhilfe: Identifikationsmerkmale weglassen bzw. Gain Ratio (C4.5).",
+          "typ": "falle",
+          "schwierigkeit": 3,
+          "tags": [
+            "id3",
+            "overfitting"
           ]
         }
       ]
