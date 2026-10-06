@@ -417,6 +417,30 @@ button.small, .button.small { padding: 3px 10px; font-size: 0.82rem; }
 .sql-history ul { max-height: 320px; overflow-y: auto; }
 button.history-item { display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%; text-align: left; gap: 2px 12px; }
 button.history-item .mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100%; }
+/* Diagramme aus ```svg-Blöcken (Deep Dive 17): Farben nur über Klassen, damit Hell/Dunkel/Druck stimmen. */
+.diagramm { margin: 1em 0; padding: 0.6em; overflow-x: auto; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.diagramm svg { display: block; max-width: 100%; height: auto; margin: 0 auto; font-family: inherit; }
+.diagramm text { fill: currentColor; stroke: none; font-size: 13px; }
+.diagramm .dg-linie { fill: none; stroke: currentColor; stroke-width: 1.5; }
+.diagramm .dg-form { fill: var(--surface); stroke: currentColor; stroke-width: 1.5; }
+.diagramm .dg-linie-akzent { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+.diagramm .dg-grau { fill: var(--surface-2); stroke: currentColor; stroke-width: 1.5; }
+.diagramm .dg-akzent { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+.diagramm .dg-gut { fill: var(--good-soft); stroke: var(--good); stroke-width: 1.5; }
+.diagramm .dg-mittel { fill: var(--mid-soft); stroke: var(--mid); stroke-width: 1.5; }
+.diagramm .dg-rot { fill: var(--low-soft); stroke: var(--low); stroke-width: 1.5; }
+.diagramm .dg-voll { fill: currentColor; stroke: none; }
+.diagramm .dg-voll-akzent { fill: var(--accent); stroke: none; }
+.diagramm .dg-strich { stroke-dasharray: 6 4; }
+.diagramm .dg-punkt { stroke-dasharray: 2 3; }
+.diagramm .dg-dick { stroke-width: 3; }
+.diagramm .dg-duenn { stroke-width: 1; }
+.diagramm text.dg-leise { fill: var(--muted); }
+.diagramm text.dg-akzent-text { fill: var(--accent); }
+.diagramm text.dg-klein { font-size: 11px; }
+.diagramm text.dg-gross { font-size: 15px; }
+.diagramm text.dg-fett { font-weight: 600; }
+.diagramm text.dg-kursiv { font-style: italic; }
 .sql-block { position: relative; margin: 1em 0; }
 .sql-block pre { margin: 0; }
 .sql-open { display: inline-block; font-size: 0.82rem; margin-top: 4px; }

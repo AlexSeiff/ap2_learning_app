@@ -5,6 +5,8 @@ export interface Section {
   title: string;
   level: number;
   markdown: string;
+  /** Beim Laden aus dem Glossar eingesetzt (Glossar & Diagramme) – nicht in der Suche, die das Glossar schon enthält. */
+  generiert?: true;
 }
 
 export type CardType = 'wissen' | 'abgrenzung' | 'rechnung' | 'anwendung' | 'falle' | 'begriff';

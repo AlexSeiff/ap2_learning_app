@@ -82,14 +82,17 @@ export function Thema() {
         </p>
         <h1>{topic.title}</h1>
         <div className="actions">
+          {/* Nachschlagethemen ohne Übungsklausur (Glossar & Diagramme) haben auch keine Einzelaufgaben. */}
           {topic.exam && (
-            <Link className="button" to={`/klausur/${topic.id}`}>
-              📝 Übungsklausur
-            </Link>
+            <>
+              <Link className="button" to={`/klausur/${topic.id}`}>
+                📝 Übungsklausur
+              </Link>
+              <Link className="button secondary" to={`/aufgaben?thema=${topic.id}`}>
+                Einzelaufgaben
+              </Link>
+            </>
           )}
-          <Link className="button secondary" to={`/aufgaben?thema=${topic.id}`}>
-            Einzelaufgaben
-          </Link>
           {cards > 0 && (
             <Link className="button secondary" to={`/karteikarten?thema=${topic.id}`}>
               🗂️ {cards} Karteikarten

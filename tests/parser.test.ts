@@ -173,14 +173,27 @@ describe('Robustheit', () => {
     expect(sols.get('A1')!.solution.markdown).toContain('# kein Heading');
   });
 
-  it('meldet verwaiste Lösungsdateien und Blätter ohne Klausur', () => {
+  it('meldet verwaiste Lösungsdateien und Blätter ohne Klausur, die eine Lösungsdatei haben', () => {
     const c = buildContent([
       { name: 'DeepDive_50_Nur_Theorie.md', text: '# Deep Dive 50: Nur Theorie\n\n## A\n\nText' },
       { name: 'DeepDive_51_X_Loesungen.md', text: '# L' },
+      { name: 'DeepDive_52_Ohne_Klausur.md', text: '# Deep Dive 52: Ohne Klausur\n\n## A\n\nText' },
+      { name: 'DeepDive_52_Ohne_Klausur_Loesungen.md', text: '**A1 (2 P):** x' },
     ]);
     const messages = c.issues.map((i) => `${i.file}: ${i.message}`);
-    expect(messages).toContain('DeepDive_50_Nur_Theorie.md: Kein Abschnitt „Übungsklausur" gefunden.');
+    expect(messages).not.toContain('DeepDive_50_Nur_Theorie.md: Kein Abschnitt „Übungsklausur" gefunden.');
+    expect(messages).toContain('DeepDive_52_Ohne_Klausur.md: Kein Abschnitt „Übungsklausur" gefunden.');
     expect(messages).toContain('DeepDive_51_X_Loesungen.md: Lösungsdatei ohne zugehöriges Lernblatt.');
+  });
+
+  it('erkennt Fachgespräch und Lernziel-Check auch in einem Blatt ohne Übungsklausur', () => {
+    const md =
+      '# Deep Dive 53: Nur Theorie\n\n# Teil 1\n\n## 1.1 A\n\nText\n\n## Fachgespräch\n\n1. Frage?\n\n## Lernziel-Check\n\n- [ ] Ich kann A.\n';
+    const { topic, flashcards, issues } = parseTopic('53', 'DeepDive_53_Nur_Theorie.md', md);
+    expect(topic.lernziele).toEqual(['Ich kann A.']);
+    expect(topic.sections.map((s) => s.title)).toEqual(['Teil 1', '1.1 A']);
+    expect(flashcards.map((c) => c.kind)).toEqual(['fachgespraech']);
+    expect(issues).toEqual([]);
   });
 
   it('parseCriteria überspringt Summenzeilen', () => {

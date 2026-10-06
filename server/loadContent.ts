@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { buildContent } from '../shared/parser';
 import type { Content } from '../shared/types';
+import { ergaenzeGlossarThema } from '../src/lib/glossarThema';
 import { pruefeRechenUebung } from '../src/rechnen/pruefen';
 
 /** Ordner mit den Lernblättern: standardmäßig der Ordner oberhalb der App (AP-2). Der Dev-Server liest live von hier. */
@@ -41,5 +42,8 @@ export function listContentFiles(dir = SOURCE_DIR): string[] {
 export function loadContent(dir = SOURCE_DIR): Content {
   const files = listContentFiles(dir).map((name) => ({ name, text: readFileSync(join(dir, name), 'utf8') }));
   // Rechenübungen werden gegen ihre Vorlage geprüft (unbekannte Vorlage, falsche Daten, fehlende Eingaben → Importhinweis).
-  return buildContent(files, { pruefeRechenUebung });
+  const content = buildContent(files, { pruefeRechenUebung });
+  // Thema „Glossar & Diagramme“: Platzhalter durch das aktuelle Glossar A–Z ersetzen (src/lib/glossarThema.ts).
+  ergaenzeGlossarThema(content);
+  return content;
 }

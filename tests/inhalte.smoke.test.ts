@@ -5,7 +5,9 @@ import { CONTENT_DIR, loadContent } from '../server/loadContent';
 // Bewusst keine Detailprüfungen: Wer ein Lernblatt bearbeitet, soll nur echte Importfehler sehen.
 // Das genaue Format prüfen parser.test.ts und lernkarten.test.ts mit den Fixtures in tests/fixtures/inhalt/.
 const content = loadContent(CONTENT_DIR);
-const sheets = content.topics.filter((t) => t.id !== '00');
+// Deep Dive 17 (Glossar & Diagramme) ist ein Nachschlagethema ohne Übungsklausur und Lösungsdatei.
+const NACHSCHLAGEN = ['17'];
+const sheets = content.topics.filter((t) => t.id !== '00' && !NACHSCHLAGEN.includes(t.id));
 
 describe('Echte Lernblätter in content/', () => {
   it('ergeben keine Importhinweise', () => {
@@ -39,7 +41,7 @@ describe('Echte Lernblätter in content/', () => {
   });
 
   it('jede Übungsklausur ergibt 100 Punkte und jede Aufgabe hat eine Musterlösung', () => {
-    for (const t of content.topics) expect(t.exam?.totalPoints, t.file).toBe(100);
+    for (const t of content.topics.filter((x) => !NACHSCHLAGEN.includes(x.id))) expect(t.exam?.totalPoints, t.file).toBe(100);
     const missing = Object.values(content.tasks)
       .filter((t) => !t.solution?.markdown)
       .map((t) => t.id);

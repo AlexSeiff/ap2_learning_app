@@ -109,6 +109,7 @@ lern-app/
 |---|---|
 | `DeepDive_NN_Thema.md` | `Topic`: theory sections (`# Teil …`, `## 1.1 …`), `lernziele` (`- [ ]` under `## Lernziel-Check…`), flashcards from Prüferfragen and Fachgespräch, `Exam` from `# Übungsklausur …` with blocks `## Block A – Titel (19 P)` and tasks `**A1 (6 P):** …`, attachments (Anlagen) |
 | `DeepDive_NN_Thema_Loesungen.md` | `Solution` per task (`**A1 (6 P):**`), `kommentar` from `*Prüferkommentar: …*`, `criteria` from a points table `| Element | P |` |
+| `DeepDive_17_Glossar_Diagramme.md` | reference topic **without** Übungsklausur and Lösungsdatei: every diagram type as an SVG example (Teil 1–6) and the placeholder `<!-- glossar-a-z -->` (Teil 7), which `loadContent` replaces with the whole glossary (see Glossar below). Edit it like any sheet; the SVG code sits directly in the file |
 | `Deep_Dive_SQL_KW28_29.md` | extra topic (id `00`), solutions inside the sheet; keep the file name (SQL links depend on it) |
 | `Lernzettel_Kernthemen.md`, `AP2_Themenliste_und_Beispielfragen.md` | `MaterialDoc` (Material page) |
 | `Lernplan_*.md`, `Prompt_*.md` | **not read** (`isContentFile`), not synced – the personal study plan is not part of the app |
@@ -120,6 +121,15 @@ lern-app/
 - A trailing `(KW …)` in a sheet or section title is removed (`stripKw`); there is no calendar week in the data model any more.
   The sheets themselves no longer contain personal time references ("am Ende des Themas" instead of "am Ende von KW 31").
 - Problems (task without solution etc.) are collected as `ImportIssue`s and shown on *Daten & Import* / `npm run import-report`.
+- **Sheets without Übungsklausur**: allowed if there is no `_Loesungen.md` (otherwise "Kein Abschnitt „Übungsklausur" gefunden"). A level-2
+  `## Fachgespräch…` / `## Lernziel…` heading then starts the appendix, so cards and Lernziele work as usual. The Lernen page hides
+  Übungsklausur and Einzelaufgaben for such topics; `tests/inhalte.smoke.test.ts` lists them in `NACHSCHLAGEN`.
+- **Diagrams**: a ```` ```svg ```` block holds a hand-drawn SVG that `<Markdown>` shows as `<figure class="diagramm">` (inline, so it works
+  offline and in print). `shared/svgDiagramm.ts` (`pruefeSvg`) allows only drawing elements (`svg g defs marker path line polyline polygon rect
+  circle ellipse text tspan title desc`) and drawing attributes – no scripts, events, links, `style`, comments or external `url(…)`; a block that
+  fails is shown as code and reported as ImportIssue (`pruefeDiagramme`), as is an `id` used twice (markers are page-wide). Colours only via
+  classes from `styles.css` (`dg-linie`, `dg-form`, `dg-grau`, `dg-akzent`, `dg-gut`, `dg-mittel`, `dg-rot`, `dg-voll`, `dg-linie-akzent`,
+  `dg-strich`, `dg-dick` …; text: `dg-klein`, `dg-fett`, `dg-leise` …), so light, dark and print mode work. The search ignores SVG markup.
 
 ### 4.2 Flashcards `AP2_FIDPA_Lernkarten.json`
 
@@ -583,10 +593,14 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     learning hints ("Prüfungstaktik", "Merkhilfe") and emphasis ("nicht", "Drei", "Achtung" …); a definition needs at least two real words
     (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
   - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); term card before `wissen` card before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
-    normalised letter (Ä → A), `#` otherwise. Today **919 terms, 874 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
+    normalised letter (Ä → A), `#` otherwise. Today **1.135 terms, 1.064 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
 - **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
   term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material` (`navigation.ts` unchanged).
+- **Topic list A–Z** (Deep Dive 17, `src/lib/glossarThema.ts`, `ergaenzeGlossarThema`, called in `loadContent` – so local app, Pages build and
+  tests are identical): the section with `<!-- glossar-a-z -->` gets a count sentence, and one section per letter (`17-begriffe-a` …, `generiert: true`)
+  is inserted after it, one line per entry `- Begriff – Definition *(DD n)*`. The lines contain no bold, so `baueGlossar` (which only reads bold
+  terms) is unchanged by them; the search skips `generiert` sections because the glossary entries are already indexed.
 
 **Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
 print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top) and below 600 px (bottom bar, see below).
@@ -823,7 +837,8 @@ npm run build && npm run build:pages
   visibility, seed, every exercise without leaked results, Rechenweg `sicht`, page), `fehlergruende.test.ts` (statistics, `setzeFehlergrund`,
   `finishExam`, exam/journal/Dashboard pages) plus `progress.test.ts`/`mergeProgress.test.ts` (`fehlergrund` migration/schema/merge),
   `suche.test.ts` (normalisation, plain text, index and targets, settings, ranking, snippet, dialog, card selection), `glossar.test.ts`
-  (card questions, term filter, definitions from lines, dedupe, sorting, sources, search, page).
+  (card questions, term filter, definitions from lines, dedupe, sorting, sources, search, page), `diagramme.test.ts` (SVG allow-list, rendering
+  as figure or code, every diagram in `content/` valid with unique ids, Deep Dive 17 structure, topic list A–Z complete, bold-free, not searched).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)

@@ -5,6 +5,7 @@ import { rehypeLoesung, rehypeTabellen } from '../lib/loesungStil';
 import { rehypeOperatoren } from '../lib/operatorStil';
 import { OperatorTipp } from './OperatorTipp';
 import { datasetForSource, sqlEditorLink } from '../lib/sqlLinks';
+import { pruefeSvg } from '../../shared/svgDiagramm';
 
 // Gemeinsame Bausteine für <Markdown> und die Formel-Variante (MathMarkdown, eigener Chunk).
 
@@ -17,13 +18,13 @@ function textOf(node: HastNode): string {
   return '';
 }
 
-/** SQL-Text, wenn der <pre>-Block ein ```sql-Codeblock ist. */
-function sqlOfPre(node: ExtraProps['node']): string | undefined {
+/** Inhalt des <pre>-Blocks, wenn er ein ```<sprache>-Codeblock ist (z. B. „sql“, „svg“). */
+function codeOfPre(node: ExtraProps['node'], sprache: string): string | undefined {
   const code = node?.children.find((c) => c.type === 'element' && c.tagName === 'code');
   if (code?.type !== 'element') return undefined;
   const cls = code.properties.className;
   const classes = Array.isArray(cls) ? cls.map(String) : String(cls ?? '').split(' ');
-  return classes.includes('language-sql') ? textOf(code) : undefined;
+  return classes.includes(`language-${sprache}`) ? textOf(code) : undefined;
 }
 
 function makeComponents(source?: string | false): Components {
@@ -46,9 +47,12 @@ function makeComponents(source?: string | false): Components {
       if (typeof op === 'string') return <OperatorTipp id={op}>{children}</OperatorTipp>;
       return <span {...rest}>{children}</span>;
     },
+    // ```svg-Blöcke: handgezeichnetes Diagramm (shared/svgDiagramm.ts prüft die Positivliste), sonst als Code.
     // ```sql-Blöcke: Link in den SQL-Editor mit vorausgefüllter Abfrage und passendem Datensatz.
     pre: ({ node, children }) => {
-      const sql = source === false ? undefined : sqlOfPre(node);
+      const svg = codeOfPre(node, 'svg');
+      if (svg !== undefined && !pruefeSvg(svg)) return <figure className="diagramm" dangerouslySetInnerHTML={{ __html: svg.trim() }} />;
+      const sql = source === false ? undefined : codeOfPre(node, 'sql');
       if (!sql?.trim()) return <pre>{children}</pre>;
       return (
         <div className="sql-block">

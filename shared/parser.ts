@@ -6,6 +6,7 @@ import { parseLernkarten } from './lernkarten';
 import { readPrueferfrage } from './prueferfragen';
 import { parseRechenUebungen, type RechenUebungPruefer } from './rechenUebungen';
 import { parseSqlUebungen } from './sqlUebungen';
+import { pruefeSvg, svgBloecke, svgIds } from './svgDiagramm';
 
 interface Line {
   text: string;
@@ -300,8 +301,11 @@ export function parseTopic(id: string, file: string, markdown: string, solutionF
     }
   });
 
-  const theoryLines = examStart >= 0 ? lines.slice(0, examStart) : lines;
-  const trailingLines = examStart >= 0 ? lines.slice(examEnd) : [];
+  // Blatt ohne Übungsklausur (z. B. Glossar & Diagramme): Fachgespräch und Lernziel-Check am Ende sind trotzdem Anhang.
+  const anhangStart =
+    examStart >= 0 ? examEnd : lines.findIndex((l) => (heading(l)?.level ?? 0) === 2 && /^(Fachgespräch|Lernziel)/.test(heading(l)!.title));
+  const theoryLines = examStart >= 0 ? lines.slice(0, examStart) : anhangStart >= 0 ? lines.slice(0, anhangStart) : lines;
+  const trailingLines = anhangStart >= 0 ? lines.slice(anhangStart) : [];
 
   const sections: Section[] = [];
   const flashcards: Flashcard[] = parsePrueferfragen(theoryLines, id);
@@ -346,7 +350,8 @@ export function parseTopic(id: string, file: string, markdown: string, solutionF
   if (examStart >= 0) {
     ({ exam, tasks } = parseExam(lines.slice(examStart, examEnd), id, attachmentsFromTheory));
     if (!tasks.length) issues.push({ file, message: 'Klausurabschnitt gefunden, aber keine Aufgaben erkannt.' });
-  } else {
+  } else if (solutionMarkdown) {
+    // Ein Blatt ohne Lösungsdatei darf reine Theorie sein; mit Lösungsdatei fehlt die Klausur wohl nur wegen der Überschrift.
     issues.push({ file, message: 'Kein Abschnitt „Übungsklausur" gefunden.' });
   }
 
@@ -487,7 +492,34 @@ export function buildContent(files: SourceFile[], options: BuildOptions = {}): C
     content.materials.push({ id: slugify(title), title, file: f.name, markdown: f.text.replace(/\r\n?/g, '\n') });
   }
 
+  content.issues.push(...pruefeDiagramme(content));
   return content;
+}
+
+/** ```svg-Diagramme in Theorie und Material: Positivliste (shared/svgDiagramm.ts) und eindeutige ids (Marker gelten seitenweit). */
+export function pruefeDiagramme(content: Content): ImportIssue[] {
+  const issues: ImportIssue[] = [];
+  const ids = new Map<string, string>();
+  const quellen = [
+    ...content.topics.flatMap((t) => t.sections.map((s) => ({ file: t.file, ort: s.title, md: s.markdown }))),
+    ...content.materials.map((m) => ({ file: m.file, ort: m.title, md: m.markdown })),
+  ];
+  for (const q of quellen) {
+    for (const svg of svgBloecke(q.md)) {
+      const fehler = pruefeSvg(svg);
+      if (fehler) issues.push({ file: q.file, message: `Diagramm in „${q.ort}“: ${fehler}` });
+      for (const id of svgIds(svg)) {
+        const vorher = ids.get(id);
+        if (vorher)
+          issues.push({
+            file: q.file,
+            message: `Diagramm in „${q.ort}“: id „${id}“ gibt es schon (${vorher}) – ids müssen eindeutig sein.`,
+          });
+        else ids.set(id, q.ort);
+      }
+    }
+  }
+  return issues;
 }
 
 export type { MaterialDoc };

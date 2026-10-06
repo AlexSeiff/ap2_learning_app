@@ -56,6 +56,7 @@ export interface SuchTreffer {
 /** Markdown/LaTeX → Klartext für die Suche (grob, aber robust). */
 export function klartext(md: string): string {
   return md
+    .replace(/```svg[\s\S]*?```/g, ' ') // Diagramme (SVG-Markup) nicht durchsuchen
     .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/\{\{\s*[\w.-]+\s*\}\}/g, ' … ')
@@ -111,6 +112,7 @@ export function baueSuchIndex(
   for (const t of content.topics) {
     const kontext = ddName(content, t.id);
     for (const s of t.sections) {
+      if (s.generiert) continue; // Glossar-Liste: die Begriffe stehen schon als Glossar-Einträge im Index
       const md = settings.prueferfragen ? s.markdown : stripPrueferfragen(s.markdown);
       out.push(eintrag('abschnitt', s.title, kontext, klartext(md), `/lernen/${t.id}?stelle=${encodeURIComponent(s.id)}`));
     }

@@ -77,7 +77,7 @@ Hinweis „↻ Neu laden“ klicken (oder in den Entwicklertools *Application �
 | Bereich | Was es tut |
 |---|---|
 | **Übersicht** | Beim ersten Besuch eine kurze Willkommensseite; danach Countdown zu deinem Prüfungstermin (unter *Einstellungen* eintragen), Lernserie (Tage in Folge), fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
-| **Lernen** | Theorie aller 15 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
+| **Lernen** | Theorie aller 16 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check, dazu **Deep Dive 17 „Glossar & Diagramme“**: jeder Diagrammtyp (BPMN, EPK, UML, ER, Star-Schema, PAP, Struktogramm, Netzplan, Gantt, Boxplot, ROC …) als gezeichnetes Beispiel und alle Fachbegriffe von A bis Z |
 | **Karteikarten** | 539 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (25 Decks) und 789 **Begriffskarten** aus `AP2_Fachbegriffe_Lernkarten.json` (16 Decks, je Deep Dive; Vorderseite Fachbegriff, Rückseite kurze Erklärung; Filter Typ „Fachbegriff“) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; **📖 Durchblättern** (Karten nur ansehen, ←/→ oder wischen, ohne Bewertung); Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten); **🟢 Leicht-Modus** mit 4 Antworten zum Einstieg (Tasten `1`–`4`, richtig bringt eine Karte höchstens in Fach 2) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
 | **Einzelaufgaben** | Filter nach Thema, Block, Schwierigkeit, Status, Suche; Auswahl als Aufgaben-/Lösungsblatt exportieren |
