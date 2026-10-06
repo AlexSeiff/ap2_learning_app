@@ -12,7 +12,7 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
   const { prueferfragen, fachgespraech } = progress.settings;
   const index = useMemo(
-    () => baueSuchIndex(content, { prueferfragen, fachgespraech }, glossarSuchEintraege(baueGlossar(content))),
+    () => baueSuchIndex(content, { prueferfragen, fachgespraech }, glossarSuchEintraege(baueGlossar(content), content)),
     [content, prueferfragen, fachgespraech],
   );
   const [anfrage, setAnfrage] = useState('');

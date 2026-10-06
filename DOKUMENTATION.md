@@ -572,8 +572,13 @@ only in `useCardSession` state and is cleared for the next card – **not persis
   → space. So "Pruefung", "Prüfung" and "prufung" match, "Groesse" finds "Größe".
   Hyphenated words are indexed a second time joined (`zusammen`: "k-NN" → "knn", "E-Mail" → "email"), and the snippet also matches the joined form.
 - **Ranking** `suche(index, query, max = 40)`: every query word must occur (AND). Per word: exact title word 12, title word start 8, in title 5,
-  text word start 2, in text 1; whole query in the title +10, title starts with it +6; small bonus per kind (glossary 3, section/formula/operator 2,
-  material/card 1). Ties → shorter title, then index order. Snippet (`ausschnitt`) around the first matching word. Fewer than 2 characters → nothing.
+  text word start 2, in text 1; whole query in the title +10, title starts with it +6 (section titles compared without numbering,
+  `ueberschriftKern`: „2.5 Sequenzdiagramm“, „Teil 5 – Boxplot …“); title **is** the query: glossary +8, section +4; small bonus per kind
+  (glossary 3, section/formula/operator 2, material/card 1). So a term search shows the glossary entry first, then the section headed by the
+  term, then cards. Ties → shorter title, then index order. Snippet (`ausschnitt`) around the first matching word. Fewer than 2 characters → nothing.
+- **Glossary hits** (`glossarSuchEintraege(eintraege, content)`): context „Glossar · Deep Dive 17 · 2.5 Sequenzdiagramm“ – the term's topic
+  (`glossarThema`: the section whose heading is the term, else one starting with it, else the first sheet source). Term cards (`typ: begriff`)
+  whose term is already a glossary hit are left out of the index (same definition twice).
 - **Dialog** `components/SucheDialog.tsx` is a lazy chunk together with the index, formulas, operators and glossary; it loads on the first
   `Strg+K`/`⌘K` (listener in `App.tsx`, `useSuche`) or click on "🔎 Suchen" (sidebar, first entry of the mobile "Mehr" menu). Combobox pattern
   (`role=combobox` + `listbox`/`option`, `aria-activedescendant`), ↑/↓/Home, Enter opens, Esc or a click outside closes, focus returns.
@@ -596,7 +601,9 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     normalised letter (Ä → A), `#` otherwise. Today **1.135 terms, 1.064 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
 - **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
-  term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material` (`navigation.ts` unchanged).
+  term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material`.
+- **Navigation to Deep Dive 17**: sidebar entry „📘 Glossar & Diagramme“ under „Lernen“ (`GLOSSAR_PFAD = '/lernen/17'` in `navigation.ts`; „Lernen“ is
+  not highlighted at the same time) and an entry in the mobile „Mehr“ menu (`aktiveGruppe('/lernen/17')` → `mehr`).
 - **Topic list A–Z** (Deep Dive 17, `src/lib/glossarThema.ts`, `ergaenzeGlossarThema`, called in `loadContent` – so local app, Pages build and
   tests are identical): the section with `<!-- glossar-a-z -->` gets a count sentence, and one section per letter (`17-begriffe-a` …, `generiert: true`)
   is inserted after it, one line per entry `- Begriff – Definition *(DD n)*`. The lines contain no bold, so `baueGlossar` (which only reads bold

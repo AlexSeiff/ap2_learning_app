@@ -6,6 +6,7 @@ import { HeuteLeiste } from './components/HeuteLeiste';
 import { MobileNav } from './components/MobileNav';
 import { UpdateHinweis } from './components/UpdateHinweis';
 import { IS_STATIC } from './lib/api';
+import { GLOSSAR_PFAD, passtZuZiel } from './lib/navigation';
 import { isDue } from './lib/progress';
 import { rechenSummary } from './lib/rechnen';
 import { sqlSummary } from './lib/sql';
@@ -91,6 +92,7 @@ function useTheme() {
 
 function Nav({ onSuche }: { onSuche: () => void }) {
   const { content, progress, saveState } = useStore();
+  const { pathname } = useLocation();
   const theme = useTheme();
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
   const dueSql = sqlSummary(
@@ -101,8 +103,10 @@ function Nav({ onSuche }: { onSuche: () => void }) {
     progress,
     content.rechenUebungen.map((u) => u.id),
   ).due;
+  // „Lernen“ ist nicht zusätzlich hervorgehoben, wenn das Glossar-Thema (eigener Eintrag) offen ist.
+  const imGlossar = passtZuZiel(GLOSSAR_PFAD, pathname);
   const link = (to: string, label: string, badge?: number) => (
-    <NavLink to={to} end={to === '/'} className={({ isActive }) => (isActive ? 'active' : '')}>
+    <NavLink to={to} end={to === '/'} className={({ isActive }) => (isActive && !(to === '/lernen' && imGlossar) ? 'active' : '')}>
       {label}
       {!!badge && <span className="nav-badge">{badge}</span>}
     </NavLink>
@@ -126,6 +130,7 @@ function Nav({ onSuche }: { onSuche: () => void }) {
         {link('/', 'Übersicht')}
         {link('/heute', '▶ Heute lernen')}
         {link('/lernen', 'Lernen')}
+        {content.topics.some((t) => GLOSSAR_PFAD === `/lernen/${t.id}`) && link(GLOSSAR_PFAD, '📘 Glossar & Diagramme')}
         {link('/karteikarten', 'Karteikarten')}
         {link('/klausur', 'Übungsklausur')}
         {link('/aufgaben', 'Einzelaufgaben')}

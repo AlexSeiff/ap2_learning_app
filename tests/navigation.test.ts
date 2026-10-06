@@ -25,6 +25,9 @@ describe('Navigation für Handys (Roadmap 7.2)', () => {
     for (const p of ['/fehlerjournal', '/generator', '/material/lernzettel', '/einstellungen', '/daten'])
       expect(aktiveGruppe(p)).toBe('mehr');
     expect(aktiveGruppe('/gibtsnicht')).toBeUndefined();
+    // Glossar & Diagramme hat einen eigenen Eintrag unter „Mehr“, die anderen Themen gehören zu „Lernen“.
+    expect(aktiveGruppe('/lernen/17')).toBe('mehr');
+    expect(aktiveGruppe('/lernen/03')).toBe('lernen');
   });
 
   it('passtZuZiel: Präfix nur an Pfadgrenzen', () => {
@@ -34,7 +37,9 @@ describe('Navigation für Handys (Roadmap 7.2)', () => {
 
   it('Üben enthält Heute lernen, Klausur, Einzelaufgaben, SQL und Rechnen; Mehr enthält Fehlerjournal, Material, Einstellungen, Daten', () => {
     expect(UEBEN_ZIELE.map((z) => z.to)).toEqual(['/heute', '/klausur', '/aufgaben', '/sql', '/rechnen']);
-    expect(MEHR_ZIELE.map((z) => z.to)).toEqual(expect.arrayContaining(['/fehlerjournal', '/material', '/einstellungen', '/daten']));
+    expect(MEHR_ZIELE.map((z) => z.to)).toEqual(
+      expect.arrayContaining(['/fehlerjournal', '/material', '/lernen/17', '/einstellungen', '/daten']),
+    );
   });
 
   it('Badge am Menüknopf = Summe der fälligen Einträge darin', () => {

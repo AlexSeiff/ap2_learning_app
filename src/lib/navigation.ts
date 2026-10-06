@@ -15,10 +15,14 @@ export const UEBEN_ZIELE: NavZiel[] = [
   { to: '/rechnen', label: '📐 Rechenübungen', badge: 'rechnen' },
 ];
 
+/** Thema „Glossar & Diagramme“ (Deep Dive 17): eigener Eintrag in der Navigation, damit Begriffe und Diagramme mit einem Klick erreichbar sind. */
+export const GLOSSAR_PFAD = '/lernen/17';
+
 export const MEHR_ZIELE: NavZiel[] = [
   { to: '/fehlerjournal', label: '📓 Fehlerjournal', badge: 'journal' },
   { to: '/generator', label: '🤖 KI-Aufgaben', nurLokal: true },
   { to: '/material', label: '📚 Material' },
+  { to: GLOSSAR_PFAD, label: '📘 Glossar & Diagramme' },
   { to: '/einstellungen', label: '⚙️ Einstellungen' },
   { to: '/daten', label: '💾 Daten & Import' },
 ];
@@ -33,6 +37,7 @@ export function passtZuZiel(to: string, pathname: string): boolean {
 /** Welcher der fünf Plätze ist für diesen Pfad hervorgehoben? */
 export function aktiveGruppe(pathname: string): NavGruppe | undefined {
   if (passtZuZiel('/', pathname)) return 'uebersicht';
+  if (passtZuZiel(GLOSSAR_PFAD, pathname)) return 'mehr';
   if (passtZuZiel('/lernen', pathname)) return 'lernen';
   if (passtZuZiel('/karteikarten', pathname)) return 'karteikarten';
   if (UEBEN_ZIELE.some((z) => passtZuZiel(z.to, pathname))) return 'ueben';

@@ -15,6 +15,7 @@ import {
   glossarSuchEintraege,
   guteDefinition,
   pruefeBegriff,
+  ueberschriftKern,
 } from '../src/lib/glossar';
 import { baueSuchIndex, suche } from '../src/lib/suche';
 
@@ -214,6 +215,27 @@ describe('Suche und Seiten', () => {
     const acid = suche(index, 'ACID')[0];
     expect(acid.eintrag.art).toBe('glossar');
     expect(acid.eintrag.link).toMatch(/^\/material\/glossar\?stelle=g-/);
+  });
+
+  it('Begriff gesucht: zuerst der Glossar-Eintrag mit seinem Thema, dann der Abschnitt mit dieser Überschrift, kein Begriffskarten-Doppel', () => {
+    const index = baueSuchIndex(content, defaultSettings(), glossarSuchEintraege(glossar, content));
+    const [g, a] = suche(index, 'Sequenzdiagramm');
+    expect(g.eintrag.art).toBe('glossar');
+    expect(g.eintrag.kontext).toBe('Glossar · Deep Dive 17 · 2.5 Sequenzdiagramm');
+    expect(a.eintrag.art).toBe('abschnitt');
+    expect(a.eintrag.titel).toBe('2.5 Sequenzdiagramm');
+    const boxplot = suche(index, 'Boxplot').slice(0, 3);
+    expect(boxplot.map((t) => t.eintrag.art)).toEqual(['glossar', 'abschnitt', 'abschnitt']);
+    expect(suche(index, 'Boxplot').some((t) => t.eintrag.art === 'karte' && t.eintrag.titel === 'Boxplot')).toBe(false);
+    // ohne Glossar im Index bleiben die Begriffskarten auffindbar
+    expect(suche(baueSuchIndex(content, defaultSettings()), 'Boxplot').some((t) => t.eintrag.titel === 'Boxplot')).toBe(true);
+  });
+
+  it('ueberschriftKern entfernt Nummerierung und „Teil n –“', () => {
+    expect(ueberschriftKern('2.5 Sequenzdiagramm')).toBe('Sequenzdiagramm');
+    expect(ueberschriftKern('Teil 5 – Boxplot und Ausreißer')).toBe('Boxplot und Ausreißer');
+    expect(ueberschriftKern('6.10 Konfusionsmatrix und ROC-Kurve')).toBe('Konfusionsmatrix und ROC-Kurve');
+    expect(ueberschriftKern('Prüfungsrelevanz')).toBe('Prüfungsrelevanz');
   });
 
   it('Seite mit Sprungleiste, Ankern und Fundstellen; Kachel unter Material', () => {

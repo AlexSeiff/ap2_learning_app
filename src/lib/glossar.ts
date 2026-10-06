@@ -326,13 +326,40 @@ export function glossarBuchstaben(eintraege: GlossarEintrag[]): { buchstabe: str
   return [...(zahl.has('#') ? ['#'] : []), ...abc].map((buchstabe) => ({ buchstabe, anzahl: zahl.get(buchstabe) ?? 0 }));
 }
 
-/** Einträge für die globale Suche (ROADMAP 8.8): Begriff + Definition, Ziel ist der Eintrag im Glossar. */
-export function glossarSuchEintraege(eintraege: GlossarEintrag[]) {
-  return eintraege.map((e) => ({
-    art: 'glossar' as const,
-    titel: e.begriff,
-    kontext: e.definition ? 'Glossar' : 'Glossar · ohne Definition',
-    text: (e.definition ?? '').replace(/[*_`$>|]/g, ' ').replace(/\s+/g, ' '),
-    link: `/material/glossar?stelle=g-${e.id}`,
-  }));
+/** Abschnittsüberschrift ohne Nummerierung: „2.5 Sequenzdiagramm“ → „Sequenzdiagramm“, „Teil 5 – Boxplot und Ausreißer“ → „Boxplot und Ausreißer“. */
+export const ueberschriftKern = (titel: string) => titel.replace(/^(?:Teil\s+\d+\s*[–-]\s*)?(?:\d+(?:\.\d+)*\.?\s+)?/, '');
+
+/**
+ * Das „Thema“ eines Begriffs für die Suche: der Lernblatt-Abschnitt, dessen Überschrift genau der Begriff ist (sonst mit ihm beginnt),
+ * ersatzweise die erste Fundstelle im Lernblatt. Ergebnis wie „Deep Dive 17 · 2.5 Sequenzdiagramm“.
+ */
+export function glossarThema(e: GlossarEintrag, content?: Content): string | undefined {
+  const key = glossarSchluessel(e.begriff);
+  if (content && key) {
+    let beginnt: string | undefined;
+    for (const t of content.topics) {
+      for (const s of t.sections) {
+        if (s.generiert) continue;
+        const kern = glossarSchluessel(ueberschriftKern(s.title));
+        if (kern === key) return `${topicLabel(t)} · ${s.title}`;
+        if (!beginnt && kern.startsWith(`${key} `)) beginnt = `${topicLabel(t)} · ${s.title}`;
+      }
+    }
+    if (beginnt) return beginnt;
+  }
+  return e.quellen.find((q) => q.titel.startsWith('📖'))?.titel.replace(/^📖\s*/, '');
+}
+
+/** Einträge für die globale Suche (ROADMAP 8.8): Begriff + Definition, Ziel ist der Eintrag im Glossar; im Kontext das Thema des Begriffs. */
+export function glossarSuchEintraege(eintraege: GlossarEintrag[], content?: Content) {
+  return eintraege.map((e) => {
+    const thema = glossarThema(e, content);
+    return {
+      art: 'glossar' as const,
+      titel: e.begriff,
+      kontext: `Glossar${e.definition ? '' : ' · ohne Definition'}${thema ? ` · ${thema}` : ''}`,
+      text: (e.definition ?? '').replace(/[*_`$>|]/g, ' ').replace(/\s+/g, ' '),
+      link: `/material/glossar?stelle=g-${e.id}`,
+    };
+  });
 }

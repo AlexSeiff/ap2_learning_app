@@ -13,6 +13,7 @@ import type { Settings } from '../../shared/progress';
 import type { Content } from '../../shared/types';
 import { FORMELN, THEMA_NAMEN } from '../rechnen/formeln';
 import { cardPool } from './cards';
+import { ueberschriftKern } from './glossar';
 import { normalisiere } from './normalisiere';
 import { OPERATOREN } from './operatoren';
 
@@ -108,6 +109,8 @@ export function baueSuchIndex(
 ): SuchEintrag[] {
   const out: SuchEintrag[] = [];
   for (const z of zusatz) out.push(eintrag(z.art, z.titel, z.kontext, z.text, z.link));
+  // Begriffskarten, deren Begriff schon als Glossar-Eintrag im Index steht, wären nur ein Doppel mit derselben Erklärung.
+  const imGlossar = new Set(zusatz.filter((z) => z.art === 'glossar').map((z) => normalisiere(z.titel)));
 
   for (const t of content.topics) {
     const kontext = ddName(content, t.id);
@@ -121,6 +124,7 @@ export function baueSuchIndex(
     out.push(eintrag('material', m.title, 'Material', klartext(m.markdown), `/material/${m.id}`));
   }
   for (const c of cardPool(content.flashcards, settings)) {
+    if (c.typ === 'begriff' && imGlossar.has(normalisiere(c.question))) continue;
     const deck = c.deckId ? content.decks.find((d) => d.id === c.deckId)?.title : undefined;
     const art =
       c.kind === 'prueferfrage' ? 'Prüferfrage' : c.kind === 'fachgespraech' ? 'Fachgespräch' : `Lernkarte${deck ? ` · ${deck}` : ''}`;
@@ -208,7 +212,12 @@ export function bewerte(e: SuchEintrag, woerter: string[], ganz: string): number
     else return 0;
   }
   if (woerter.length > 1 && e.titelN.includes(ganz)) punkte += 10;
-  if (e.titelN.startsWith(` ${ganz}`)) punkte += 6;
+  // Abschnitte ohne Nummerierung vergleichen („2.5 Sequenzdiagramm“, „Teil 5 – Boxplot“): Die Überschrift zum Begriff soll weit oben stehen.
+  const titel = e.art === 'abschnitt' ? e.titelN.replace(/^ (?:teil \d+ )?(?:\d+ )*/, ' ') : e.titelN;
+  if (titel.startsWith(` ${ganz}`)) punkte += 6;
+  // Genau der gesuchte Begriff: zuerst der Glossar-Eintrag, dann der Abschnitt mit dieser Überschrift (vor Karten mit dem Begriff im Titel).
+  if ((e.art === 'glossar' || e.art === 'abschnitt') && normalisiere(e.art === 'abschnitt' ? ueberschriftKern(e.titel) : e.titel) === ganz)
+    punkte += e.art === 'glossar' ? 8 : 4;
   return punkte + SUCH_ART[e.art].bonus;
 }
 
