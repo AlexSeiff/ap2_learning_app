@@ -37,7 +37,8 @@ export function Glossar() {
       </p>
       {begriffskarten > 0 && (
         <p>
-          <Link to="/karteikarten?typ=begriff">🃏 {begriffskarten} Begriffskarten lernen</Link>
+          <Link to="/karteikarten?typ=begriff">🃏 {begriffskarten} Begriffskarten lernen</Link> ·{' '}
+          <Link to="/karteikarten?typ=begriff&blaettern=1">📖 durchblättern</Link>
           <span className="muted small"> – Vorderseite Begriff, Rückseite Erklärung, mit Wiederholung wie alle Karteikarten.</span>
         </p>
       )}

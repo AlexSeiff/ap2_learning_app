@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import type { CardType, Flashcard } from '../../shared/types';
 import { AntwortVergleich, EigeneAntwortFeld } from '../components/EigeneAntwort';
 import { LeichtOptionen } from '../components/LeichtOptionen';
 import { Markdown } from '../components/Markdown';
 import { useCardFilters, useCardSession } from '../hooks/useCardSession';
 import { leichtZahlen } from '../lib/leicht';
+import { shuffle } from '../lib/shuffle';
 import { isDue, LEICHT_MAX_BOX } from '../lib/progress';
 import { withSettings } from '../lib/settings';
 import { useStore } from '../lib/store';
@@ -32,6 +34,17 @@ export function Karteikarten() {
   const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next, eigeneAntwort, setEigeneAntwort } =
     useCardSession();
   const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
+  // ?blaettern=1: Durchblättern der gefilterten Karten (ohne Bewertung). `alle`, weil die Antwort ohnehin sichtbar ist.
+  const [params, setParams] = useSearchParams();
+  const blaettern = params.get('blaettern') === '1';
+  const setBlaettern = (an: boolean) => {
+    const next = new URLSearchParams(params);
+    if (an) next.set('blaettern', '1');
+    else next.delete('blaettern');
+    setParams(next);
+  };
+
+  if (blaettern && !session && alle.length > 0) return <KartenBlaettern cards={alle} onEnde={() => setBlaettern(false)} />;
 
   const due = deck.filter((c) => progress.cards[c.id] && isDue(progress.cards[c.id].due));
   const fresh = deck.filter((c) => !progress.cards[c.id]);
@@ -337,6 +350,15 @@ export function Karteikarten() {
         <button type="button" className="secondary" disabled={!deck.length} onClick={() => startRunde(deck)}>
           Alle {deck.length} durchgehen
         </button>
+        <button
+          type="button"
+          className="secondary"
+          disabled={!alle.length}
+          onClick={() => setBlaettern(true)}
+          title="Karten nur ansehen und weiterblättern – ohne Bewertung, der Lernstand bleibt unverändert"
+        >
+          📖 Durchblättern ({alle.length})
+        </button>
         {traps.length > 0 && (
           <button
             type="button"
@@ -407,8 +429,137 @@ export function Karteikarten() {
       <p className="hint">
         Leitner-System mit 5 Fächern: „Gewusst" schiebt die Karte ein Fach weiter (Abstände 1 · 3 · 7 · 14 · 30 Tage), „Nicht gewusst"
         zurück in Fach 1. Tastatur: <kbd>Leertaste</kbd> umdrehen, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> bewerten. Im Leicht-Modus wählst
-        du mit <kbd>1</kbd>–<kbd>4</kbd>; richtig bringt die Karte höchstens in Fach {LEICHT_MAX_BOX}, falsch zurück in Fach 1.
+        du mit <kbd>1</kbd>–<kbd>4</kbd>; richtig bringt die Karte höchstens in Fach {LEICHT_MAX_BOX}, falsch zurück in Fach 1. 📖
+        Durchblättern zeigt die Karten nur an (<kbd>←</kbd> <kbd>→</kbd> blättern, auf dem Handy wischen) und ändert den Lernstand nicht.
       </p>
+    </div>
+  );
+}
+
+/**
+ * Durchblättern: alle Karten der Auswahl nacheinander ansehen, vor und zurück, ohne Bewertung (Lernstand bleibt unverändert).
+ * Tastatur: ← → blättern, Leertaste/Enter umdrehen, Esc beenden. Auf dem Handy nach links/rechts wischen.
+ */
+export function KartenBlaettern({ cards, onEnde }: { cards: Flashcard[]; onEnde: () => void }) {
+  const { content } = useStore();
+  const [gemischt, setGemischt] = useState(false);
+  const [antwortZeigen, setAntwortZeigen] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const reihe = useMemo(() => (gemischt ? shuffle(cards) : cards), [cards, gemischt]);
+  const i = Math.min(index, reihe.length - 1);
+  const card = reihe[i];
+  const offen = antwortZeigen || flipped;
+  const gehe = (neu: number) => {
+    setIndex(Math.max(0, Math.min(reihe.length - 1, neu)));
+    setFlipped(false);
+  };
+  const touchX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest('input, select, textarea, [contenteditable="true"]')) return;
+      if (e.key === 'ArrowRight') gehe(i + 1);
+      else if (e.key === 'ArrowLeft') gehe(i - 1);
+      else if (e.key === 'Escape') onEnde();
+      else if ((e.key === ' ' || e.key === 'Enter') && !target?.closest('button, a, [role="button"]')) {
+        e.preventDefault();
+        setFlipped((x) => !x);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
+  if (!card) return null;
+  const topic = content.topics.find((t) => t.id === card.topicId);
+  const cardDeck = content.decks.find((d) => d.id === card.deckId);
+  return (
+    <div className="page narrow">
+      <div className="session-head">
+        <button type="button" className="ghost" onClick={onEnde}>
+          ← Beenden
+        </button>
+        <span>
+          📖 Karte {i + 1} / {reihe.length}
+        </span>
+      </div>
+      <div className="blaettern-optionen">
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={gemischt}
+            onChange={(e) => {
+              setGemischt(e.target.checked);
+              gehe(0);
+            }}
+          />
+          gemischt
+        </label>
+        <label className="check">
+          <input type="checkbox" checked={antwortZeigen} onChange={(e) => setAntwortZeigen(e.target.checked)} />
+          Antwort gleich zeigen
+        </label>
+        {reihe.length > 1 && (
+          <input
+            type="range"
+            min={1}
+            max={reihe.length}
+            value={i + 1}
+            aria-label="Zu Karte springen"
+            onChange={(e) => gehe(Number(e.target.value) - 1)}
+          />
+        )}
+      </div>
+      <div
+        className={`flashcard ${offen ? 'flipped' : ''} ${card.typ === 'falle' ? 'trap' : ''}`}
+        role="button"
+        tabIndex={0}
+        aria-expanded={offen}
+        onClick={() => setFlipped((x) => !x)}
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          e.preventDefault();
+          if (!e.repeat) setFlipped((x) => !x);
+        }}
+        onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+        onTouchEnd={(e) => {
+          if (touchX.current === null) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          touchX.current = null;
+          if (Math.abs(dx) > 60) gehe(dx < 0 ? i + 1 : i - 1);
+        }}
+      >
+        <div className="fc-meta">
+          <span>
+            {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
+          </span>
+          {card.typ && <span className={`badge typ-${card.typ}`}>{CARD_TYPE_LABELS[card.typ]}</span>}
+        </div>
+        <Markdown className="fc-question">{card.question}</Markdown>
+        {offen ? (
+          <div className="fc-answer">
+            {card.answer ? <Markdown>{card.answer}</Markdown> : <p className="muted">Keine Musterantwort im Lernblatt.</p>}
+          </div>
+        ) : (
+          <p className="hint">Klicken oder Leertaste zum Umdrehen.</p>
+        )}
+      </div>
+      <div className="actions blaettern-nav">
+        <button type="button" className="secondary" disabled={i === 0} onClick={() => gehe(i - 1)}>
+          ← Zurück
+        </button>
+        {i < reihe.length - 1 ? (
+          <button type="button" onClick={() => gehe(i + 1)}>
+            Weiter →
+          </button>
+        ) : (
+          <button type="button" onClick={onEnde}>
+            ✓ Fertig
+          </button>
+        )}
+      </div>
     </div>
   );
 }

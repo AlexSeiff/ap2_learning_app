@@ -303,6 +303,9 @@ textarea.answer.mono { font-family: 'Cascadia Code', Consolas, monospace; font-s
 .mode-switch { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 4px 0 12px; }
 .mode-switch button { border: 0; border-radius: 0; background: var(--surface); color: var(--text); font-weight: 500; }
 .mode-switch button[aria-pressed='true'] { background: var(--accent); color: var(--accent-text); }
+.blaettern-optionen { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; }
+.blaettern-optionen input[type='range'] { flex: 1 1 160px; }
+.blaettern-nav { justify-content: space-between; }
 .leicht-optionen { display: grid; gap: 8px; margin: 12px 0; }
 .leicht-option { justify-content: flex-start; text-align: left; white-space: normal; background: var(--surface); color: var(--text); border: 1px solid var(--border); font-weight: 500; padding: 10px 14px; }
 .leicht-option kbd { flex: none; margin-right: 6px; }
