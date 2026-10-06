@@ -130,6 +130,10 @@ lern-app/
 ```
 
 - Currently 25 decks and 456 cards (typ: wissen 241, falle 69, abgrenzung 61, anwendung 53, rechnung 32).
+- **Term cards** `AP2_Fachbegriffe_Lernkarten.json` (same format, any `*Lernkarten*.json` is imported): 16 decks `fb01`–`fb16`, one per Deep Dive,
+  648 cards with `typ: "begriff"` – `frage` is just the term, `antwort` a one- or two-sentence explanation, ids `FB-<term-slug>` (stable,
+  independent of order). Terms already defined by a `wissen` card (ACID, KPI, PDCA …) are not repeated. In the app: Typ filter „Fachbegriff“
+  (`/karteikarten?typ=begriff`), Leicht-Modus with automatic answers (`begriff` is in `LEICHT_TYPEN`), and the glossary uses them first.
 - `quelle` containing "Deep Dive N" maps the deck to a topic; decks without one (WiSo, project work) are reachable via the deck filter.
 - Progress is keyed by card `id`. **Never change IDs.**
 - Optional **`mc`** block per card for the Leicht-Modus (phase 6): `{ "richtig": "…", "falsch": ["…", "…", "…"], "erklaerung"?: "…" }`.
@@ -310,7 +314,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only (Pages: no nav item, the route redirects to `/`) |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list, tiles "📏 Formelsammlung" and "🗣️ Operatoren-Trainer" |
 | `/material/operatoren` | Operatoren-Trainer | lazy page: quiz "Was verlangt der Operator hier?" with real tasks, table of all operators (§ 5 phase 8.4) |
-| `/material/glossar` | Glossar | lazy page: terms A–Z from `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources (§ 5 phase 8.9) |
+| `/material/glossar` | Glossar | lazy page: terms A–Z from `begriff` and `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources (§ 5 phase 8.9) |
 | (dialog) | Suche | `Strg+K` / `⌘K`, "🔎 Suchen" in the sidebar and first entry of the mobile "Mehr" menu: global search, lazy (§ 5 phase 8.8) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
@@ -569,6 +573,7 @@ only in `useCardSession` state and is cleared for the next card – **not persis
 ### Glossar (phase 8.9)
 
 - **Builder** `baueGlossar(content)` (`src/lib/glossar.ts`, pure, `tests/glossar.test.ts`):
+  - `begriff` cards (term cards): the question is the term, the answer its definition – this definition wins over all others; source `🃏 Begriffskarte`.
   - `wissen` cards whose question names one term (`begriffAusFrage`: "Was ist (ein/eine/der …) X?", "Was bedeutet X?", "Was versteht man unter X?",
     "Wofür steht X?", "Was misst/beschreibt/bezeichnet X?"; no lists, no "Was ist bei … erforderlich?") → definition = the card answer (26 terms).
   - Bold terms in the theory sections (Prüferfragen and code blocks skipped, `begriffeAusZeile`): `**Term:** …`, `**Term** – …`, `**Term** = …`
@@ -577,9 +582,8 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     "3. Normalform"/"3-2-1-Regel"), lists, sentences (more than one lower-case word, final punctuation), sentence starts ("Die …", "Für …"),
     learning hints ("Prüfungstaktik", "Merkhilfe") and emphasis ("nicht", "Drei", "Achtung" …); a definition needs at least two real words
     (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
-  - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); card definition
-    before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
-    normalised letter (Ä → A), `#` otherwise. Today **650 terms, 483 with a definition**. Some noise remains (e.g. names from WiSo scenarios).
+  - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); term card before `wissen` card before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
+    normalised letter (Ä → A), `#` otherwise. Today **919 terms, 874 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
 - **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
   term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material` (`navigation.ts` unchanged).

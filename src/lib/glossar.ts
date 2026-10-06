@@ -1,13 +1,15 @@
-// Glossar (ROADMAP 8.9): Fachbegriffe aus den Wissenskarten (typ „wissen“) und den fett gesetzten Begriffen der Lernblätter,
-// mit Definition, wo es eine gibt. Rein, ohne React; Seite /material/glossar und die globale Suche nutzen es.
+// Glossar (ROADMAP 8.9): Fachbegriffe aus den Begriffskarten (typ „begriff“), den Wissenskarten (typ „wissen“) und den fett
+// gesetzten Begriffen der Lernblätter, mit Definition, wo es eine gibt. Rein, ohne React; Seite /material/glossar und die globale
+// Suche nutzen es.
 //
+// - Begriffskarten (AP2_Fachbegriffe_Lernkarten.json): Vorderseite = Begriff, Rückseite = Definition. Sie gehen allen anderen vor.
 // - Karten: Begriff aus Fragen wie „Was ist (ein/eine/der …) X?“, „Was bedeutet X?“, „Was versteht man unter X?“, „Wofür steht X?“,
 //   „Was misst/beschreibt/bezeichnet X?“ – Definition = Antwort der Karte. Fragen mit Aufzählungen („Was sind A, B und C?“) zählen nicht.
 // - Lernblätter (nur Theorie-Abschnitte, ohne Prüferfragen): **Begriff** am Zeilenanfang (auch in Listen) mit „:“, „–“ oder „=“
 //   dahinter → Definition = Rest der Zeile; „**Begriff** ist/bezeichnet/… “ → der Satz; Tabellenzeile „| **Begriff** | … |“ → zweite
 //   Zelle. Sonst ein Begriff ohne Definition mit Link zur Stelle. Keine Ergebnisse, Punkte, Hervorhebungen („**nicht**“, „**Drei**“).
 // - Doppelte (gleich nach normalisiere, ohne Klammerzusatz) werden zusammengelegt: Definition der Karte vor der des Lernblatts,
-//   alle Fundstellen bleiben (höchstens GLOSSAR_MAX_QUELLEN).
+//   alle Fundstellen bleiben (höchstens GLOSSAR_MAX_QUELLEN). Reihenfolge: Begriffskarte, Wissenskarte, Lernblatt.
 
 import { stripPrueferfragen } from '../../shared/prueferfragen';
 import type { Content, Topic } from '../../shared/types';
@@ -159,7 +161,15 @@ function kuerzeDefinition(md: string, max = 320): string {
   return `${satz > 80 ? schnitt.slice(0, satz + 1) : schnitt.trimEnd()} …`;
 }
 
-type Fund = { begriff: string; definition?: string; aus?: 'karte' | 'lernblatt'; quelle: GlossarQuelle; imSatz?: boolean };
+type Fund = {
+  begriff: string;
+  definition?: string;
+  aus?: 'karte' | 'lernblatt';
+  /** Aus einer Begriffskarte (typ „begriff“) – deren Definition geht vor. */
+  begriffskarte?: boolean;
+  quelle: GlossarQuelle;
+  imSatz?: boolean;
+};
 
 /** Abkürzung wie „OLAP“, „ETL“, „RBAC“, „SQL-Injection“ zählt auch einzeln im Fließtext. */
 const ABKUERZUNG = /^[A-ZÄÖÜ][A-ZÄÖÜ0-9&/-]{1,9}$/;
@@ -221,8 +231,8 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
   const funde: Fund[] = [];
 
   for (const c of content.flashcards) {
-    if (c.typ !== 'wissen' || !c.answer) continue;
-    const begriff = begriffAusFrage(c.question);
+    if ((c.typ !== 'wissen' && c.typ !== 'begriff') || !c.answer) continue;
+    const begriff = c.typ === 'begriff' ? c.question : begriffAusFrage(c.question);
     if (!begriff) continue;
     const t = content.topics.find((x) => x.id === c.topicId);
     const deck = content.decks.find((d) => d.id === c.deckId);
@@ -230,8 +240,9 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
       begriff,
       definition: kuerzeDefinition(c.answer, 600),
       aus: 'karte',
+      ...(c.typ === 'begriff' ? { begriffskarte: true } : {}),
       quelle: {
-        titel: `🃏 Karte${t ? ` · ${topicLabel(t)}` : deck ? ` · ${deck.title}` : ''}`,
+        titel: `🃏 ${c.typ === 'begriff' ? 'Begriffskarte' : 'Karte'}${t ? ` · ${topicLabel(t)}` : deck ? ` · ${deck.title}` : ''}`,
         link: `/karteikarten?karten=${encodeURIComponent(c.id)}&von=suche`,
       },
     });
@@ -258,7 +269,15 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
 
   const nachSchluessel = new Map<
     string,
-    { varianten: Map<string, number>; defKarte?: Fund; defBlatt?: Fund; quellen: GlossarQuelle[]; anzahl: number; nurImSatz: boolean }
+    {
+      varianten: Map<string, number>;
+      defBegriff?: Fund;
+      defKarte?: Fund;
+      defBlatt?: Fund;
+      quellen: GlossarQuelle[];
+      anzahl: number;
+      nurImSatz: boolean;
+    }
   >();
   for (const f of funde) {
     const key = glossarSchluessel(f.begriff);
@@ -268,7 +287,8 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
     e.varianten.set(f.begriff, (e.varianten.get(f.begriff) ?? 0) + 1);
     e.anzahl++;
     if (!f.imSatz) e.nurImSatz = false;
-    if (f.definition && f.aus === 'karte' && !e.defKarte) e.defKarte = f;
+    if (f.definition && f.begriffskarte && !e.defBegriff) e.defBegriff = f;
+    if (f.definition && f.aus === 'karte' && !f.begriffskarte && !e.defKarte) e.defKarte = f;
     if (f.definition && f.aus === 'lernblatt' && !e.defBlatt) e.defBlatt = f;
     if (!e.quellen.some((q) => q.link === f.quelle.link)) e.quellen.push(f.quelle);
   }
@@ -276,7 +296,7 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
   const ids = new Set<string>();
   const eintraege: GlossarEintrag[] = [];
   for (const [key, e] of nachSchluessel) {
-    const def = e.defKarte ?? e.defBlatt;
+    const def = e.defBegriff ?? e.defKarte ?? e.defBlatt;
     // Ein fettes Wort mitten im Satz ohne Erklärung ist oft nur betont („**Jonas**“): erst ab zwei Fundstellen oder als Abkürzung.
     if (!def && e.nurImSatz && e.anzahl < 2 && ![...e.varianten.keys()].some((v) => ABKUERZUNG.test(v))) continue;
     // Anzeige: die Schreibweise der Definition, sonst die häufigste (bei Gleichstand die längere, z. B. mit Klammerzusatz).

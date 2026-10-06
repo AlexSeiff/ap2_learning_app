@@ -166,6 +166,41 @@ describe('Glossar aus content/', () => {
     expect(g[0].quellen.map((q) => q.link)).toEqual(['/karteikarten?karten=K1&von=suche', '/lernen/99?stelle=99-a']);
   });
 
+  it('Begriffskarte: Vorderseite ist der Begriff, ihre Definition geht Wissenskarte und Lernblatt vor', () => {
+    const mini = {
+      ...content,
+      topics: [
+        {
+          id: '99',
+          number: 99,
+          title: 'Test',
+          file: 'x.md',
+          lernziele: [],
+          sections: [{ id: '99-a', title: 'A', level: 2, markdown: '- **OLAP:** Auswertung im Lernblatt erklärt' }],
+        },
+      ],
+      flashcards: [
+        { id: 'K1', kind: 'lernkarte', typ: 'wissen', question: 'Was ist OLAP?', answer: 'Erklärung der Wissenskarte.' },
+        { id: 'FB-olap', kind: 'lernkarte', typ: 'begriff', question: 'OLAP', answer: 'Erklärung der Begriffskarte.' },
+        { id: 'FB-etl', kind: 'lernkarte', typ: 'begriff', question: 'ETL', answer: 'Extract – Transform – Load.' },
+      ],
+      decks: [],
+    } as unknown as Content;
+    const g = baueGlossar(mini);
+    expect(g.map((e) => e.begriff)).toEqual(['ETL', 'OLAP']);
+    expect(g[1]).toMatchObject({ definition: 'Erklärung der Begriffskarte.', definitionAus: 'karte' });
+    expect(g[1].quellen.map((q) => q.titel)).toContain('🃏 Begriffskarte');
+    expect(g[1].quellen.map((q) => q.link)).toContain('/lernen/99?stelle=99-a');
+  });
+
+  it('Begriffskarten aus content/: jede Karte ist ein Glossarbegriff mit ihrer Erklärung', () => {
+    const begriffe = content.flashcards.filter((c) => c.typ === 'begriff');
+    expect(begriffe.length).toBeGreaterThan(500);
+    const nachSchluessel = new Map(glossar.map((e) => [glossarSchluessel(e.begriff), e]));
+    for (const c of begriffe) expect(nachSchluessel.get(glossarSchluessel(c.question))?.definition, c.question).toBeTruthy();
+    expect(render('/material/glossar')).toContain('href="/karteikarten?typ=begriff"');
+  });
+
   it('Buchstabenleiste A–Z mit Anzahl', () => {
     const abc = glossarBuchstaben(glossar);
     expect(abc.filter((b) => b.buchstabe !== '#')).toHaveLength(26);

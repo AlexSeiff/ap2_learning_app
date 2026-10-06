@@ -16,6 +16,7 @@ export const CARD_TYPE_LABELS: Record<CardType, string> = {
   rechnung: 'Rechnung',
   anwendung: 'Anwendung',
   falle: 'Falle',
+  begriff: 'Fachbegriff',
 };
 const LEVEL_LABELS: Record<number, string> = { 1: 'Basis', 2: 'Standard', 3: 'Transfer' };
 const KIND_LABELS: Record<Flashcard['kind'], string> = {

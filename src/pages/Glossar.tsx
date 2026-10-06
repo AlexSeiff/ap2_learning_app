@@ -1,4 +1,4 @@
-// Glossar (/material/glossar, ROADMAP 8.9): Fachbegriffe aus Wissenskarten und fetten Begriffen der Lernblätter,
+// Glossar (/material/glossar, ROADMAP 8.9): Fachbegriffe aus Begriffs- und Wissenskarten und fetten Begriffen der Lernblätter,
 // alphabetisch mit Buchstaben-Sprungleiste und Filter. Lazy geladen; Logik in src/lib/glossar.ts.
 
 import { type MouseEvent, useMemo, useState } from 'react';
@@ -23,6 +23,7 @@ export function Glossar() {
   const sichtbar = f ? eintraege.filter((e) => normalisiere(e.begriff).includes(f)) : eintraege;
   const buchstaben = glossarBuchstaben(sichtbar);
   const mitDefinition = eintraege.filter((e) => e.definition).length;
+  const begriffskarten = content.flashcards.filter((c) => c.typ === 'begriff').length;
 
   return (
     <div className="page glossar">
@@ -31,9 +32,15 @@ export function Glossar() {
       </p>
       <h1>📚 Glossar</h1>
       <p className="lead">
-        {eintraege.length} Fachbegriffe aus den Wissenskarten und den fett gedruckten Begriffen der Lernblätter, {mitDefinition} davon mit
-        Erklärung. Jeder Begriff führt zur Stelle im Lernblatt oder zur Karte.
+        {eintraege.length} Fachbegriffe aus den Begriffs- und Wissenskarten und den fett gedruckten Begriffen der Lernblätter,{' '}
+        {mitDefinition} davon mit Erklärung. Jeder Begriff führt zur Stelle im Lernblatt oder zur Karte.
       </p>
+      {begriffskarten > 0 && (
+        <p>
+          <Link to="/karteikarten?typ=begriff">🃏 {begriffskarten} Begriffskarten lernen</Link>
+          <span className="muted small"> – Vorderseite Begriff, Rückseite Erklärung, mit Wiederholung wie alle Karteikarten.</span>
+        </p>
+      )}
       <div className="glossar-filter">
         <input
           type="search"

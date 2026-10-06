@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import type { CardType, Deck, Flashcard, ImportIssue, KartenMc } from './types';
 
-const CARD_TYPES: CardType[] = ['wissen', 'abgrenzung', 'rechnung', 'anwendung', 'falle'];
+const CARD_TYPES: CardType[] = ['wissen', 'abgrenzung', 'rechnung', 'anwendung', 'falle', 'begriff'];
 
 interface RawCard {
   id?: unknown;

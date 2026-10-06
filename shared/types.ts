@@ -7,7 +7,7 @@ export interface Section {
   markdown: string;
 }
 
-export type CardType = 'wissen' | 'abgrenzung' | 'rechnung' | 'anwendung' | 'falle';
+export type CardType = 'wissen' | 'abgrenzung' | 'rechnung' | 'anwendung' | 'falle' | 'begriff';
 
 /** Geschriebene Auswahlantworten einer Lernkarte für den Leicht-Modus (ROADMAP 6.2): 1 richtige, genau 3 falsche. */
 export interface KartenMc {

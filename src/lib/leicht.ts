@@ -7,7 +7,7 @@ import type { CardType, Flashcard } from '../../shared/types';
 import { shuffle } from './shuffle';
 
 /** Kartentypen, für die automatische Antworten erzeugt werden (ROADMAP 6.1). `anwendung` nur mit eigenem mc-Block. */
-export const LEICHT_TYPEN: readonly CardType[] = ['wissen', 'abgrenzung', 'falle', 'rechnung'];
+export const LEICHT_TYPEN: readonly CardType[] = ['wissen', 'abgrenzung', 'falle', 'rechnung', 'begriff'];
 
 /**
  * Höchstlänge einer Antwort (als Auswahltext) für automatische Antworten. Die Roadmap nennt 120 Zeichen – damit kämen aber nur

@@ -78,7 +78,7 @@ Hinweis „↻ Neu laden“ klicken (oder in den Entwicklertools *Application �
 |---|---|
 | **Übersicht** | Beim ersten Besuch eine kurze Willkommensseite; danach Countdown zu deinem Prüfungstermin (unter *Einstellungen* eintragen), Lernserie (Tage in Folge), fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
 | **Lernen** | Theorie aller 15 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check |
-| **Karteikarten** | 407 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (24 Decks) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten); **🟢 Leicht-Modus** mit 4 Antworten zum Einstieg (Tasten `1`–`4`, richtig bringt eine Karte höchstens in Fach 2) |
+| **Karteikarten** | 456 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (25 Decks) und 648 **Begriffskarten** aus `AP2_Fachbegriffe_Lernkarten.json` (16 Decks, je Deep Dive; Vorderseite Fachbegriff, Rückseite kurze Erklärung; Filter Typ „Fachbegriff“) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten); **🟢 Leicht-Modus** mit 4 Antworten zum Einstieg (Tasten `1`–`4`, richtig bringt eine Karte höchstens in Fach 2) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
 | **Einzelaufgaben** | Filter nach Thema, Block, Schwierigkeit, Status, Suche; Auswahl als Aufgaben-/Lösungsblatt exportieren |
 | **Fehlerjournal** | Jede Aufgabe unter voller Punktzahl kommt nach 1, 3 und 7 Tagen wieder |
@@ -121,7 +121,7 @@ Der Schlüssel bleibt auf dem Server (Node) und wird nie an den Browser übertra
 
 ## Lernkarten-Datei
 
-Jede Datei `*Lernkarten*.json` im Ordner `AP-2` wird importiert (aktuell `AP2_FIDPA_Lernkarten.json`). Format:
+Jede Datei `*Lernkarten*.json` im Ordner `AP-2` wird importiert (aktuell `AP2_FIDPA_Lernkarten.json` und `AP2_Fachbegriffe_Lernkarten.json`). Format:
 
 ```json
 { "meta": { "hinweise": ["…"] },
@@ -130,7 +130,7 @@ Jede Datei `*Lernkarten*.json` im Ordner `AP-2` wird importiert (aktuell `AP2_FI
 ```
 
 - `quelle` mit „Deep Dive N" ordnet das Deck dem Thema zu (bei „Deep Dive 5 und 12" gewinnt der Deep Dive, dessen Titel zum Decktitel passt). Decks ohne Deep Dive (WiSo, Projektarbeit …) sind über den Deck-Filter erreichbar.
-- `typ`: wissen · abgrenzung · rechnung · anwendung · falle – „falle"-Karten gibt es gesammelt über **⚠️ Fallen wiederholen** und vor jeder Übungsklausur.
+- `typ`: wissen · abgrenzung · rechnung · anwendung · falle · begriff – „begriff" heißt: `frage` ist nur der Fachbegriff, `antwort` seine Erklärung (Begriffskarten; sie liefern auch die Erklärungen im Glossar). „falle"-Karten gibt es gesammelt über **⚠️ Fallen wiederholen** und vor jeder Übungsklausur.
 - Zeilenumbrüche (`\n`) in Antworten bleiben erhalten; SQL-Zeilen werden als Codeblock angezeigt.
 - Der Lernstand hängt an der Karten-`id` – IDs beim Bearbeiten der Datei also nicht ändern.
 - Optional `mc` für den **Leicht-Modus** (4 Antworten, 1 richtig): `"mc": { "richtig": "…", "falsch": ["…", "…", "…"], "erklaerung": "…" }`
