@@ -29,7 +29,7 @@ Beurteilung *(je 1 P, zwei genügen für die volle Punktzahl; hier alle vier)*:
 
 **A3 (8 P):** *(je 1 P Rechtsgrundlage, 1 P passende Zuordnung)*
 - **Vertragserfüllung:** Speicherung von Name und Lieferadresse zur Auslieferung der bestellten Küche.
-- **Rechtliche Verpflichtung:** Aufbewahrung der Rechnungsdaten über zehn Jahre nach HGB und Abgabenordnung.
+- **Rechtliche Verpflichtung:** Aufbewahrung der Rechnungsdaten über acht Jahre nach HGB und Abgabenordnung (Buchungsbelege, seit 2025; Bücher und Jahresabschlüsse zehn Jahre).
 - **Einwilligung:** Versand des Newsletters an Kunden, die sich dafür angemeldet haben.
 - **Berechtigtes Interesse:** Auswertung von Reklamationsdaten zur Qualitätsverbesserung – nach Abwägung gegen die Interessen der Betroffenen, gegebenenfalls in aggregierter Form.
 
@@ -51,9 +51,9 @@ Beurteilung *(je 1 P, zwei genügen für die volle Punktzahl; hier alle vier)*:
 Der Anspruch ist **differenziert** zu beurteilen: *(2 P)*
 
 - **Newsletter-Daten:** Die Einwilligung kann jederzeit widerrufen werden; damit entfällt die Rechtsgrundlage. Diese Daten sind **unverzüglich zu löschen** und die Adresse ist in eine Sperrliste aufzunehmen, damit keine erneute Ansprache erfolgt. *(2 P)*
-- **Rechnungs- und Vertragsdaten des Küchenkaufs:** Hier besteht eine **gesetzliche Aufbewahrungspflicht** von zehn Jahren nach HGB und Abgabenordnung. Diese geht dem Löschanspruch vor (Art. 17 Abs. 3 lit. b). *(2 P)*
+- **Rechnungs- und Vertragsdaten des Küchenkaufs:** Hier besteht eine **gesetzliche Aufbewahrungspflicht** – für Rechnungen als Buchungsbelege acht Jahre nach HGB und Abgabenordnung (seit 2025, vorher zehn; Stand 2026), für Handelsbriefe sechs Jahre. Nach drei Jahren läuft die Frist also noch. Diese Pflicht geht dem Löschanspruch vor (Art. 17 Abs. 3 lit. b). *(2 P)*
 
-Korrektes Vorgehen: Die aufbewahrungspflichtigen Daten werden für jede weitere Nutzung **gesperrt** (eingeschränkte Verarbeitung nach Art. 18) und ausschließlich zur Erfüllung der steuer- und handelsrechtlichen Pflichten vorgehalten; nach Fristablauf werden sie automatisch gelöscht. Der Kunde ist **innerhalb eines Monats** über den Umfang der Löschung und die Gründe für die Teilablehnung zu informieren. *(2 P)*
+Korrektes Vorgehen: Die aufbewahrungspflichtigen Daten werden für jede weitere Nutzung **gesperrt** (eingeschränkte Verarbeitung nach Art. 18 bzw. § 35 Abs. 3 BDSG) und ausschließlich zur Erfüllung der steuer- und handelsrechtlichen Pflichten vorgehalten; nach Fristablauf werden sie automatisch gelöscht. Der Kunde ist **innerhalb eines Monats** über den Umfang der Löschung und die Gründe für die Teilablehnung zu informieren. *(2 P)*
 
 *Prüferkommentar: Ein pauschales „ja, alles löschen" oder „nein, geht nicht" gibt maximal 2 P. Die Differenzierung nach Datenart ist die eigentliche Prüfungsleistung.*
 
@@ -64,7 +64,7 @@ Erforderlich ist ein **Auftragsverarbeitungsvertrag (AVV) nach Art. 28**, der Ge
 
 **B4 (4 P):**
 Es liegt eine **Verletzung des Schutzes personenbezogener Daten** vor. Pflichten:
-- **Meldung an die zuständige Aufsichtsbehörde innerhalb von 72 Stunden** nach Bekanntwerden (Art. 33), mit Art des Vorfalls, betroffenen Datenkategorien, ungefährer Zahl der Betroffenen, wahrscheinlichen Folgen und ergriffenen Maßnahmen. *(2 P)*
+- **Meldung an die zuständige Aufsichtsbehörde unverzüglich, spätestens innerhalb von 72 Stunden** nach Bekanntwerden (Art. 33), mit Art des Vorfalls, betroffenen Datenkategorien, ungefährer Zahl der Betroffenen, wahrscheinlichen Folgen und ergriffenen Maßnahmen. *(2 P)*
 - Bei **voraussichtlich hohem Risiko** für die Betroffenen zusätzlich deren **unverzügliche Benachrichtigung** (Art. 34). Bei 8.000 offen zugänglichen Kundendatensätzen ist davon auszugehen. *(1 P)*
 - Der Vorfall ist unabhängig von der Meldepflicht intern zu **dokumentieren** (Rechenschaftspflicht). *(1 P)*
 
@@ -81,7 +81,7 @@ Der DSGVO unterliegen weiterhin **pseudonymisierte** Daten, da sie einer Person 
 **C2 (10 P):**
 Rechtliche Anforderungen *(je 2,5 P)*:
 - **Mitbestimmung des Betriebsrats nach § 87 Abs. 1 Nr. 6 BetrVG:** Das System ist technisch **geeignet**, Verhalten und Leistung der Beschäftigten zu überwachen. Die Eignung genügt – eine Überwachungsabsicht ist nicht erforderlich. Die Einführung ist daher mitbestimmungspflichtig, üblicherweise geregelt in einer Betriebsvereinbarung.
-- **DSGVO-Anforderungen:** Es bedarf einer Rechtsgrundlage (i. d. R. Betriebsvereinbarung bzw. berechtigtes Interesse nach Abwägung – eine Einwilligung von Beschäftigten gilt wegen des Abhängigkeitsverhältnisses als problematisch). Zusätzlich gelten Zweckbindung, Datenminimierung und Transparenzpflicht; bei systematischer umfangreicher Überwachung ist eine **Datenschutz-Folgenabschätzung nach Art. 35** zu prüfen.
+- **DSGVO-Anforderungen:** Es bedarf einer Rechtsgrundlage (i. d. R. Betriebsvereinbarung nach Art. 88 DSGVO bzw. berechtigtes Interesse nach Art. 6 Abs. 1 lit. f nach Abwägung – eine Einwilligung von Beschäftigten gilt wegen des Abhängigkeitsverhältnisses als problematisch). Die frühere Generalklausel § 26 Abs. 1 Satz 1 BDSG ist seit dem EuGH-Urteil von 2023 (C-34/21) nicht mehr anwendbar; auch eine Betriebsvereinbarung muss die DSGVO-Anforderungen voll erfüllen. Zusätzlich gelten Zweckbindung, Datenminimierung und Transparenzpflicht; bei systematischer umfangreicher Überwachung ist eine **Datenschutz-Folgenabschätzung nach Art. 35** zu prüfen.
 
 Maßnahmen *(je 1,67 P, drei genügen)*:
 - **Aggregation:** Auswertung nur auf Team- oder Abteilungsebene mit einer Mindestgruppengröße (z. B. fünf Personen), sodass kein Rückschluss auf Einzelne möglich ist.

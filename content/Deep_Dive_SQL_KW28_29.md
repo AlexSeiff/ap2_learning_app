@@ -110,7 +110,7 @@ FROM produkt
 ORDER BY preis DESC, bezeichnung ASC;   -- erst Preis absteigend, bei Gleichstand alphabetisch
 ```
 
-`ASC` (aufsteigend) ist Standard und kann entfallen. Begrenzen der Zeilenzahl: `LIMIT 3` (MySQL/SQLite/PostgreSQL) bzw. `SELECT TOP 3` (SQL Server) – in der Prüfung wird die Logik bewertet, nicht der Dialekt.
+`ASC` (aufsteigend) ist Standard und kann entfallen. Begrenzen der Zeilenzahl: `LIMIT 3` (MySQL/SQLite/PostgreSQL) bzw. `SELECT TOP 3` (SQL Server); Standard-SQL (auch Oracle ab 12c, PostgreSQL): `FETCH FIRST 3 ROWS ONLY` – in der Prüfung wird die Logik bewertet, nicht der Dialekt.
 
 ### 2.4 Aggregatfunktionen – Werte verdichten
 
@@ -157,7 +157,7 @@ GROUP BY ort
 HAVING COUNT(*) >= 2;                    -- Gruppenfilter
 ```
 
-Logische Abarbeitungsreihenfolge: **FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY**. Deshalb kennt WHERE noch keine Aliasse aus dem SELECT.
+Logische Abarbeitungsreihenfolge: **FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY**. Deshalb kennt WHERE noch keine Aliasse aus dem SELECT. (SQLite und MySQL sind toleranter und akzeptieren Aliasse z. B. in HAVING – in der Prüfung gilt Standard-SQL.)
 
 ### 3.2 JOINs – Tabellen verknüpfen
 
@@ -240,7 +240,7 @@ CREATE TABLE bestellung (
 
 Wichtige Datentypen: `INTEGER`, `VARCHAR(n)`, `DECIMAL(p,s)` für Geldbeträge (nie FLOAT – Rundungsfehler!), `DATE`, `BOOLEAN`. Constraints: `PRIMARY KEY`, `FOREIGN KEY … REFERENCES`, `NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`.
 
-**Referenzielle Integrität:** Jeder FK-Wert muss als PK in der Zieltabelle existieren (oder NULL sein). Löschverhalten steuerbar: `ON DELETE RESTRICT` (Löschen verhindern, Standardverhalten), `ON DELETE CASCADE` (abhängige Sätze mitlöschen – mit Bedacht!), `ON DELETE SET NULL`.
+**Referenzielle Integrität:** Jeder FK-Wert muss als PK in der Zieltabelle existieren (oder NULL sein). Löschverhalten steuerbar: `ON DELETE RESTRICT` (Löschen verhindern; ohne Angabe gilt `NO ACTION`, das ebenfalls verhindert – nur mit Prüfung am Ende der Anweisung), `ON DELETE CASCADE` (abhängige Sätze mitlöschen – mit Bedacht!), `ON DELETE SET NULL`.
 
 ---
 
@@ -352,7 +352,7 @@ SELECT * FROM bestellung
 WHERE bestelldatum BETWEEN '2026-06-01' AND '2026-06-30'
 ORDER BY bestelldatum DESC;
 ```
-→ 104, 103, 102.
+→ 104, 103, 102. Achtung bei Spalten mit Uhrzeit (DATETIME/TIMESTAMP): `BETWEEN … AND '2026-06-30'` verliert alles nach 30.06., 00:00 Uhr – dann besser `bestelldatum >= '2026-06-01' AND bestelldatum < '2026-07-01'`.
 
 **C1:**
 ```sql
@@ -387,7 +387,7 @@ FROM kunde k
 LEFT JOIN bestellung b ON k.kunden_id = b.kunden_id
 WHERE b.bestell_id IS NULL;
 ```
-→ David Meyer. Gleichwertig: `WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung)`. *(Voll bepunktet wird jede Variante, die genau die bestelllosen Kunden liefert.)*
+→ David Meyer. Gleichwertig: `WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung)` – aber nur, solange `bestellung.kunden_id` keine NULL-Werte enthält (hier nicht als NOT NULL definiert!); bei einem einzigen NULL liefert NOT IN gar keine Zeile. Robust: `WHERE NOT EXISTS (SELECT 1 FROM bestellung b WHERE b.kunden_id = k.kunden_id)`. *(Voll bepunktet wird jede Variante, die genau die bestelllosen Kunden liefert.)*
 
 **C5:**
 ```sql
@@ -454,7 +454,7 @@ CREATE TABLE retoure (
 
 ## 8. Übungsskript & Ressourcen
 
-Das folgende Skript in ein Online-Tool einfügen (z. B. sqliteonline.com oder db-fiddle.com) – dann kannst du jede Aufgabe live ausprobieren:
+Das folgende Skript in ein Online-Tool einfügen (z. B. sqliteonline.com oder db-fiddle.com) – dann kannst du jede Aufgabe live ausprobieren. In SQLite vorher `PRAGMA foreign_keys = ON;` ausführen, sonst werden die Fremdschlüssel nicht geprüft:
 
 ```sql
 CREATE TABLE kunde (

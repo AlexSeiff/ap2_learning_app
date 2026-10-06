@@ -48,7 +48,7 @@ Nachweis *(je 0,8 P)*:
 
 | Kriterium | Wasserfall | Scrum |
 |---|---|---|
-| Ablauf | streng sequenziell, Phasen nacheinander | iterativ-inkrementell in Sprints von 2–4 Wochen |
+| Ablauf | streng sequenziell, Phasen nacheinander | iterativ-inkrementell in Sprints von höchstens einem Monat (meist 2–4 Wochen) |
 | Umgang mit Änderungen | spät teuer, Änderungen unerwünscht | eingeplant, Backlog wird laufend neu priorisiert |
 | Ergebnis für den Kunden | erst am Projektende sichtbar | nach jedem Sprint ein nutzbares Inkrement |
 | Planbarkeit von Termin und Kosten | hoch, früh festlegbar | Gesamtumfang schwerer vorab zu fixieren |
@@ -59,7 +59,9 @@ Nachweis *(je 0,8 P)*:
 Scrum-Rollen *(je 1 P)*:
 - **Product Owner:** verantwortet den fachlichen Wert des Produkts und priorisiert das Product Backlog.
 - **Scrum Master:** sorgt für die Einhaltung des Rahmenwerks und beseitigt Hindernisse – er ist kein Vorgesetzter des Teams.
-- **Entwicklungsteam:** organisiert sich selbst und liefert am Ende jedes Sprints ein fertiges Inkrement.
+- **Developers** (Entwickler; bis zum Scrum Guide 2017 „Entwicklungsteam"): managen sich selbst und erstellen in jedem Sprint ein nutzbares Inkrement, das die Definition of Done erfüllt.
+
+*Prüferkommentar: Der Scrum Guide 2020 spricht von Verantwortlichkeiten statt Rollen und von Developers statt Entwicklungsteam. Die ältere Bezeichnung „Entwicklungsteam" wird weiterhin als richtig gewertet.*
 
 Empfehlung *(3 P)*: Ein **hybrides Vorgehen**. Der feste Endtermin verlangt einen klassischen Rahmen mit verbindlichen Meilensteinen und einer Gesamtplanung; die unklaren Anforderungen sprechen dagegen für iterative Umsetzung mit regelmäßigen Zwischenständen und Rückmeldung des Fachbereichs. Praktisch bedeutet das: Rahmentermine und Abnahmepunkte klassisch festlegen, die Entwicklung innerhalb dieses Rahmens in kurzen Iterationen mit priorisiertem Backlog durchführen. So bleibt der Termin steuerbar, und bei knapper Zeit wird Umfang reduziert statt der Termin gerissen.
 
@@ -130,7 +132,7 @@ a) *(6 P)*
 **Anbieter B** erreicht mit 7,30 den höheren Nutzwert.
 
 b) *(4 P)* Kritische Beurteilung:
-Der Vorsprung beträgt lediglich **0,10 Punkte (rund 1,4 %)** und liegt damit klar innerhalb der Unschärfe des Verfahrens. Schon eine geringfügig andere Gewichtung kehrt das Ergebnis um: Würde der Funktionsumfang mit 50 % statt 40 % gewichtet, läge Anbieter A vorn. *(2 P)*
+Der Vorsprung beträgt lediglich **0,10 Punkte (rund 1,4 %)** und liegt damit klar innerhalb der Unschärfe des Verfahrens. Schon eine geringfügig andere Gewichtung kehrt das Ergebnis um: Würde der Funktionsumfang zulasten der Kosten mit 50 % statt 40 % gewichtet (Kosten 20 % statt 30 %), läge Anbieter A mit 7,50 zu 7,00 vorn – bereits rund 2 Prozentpunkte Verschiebung von den Kosten zum Funktionsumfang reichen für den Wechsel. *(2 P)*
 Grundsätzlich sind Kriterienauswahl, Gewichtung und Punktvergabe **subjektiv**; die Zahlen suggerieren eine Genauigkeit, die sie nicht haben. Erforderlich ist daher eine **Sensitivitätsprüfung** mit veränderten Gewichten sowie eine Entscheidung unter Einbeziehung zusätzlicher Kriterien (Referenzen, Vertragsbedingungen, Anbieterstabilität, Testinstallation). Der Wert der Methode liegt weniger im Ergebnis als in der **nachvollziehbaren Dokumentation** der Entscheidung. *(2 P)*
 
 *Prüferkommentar: Wer nur „Anbieter B gewinnt" schreibt, erhält 0 von 4 P im Teil b. Das Erkennen der Knappheit ist die eigentliche Prüfungsleistung.*
@@ -158,6 +160,8 @@ Drei nicht berücksichtigte Positionen *(je 0,67 P)*: jährliche **Lizenz- und W
 | (c) Fachbereich hat keine Zeit für Abstimmungen | 3 · 3 = **9** | **Vermindern** – feste Termine früh verbindlich vereinbaren, Verfügbarkeit durch die Leitung zusichern lassen, kurze getaktete Abstimmungen |
 
 Risiko (b) hat mit 16 die höchste Priorität und ist zuerst zu behandeln – was in einem Datenprojekt auch der Erfahrung entspricht.
+
+*Prüferkommentar: Gerechnet wird hier der zweifaktorielle Risikowert W · S (Maximum 25). Nicht mit der RPZ der FMEA verwechseln, die zusätzlich die Entdeckungswahrscheinlichkeit enthält.*
 
 **E2 (3 P):**
 **Scope Creep** bezeichnet das schleichende, unkontrollierte Anwachsen des Projektumfangs durch fortlaufend hinzukommende Wünsche, die ohne formale Bewertung übernommen werden. Zeit- und Kostenrahmen bleiben dabei unverändert – der Termin wird zwangsläufig gerissen. *(1,5 P)*

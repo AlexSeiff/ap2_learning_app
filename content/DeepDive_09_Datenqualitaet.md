@@ -34,6 +34,14 @@ Datenqualität ist kein einzelner Wert, sondern hat mehrere Aspekte. Man definie
 
 **Wichtige Abgrenzung:** *Gültig* ist nicht dasselbe wie *korrekt*. Eine Postleitzahl mit fünf Ziffern ist formal gültig – sie kann trotzdem falsch sein. Formatprüfungen fangen nur einen Teil der Fehler.
 
+*Begriffsfalle Genauigkeit:* Im Englischen heißt die Übereinstimmung mit der Realität *accuracy* (in deutschen Quellen oft ebenfalls „Genauigkeit“ oder „Richtigkeit“ übersetzt), die Detailtiefe dagegen *precision*. In diesem Lernzettel steht Genauigkeit für die Detailtiefe (*precision*), Korrektheit für *accuracy*. In der Prüfung die gemeinte Bedeutung immer kurz mit erläutern.
+
+Bekannte Referenzmodelle (zum Zitieren, nicht zum Auswendiglernen jeder Einzeldimension):
+- **DGIQ-Modell:** Die Deutsche Gesellschaft für Informations- und Datenqualität nutzt 15 IQ-Dimensionen in vier Kategorien, abgeleitet aus der Studie von Wang und Strong (MIT, 1996): *systemunterstützt* (Zugänglichkeit, Bearbeitbarkeit), *inhärent* (hohes Ansehen, Fehlerfreiheit, Objektivität, Glaubwürdigkeit), *darstellungsbezogen* (Verständlichkeit, Übersichtlichkeit, einheitliche Darstellung, eindeutige Auslegbarkeit) und *zweckabhängig* (Aktualität, Wertschöpfung, Vollständigkeit, angemessener Umfang, Relevanz).
+- **ISO/IEC 25012:** Datenqualitätsmodell der ISO-25000-Reihe (SQuaRE) mit ebenfalls 15 Merkmalen, getrennt nach *inhärent* (etwa Korrektheit, Vollständigkeit, Konsistenz, Glaubwürdigkeit, Aktualität) und *systemabhängig* (etwa Verfügbarkeit, Portabilität, Wiederherstellbarkeit); einige Merkmale wie Zugänglichkeit oder Vertraulichkeit gehören zu beiden Sichten.
+- **ISO 8000:** Normenreihe zu Datenqualität und Stammdaten (unter anderem Datenqualitätsmanagement und Austausch von Stammdaten).
+- **DAMA-DMBOK:** Leitfaden der Data Management Association zum gesamten Datenmanagement; Datenqualität ist dort eines von mehreren Wissensgebieten neben Data Governance und Stammdatenmanagement.
+
 ---
 
 # Teil 2 – Data Profiling: Probleme finden
@@ -51,16 +59,20 @@ SELECT COUNT(*) AS gesamt,
        ROUND(COUNT(email) * 100.0 / COUNT(*), 2) AS vollstaendigkeit_prozent
 FROM kunde;
 
--- Wertebereich prüfen
-SELECT MIN(umsatz), MAX(umsatz), COUNT(*) AS unplausibel
-FROM bestellung WHERE umsatz <= 0;
+-- Wertebereich prüfen (Min/Max über ALLE Sätze, Zählung nur der unplausiblen)
+SELECT MIN(umsatz), MAX(umsatz),
+       SUM(CASE WHEN umsatz <= 0 THEN 1 ELSE 0 END) AS unplausibel
+FROM bestellung;
 ```
+
+*Achtung:* Stünde `WHERE umsatz <= 0` in der Abfrage, würden auch MIN und MAX nur noch über die unplausiblen Sätze gebildet – der Wertebereich des Gesamtbestands wäre nicht mehr sichtbar.
 
 **Was dabei typischerweise auffällt:**
 - Auffällige Häufungen einzelner Werte → **Platzhalter** (01.01.1900, „unbekannt", „xxx", 0, 99999)
 - Sehr viele verschiedene Werte in einem Kategoriefeld → uneinheitliche Freitexteingaben
 - Nur wenige verschiedene Werte in einem Schlüsselfeld → das Feld identifiziert nicht eindeutig
 - Extreme Minima/Maxima → Erfassungsfehler (Komma verrutscht, Einheit verwechselt)
+- Falscher Datentyp → PLZ, Telefonnummern oder Artikelnummern als Zahl gespeichert: führende Nullen gehen verloren („04109“ wird zu 4109). Solche Schlüssel immer als Text speichern.
 
 ## 2.2 Spaltenübergreifende Analyse
 
@@ -80,9 +92,12 @@ WHERE k.kunden_id IS NULL;
 -- Dubletten aufspüren
 SELECT email, COUNT(*) AS anzahl
 FROM kunde
+WHERE email IS NOT NULL
 GROUP BY email
 HAVING COUNT(*) > 1;
 ```
+
+*Falle:* GROUP BY fasst alle NULL-Werte zu **einer** Gruppe zusammen. Ohne `WHERE email IS NOT NULL` erscheinen alle Kunden ohne E-Mail als vermeintliche Dublette (in der Anlage der Übungsklausur: drei Sätze).
 
 ---
 
@@ -104,7 +119,7 @@ Ohne Messung keine Steuerung. Die Grundform ist immer gleich:
 1. **Bezugsgröße immer angeben.** „95 % Vollständigkeit" ist ohne die Angabe, ob je Feld oder über alle Zellen gerechnet wurde, wertlos – und die beiden Werte unterscheiden sich stark.
 2. **Schwellenwerte und Verantwortliche definieren.** Eine Kennzahl ohne Zielwert und ohne Zuständigkeit löst nichts aus. Beispiel: „Vollständigkeit E-Mail ≥ 90 %, Verantwortung Vertriebsleitung, monatliche Messung."
 
-**Kosten schlechter Datenqualität – die 1-10-100-Regel:** Einen Fehler bei der Erfassung zu vermeiden kostet etwa 1 Einheit, ihn später zu korrigieren etwa 10, und ihn unentdeckt zu lassen etwa 100 (Fehlentscheidung, Fehllieferung, Imageschaden). Diese Regel ist die beste Begründung für **präventive** Maßnahmen – ein starkes Argument im Fachgespräch.
+**Kosten schlechter Datenqualität – die 1-10-100-Regel** (nach Labovitz und Chang, 1992; eine Faustregel, keine exakte Messung): Einen Fehler bei der Erfassung zu vermeiden kostet etwa 1 Einheit, ihn später zu korrigieren etwa 10, und ihn unentdeckt zu lassen etwa 100 (Fehlentscheidung, Fehllieferung, Imageschaden). Diese Regel ist die beste Begründung für **präventive** Maßnahmen – ein starkes Argument im Fachgespräch.
 
 ---
 
@@ -122,6 +137,16 @@ Ohne Messung keine Steuerung. Die Grundform ist immer gleich:
 
 **Wichtig:** Fehlt ein Wert **nicht zufällig** (etwa weil ein bestimmter Spediteur die Lieferdauer nie meldet), verzerrt jede Ersetzung das Ergebnis. Dann ist die Ursache zu klären, nicht die Lücke zu füllen.
 
+**Fehlmechanismen nach Rubin** – sie entscheiden, welche Strategie zulässig ist:
+
+| Mechanismus | Bedeutung | Beispiel | Folge |
+|---|---|---|---|
+| **MCAR** (Missing Completely at Random) | Fehlen hängt weder von beobachteten noch vom fehlenden Wert selbst ab | Erfassungsformular bei einem zufälligen Systemabsturz verloren | Löschen verzerrt nicht, kostet nur Fallzahl |
+| **MAR** (Missing at Random) | Fehlen hängt nur von **anderen, beobachteten** Merkmalen ab | ein bestimmter Spediteur meldet nie (Spediteur ist bekannt) | Gesamtmittelwert verzerrt; Ersetzen nur innerhalb der Gruppe oder per Modell |
+| **MNAR** (Missing Not at Random) | Fehlen hängt vom **fehlenden Wert selbst** ab | lange Lieferdauern werden bewusst nicht gemeldet | jede einfache Ersetzung verzerrt; Ursache klären, Sensitivitätsanalyse |
+
+Weitere Imputationsverfahren über Mittelwert, Median und Modus hinaus: Gruppenmittelwert (z. B. je Spediteur), Regressionsimputation, Hot-Deck bzw. k-Nächste-Nachbarn (Wert eines ähnlichen Datensatzes übernehmen) und multiple Imputation. Ersetzte Werte immer **kennzeichnen** (Zusatzspalte „imputiert ja/nein“), damit sie sich später herausrechnen lassen.
+
 ## 4.2 Dubletten
 
 Exakte Dubletten sind trivial zu finden. Das Problem sind **unscharfe Dubletten**: „Braun GmbH" und „Braun G.m.b.H.", „Müller" und „Mueller", Adressen mit „Str." und „Straße".
@@ -132,9 +157,15 @@ Vorgehen:
 3. **Zusammenführen** zu einem **Golden Record**: dem führenden, bereinigten Datensatz je Realweltentität – dabei je Feld entscheiden, welche Quelle Vorrang hat
 4. **Prävention:** Dublettenprüfung bereits bei der Neuanlage
 
+Beispiele für die Ähnlichkeitsmaße: Die **Levenshtein-Distanz** zählt die minimalen Einfüge-, Lösch- und Ersetzungsoperationen – „Müller“ → „Mueller“ = 2 (ü durch u ersetzen, e einfügen), „Braun GmbH“ → „Braun G.m.b.H.“ = 4 (vier Punkte einfügen). Nach dem Normalisieren (Punkte entfernen) ist die Distanz 0. Die **Kölner Phonetik** kodiert den Klang: „Meier“, „Mayer“ und „Maier“ ergeben alle den Code 67, „Müller“ und „Mueller“ den Code 657.
+
+Im größeren Maßstab heißt der Abgleich **Record Linkage**: Damit nicht jeder Satz mit jedem verglichen werden muss, bildet man zunächst Blöcke (**Blocking**, z. B. nur Sätze mit gleicher PLZ vergleichen). Je Kandidatenpaar wird ein Ähnlichkeitswert berechnet und mit zwei Schwellen eingeordnet: oberhalb der oberen Schwelle automatisch zusammenführen (Match), unterhalb der unteren verwerfen (Non-Match), dazwischen manuelle Prüfung (Prüffall).
+
 ## 4.3 Ausreißer und unplausible Werte
 
 Vorgehen wie in Deep Dive 3: Ursache klären, Entscheidung dokumentieren, Auswirkung prüfen. **Niemals ungeprüft löschen** – ein echter Extremwert kann genau der interessante Fall sein.
+
+Erkennung: statistisch mit der 1,5-IQR-Regel (robust, auch bei schiefen Verteilungen) oder dem z-Wert (Betrag über 3, nur bei annähernd normalverteilten Größen), fachlich mit Plausibilitätsregeln (Umsatz nicht negativ, Geburtsdatum nicht in der Zukunft). Statistisch auffällig heißt nicht falsch – und ein fachlich unmöglicher Wert (negatives Alter) ist auch dann ein Fehler, wenn er statistisch unauffällig ist.
 
 ---
 
@@ -148,13 +179,15 @@ Hier liegt der Unterschied zwischen einer befriedigenden und einer sehr guten Pr
 |---|---|
 | **Pflichtfelder (NOT NULL)** | erzwingt Vollständigkeit bei der Erfassung |
 | **Wertebereichsprüfung (CHECK)** | `CHECK (umsatz >= 0)`, `CHECK (geburtsdatum < CURRENT_DATE)` |
-| **Formatprüfung** | Muster für PLZ, E-Mail, IBAN; Prüfziffernverfahren |
+| **Formatprüfung** | Muster für PLZ, E-Mail, IBAN; Prüfziffernverfahren (IBAN: Modulo 97, EAN/GTIN: Modulo 10 mit Gewichtung 1 und 3) |
 | **Auswahllisten statt Freitext** | verhindert uneinheitliche Schreibweisen |
 | **Referenzielle Integrität (FOREIGN KEY)** | verhindert verwaiste Datensätze |
-| **UNIQUE-Constraint** | verhindert Dubletten im Schlüsselfeld |
+| **UNIQUE-Constraint** | verhindert exakte Dubletten im Schlüsselfeld – unscharfe Dubletten („Braun GmbH“ / „Braun G.m.b.H.“) erkennt er nicht |
 | **Normalisierung (3. NF)** | verhindert Änderungsanomalien und damit Inkonsistenz |
 | **Plausibilitätsprüfung** | feldübergreifend: Enddatum nach Startdatum |
 | **Automatische Übernahme** | keine Mehrfacherfassung derselben Daten über Systemgrenzen |
+
+*Hinweis zum DBMS:* Eine CHECK-Bedingung mit CURRENT_DATE ist nicht überall erlaubt – MySQL und Oracle lassen in CHECK-Constraints keine nicht-deterministischen Funktionen zu. Dort prüft man „Datum nicht in der Zukunft“ per Trigger oder in der Erfassungsanwendung.
 
 ## 5.2 Organisatorische Maßnahmen (Data Governance)
 
@@ -164,6 +197,7 @@ Hier liegt der Unterschied zwischen einer befriedigenden und einer sehr guten Pr
 - **Regelmäßige Qualitätsmessung** mit Schwellenwerten und Berichtsweg
 - **Master Data Management:** ein führendes System je Stammdatenart, statt paralleler Pflege in mehreren Systemen
 - **Vier-Augen-Prinzip** an kritischen Stellen
+- **Datenqualitätskreislauf** statt Einmalaktion: Definieren (Regeln, Zielwerte) → Messen → Analysieren (Ursachen) → Verbessern (Bereinigen und Prävention) → erneut messen; bekannt als TDQM-Zyklus (Total Data Quality Management, MIT), angelehnt an den PDCA-Zyklus
 
 > ❓ **Prüferfrage:** Sie haben 2.400 Dubletten bereinigt. Warum ist das allein keine ausreichende Antwort auf die Aufgabe „Datenqualität sicherstellen"?
 > *Weil die Bereinigung nur den Ist-Bestand korrigiert, nicht die Ursache. Ohne Dublettenprüfung bei der Neuanlage, ohne UNIQUE-Constraint und ohne definierte Zuständigkeit entstehen dieselben Dubletten weiter. „Sicherstellen" verlangt präventive und organisatorische Maßnahmen samt laufender Messung – die Bereinigung ist nur der Ausgangspunkt.*
@@ -171,6 +205,24 @@ Hier liegt der Unterschied zwischen einer befriedigenden und einer sehr guten Pr
 ## 5.3 Datenqualität im ETL-Prozess
 
 Der ETL-Lauf (→ Deep Dive 8) ist der zentrale Kontrollpunkt: Regelwerk anwenden, fehlerhafte Sätze in **Quarantäne** ausleiten statt zu verwerfen, Fehlerprotokoll mit Verantwortlichem führen, Abstimmsummen gegen die Quelle bilden und Kennzahlen je Lauf protokollieren.
+
+## 5.4 Master Data Management (Stammdatenmanagement)
+
+**Stammdaten** (Kunden, Artikel, Lieferanten) sind langlebig und werden von vielen Prozessen genutzt; **Bewegungsdaten** (Bestellungen, Buchungen) entstehen laufend und verweisen auf Stammdaten. Ein Fehler im Kundenstamm wirkt deshalb in jede Bestellung, Rechnung und Auswertung hinein – Stammdatenqualität hat die größte Hebelwirkung.
+
+**Master Data Management** umfasst Prozesse, Rollen und Systeme, die für jede Stammdatenart eine einheitliche, abgestimmte Version (**Golden Record**) bereitstellen. Typische Architekturstile:
+
+| Stil | Prinzip |
+|---|---|
+| Registry | Stammdaten bleiben in den Quellsystemen; ein zentrales Verzeichnis verknüpft nur die Schlüssel |
+| Consolidation | Quellsysteme pflegen weiter, ein Hub führt die Daten zum Golden Record zusammen (meist für Analysen) |
+| Coexistence | wie Consolidation, aber der Golden Record wird in die Quellsysteme zurückgespielt |
+| Centralized (Transaction) | Anlage und Pflege nur noch im zentralen MDM-System, die übrigen Systeme beziehen die Daten von dort |
+
+Für die Prüfung genügt der Kern: ein **führendes System** je Stammdatenart, klare Zuständigkeit (Data Owner/Steward) und Dublettenprüfung bei der Neuanlage.
+
+> ❓ **Prüferfrage:** Sie haben auf das Feld E-Mail einen UNIQUE-Constraint gelegt. Ist das Dublettenproblem damit gelöst?
+> *Nein. UNIQUE verhindert nur exakt gleiche Werte. „Braun GmbH“ mit einer zweiten, abweichenden E-Mail-Adresse oder Kunden ganz ohne E-Mail (NULL ist in den meisten DBMS mehrfach erlaubt) rutschen durch. Nötig sind zusätzlich eine unscharfe Dublettenprüfung bei der Neuanlage (Normalisierung, Mehrfeldvergleich, Ähnlichkeitsmaß) und ein führendes Stammdatensystem.*
 
 ---
 
@@ -267,3 +319,4 @@ Bearbeite die Klausur **am Ende des Themas** am Stück, handschriftlich, mit Tas
 - [ ] Ich nenne zu jedem Problem eine **präventive** Maßnahme, nicht nur eine Bereinigung.
 - [ ] Ich erkläre Data Owner, Data Steward und die 1-10-100-Regel.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich unterscheide MCAR, MAR und MNAR und leite daraus ab, ob Löschen oder Ersetzen zulässig ist.

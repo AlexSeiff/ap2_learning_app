@@ -50,7 +50,7 @@ MITARBEITER ──┘   (rekursive Beziehung)
 - produkt(**produkt_id**, bezeichnung, kategorie, preis)
 - liefert(**lieferanten_id↑, produkt_id↑**, einkaufspreis)
 - mitarbeiter(**mitarbeiter_id**, name, vorgesetzter_id↑) — vorgesetzter_id referenziert mitarbeiter.mitarbeiter_id und ist **NULL-fähig**
-- auftrag(**auftrag_nr**, datum, mitarbeiter_id↑, …)
+- auftrag(**auftrag_nr**, datum, mitarbeiter_id↑, …) — mitarbeiter_id ist **NOT NULL**, weil jeder Auftrag (1,1) genau einen erfassenden Mitarbeiter hat
 
 *Prüferkommentar: 3 P m:n-Tabelle „liefert" mit zusammengesetztem PK aus beiden FKs · 3 P rekursiver Fremdschlüssel in derselben Tabelle inkl. NULL-Fähigkeit (Geschäftsführung hat keinen Vorgesetzten) · 2 P FK mitarbeiter_id↑ korrekt auf der n-Seite (auftrag) · 1 P saubere PK/FK-Kennzeichnung.*
 
@@ -77,7 +77,7 @@ Das relationale Modell kann Beziehungen nur über Fremdschlüssel abbilden, und 
 **b) 2. NF (9 P):** Partielle Abhängigkeiten benennen:
 - datum, kunden_id, kundenname, techniker_id, technikername, stundensatz hängen **nur von auftrag_nr** ab.
 - bezeichnung hängt **nur von leistungs_id** ab.
-- dauer_h hängt vom **gesamten** Schlüssel ab und bleibt in der Beziehungstabelle.
+- dauer_h hängt vom **gesamten** Schlüssel ab und bleibt in der Beziehungstabelle. *(Annahme: dauer_h ist die tatsächlich im Auftrag angefallene Zeit. Wäre es eine feste Vorgabezeit aus dem Leistungskatalog, hinge sie nur von leistungs_id ab und gehörte in die Tabelle leistung – die Daten (L4 zweimal 0,25 h) lassen beides zu. Annahme in der Prüfung ausdrücklich hinschreiben.)*
 
 Schema in 2. NF:
 - auftrag(**auftrag_nr**, datum, kunden_id, kundenname, techniker_id, technikername, stundensatz)

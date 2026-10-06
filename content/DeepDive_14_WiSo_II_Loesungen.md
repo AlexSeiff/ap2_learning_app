@@ -25,7 +25,7 @@
 
 **A2 (4 P):** **(5)** – Die **Unfallversicherung** finanziert der Arbeitgeber allein, da sie seine Haftung für Arbeitsunfälle ablöst.
 
-**A3 (4 P):** **(2)** – Bei Auszubildenden mit bis zu **325 €** monatlich (Geringverdienergrenze) trägt der Arbeitgeber die Beiträge vollständig. Es besteht aber durchaus Versicherungspflicht (5).
+**A3 (4 P):** **(2)** – Bei Auszubildenden mit bis zu **325 €** monatlich (Geringverdienergrenze) trägt der Arbeitgeber die Beiträge vollständig. Es besteht aber durchaus Versicherungspflicht (5). Die Grenze von 325 € gilt seit 2003 unverändert (Stand 2026); den Übergangsbereich (Midijob) gibt es für Auszubildende nicht.
 
 **A4 (4 P):** **261,00 €**
 
@@ -50,7 +50,7 @@ Häufiger Fehler: Kirchensteuer vom Bruttolohn statt von der Lohnsteuer berechne
 
 **A7 (4 P):** **(4)** – Der Arbeitgeber zahlt bis zu **sechs Wochen** Entgeltfortzahlung – das gilt auch für Auszubildende. Ab der siebten Woche zahlt die Krankenkasse **Krankengeld** (70 % des Bruttos, höchstens 90 % des Nettos).
 
-**A8 (4 P):** **(1)** – Der Umweg, um das eigene Kind wegen der Berufstätigkeit in fremde Obhut zu geben, ist ausdrücklich versichert. Private Unterbrechungen (2, 3), Freizeit (4) und Unfälle innerhalb der Wohnung vor Antritt des Weges (5) sind es nicht – der versicherte Weg beginnt erst mit dem Verlassen der Wohnung.
+**A8 (4 P):** **(1)** – Der Umweg, um das eigene Kind wegen der Berufstätigkeit in fremde Obhut zu geben, ist ausdrücklich versichert. Private Unterbrechungen (2, 3), Freizeit (4) und Unfälle innerhalb der Wohnung vor Antritt des Weges (5) sind es nicht – der versicherte Weg beginnt erst mit dem Durchschreiten der Außentür des Wohngebäudes.
 
 ---
 

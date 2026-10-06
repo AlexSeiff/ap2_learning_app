@@ -34,7 +34,7 @@ export function quartil(xs: readonly number[], p: number): { wert: number; posit
   return { wert: s[Math.ceil(pos) - 1], position: pos, ganz: false };
 }
 
-/** Quartil mit linearer Interpolation (Excel QUARTIL.INKL): Position 1 + (n − 1) · p – für das Fehlerbild „andere Konvention“. */
+/** Quartil mit linearer Interpolation (Excel QUARTILE.INKL): Position 1 + (n − 1) · p – für das Fehlerbild „andere Konvention“. */
 export function quartilInterpoliert(xs: readonly number[], p: number): number {
   const s = sortiert(xs);
   const pos = (s.length - 1) * p;

@@ -37,9 +37,9 @@ Besserer Vorschlag *(2 P)*: Ein **waagerechtes Balkendiagramm, absteigend nach U
 **a) (4 P):** Gesamtwachstum: $\frac{5{,}10 - 4{,}80}{4{,}80} \cdot 100 = \frac{0{,}30}{4{,}80} \cdot 100$ = **6,25 %**
 Zwischenschritte: 4,80 → 4,95 entspricht +3,13 %, 4,95 → 5,10 entspricht +3,03 %.
 
-**b) (4 P):** Da die Achse bei 4,70 Mio. € beginnt, werden nur die Beträge oberhalb dieser Grenze dargestellt: 0,10 / 0,25 / 0,40 Mio. €. Die sichtbaren Säulenhöhen verhalten sich dadurch wie **1 : 2,5 : 4** – der Eindruck einer Vervierfachung entsteht, obwohl der Umsatz tatsächlich nur um 6,25 % gestiegen ist. Bei Säulen- und Balkendiagrammen codiert die Länge den Wert; ein fehlender Nullpunkt macht die Darstellung deshalb sachlich falsch.
+**b) (4 P):** Da die Achse bei 4,70 Mio. € beginnt, werden nur die Beträge oberhalb dieser Grenze dargestellt: 0,10 / 0,25 / 0,40 Mio. €. Die sichtbaren Säulenhöhen verhalten sich dadurch wie **1 : 2,5 : 4** – der Eindruck einer Vervierfachung entsteht, obwohl der Umsatz tatsächlich nur um 6,25 % gestiegen ist (sichtbar +300 % gegenüber +6,25 % in den Daten – Lügenfaktor nach Tufte 48). Bei Säulen- und Balkendiagrammen codiert die Länge den Wert; ein fehlender Nullpunkt macht die Darstellung deshalb sachlich falsch.
 
-**c) (4 P):** Die Überschrift „Umsatz explodiert" ist **nicht haltbar**. Ein Zuwachs von 6,25 % über drei Jahre entspricht rund 2 % jährlich und liegt damit im Bereich normaler Entwicklung – je nach Inflationsrate real womöglich sogar bei null. Die Überschrift verstärkt die ohnehin schon verzerrende Achsenwahl. Sachlich korrekt wäre etwa: **„Umsatz wächst stetig um rund 2 % pro Jahr"** oder „Umsatzentwicklung 2024–2026: +6,25 %".
+**c) (4 P):** Die Überschrift „Umsatz explodiert" ist **nicht haltbar**. Ein Zuwachs von 6,25 % über drei Jahreswerte – also zwei Jahresschritte von +3,13 % und +3,03 % – entspricht rund 3 % jährlich und liegt damit im Bereich normaler Entwicklung; nach Abzug der Inflation bleibt real nur ein kleines Plus. Die Überschrift verstärkt die ohnehin schon verzerrende Achsenwahl. Sachlich korrekt wäre etwa: **„Umsatz wächst stetig um rund 3 % pro Jahr"** oder „Umsatzentwicklung 2024–2026: +6,25 %".
 
 *Prüferkommentar: Volle Punktzahl in (c) nur mit Alternativformulierung. Die Aufgabe verlangt beides – Beurteilung und Vorschlag.*
 
@@ -124,26 +124,28 @@ ENDE WENN
 **D3 (10 P):**
 
 ```
-┌──────────────────────────────────────────────────────┐
-│ fehlerzaehler ← 0                                    │
-├──────────────────────────────────────────────────────┤
-│ FÜR i VON 1 BIS n                                    │
-│ ┌──────────────────────────────────────────────────┐ │
-│ │        E-Mail vorhanden?                         │ │
-│ │      ja        ╱      ╲        nein              │ │
-│ │ ┌───────────────────┬──────────────────────────┐ │ │
-│ │ │   Format gültig?  │ fehlerzaehler ← +1       │ │ │
-│ │ │  ja  ╱    ╲  nein │ Datensatz protokollieren │ │ │
-│ │ │ ┌────┬──────────┐ │                          │ │ │
-│ │ │ │ -- │ fehler+1 │ │                          │ │ │
-│ │ │ │    │ protok.  │ │                          │ │ │
-│ │ │ └────┴──────────┘ │                          │ │ │
-│ │ └───────────────────┴──────────────────────────┘ │ │
-│ └──────────────────────────────────────────────────┘ │
-├──────────────────────────────────────────────────────┤
-│ AUSGABE fehlerzaehler                                │
-└──────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│ fehlerzaehler ← 0                                                        │
+├──────────────────────────────────────────────────────────────────────────┤
+│ FÜR i VON 1 BIS n                                                        │
+│ ┌──────────────────────────────────────────────────────────────────────┐ │
+│ │                 E-Mail vorhanden?                                    │ │
+│ │          ja             ╱          ╲            nein                 │ │
+│ │ ┌────────────────────────────────────┬─────────────────────────────┐ │ │
+│ │ │          Format gültig?            │ fehlerzaehler ←             │ │ │
+│ │ │   ja       ╱          ╲     nein   │   fehlerzaehler + 1         │ │ │
+│ │ │ ┌────┬─────────────────────────┐   │ Datensatz protokollieren    │ │ │
+│ │ │ │ ∅  │ fehlerzaehler ←         │   │                             │ │ │
+│ │ │ │    │   fehlerzaehler + 1     │   │                             │ │ │
+│ │ │ └────┴─────────────────────────┘   │                             │ │ │
+│ │ └────────────────────────────────────┴─────────────────────────────┘ │ │
+│ └──────────────────────────────────────────────────────────────────────┘ │
+├──────────────────────────────────────────────────────────────────────────┤
+│ AUSGABE fehlerzaehler                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
+
+Das Zeichen ∅ markiert einen leeren Zweig (keine Anweisung). Wer bei ungültigem Format zusätzlich protokolliert, wird nicht abgewertet – verlangt ist dort aber nur das Erhöhen des Zählers.
 
 *Punktevergabe: 2 P Initialisierung des Zählers **vor** der Schleife · 2 P Schleife über alle Datensätze · 3 P äußere Verzweigung (E-Mail vorhanden ja/nein) · 2 P **verschachtelte** innere Verzweigung zur Formatprüfung im Ja-Zweig · 1 P Ausgabe nach der Schleife.*
 
@@ -169,12 +171,12 @@ Korrektur: `WENN auftrag[i] > 1000 DANN` (die zweite Teilbedingung entfällt ers
 
 **Fehler 4 – `max ← 0` als Initialisierung**
 Auswirkung: Enthält die Liste ausschließlich negative Werte (z. B. Stornierungen oder Gutschriften), bleibt das Maximum fälschlich bei 0 – einem Wert, der gar nicht in den Daten vorkommt.
-Korrektur: `max ← auftrag[1]` und die Schleife bei `i = 2` beginnen lassen.
+Korrektur: `max ← auftrag[1]` und die Schleife weiterhin von 1 bis n laufen lassen. Achtung: Würde die Schleife hier erst bei `i = 2` beginnen, fehlte der erste Auftrag in der Zählung der Aufträge über 1.000 € – der Vergleich des ersten Elements mit sich selbst schadet dagegen nicht.
 
-*Ebenfalls als Fehler anerkannt: fehlende Behandlung einer leeren Liste (n = 0); fehlende Deklaration von `anzahl` in der Ausgabezeile.*
+*Ebenfalls als Fehler anerkannt: fehlende Behandlung einer leeren Liste (n = 0); fehlende Angabe der Ausgabe im Algorithmuskopf (`AUSGABE: max, anzahl`).*
 
 **E2 (4 P):**
-Die Initialisierung `max ← 0` setzt stillschweigend voraus, dass alle Werte positiv sind. Trifft das nicht zu – etwa bei Gutschriften, Stornobuchungen oder korrigierten Beträgen –, gibt der Algorithmus 0 als Maximum aus, obwohl dieser Wert in den Daten überhaupt nicht vorkommt. *(2 P)*
+Die Initialisierung `max ← 0` setzt stillschweigend voraus, dass mindestens ein Wert nicht negativ ist. Trifft das nicht zu – etwa wenn eine Auswertung nur Gutschriften, Stornobuchungen oder Korrekturbeträge enthält –, gibt der Algorithmus 0 als Maximum aus, obwohl dieser Wert in den Daten überhaupt nicht vorkommt. *(2 P)*
 Der Fehler ist besonders tückisch, weil er **keinen Programmabbruch auslöst**: Das Ergebnis ist plausibel aussehend und trotzdem falsch. Robuster ist die Initialisierung mit dem ersten Listenelement, weil sie unabhängig vom Wertebereich funktioniert – vorausgesetzt, die Liste ist nicht leer, was zusätzlich zu prüfen ist. *(2 P)*
 
 ---

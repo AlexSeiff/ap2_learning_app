@@ -11,7 +11,7 @@
 
 1. **Business Understanding:** Ziel festlegen – Reklamationsquote senken; Erfolgskriterium definieren (z. B. Reduktion um 20 % binnen eines Jahres) und klären, welche Entscheidung mit dem Ergebnis getroffen werden soll.
 2. **Data Understanding:** Die 18.000 Auftragsdatensätze sichten, Data Profiling durchführen, Vollständigkeit und Plausibilität der Felder prüfen, Reklamationsanteil und erste Auffälligkeiten je Spediteur und Liefergebiet bestimmen.
-3. **Data Preparation:** Daten bereinigen (fehlende Lieferdauern, Dubletten), Textmerkmale kodieren, Merkmale bilden (z. B. Lieferdauer aus Zeitstempeln), Trainings- und Testdaten trennen.
+3. **Data Preparation:** Daten bereinigen (fehlende Lieferdauern, Dubletten), Textmerkmale kodieren, Merkmale bilden (z. B. Lieferdauer aus Zeitstempeln), Trainings- und Testdaten trennen (CRISP-DM 1.0 ordnet das Festlegen dieser Aufteilung formal als „Testdesign" dem Modeling zu – beide Zuordnungen werden anerkannt).
 4. **Modeling:** Ein Klassifikationsverfahren auswählen und trainieren, das anhand der Auftragsmerkmale das Reklamationsrisiko vorhersagt; Parameter einstellen.
 5. **Evaluation:** Prüfen, ob das Modell das fachliche Ziel erfüllt – erkennt es genügend tatsächliche Reklamationsfälle, und ist das Ergebnis für den Fachbereich verwertbar?
 6. **Deployment:** Ergebnis produktiv nutzen – z. B. Risikohinweis im Auftragssystem oder Bericht an die Logistik; Monitoring und Verantwortlichkeiten festlegen.
@@ -141,7 +141,7 @@ Folge: Das Modell erreicht im Test nahezu perfekte Werte, hat aber nichts Verwer
 
 **E3 (5 P):** *(je Anforderung 1,5 P, je Maßnahme 1 P)*
 - **Art. 22 DSGVO – Verbot ausschließlich automatisierter Entscheidungen** mit rechtlicher Wirkung oder erheblicher Beeinträchtigung. Eine automatische Auftragsablehnung fällt darunter. Maßnahme: menschliche Prüfinstanz vorschalten – das Modell gibt lediglich einen Risikohinweis, die Entscheidung trifft ein Mitarbeiter; zusätzlich Widerspruchsmöglichkeit einräumen.
-- **Transparenz- und Informationspflicht / Nachvollziehbarkeit:** Betroffene müssen über die automatisierte Verarbeitung informiert werden und eine Begründung erhalten können. Maßnahme: erklärbares Verfahren wie einen Entscheidungsbaum einsetzen, Entscheidungslogik und verwendete Merkmale dokumentieren.
+- **Transparenz- und Informationspflicht / Nachvollziehbarkeit:** Betroffene müssen über die automatisierte Verarbeitung und die involvierte Logik informiert werden und eine Begründung erhalten können (Art. 13 Abs. 2 lit. f, Art. 15 Abs. 1 lit. h DSGVO). Maßnahme: erklärbares Verfahren wie einen Entscheidungsbaum einsetzen, Entscheidungslogik und verwendete Merkmale dokumentieren.
 
 *Ebenfalls anerkannt: Zweckbindung und Datenminimierung (nur fachlich erforderliche Merkmale verwenden); Prüfung auf Diskriminierung/Bias, etwa wenn das Liefergebiet als Stellvertretermerkmal für soziale Merkmale wirkt.*
 

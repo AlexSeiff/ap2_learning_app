@@ -31,6 +31,8 @@ HAVING COUNT(*) > 1;
 
 *Prüferkommentar: Je Fehler 1 P fürs Benennen + 1 P für die Begründung, 3 P für die korrigierte Abfrage. (Ergebnis wäre: München 2, Hamburg 2.)*
 
+Dialekt-Hinweis: Fehler 2 und 3 gelten nach Standard-SQL. MySQL und SQLite dulden einen Alias in HAVING, SQLite führt sogar `GROUP BY name` mit ausgegebenem `ort` ohne Fehlermeldung aus. Dass eine Abfrage im Übungstool läuft, macht sie in der Prüfung nicht richtig.
+
 ---
 
 ## Block B
@@ -121,6 +123,8 @@ SELECT name FROM kunde
 WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung);
 ```
 *(4 P LEFT JOIN bzw. NOT IN-Konstrukt, 4 P IS-NULL-Filter bzw. korrekte Unterabfrage. Mit INNER JOIN ist die Aufgabe unlösbar – 0 P auf den Filterteil.)*
+
+Vorsicht bei NOT IN: Die Variante funktioniert hier nur, weil `bestellung.kunden_id` keine NULL-Werte enthält. Enthielte die Unterabfrage einen NULL-Wert, lieferte NOT IN gar keine Zeile. Robust ist auch `WHERE NOT EXISTS (SELECT 1 FROM bestellung b WHERE b.kunden_id = k.kunden_id)` (→ Lernzettel 3.1).
 
 **B10 (8 P):**
 ```sql

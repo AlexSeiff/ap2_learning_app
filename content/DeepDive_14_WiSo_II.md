@@ -39,23 +39,25 @@ Szenario: **Möbelhaus Nordholz GmbH** mit **Jonas Brandt** (17, 1. Ausbildungsj
 | Zweig | Gesamtsatz | Arbeitnehmeranteil |
 |---|---|---|
 | Krankenversicherung | 14,6 % + Zusatzbeitrag der Kasse | 7,3 % + halber Zusatzbeitrag |
-| Pflegeversicherung | 3,6 % | 1,8 % (+ 0,6 % Zuschlag für **Kinderlose ab 23**) |
+| Pflegeversicherung | 3,6 % | 1,8 % (+ 0,6 % Zuschlag für **Kinderlose ab 23**; ab dem 2. Kind unter 25 je 0,25 % weniger, höchstens bis zum 5. Kind) |
 | Rentenversicherung | 18,6 % | 9,3 % |
 | Arbeitslosenversicherung | 2,6 % | 1,3 % |
 
+Den **durchschnittlichen Zusatzbeitrag** legt das Bundesgesundheitsministerium fest – 2026: **2,9 %** (Stand 2026). Die Kassen erheben tatsächlich eigene Sätze (2026 im Schnitt rund 3,1 %). Ausnahme **Sachsen** in der Pflegeversicherung: Arbeitnehmer 2,3 %, Arbeitgeber 1,3 % (Ausgleich für den dort nicht gestrichenen Buß- und Bettag).
+
 **Sonderregeln, die gern geprüft werden:**
 - **Geringverdienergrenze:** Bei Auszubildenden mit bis zu **325 €** monatlich trägt der **Arbeitgeber die Beiträge allein**.
-- **Minijob:** Verdienstgrenze an den Mindestlohn gekoppelt – 2026: **603 €** bei 13,90 € Mindestlohn. Für den Beschäftigten keine Steuern und Sozialabgaben außer zur Rentenversicherung (Befreiung möglich); der Arbeitgeber zahlt Pauschalabgaben.
-- **Übergangsbereich (Midijob):** von 603,01 € bis 2.000 € – reduzierte, gleitend ansteigende Arbeitnehmerbeiträge.
-- **Beitragsbemessungsgrenze:** Beiträge werden nur bis zu dieser Einkommenshöhe erhoben; darüber ist das Einkommen beitragsfrei.
-- **Versicherungspflichtgrenze** (Jahresarbeitsentgeltgrenze): Wer darüber verdient, kann in die private Krankenversicherung wechseln.
+- **Minijob:** Verdienstgrenze an den Mindestlohn gekoppelt (Mindestlohn · 130 / 3, aufgerundet auf volle Euro) – 2026: **603 €** bei 13,90 € Mindestlohn; ab 2027: 633 € bei 14,60 € (Stand 2026). Für den Beschäftigten keine Steuern und Sozialabgaben außer zur Rentenversicherung (Eigenanteil 3,6 %, Befreiung möglich); der Arbeitgeber zahlt Pauschalabgaben (rund 30 %: KV 13 %, RV 15 %, Pauschsteuer 2 %).
+- **Übergangsbereich (Midijob):** von 603,01 € bis 2.000 € (Stand 2026) – reduzierte, gleitend ansteigende Arbeitnehmerbeiträge. ⚠ Gilt **nicht für Auszubildende**: Über 325 € zahlen sie sofort den vollen Arbeitnehmeranteil.
+- **Beitragsbemessungsgrenze:** Beiträge werden nur bis zu dieser Einkommenshöhe erhoben; darüber ist das Einkommen beitragsfrei. 2026: KV/PV **5.812,50 €** im Monat (69.750 € im Jahr), RV/ALV **8.450 €** im Monat (101.400 € im Jahr), bundeseinheitlich (Stand 2026).
+- **Versicherungspflichtgrenze** (Jahresarbeitsentgeltgrenze): Wer darüber verdient, kann in die private Krankenversicherung wechseln. 2026: **77.400 €** im Jahr (6.450 € im Monat, Stand 2026) – nicht mit der Beitragsbemessungsgrenze verwechseln.
 
 ## 1.4 Vom Brutto zum Netto
 
 **Schema:** Bruttoentgelt − Lohnsteuer − Solidaritätszuschlag − Kirchensteuer − Arbeitnehmeranteile zur Sozialversicherung = **Nettoentgelt**
 
-- **Lohnsteuer:** monatliche Vorauszahlung auf die Einkommensteuer, abhängig von Steuerklasse und Einkommen; wer unter dem Grundfreibetrag bleibt, zahlt keine.
-- **Solidaritätszuschlag:** 5,5 % der Lohnsteuer, seit 2021 nur noch bei hohen Einkommen.
+- **Lohnsteuer:** monatliche Vorauszahlung auf die Einkommensteuer, abhängig von Steuerklasse und Einkommen; wessen **zu versteuerndes Einkommen** unter dem **Grundfreibetrag** bleibt (2026: 12.348 € im Jahr, Stand 2026), zahlt keine.
+- **Solidaritätszuschlag:** 5,5 % der Lohnsteuer, seit 2021 nur noch bei hohen Einkommen (Freigrenze 2026: 20.350 € Lohnsteuer im Jahr für Ledige, Stand 2026).
 - **Kirchensteuer:** 8 % (Bayern, Baden-Württemberg) bzw. 9 % **der Lohnsteuer**, nur für Kirchenmitglieder.
 - **Steuerklassen:** I ledig · II alleinerziehend · III/V Verheiratete mit unterschiedlich hohem Einkommen · IV/IV Verheiratete mit ähnlichem Einkommen · VI Zweitjob.
 
@@ -68,8 +70,10 @@ Szenario: **Möbelhaus Nordholz GmbH** mit **Jonas Brandt** (17, 1. Ausbildungsj
 | Rentenversicherung | 9,3 % | 111,60 € |
 | Arbeitslosenversicherung | 1,3 % | 15,60 € |
 | **Summe SV-Arbeitnehmeranteil** | **21,15 %** | **253,80 €** |
-| Lohnsteuer | Einkommen unter dem Grundfreibetrag | 0,00 € |
+| Lohnsteuer | zu versteuerndes Einkommen unter dem Grundfreibetrag | 0,00 € |
 | **Nettoentgelt** | | **946,20 €** |
+
+Warum keine Lohnsteuer, obwohl 12 · 1.200 € = 14.400 € über dem Grundfreibetrag liegen? Vom Brutto gehen vorher der Arbeitnehmer-Pauschbetrag (1.230 €), der Sonderausgaben-Pauschbetrag und die Vorsorgepauschale für die Sozialversicherung ab – das zu versteuernde Einkommen bleibt damit unter 12.348 €.
 
 ⚠ **Falle Kinderlosenzuschlag:** Bei Lea (24, kinderlos) kommen 0,6 % hinzu – bei gleichem Brutto ergibt sich ein anderer SV-Betrag. **Das Alter und die Kinderzahl immer zuerst prüfen.**
 
@@ -113,6 +117,8 @@ Ein Vertrag entsteht durch zwei übereinstimmende Willenserklärungen: **Antrag 
 | Verstoß gegen Formvorschriften | **arglistige Täuschung** |
 | Verstoß gegen Gesetz oder gute Sitten | widerrechtliche Drohung |
 | Scherz- und Scheingeschäfte | |
+
+**Anfechtungsfristen:** bei Irrtum **unverzüglich** nach Kenntnis (§ 121 BGB), bei arglistiger Täuschung oder Drohung **binnen eines Jahres** nach Entdeckung bzw. Ende der Zwangslage (§ 124 BGB).
 
 ## 2.3 Formvorschriften
 
@@ -190,7 +196,7 @@ Lizenzen:
 | **Kannkaufmann** | Kleingewerbetreibender, der sich freiwillig eintragen lässt – Eintragung wirkt **konstitutiv** (begründend) |
 | **Formkaufmann** | Kapitalgesellschaften (GmbH, AG) kraft Rechtsform |
 
-**Handelsregister:** öffentliches, elektronisch beim **Amtsgericht** geführtes Register. **Abteilung A:** Einzelkaufleute, OHG, KG. **Abteilung B:** GmbH, UG, AG. GmbH und AG entstehen **erst mit der Eintragung** (konstitutiv).
+**Handelsregister:** öffentliches, elektronisch beim **Amtsgericht** geführtes Register. **Abteilung A:** Einzelkaufleute, OHG, KG. **Abteilung B:** GmbH, UG, AG. GmbH und AG entstehen **erst mit der Eintragung** (konstitutiv). Die GbR steht nicht im Handelsregister; seit 2024 kann sie sich freiwillig ins **Gesellschaftsregister** eintragen lassen (eGbR).
 
 **Firma** ist der Name, unter dem der Kaufmann Geschäfte betreibt – Personen-, Sach-, Fantasie- oder gemischte Firma, stets mit Rechtsformzusatz.
 
@@ -199,12 +205,17 @@ Lizenzen:
 | Rechtsform | Mindestkapital | Haftung | Leitung |
 |---|---|---|---|
 | **Einzelunternehmen** | keines | unbeschränkt, auch mit Privatvermögen | Inhaber |
+| **GbR** | keines | alle Gesellschafter unbeschränkt und gesamtschuldnerisch | alle Gesellschafter gemeinsam |
 | **OHG** | keines | alle Gesellschafter **unbeschränkt** und gesamtschuldnerisch | alle Gesellschafter |
 | **KG** | keines | Komplementär unbeschränkt, **Kommanditist nur bis zur Einlage** | Komplementär |
 | **GmbH** | **25.000 €** | nur Gesellschaftsvermögen | Geschäftsführer |
-| **UG (haftungsbeschränkt)** | ab 1 € | nur Gesellschaftsvermögen, Rücklagenpflicht | Geschäftsführer |
+| **UG (haftungsbeschränkt)** | ab 1 € | nur Gesellschaftsvermögen, Rücklagenpflicht (25 % des Jahresüberschusses) | Geschäftsführer |
 | **AG** | **50.000 €** | nur Gesellschaftsvermögen | Vorstand, überwacht vom Aufsichtsrat |
 | **GmbH & Co. KG** | – | Komplementär ist eine GmbH → faktische Haftungsbegrenzung | GmbH als Komplementär |
+
+**GmbH-Gründung:** Gesellschaftsvertrag notariell beurkunden, bei der Anmeldung mindestens die Hälfte des Stammkapitals (12.500 €) eingezahlt; vor der Eintragung haften die Handelnden persönlich.
+
+**MoPeG (Personengesellschaftsrecht seit 01.01.2024):** Die **GbR** ist rechtsfähig und kann als **eGbR** ins Gesellschaftsregister eingetragen werden (Pflicht z. B. für den Erwerb von Grundstücken); OHG und KG stehen jetzt auch Freiberuflern offen, soweit deren Berufsrecht das erlaubt.
 
 **Organe der AG:** **Vorstand** (leitet), **Aufsichtsrat** (überwacht, bestellt den Vorstand), **Hauptversammlung** (Aktionäre; wählt Anteilseignervertreter in den Aufsichtsrat, entscheidet über Gewinnverwendung).
 
@@ -214,7 +225,7 @@ Lizenzen:
 - **Erlaubt:** alle Geschäfte, die der Betrieb **irgendeines** Handelsgewerbes mit sich bringt – auch **Kredite aufnehmen**, Prozesse führen und **Grundstücke kaufen**.
 - **Nicht erlaubt:** Grundstücke **veräußern oder belasten** (ohne besondere Befugnis), Bilanz und Steuererklärungen unterschreiben, Prokura erteilen, Insolvenz beantragen, das Geschäft verkaufen.
 
-**Handlungsvollmacht** (§ 54 HGB): allgemeine, Art- oder Einzelvollmacht; formfrei, keine Eintragung, Zeichnung **„i. V.“** bzw. **„i. A.“**.
+**Handlungsvollmacht** (§ 54 HGB): allgemeine, Art- oder Einzelvollmacht; formfrei, keine Eintragung, Zeichnung **„i. V.“** bzw. **„i. A.“**. Umfasst nur die **gewöhnlichen** Geschäfte des Betriebs – ohne besondere Befugnis **nicht**: Grundstücke veräußern oder belasten, Wechselverbindlichkeiten eingehen, Darlehen aufnehmen, Prozesse führen (§ 54 Abs. 2 HGB). Typische Falle: Kreditaufnahme darf der Prokurist, der Handlungsbevollmächtigte nicht.
 
 ## 3.4 Unternehmenszusammenschlüsse
 
@@ -247,7 +258,7 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 
 **Staatliche Eingriffe:** Ein **Höchstpreis** unter dem Gleichgewichtspreis schützt Verbraucher, erzeugt aber Nachfrageüberhang (Knappheit, Schwarzmärkte). Ein **Mindestpreis** darüber schützt Erzeuger und erzeugt Angebotsüberhang.
 
-**Marktformen:** **Polypol** (viele Anbieter), **Oligopol** (wenige), **Monopol** (einer).
+**Marktformen:** **Polypol** (viele Anbieter), **Oligopol** (wenige), **Monopol** (einer). Das vollständige Marktformenschema kombiniert Anbieter- und Nachfragerseite (z. B. Nachfragemonopol: viele Anbieter, ein Nachfrager; bilaterales Monopol: je einer).
 
 ## 4.3 Wirtschaftsordnungen
 
@@ -283,7 +294,7 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 
 ## 5.1 Arbeitsschutz
 
-- **Duales System:** Staatliche Arbeitsschutzbehörden überwachen die Gesetze; die **Berufsgenossenschaften** erlassen Unfallverhütungsvorschriften und kontrollieren ebenfalls.
+- **Duales System:** Staatliche Arbeitsschutzbehörden überwachen die Gesetze; die **Berufsgenossenschaften** erlassen Unfallverhütungsvorschriften und kontrollieren ebenfalls. Ihr Spitzenverband ist die **DGUV** (Deutsche Gesetzliche Unfallversicherung); wichtig sind DGUV Vorschrift 1 (Grundsätze der Prävention, u. a. Unterweisung) und DGUV Vorschrift 3 (regelmäßige Prüfung elektrischer Anlagen und Geräte – auch PCs, Netzteile, Monitore).
 - **Arbeitgeberpflichten:** Gefährdungsbeurteilung, Schutzmaßnahmen, Wirksamkeitskontrolle, Dokumentation; Bestellung von Fachkraft für Arbeitssicherheit und Betriebsarzt.
 - **STOP-Prinzip** (Rangfolge der Maßnahmen): **S**ubstitution → **T**echnische → **O**rganisatorische → **P**ersonenbezogene Maßnahmen. Persönliche Schutzausrüstung ist das letzte Mittel.
 - **Unterweisung:** bei Einstellung, bei Veränderungen und mindestens **jährlich** – bei Jugendlichen mindestens **halbjährlich**.
@@ -299,7 +310,7 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 | Rettung, Erste Hilfe | rechteckig | grün |
 | Brandschutz | rechteckig | rot |
 
-**Unfall:** Arbeits- und **Wegeunfälle** sind über die Berufsgenossenschaft versichert – auch der **Umweg, um das eigene Kind in die Kita zu bringen**. Der Weg beginnt erst mit dem **Verlassen der Wohnung**; private Unterbrechungen (Einkauf) sind nicht versichert. Unfallanzeige bei mehr als drei Tagen Arbeitsunfähigkeit, innerhalb von drei Tagen.
+**Unfall:** Arbeits- und **Wegeunfälle** sind über die Berufsgenossenschaft versichert – auch der **Umweg, um das eigene Kind in die Kita zu bringen**. Der Weg beginnt erst mit dem **Durchschreiten der Außentür des Wohngebäudes** (Haustür) – Stürze in der Wohnung oder im Treppenhaus davor sind nicht versichert; private Unterbrechungen (Einkauf) ebenfalls nicht. Im **Homeoffice** ist man seit 2021 genauso versichert wie im Betrieb (betriebliche Tätigkeit und Weg zur Kita). Unfallanzeige bei mehr als drei Tagen Arbeitsunfähigkeit, innerhalb von drei Tagen.
 
 **Verhalten im Brandfall:** Ruhe bewahren → Brand melden → in Sicherheit bringen → Löschversuch unternehmen.
 
@@ -311,11 +322,16 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 
 **Elektroschrott:** getrennte Rückgabe nach ElektroG; **Datenträger vorher nachweisbar löschen oder vernichten**.
 
-**Green IT:** effiziente Hardware, Virtualisierung, Abschalten ungenutzter Systeme, effiziente Kühlung, längere Nutzungsdauer. **PUE** = Gesamtenergie des Rechenzentrums / Energie der IT; ideal 1,0.
+**Green IT:** effiziente Hardware, Virtualisierung, Abschalten ungenutzter Systeme, effiziente Kühlung, längere Nutzungsdauer. **PUE** = Gesamtenergie des Rechenzentrums / Energie der IT; ideal 1,0. Das **Energieeffizienzgesetz** (EnEfG) schreibt Rechenzentren Grenzwerte vor: neue Rechenzentren ab 01.07.2026 PUE höchstens 1,2, bestehende ab 2027 höchstens 1,5 und ab 2030 höchstens 1,3 – eine Novelle mit gelockerten Werten (1,3 für neue) hat das Kabinett im Juni 2026 beschlossen (Stand Oktober 2026).
 
 **Für deine Fachrichtung:** Datensparsamkeit ist doppelt sinnvoll – sie erfüllt die DSGVO und spart Speicher, Rechenleistung und Energie.
 
 **Umweltmanagementsysteme:** ISO 14001, EMAS.
+
+**ESG und Berichtspflichten (Stand Oktober 2026):**
+- **ESG** = Environmental, Social, Governance – Kriterien, nach denen Investoren und Banken die Nachhaltigkeit von Unternehmen bewerten.
+- **CSRD** (EU-Richtlinie zur Nachhaltigkeitsberichterstattung, Berichte nach den Standards ESRS): Durch die Omnibus-I-Richtlinie (EU) 2026/470 (in Kraft seit 18.03.2026) gilt die Pflicht nur noch für Unternehmen mit **mehr als 1.000 Beschäftigten und mehr als 450 Mio. € Umsatz**; die zweite Welle wurde vorher („Stop-the-Clock“) um zwei Jahre verschoben. Das deutsche Umsetzungsgesetz war 2026 noch im Bundestag – bis dahin gilt die alte Pflicht zur nichtfinanziellen Erklärung (§ 289b HGB) für große kapitalmarktorientierte Unternehmen.
+- **Lieferkettengesetz** (LkSG, seit 2024 ab 1.000 Beschäftigten): Sorgfaltspflichten für Menschenrechte und Umwelt in der Lieferkette – Risikomanagement, Risikoanalyse, Prävention, Abhilfe, Beschwerdeverfahren. Eine Änderung schafft die jährliche Berichtspflicht (rückwirkend) ab und beschränkt Bußgelder auf schwere Verstöße; das BAFA prüft Berichte schon seit 2025 nicht mehr. Abgelöst werden soll das LkSG durch die Umsetzung der EU-Lieferkettenrichtlinie **CSDDD** (nach Omnibus I nur noch ab 5.000 Beschäftigten und 1,5 Mrd. € Umsatz, anzuwenden ab Juli 2029).
 
 ---
 
@@ -497,3 +513,4 @@ a) Löschversuch unternehmen · b) Brand melden · c) Ruhe bewahren · d) in Sic
 - [ ] Ich kenne STOP-Prinzip, Sicherheitszeichen, Unterweisungsfristen, Brandfallverhalten und Abfallhierarchie.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
 - [ ] Ich kenne Urheberrecht an Software, Lizenzarten (proprietär, Open Source, Copyleft), Patent, UWG und die Grenzen von AGB.
+- [ ] Ich kenne die Rechengrößen 2026 (Beitragsbemessungsgrenzen, Versicherungspflichtgrenze, Mindestlohn, Minijob-Grenze) sowie GbR/eGbR nach MoPeG und den Stand von CSRD und Lieferkettengesetz.

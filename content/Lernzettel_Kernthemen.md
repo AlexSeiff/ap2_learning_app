@@ -18,6 +18,7 @@ ORDER BY umsatz DESC;
 - **WHERE** filtert Zeilen *vor* der Gruppierung, **HAVING** filtert Gruppen *nach* der Aggregation.
 - **JOINs:** INNER (nur Übereinstimmungen) · LEFT (alle Zeilen links, rechts ggf. NULL) · RIGHT (umgekehrt) · FULL OUTER (alles).
 - **Aggregatfunktionen:** COUNT, SUM, AVG, MIN, MAX. Achtung: COUNT(spalte) zählt keine NULL-Werte, COUNT(*) alle Zeilen.
+- **NULL** ist „unbekannt", kein Wert: Prüfung nur mit `IS NULL` / `IS NOT NULL` (`= NULL` ergibt nie wahr); SUM, AVG, MIN und MAX ignorieren NULL-Werte (AVG teilt also nur durch die Anzahl der Nicht-NULL-Werte).
 - Weitere Bausteine: `LIKE 'M%'` (Muster, _ = 1 Zeichen), `BETWEEN`, `IN`, `IS NULL`, `DISTINCT`, Unterabfragen mit `IN`/`EXISTS`.
 - **Sprachgruppen:** DDL (CREATE, ALTER, DROP) · DML (INSERT, UPDATE, DELETE) · DQL (SELECT) · DCL (GRANT, REVOKE) · TCL (COMMIT, ROLLBACK).
 - **Constraints:** PRIMARY KEY, FOREIGN KEY … REFERENCES, UNIQUE, NOT NULL, CHECK, DEFAULT.
@@ -28,7 +29,7 @@ ORDER BY umsatz DESC;
 
 ## 2. Datenmodellierung & Normalisierung
 
-- **ERM:** Entität (Rechteck), Beziehung (Raute), Attribut; Kardinalitäten 1:1, 1:n, m:n (m:n wird über eine Zwischentabelle mit zwei Fremdschlüsseln aufgelöst).
+- **ERM:** Entität (Rechteck), Beziehung (Raute), Attribut (Ellipse, Schlüsselattribut unterstrichen); Kardinalitäten 1:1, 1:n, m:n (m:n wird über eine Zwischentabelle mit zwei Fremdschlüsseln aufgelöst).
 - **1. NF:** Alle Attributwerte sind atomar (keine Listen in einer Zelle).
 - **2. NF:** 1. NF + jedes Nicht-Schlüssel-Attribut hängt vom *gesamten* Primärschlüssel ab (relevant bei zusammengesetzten Schlüsseln).
 - **3. NF:** 2. NF + keine transitiven Abhängigkeiten (Nicht-Schlüssel-Attribut hängt von anderem Nicht-Schlüssel-Attribut ab, z. B. PLZ → Ort).
@@ -64,10 +65,10 @@ ORDER BY umsatz DESC;
 
 **Streuungsmaße:**
 - Spannweite R = Maximum − Minimum.
-- Varianz s² = Summe der quadrierten Abweichungen vom Mittelwert / n (Stichprobe: / (n−1)). Standardabweichung s = Wurzel aus s².
+- Varianz = Summe der quadrierten Abweichungen vom Mittelwert / n (Grundgesamtheit, σ²) bzw. / (n−1) (Stichprobe, s²). Standardabweichung = Wurzel aus der Varianz (σ bzw. s). Verwendete Variante immer dazuschreiben.
 - Interquartilsabstand IQR = Q3 − Q1 (mittlere 50 %).
 
-**Boxplot:** Box von Q1 bis Q3, Strich = Median, Whisker meist bis 1,5 × IQR, Punkte außerhalb = Ausreißer.
+**Boxplot:** Box von Q1 bis Q3, Strich = Median, Whisker (Tukey) bis zum letzten Datenwert innerhalb von Q1 − 1,5 × IQR bzw. Q3 + 1,5 × IQR, Punkte außerhalb = Ausreißer.
 
 **Zusammenhänge:**
 - Korrelationskoeffizient r liegt zwischen −1 und +1. Faustregel: |r| < 0,5 schwach · 0,5–0,8 mittel · > 0,8 stark.
@@ -83,7 +84,7 @@ ORDER BY umsatz DESC;
 **Lernarten:**
 - **Überwacht** (gelabelte Daten): **Klassifikation** (diskrete Klassen, z. B. Spam/kein Spam – Verfahren: Entscheidungsbaum, k-NN, logistische Regression, Random Forest) und **Regression** (stetige Zielgröße, z. B. Umsatzprognose).
   - **k-NN:** Abstand des neuen Falls zu allen Trainingsfällen → k nächste Nachbarn → Mehrheitsklasse (Merkmale skalieren, bei zwei Klassen ungerades k).
-  - **ID3:** baut einen Entscheidungsbaum; Knoten = Merkmal mit dem größten **Informationsgewinn** IG = H(S) − gewichtete Entropie der Teilmengen, **Entropie** H = −Σ pᵢ · log₂ pᵢ (0 = rein, 1 = halbe-halbe).
+  - **ID3:** baut einen Entscheidungsbaum; Knoten = Merkmal mit dem größten **Informationsgewinn** IG = H(S) − gewichtete Entropie der Teilmengen, **Entropie** H = −Σ pᵢ · log₂ pᵢ (0 = rein, bei zwei Klassen 1 = halbe-halbe).
 - **Unüberwacht** (keine Labels): **Clustering** (k-Means: k Zentren wählen → Punkte dem nächsten Zentrum zuordnen → Zentren neu berechnen → wiederholen bis stabil), **Assoziationsanalyse** (Warenkorb: Support, Konfidenz, Lift), Dimensionsreduktion.
 - **Bestärkendes Lernen:** Agent lernt über Belohnung/Bestrafung.
 
@@ -101,6 +102,7 @@ ORDER BY umsatz DESC;
 - Accuracy = (TP + TN) / alle → täuscht bei unausgeglichenen Klassen!
 - Precision = TP / (TP + FP) → „Wie viele der als positiv Vorhergesagten sind wirklich positiv?"
 - Recall (Sensitivität) = TP / (TP + FN) → „Wie viele der tatsächlich Positiven wurden gefunden?"
+- Spezifität = TN / (TN + FP) → „Wie viele der tatsächlich Negativen wurden richtig erkannt?"
 - F1 = 2 · (Precision · Recall) / (Precision + Recall) → harmonisches Mittel.
 
 ---
@@ -129,9 +131,9 @@ ORDER BY umsatz DESC;
 - **Pools** = Organisationen/Teilnehmer, **Lanes** = Rollen/Abteilungen innerhalb eines Pools.
 - **Sequenzfluss** = durchgezogener Pfeil (nur innerhalb eines Pools) · **Nachrichtenfluss** = gestrichelter Pfeil (zwischen Pools) · Datenobjekte/Anmerkungen als Artefakte.
 
-**EPK:** Ereignis (Sechseck) und Funktion (abgerundetes Rechteck) wechseln sich immer ab; Konnektoren XOR/OR/AND. Regel: Nach einem einzelnen Ereignis darf keine XOR-/OR-Verzweigung folgen (Ereignisse treffen keine Entscheidungen).
+**EPK:** Ereignis (Sechseck) und Funktion (abgerundetes Rechteck) wechseln sich immer ab; Konnektoren XOR/OR/AND. Regel: Nach einem einzelnen Ereignis darf keine XOR-/OR-Verzweigung folgen (Ereignisse treffen keine Entscheidungen). Eine EPK beginnt und endet mit einem Ereignis; die erweiterte EPK (eEPK) ergänzt Organisationseinheiten (Ellipse), Informationsobjekte und IT-Systeme.
 
-**Kennzahlen:** Durchlaufzeit = Bearbeitungs- + Liege- + Transportzeit (Liegezeit ist meist der größte Hebel!) · Fehlerquote · Termintreue · First Pass Yield · Prozesskosten. **PDCA:** Plan – Do – Check – Act (kontinuierliche Verbesserung).
+**Kennzahlen:** Durchlaufzeit = Bearbeitungs- + Liege- + Transportzeit (+ ggf. Rüstzeit) (Liegezeit ist meist der größte Hebel!) · Fehlerquote · Termintreue · First Pass Yield · Prozesskosten. **PDCA:** Plan – Do – Check – Act (kontinuierliche Verbesserung).
 
 ---
 
@@ -141,15 +143,17 @@ ORDER BY umsatz DESC;
 
 **Rechtsgrundlagen Art. 6 (eine genügt):** Einwilligung · Vertragserfüllung · rechtliche Verpflichtung · lebenswichtige Interessen · öffentliche Aufgabe · berechtigtes Interesse (nach Abwägung).
 
-**Betroffenenrechte:** Auskunft (Art. 15), Berichtigung (16), Löschung (17), Einschränkung (18), Datenübertragbarkeit (20), Widerspruch (21).
+**Betroffenenrechte:** Informationspflicht des Verantwortlichen (Art. 13/14), Auskunft (Art. 15), Berichtigung (16), Löschung (17), Einschränkung (18), Datenübertragbarkeit (20), Widerspruch (21), kein Unterworfensein unter eine ausschließlich automatisierte Entscheidung mit rechtlicher oder ähnlich erheblicher Wirkung, z. B. Kreditablehnung per Score (22) – für Datenanalysten besonders prüfungsrelevant.
 
 **Zentrale Begriffe:**
 - **Anonymisierung:** Personenbezug ist nicht mehr herstellbar → DSGVO gilt nicht mehr.
 - **Pseudonymisierung:** Zuordnung über separaten Schlüssel weiterhin möglich → DSGVO gilt weiter.
 - **Auftragsverarbeitung (Art. 28):** Externer verarbeitet Daten weisungsgebunden → AV-Vertrag nötig.
 - **DSFA (Art. 35):** Folgenabschätzung bei voraussichtlich hohem Risiko (z. B. umfangreiches Profiling).
-- **Meldepflicht (Art. 33):** Datenpanne binnen **72 h** an die Aufsichtsbehörde.
-- **Privacy by Design/Default (Art. 25)**, **TOM** = technische und organisatorische Maßnahmen. Besondere Kategorien (Gesundheit, Religion …) nach Art. 9 nur mit strengeren Voraussetzungen.
+- **Meldepflicht (Art. 33):** Datenpanne unverzüglich, möglichst binnen **72 h** nach Bekanntwerden an die Aufsichtsbehörde (entfällt nur, wenn voraussichtlich kein Risiko für die Betroffenen besteht). Bei voraussichtlich hohem Risiko zusätzlich die Betroffenen benachrichtigen (Art. 34).
+- **Privacy by Design/Default (Art. 25)**, **TOM** = technische und organisatorische Maßnahmen (Art. 32). Besondere Kategorien (Gesundheit, Religion …) nach Art. 9 nur mit strengeren Voraussetzungen. Verzeichnis von Verarbeitungstätigkeiten (Art. 30) dokumentiert alle Verarbeitungen.
+- **Löschung vs. Aufbewahrung:** Gesetzliche Aufbewahrungspflichten gehen dem Löschanspruch vor (Art. 17 Abs. 3 lit. b) → Daten sperren, nach Fristablauf löschen. Fristen nach § 257 HGB/§ 147 AO (Stand 2026): Bücher, Inventare, Jahresabschlüsse 10 Jahre · Buchungsbelege (z. B. Rechnungen) 8 Jahre (seit 2025, vorher 10) · Handels- und Geschäftsbriefe 6 Jahre.
+- **Bußgelder (Art. 83):** bis 20 Mio. € oder 4 % des weltweiten Jahresumsatzes (der höhere Betrag).
 
 **IT-Sicherheit:**
 - **Schutzziele:** Vertraulichkeit (nur Berechtigte lesen – Verschlüsselung, Berechtigungen) · Integrität (keine unbemerkte Veränderung – Hashes, Signaturen) · Verfügbarkeit (Systeme nutzbar – Redundanz, Backup); ergänzend Authentizität.
@@ -179,7 +183,7 @@ ORDER BY umsatz DESC;
 - **SMART-Ziele:** Spezifisch, Messbar, Attraktiv/Akzeptiert, Realistisch, Terminiert.
 - **Magisches Dreieck:** Zeit – Kosten – Qualität/Leistungsumfang.
 - **Lastenheft** = Auftraggeber beschreibt *was* und *wofür*. **Pflichtenheft** = Auftragnehmer beschreibt *wie und womit* (Umsetzungskonzept).
-- **Wasserfall/V-Modell:** sequenziell, feste Phasen, gut bei stabilen Anforderungen. **Scrum:** Rollen (Product Owner, Scrum Master, Entwicklungsteam), Artefakte (Product Backlog, Sprint Backlog, Increment), Events (Sprint 2–4 Wochen, Planning, Daily, Review, Retrospektive). **Kanban:** Fluss visualisieren, WIP-Limits.
+- **Wasserfall/V-Modell:** sequenziell, feste Phasen, gut bei stabilen Anforderungen. **Scrum:** Rollen bzw. Verantwortlichkeiten (Product Owner, Scrum Master, Developers – bis Scrum Guide 2017 „Entwicklungsteam"), Artefakte (Product Backlog, Sprint Backlog, Increment), Events (Sprint mit fester Länge von höchstens einem Monat, meist 1–4 Wochen; Sprint Planning, Daily Scrum 15 min, Sprint Review, Sprint-Retrospektive). **Kanban:** Fluss visualisieren, WIP-Limits.
 - **Netzplan:** kritischer Pfad = längster Weg ohne Puffer; Verzögerung dort verzögert das ganze Projekt.
 - **Amortisationszeit** = Investitionskosten / jährlicher Rückfluss (Einsparung bzw. Gewinn). Beispiel: 24.000 € / 8.000 €/Jahr = 3 Jahre.
 - **Nutzwertanalyse:** Kriterien festlegen → gewichten (Summe 100 %) → Punkte je Alternative vergeben → Punkte × Gewicht summieren → höchster Nutzwert gewinnt. Stärke: macht qualitative Kriterien vergleichbar; Schwäche: Gewichtung/Punktvergabe subjektiv.
@@ -189,15 +193,15 @@ ORDER BY umsatz DESC;
 
 ## 11. WiSo-Basics kompakt
 
-- **Sozialversicherung (5 Zweige + Träger):** Krankenversicherung (Krankenkassen) · Pflegeversicherung (Pflegekassen) · Rentenversicherung (Deutsche Rentenversicherung) · Arbeitslosenversicherung (Bundesagentur für Arbeit) · Unfallversicherung (Berufsgenossenschaften – zahlt der Arbeitgeber allein). Übrige Beiträge grundsätzlich je zur Hälfte AG/AN.
-- **Kündigung:** Grundfrist § 622 BGB = 4 Wochen zum 15. oder zum Monatsende; in der Probezeit 2 Wochen. Kündigungsschutzgesetz greift bei mehr als 10 Arbeitnehmern und mehr als 6 Monaten Betriebszugehörigkeit (Kündigung braucht dann Grund: personen-, verhaltens- oder betriebsbedingt). Fristlose Kündigung nur aus wichtigem Grund, i. d. R. nach Abmahnung.
+- **Sozialversicherung (5 Zweige + Träger):** Krankenversicherung (Krankenkassen) · Pflegeversicherung (Pflegekassen) · Rentenversicherung (Deutsche Rentenversicherung) · Arbeitslosenversicherung (Bundesagentur für Arbeit) · Unfallversicherung (Berufsgenossenschaften – zahlt der Arbeitgeber allein). Übrige Beiträge grundsätzlich je zur Hälfte AG/AN (auch der KV-Zusatzbeitrag); Ausnahme: den Pflege-Zuschlag für Kinderlose ab 23 trägt der AN allein (Sonderregel Sachsen: AN trägt in der Pflege einen höheren Anteil).
+- **Kündigung:** Grundfrist § 622 BGB = 4 Wochen zum 15. oder zum Monatsende; in der Probezeit 2 Wochen. Kündigungsschutzgesetz greift bei mehr als 10 Arbeitnehmern und mehr als 6 Monaten Betriebszugehörigkeit (Kündigung braucht dann Grund: personen-, verhaltens- oder betriebsbedingt). Fristlose Kündigung nur aus wichtigem Grund (§ 626 BGB), bei verhaltensbedingten Gründen i. d. R. nach Abmahnung. Jede Kündigung braucht **Schriftform** (§ 623 BGB, eigenhändige Unterschrift – E-Mail oder WhatsApp genügen nicht).
 - **Ausbildung:** Probezeit 1–4 Monate (beidseitig fristlos ohne Grund kündbar). Danach: Betrieb nur fristlos aus wichtigem Grund; Azubi zusätzlich mit 4 Wochen Frist bei Berufsaufgabe/-wechsel (§ 22 BBiG).
-- **Betriebsrat:** wählbar ab 5 ständigen wahlberechtigten Arbeitnehmern (BetrVG); Mitbestimmung u. a. bei Arbeitszeit, Verhaltens-/Leistungskontrolle durch technische Einrichtungen (§ 87). **JAV** vertritt Azubis und Beschäftigte unter 25.
+- **Betriebsrat:** wählbar ab in der Regel 5 ständigen wahlberechtigten Arbeitnehmern, davon 3 wählbar (§ 1 BetrVG); wahlberechtigt ab 16, wählbar ab 18 Jahren und 6 Monaten Betriebszugehörigkeit; Mitbestimmung u. a. bei Arbeitszeit, Verhaltens-/Leistungskontrolle durch technische Einrichtungen (§ 87 Abs. 1 Nr. 2 und 6). **JAV** vertritt Beschäftigte unter 18 und Auszubildende jeden Alters (§ 60 BetrVG, seit 2021 ohne Altersgrenze; wählbar: unter 25 oder Azubi, § 61); setzt einen Betriebsrat voraus und handelt über ihn.
 - **Tarifvertrag:** regelt Löhne und Arbeitsbedingungen zwischen Gewerkschaft und Arbeitgeber(-verband); **Tarifautonomie** = Aushandlung ohne staatlichen Eingriff (Art. 9 GG). Günstigkeitsprinzip: Abweichung nur zugunsten des Arbeitnehmers.
-- **Vollmachten:** Prokura (umfassend, HGB, Eintragung ins Handelsregister) vs. Handlungsvollmacht (begrenzt auf Art/Umfang der Geschäfte).
-- **Kaufvertrag:** zwei übereinstimmende Willenserklärungen (Antrag + Annahme). Mängel: Sach-/Rechtsmangel; Rechte: Nacherfüllung vor Rücktritt/Minderung/Schadensersatz.
+- **Vollmachten:** Prokura (umfassend, §§ 48 ff. HGB, nur vom Kaufmann ausdrücklich erteilt, Eintragung ins Handelsregister, Zeichnung „ppa.") vs. Handlungsvollmacht (begrenzt auf Art/Umfang der Geschäfte, Zeichnung „i. V."). Prokurist darf ohne besondere Befugnis keine Grundstücke veräußern oder belasten (kaufen schon) und nie Bilanz/Steuererklärung unterschreiben, Prokura erteilen oder Insolvenz beantragen.
+- **Kaufvertrag:** zwei übereinstimmende Willenserklärungen (Antrag + Annahme). Mängel: Sach-/Rechtsmangel; Rechte: Nacherfüllung vor Rücktritt/Minderung/Schadensersatz. Mängelansprüche verjähren i. d. R. nach 2 Jahren ab Übergabe; beim Verbrauchsgüterkauf wird innerhalb von 1 Jahr nach Übergabe vermutet, dass der Mangel schon vorlag (Beweislastumkehr, § 477 BGB).
 - **Wirtschaft:** Magisches Viereck = Preisniveaustabilität, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht, stetiges Wachstum. Marktpreis über Angebot und Nachfrage.
 
 ---
 
-*Tipp: Aus jedem Abschnitt Karteikarten machen (Frage vorne, Antwort hinten) und täglich 10–15 min wiederholen. Sag mir einfach ein Thema, zu dem du einen ausführlichen Deep-Dive-Lernzettel mit Übungsaufgaben möchtest.*
+*Tipp: Aus jedem Abschnitt Karteikarten machen (Frage vorne, Antwort hinten) und täglich 10–15 min wiederholen.*

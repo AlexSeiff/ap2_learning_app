@@ -44,6 +44,8 @@ Die Wahl folgt **immer der Aussageabsicht**, nie dem Geschmack. Vier Grundfragen
 - **Keine 3D-Effekte, keine Schatten, keine doppelten Y-Achsen** – alle drei verzerren die Wahrnehmung.
 - **Beschriftung direkt am Element** statt in einer entfernten Legende, wo möglich.
 - **Barrierefreiheit:** Rund 8 % der Männer haben eine Rot-Grün-Schwäche. Informationen nie allein über Farbe codieren – zusätzlich Form, Muster oder Beschriftung verwenden.
+- **Farbskala passend zum Datentyp:** qualitativ (klar unterscheidbare Farbtöne) für Kategorien, sequenziell (hell → dunkel in einem Farbton) für geordnete Werte wie in der Heatmap, divergierend (zwei Farbtöne mit neutraler Mitte) für Abweichungen von einem Bezugswert, z. B. Ist gegen Plan.
+- **Data-Ink-Ratio** nach Edward Tufte: Anteil der „Tinte“, die tatsächlich Daten zeigt, an der gesamten Tinte des Diagramms – möglichst hoch. Alles, was keine Information trägt (Hintergrundbilder, dicke Gitternetzlinien, Rahmen, 3D, Schatten), ist **Chartjunk** und wird entfernt.
 
 ## A3 – Manipulation erkennen
 
@@ -64,6 +66,11 @@ Tatsächliches Wachstum: +3,13 %, dann +3,03 %, insgesamt **+6,25 %** – ein fl
 Beginnt die y-Achse jedoch bei 4,70 Mio. €, betragen die sichtbaren Balkenhöhen 0,10 · 0,25 · 0,40. Das Verhältnis **1 : 2,5 : 4** suggeriert eine Vervierfachung. Die Zahlen stimmen, das Bild lügt.
 
 **Prüfungsformulierung:** „Die y-Achse beginnt nicht bei null. Dadurch erscheinen die Unterschiede erheblich größer, als sie sind – der tatsächliche Zuwachs beträgt lediglich 6,25 %. Für Balkendiagramme ist ein Nullpunkt zwingend, da die Balkenlänge den Wert codiert."
+
+**Lügenfaktor (Lie Factor)** nach Tufte – macht die Verzerrung messbar:
+$\text{Lügenfaktor} = \frac{\text{Größe des Effekts in der Grafik}}{\text{Größe des Effekts in den Daten}}$
+Im Beispiel wächst die sichtbare Säule von 0,10 auf 0,40, also um 300 %; die Daten wachsen um 6,25 %:
+$\text{Lügenfaktor} = \frac{3{,}00}{0{,}0625}$ = **48** – die Grafik übertreibt den Zuwachs um das 48-Fache. Ein ehrliches Diagramm liegt bei etwa 1 (Tufte: zwischen 0,95 und 1,05).
 
 ## A4 – Dashboards
 
@@ -92,9 +99,11 @@ Ein Dashboard ist kein Diagrammfriedhof, sondern beantwortet **eine definierte F
 | **Robustheit gegen Benutzungsfehler** | Fehler werden verhindert oder leicht korrigiert | ungültiger Zeitraum wird abgefangen statt leerer Grafik |
 | **Benutzerbindung** | motiviert zur weiteren Nutzung | übersichtliche, ansprechende Gestaltung |
 
-**Barrierefreiheit:** Das Angebot muss auch für Menschen mit Einschränkungen nutzbar sein – Grundlage sind die **WCAG** (Web Content Accessibility Guidelines) mit den vier Prinzipien **wahrnehmbar, bedienbar, verständlich, robust**. Öffentliche Stellen sind über die **BITV 2.0** verpflichtet, viele Unternehmen mit Angeboten für Verbraucher seit Juni 2025 über das **Barrierefreiheitsstärkungsgesetz (BFSG)**. Für Diagramme und Dashboards heißt das konkret:
+Achtung bei älteren Unterlagen: Die bis 2020 gültige Fassung (ISO 9241-110:2006) nannte noch Individualisierbarkeit, Lernförderlichkeit und Fehlertoleranz. Seit der Neufassung 2020 heißen die Prinzipien wie in der Tabelle – Individualisierbarkeit ist entfallen, Benutzerbindung neu hinzugekommen.
+
+**Barrierefreiheit:** Das Angebot muss auch für Menschen mit Einschränkungen nutzbar sein – Grundlage sind die **WCAG** (Web Content Accessibility Guidelines) mit den vier Prinzipien **wahrnehmbar, bedienbar, verständlich, robust**. Öffentliche Stellen sind über die **BITV 2.0** verpflichtet, viele Unternehmen mit Angeboten für Verbraucher seit dem 28. Juni 2025 über das **Barrierefreiheitsstärkungsgesetz (BFSG)**. Aktuelle Fassung der Richtlinien ist WCAG 2.2 (Stand 2026). Für Diagramme und Dashboards heißt das konkret:
 - Information **nie nur über Farbe** vermitteln (rund 8 % der Männer haben eine Rot-Grün-Sehschwäche) – zusätzlich Beschriftung, Symbol oder Muster
-- ausreichender **Kontrast** (für Text mindestens 4,5 : 1)
+- ausreichender **Kontrast** (für normalen Text mindestens 4,5 : 1, für große Schrift sowie Diagrammlinien, Balken und Bedienelemente mindestens 3 : 1)
 - **Alternativtexte** bzw. eine Datentabelle zu jeder Grafik für Screenreader
 - vollständige Bedienbarkeit **per Tastatur**, skalierbare Schrift
 
@@ -140,7 +149,9 @@ Jeder Algorithmus lässt sich aus drei Bausteinen aufbauen:
 └──────────────────────────────────┘
 ```
 
-**Merkmale:** Struktogramme sind blockorientiert und erzwingen strukturierte Programmierung – Sprünge sind gar nicht darstellbar. Nachteil: Änderungen sind aufwendig, und tiefe Verschachtelungen werden sehr schmal.
+**Merkmale:** Struktogramme sind in **DIN 66261** genormt, blockorientiert und erzwingen strukturierte Programmierung – beliebige Sprünge (GOTO) sind nicht darstellbar; vorgesehen ist allenfalls ein geregelter Aussprung (Abbruch) aus einem Block. Nachteil: Änderungen sind aufwendig, und tiefe Verschachtelungen werden sehr schmal.
+
+Weitere Sinnbilder: Die **Zählschleife** (FÜR i VON 1 BIS n) wird wie die kopfgesteuerte Schleife gezeichnet, die **Fallauswahl** (Mehrfachverzweigung) als Block mit mehreren Spalten unter einem gemeinsamen Kopf, der **Unterprogrammaufruf** als Rechteck mit doppelten seitlichen Linien. Jeder Block hat genau einen Eingang oben und einen Ausgang unten.
 
 ## B3 – Programmablaufplan (PAP) – die Symbole
 
@@ -150,7 +161,11 @@ Jeder Algorithmus lässt sich aus drei Bausteinen aufbauen:
 | Rechteck | Verarbeitung/Anweisung |
 | **Raute** | Verzweigung (Bedingung), mit ja/nein beschriftet |
 | Parallelogramm | Eingabe/Ausgabe |
+| Rechteck mit doppelten seitlichen Linien | Unterprogramm (Aufruf eines an anderer Stelle beschriebenen Ablaufs) |
+| Kreis | Übergangsstelle (Konnektor), verbindet Teile eines Plans über Seitengrenzen hinweg |
 | Pfeil | Ablaufrichtung |
+
+Die Sinnbilder sind in **DIN 66001** genormt. Schleifen gibt es im PAP nicht als eigenes Symbol – sie entstehen durch eine Raute und einen Pfeil zurück zu einer früheren Stelle.
 
 **Unterschied zum Struktogramm:** Der PAP kann Sprünge darstellen und wird daher schnell unübersichtlich; er zeigt den Kontrollfluss aber anschaulicher.
 
@@ -194,7 +209,7 @@ Diese Muster decken die meisten Prüfungsaufgaben ab:
 | **Maximum suchen** | `max ← liste[1]`, dann `WENN liste[i] > max DANN max ← liste[i]` |
 | **Prüfen und protokollieren** | je Datensatz Regeln prüfen, Fehlerzähler erhöhen, fehlerhaften Satz ausgeben |
 
-⚠️ **Der Maximum-Klassiker:** `max ← 0` funktioniert nur, wenn alle Werte positiv sind. Bei möglichen negativen Werten ist das Ergebnis falsch. Richtig ist die Initialisierung mit dem **ersten Listenelement**.
+⚠️ **Der Maximum-Klassiker:** `max ← 0` funktioniert nur, wenn mindestens ein Wert ≥ 0 ist. Sind alle Werte negativ, wird 0 ausgegeben – ein Wert, der gar nicht in der Liste steht. Richtig ist die Initialisierung mit dem **ersten Listenelement**.
 
 ## B6 – Typische Logikfehler (Fehlersuche-Aufgaben)
 
@@ -205,11 +220,104 @@ Diese Muster decken die meisten Prüfungsaufgaben ab:
 | **Off-by-one:** `BIS n-1` statt `BIS n` | letzter Datensatz wird nicht geprüft |
 | Abbruchbedingung wird nie erreicht | Endlosschleife |
 | `=` statt `←` (oder umgekehrt) | Vergleich statt Zuweisung |
-| UND statt ODER bei Bereichsprüfungen | Bedingung kann nie wahr werden |
+| UND statt ODER bei Bereichsprüfungen | Bedingung kann nie wahr werden (umgekehrt ODER statt UND: immer wahr) |
 | Division ohne Nullprüfung | Laufzeitfehler bei leerer Liste |
 | NULL-Werte nicht behandelt | fehlende Werte gehen als 0 in die Summe ein |
 
 Der letzte Punkt ist der fachlich wichtigste für deine Fachrichtung: **Ein fehlender Wert ist nicht null.** Wer NULL als 0 mitrechnet, verfälscht jeden Mittelwert (→ Deep Dive 9).
+
+## B7 – Suchen, Sortieren und Rekursion
+
+**Aufwand (Komplexität)** beschreibt, wie die Zahl der Rechenschritte mit der Datenmenge n wächst – angegeben in der **O-Notation**. Konstante Faktoren fallen weg, es zählt nur die Größenordnung: Bei n = 1.000 Datensätzen braucht ein Verfahren mit O(n²) rund 1.000.000 Vergleiche, eines mit O(n log n) nur rund 10.000.
+
+| Verfahren | Prinzip | bester Fall | mittlerer Fall | schlechtester Fall | stabil |
+|---|---|---|---|---|---|
+| **Lineare Suche** | von vorn nach hinten jedes Element prüfen; Liste darf unsortiert sein | O(1) | O(n) | O(n) | – |
+| **Binäre Suche** | Mitte prüfen, dann nur in der passenden Hälfte weitersuchen; Liste muss sortiert sein | O(1) | O(log n) | O(log n) | – |
+| **Bubble Sort** | benachbarte Elemente vergleichen und bei falscher Reihenfolge tauschen | O(n) mit Abbruch, wenn nichts mehr getauscht wird | O(n²) | O(n²) | ja |
+| **Selection Sort** | kleinstes Element des unsortierten Rests suchen und nach vorn tauschen | O(n²) | O(n²) | O(n²) | nein |
+| **Insertion Sort** | jedes Element in den bereits sortierten Teil einfügen (wie Spielkarten) | O(n) bei fast sortierten Daten | O(n²) | O(n²) | ja |
+| **Merge Sort** | Liste halbieren, Hälften rekursiv sortieren, sortiert zusammenführen; braucht zusätzlichen Speicher | O(n log n) | O(n log n) | O(n log n) | ja |
+| **Quicksort** | Pivotelement wählen, in „kleiner“ und „größer“ aufteilen, Teile rekursiv sortieren | O(n log n) | O(n log n) | O(n²) bei ungünstigem Pivot, z. B. erstes Element einer bereits sortierten Liste | nein |
+
+Ein **stabiles Sortierverfahren** lässt gleiche Schlüssel in ihrer ursprünglichen Reihenfolge – wichtig, wenn man erst nach Datum und dann stabil nach Filiale sortiert und die Datumsreihenfolge innerhalb jeder Filiale erhalten bleiben soll. Merge Sort und Quicksort arbeiten nach dem Prinzip **Teile und herrsche** (Divide and Conquer).
+
+**Bubble Sort in Pseudocode** (mit fußgesteuerter Schleife und Abbruch, sobald ein Durchlauf ohne Tausch bleibt):
+
+```
+ALGORITHMUS BubbleSort
+EINGABE: liste[1..n]
+AUSGABE: liste aufsteigend sortiert
+
+ende ← n - 1
+WIEDERHOLE
+    getauscht ← FALSCH
+    FÜR j VON 1 BIS ende
+        WENN liste[j] > liste[j+1] DANN
+            tausche liste[j] und liste[j+1]
+            getauscht ← WAHR
+        ENDE WENN
+    ENDE FÜR
+    ende ← ende - 1
+BIS getauscht = FALSCH ODER ende = 0
+```
+
+Durchgespielt mit den Lieferzeiten 5 · 3 · 8 · 1 (Tage):
+
+| Durchlauf | Vergleiche | Liste danach |
+|---|---|---|
+| 1 | 5/3 tauschen, 5/8 bleibt, 8/1 tauschen | 3 · 5 · 1 · 8 |
+| 2 | 3/5 bleibt, 5/1 tauschen | 3 · 1 · 5 · 8 |
+| 3 | 3/1 tauschen | 1 · 3 · 5 · 8 |
+
+Nach jedem Durchlauf steht das größte noch unsortierte Element („die größte Blase“) am Ende. Insgesamt 3 + 2 + 1 = 6 Vergleiche und 4 Vertauschungen; allgemein braucht Bubble Sort im schlechtesten Fall n · (n − 1) / 2 Vergleiche. Eine bereits sortierte Liste ist nach einem einzigen Durchlauf ohne Tausch erledigt.
+
+**Binäre Suche in Pseudocode:**
+
+```
+ALGORITHMUS BinaereSuche
+EINGABE: liste[1..n] aufsteigend sortiert, gesucht
+AUSGABE: position (0 = nicht gefunden)
+
+links    ← 1
+rechts   ← n
+position ← 0
+SOLANGE links <= rechts UND position = 0
+    mitte ← (links + rechts) DIV 2
+    WENN liste[mitte] = gesucht DANN
+        position ← mitte
+    SONST WENN liste[mitte] < gesucht DANN
+        links ← mitte + 1
+    SONST
+        rechts ← mitte - 1
+    ENDE WENN
+ENDE SOLANGE
+
+AUSGABE position
+```
+
+Durchgespielt mit der sortierten Liste 12 · 19 · 23 · 31 · 42 · 57 · 64 · 78, gesucht 57:
+
+| Schritt | links | rechts | mitte | liste[mitte] | Entscheidung |
+|---|---|---|---|---|---|
+| 1 | 1 | 8 | 4 | 31 | 31 < 57 → rechts weitersuchen, links ← 5 |
+| 2 | 5 | 8 | 6 | 57 | gefunden, position ← 6 |
+
+Bei acht Elementen braucht die binäre Suche höchstens vier Vergleiche. Da sich der Suchbereich je Schritt halbiert, reichen bei 1.000.000 sortierten Datensätzen höchstens 20 Vergleiche (2 hoch 20 = 1.048.576) – die lineare Suche braucht im schlechtesten Fall 1.000.000. Genau diesen Effekt nutzt ein Datenbankindex.
+
+**Rekursion:** Eine Funktion ruft sich selbst mit einem kleineren Teilproblem auf. Pflicht ist eine **Abbruchbedingung** (Basisfall), sonst ruft sich die Funktion endlos auf, bis der Aufrufstapel überläuft (Stack Overflow).
+
+```
+FUNKTION fakultaet(n)
+    WENN n <= 1 DANN
+        RÜCKGABE 1                       // Basisfall
+    SONST
+        RÜCKGABE n * fakultaet(n - 1)    // rekursiver Aufruf
+    ENDE WENN
+ENDE FUNKTION
+```
+
+fakultaet(4) = 4 · fakultaet(3) = 4 · 3 · fakultaet(2) = 4 · 3 · 2 · fakultaet(1) = 4 · 3 · 2 · 1 = 24. Jede Rekursion lässt sich auch als Schleife (iterativ) schreiben; die rekursive Form ist oft kürzer, verbraucht aber für jeden offenen Aufruf Speicher auf dem Stapel.
 
 ---
 
@@ -313,3 +421,4 @@ AUSGABE max, anzahl
 - [ ] Ich finde Logikfehler in gegebenem Pseudocode, insbesondere Off-by-one und fehlende Initialisierung.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
 - [ ] Ich wende die Interaktionsprinzipien der ISO 9241-110 und die Regeln der Barrierefreiheit auf ein Dashboard an.
+- [ ] Ich spiele Bubble Sort und die binäre Suche Schritt für Schritt durch und ordne Such- und Sortierverfahren ihren Aufwand in O-Notation zu.

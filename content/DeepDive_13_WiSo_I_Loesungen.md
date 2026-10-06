@@ -41,11 +41,11 @@
 
 **B1 (4 P):** **60 Minuten** – Nach dem **JArbSchG** stehen Jugendlichen bei mehr als sechs Stunden Arbeitszeit 60 Minuten Ruhepause zu. Häufiger Fehler: 30 Minuten nach ArbZG – das gilt nur für Erwachsene.
 
-**B2 (4 P):** **32 Stunden** – Ein Berufsschultag mit mehr als fünf Unterrichtsstunden à 45 Minuten wird einmal pro Woche mit **8 Stunden** angerechnet; an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. $40 - 8$ = **32 Stunden** für die übrigen Tage.
+**B2 (4 P):** **32 Stunden** – Ein Berufsschultag mit mehr als fünf Unterrichtsstunden à mindestens 45 Minuten wird einmal pro Woche mit der **durchschnittlichen täglichen Arbeitszeit** angerechnet (§ 9 Abs. 2 JArbSchG) – bei 40 Stunden an fünf Tagen also mit 8 Stunden; an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. $40 - 8$ = **32 Stunden** für die übrigen Tage.
 
 **B3 (4 P):** **(3)** – Seit 2020 gilt § 15 Abs. 2 Nr. 5 BBiG **für alle Azubis**: Am Arbeitstag unmittelbar vor der schriftlichen Abschlussprüfung besteht Freistellung, angerechnet mit der durchschnittlichen täglichen Ausbildungszeit.
 
-**B4 (4 P):** **27 Werktage** – Maßgeblich ist das **Alter zu Beginn des Kalenderjahres**. Am 01.01.2026 ist Jonas 16 Jahre alt, also „noch nicht 17“ → 27 Werktage. Häufiger Fehler: 25 Werktage, weil er im Laufe des Jahres 17 wird.
+**B4 (4 P):** **27 Werktage** – Maßgeblich ist das **Alter zu Beginn des Kalenderjahres**. Am 01.01.2026 ist Jonas 16 Jahre alt, also „noch nicht 17“ → 27 Werktage. Häufiger Fehler: 25 Werktage, weil er im Laufe des Jahres 17 wird. Gefragt ist der Jahresanspruch; weil Jonas erst am 01.08.2026 beginnt, erwirbt er 2026 tatsächlich nur Teilurlaub (§ 5 BUrlG): $27 \cdot \frac{5}{12} = 11{,}25$ = **11 Werktage**.
 
 **B5 (4 P):** **45 Minuten** – Nach dem **ArbZG** stehen Erwachsenen bei mehr als neun Stunden Arbeitszeit 45 Minuten Pause zu.
 
@@ -75,7 +75,7 @@
 
 **D3 (4 P):** **(5)** – Eine ohne Anhörung des Betriebsrats ausgesprochene Kündigung ist **unwirksam** (§ 102 Abs. 1 BetrVG). Eine Zustimmung ist dagegen nicht erforderlich – und eine nachträgliche Beteiligung heilt den Fehler nicht (3).
 
-**D4 (4 P):** **(1)** – Wählbar sind Beschäftigte unter 25. Eine JAV setzt einen bestehenden Betriebsrat voraus (2), ihre Amtszeit beträgt zwei Jahre (3), sie handelt über den Betriebsrat (4) und wird ab fünf Beschäftigten der Zielgruppe gewählt (5).
+**D4 (4 P):** **(1)** – Wählbar sind Beschäftigte unter 25 (seit 2021 zusätzlich Auszubildende jeden Alters, § 61 Abs. 2 BetrVG). Eine JAV setzt einen bestehenden Betriebsrat voraus (2), ihre Amtszeit beträgt zwei Jahre (3), sie handelt über den Betriebsrat (4) und wird ab fünf Beschäftigten der Zielgruppe gewählt (5).
 
 ---
 

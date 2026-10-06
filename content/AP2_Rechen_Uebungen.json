@@ -45,7 +45,7 @@
       "tags": ["quartile", "boxplot", "ausreißer"],
       "vorlage": "quartile",
       "daten": { "werte": [60, 40, 220, 45, 35, 90, 55, 40, 70, 50, 65], "einheit": "min" },
-      "aufgabe": "Bearbeitungsdauer von {{n}} Reparaturaufträgen (in Minuten): {{werte}}.\n\nBestimme Q1, Q3 und den Interquartilsabstand (Konvention des Lernblatts: Position = n · p, aufrunden). Prüfe dann mit der 1,5-IQR-Regel auf Ausreißer und gib an, wo der obere Whisker endet.",
+      "aufgabe": "Bearbeitungsdauer von {{n}} Reparaturaufträgen (in Minuten): {{werte}}.\n\nBestimme Q1, Q3 und den Interquartilsabstand (Konvention des Lernblatts: Position = n · p; nicht ganzzahlig → aufrunden, ganzzahlig → Mittel mit dem nächsten Wert). Prüfe dann mit der 1,5-IQR-Regel auf Ausreißer und gib an, wo der obere Whisker endet.",
       "eingaben": ["q1", "q3", "iqr", "zaunUnten", "zaunOben", "ausreisser", "whiskerOben"],
       "quelleAufgabe": "DD3 Übungsklausur E1–E3"
     },
@@ -235,7 +235,7 @@
         "Genauso Q3: Position {{n}} · 0,75 = 9 → Mittel der Werte an Position 9 und 10.",
         "Zäune: Q1 − 1,5 · IQR und Q3 + 1,5 · IQR. Ausreißer liegen außerhalb."
       ],
-      "erklaerung": "Bei ganzzahliger Position nimmt die Lernblatt-Konvention das Mittel aus diesem und dem nächsten Wert, sonst wird aufgerundet. Andere Konventionen (z. B. Excel QUARTIL.INKL) liefern leicht andere Werte – nenne in der Klausur immer die verwendete Konvention."
+      "erklaerung": "Bei ganzzahliger Position nimmt die Lernblatt-Konvention das Mittel aus diesem und dem nächsten Wert, sonst wird aufgerundet. Andere Konventionen (z. B. Excel QUARTILE.INKL) liefern leicht andere Werte – nenne in der Klausur immer die verwendete Konvention."
     },
     {
       "id": "RE-ST1-015",
@@ -1137,7 +1137,7 @@
       "aufgabe": "Ein Säulendiagramm zeigt den Jahresumsatz von {{alt}} Mio. € (erstes Jahr) bis {{neu}} Mio. € (drittes Jahr). Die y-Achse beginnt bei 4,70 Mio. €, die Überschrift lautet „Umsatz explodiert“.\n\nBerechne den absoluten Zuwachs und das tatsächliche Gesamtwachstum in Prozent.",
       "eingaben": [{ "id": "differenz", "runden": 2 }, "prozent"],
       "hinweise": ["Gesamtwachstum = (Endwert − Anfangswert) / Anfangswert · 100 %.", "Die Achse ändert die Zahlen nicht – nur ihren Eindruck."],
-      "erklaerung": "Beginnt die y-Achse nicht bei null, wirken kleine Unterschiede dramatisch (in der Originalaufgabe sichtbare Säulenhöhen 1 : 2,5 : 4 bei nur 6,25 % Wachstum). Bei Säulen codiert die Länge den Wert – ein Nullpunkt ist Pflicht. Sachliche Überschrift: „Umsatz wächst stetig um rund 2 % pro Jahr“.",
+      "erklaerung": "Beginnt die y-Achse nicht bei null, wirken kleine Unterschiede dramatisch (in der Originalaufgabe sichtbare Säulenhöhen 1 : 2,5 : 4 bei nur 6,25 % Wachstum). Bei Säulen codiert die Länge den Wert – ein Nullpunkt ist Pflicht. Sachliche Überschrift: „Umsatz wächst stetig um rund 3 % pro Jahr“ (zwei Jahresschritte: +3,13 % und +3,03 %).",
       "quelleAufgabe": "DD11 Übungsklausur B1"
     },
     {
@@ -1421,8 +1421,8 @@
       "tags": ["wiso", "jugendarbeitsschutz"],
       "aufgabe": "Ein 17-jähriger Auszubildender hat eine regelmäßige Wochenarbeitszeit von 40 Stunden. Einmal pro Woche hat er einen Berufsschultag mit mehr als fünf Unterrichtsstunden à 45 Minuten.\n\nWie viele Stunden darf er in dieser Woche höchstens noch im Betrieb beschäftigt werden?",
       "eingaben": [{ "id": "stunden", "label": "Stunden im Betrieb", "einheit": "Stunden", "loesung": 32 }],
-      "hinweise": ["Ein solcher Berufsschultag wird für Jugendliche mit 8 Stunden angerechnet.", "40 − 8 = ?"],
-      "erklaerung": "Nach dem JArbSchG wird ein Berufsschultag mit mehr als fünf Unterrichtsstunden (à 45 Minuten) einmal pro Woche mit **8 Stunden** angerechnet; an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. $40 - 8 = 32$ Stunden.",
+      "hinweise": ["Ein solcher Berufsschultag wird mit der durchschnittlichen täglichen Arbeitszeit angerechnet (§ 9 Abs. 2 JArbSchG) – hier 40 / 5 = 8 Stunden.", "40 − 8 = ?"],
+      "erklaerung": "Nach dem JArbSchG wird ein Berufsschultag mit mehr als fünf Unterrichtsstunden (à 45 Minuten) einmal pro Woche mit der **durchschnittlichen täglichen Arbeitszeit** angerechnet (§ 9 Abs. 2 Nr. 1, seit 2020; bei 40 Stunden an 5 Tagen = 8 Stunden); an diesem Tag ist keine Beschäftigung im Betrieb mehr zulässig. $40 - 8 = 32$ Stunden.",
       "quelleAufgabe": "DD13 Übungsklausur B2"
     },
     {
@@ -1463,7 +1463,7 @@
       "tags": ["wiso", "nettoentgelt", "sozialversicherung"],
       "vorlage": "sozialversicherung",
       "daten": { "brutto": 1200, "zusatzbeitrag": 2.9, "kinderlos": false, "lohnsteuer": 0, "kirchensteuersatz": 0 },
-      "aufgabe": "Jonas (17) erhält eine Bruttovergütung von {{brutto}} €, der Zusatzbeitrag seiner Krankenkasse beträgt {{zusatzbeitrag}} %. Sein Einkommen liegt unter dem Grundfreibetrag (keine Lohnsteuer), Kirchensteuer zahlt er nicht. Beitragssätze wie im Lernblatt.\n\nBerechne die Arbeitnehmeranteile zu KV, PV, RV und ALV, den gesamten SV-Anteil und das Nettoentgelt.",
+      "aufgabe": "Jonas (17) erhält eine Bruttovergütung von {{brutto}} €, der Zusatzbeitrag seiner Krankenkasse beträgt {{zusatzbeitrag}} %. Sein zu versteuerndes Einkommen liegt unter dem Grundfreibetrag (keine Lohnsteuer), Kirchensteuer zahlt er nicht. Beitragssätze wie im Lernblatt.\n\nBerechne die Arbeitnehmeranteile zu KV, PV, RV und ALV, den gesamten SV-Anteil und das Nettoentgelt.",
       "eingaben": ["kv", "pv", "rv", "alv", "sv", "netto"],
       "hinweise": [
         "AN-Anteil: KV (14,6 % + Zusatzbeitrag) / 2, PV 1,8 %, RV 9,3 %, ALV 1,3 %.",

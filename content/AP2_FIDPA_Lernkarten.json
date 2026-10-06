@@ -3,26 +3,26 @@
     "titel": "AP2 Lernkarten – Fachinformatiker/-in Daten- und Prozessanalyse",
     "pruefung": "IHK Abschlussprüfung Teil 2",
     "erstellt_am": "2026-09-21",
-    "aktualisiert_am": "2026-10-05",
+    "aktualisiert_am": "2026-10-06",
     "version": "1.1",
     "sprache": "de",
     "anzahl_decks": 25,
-    "anzahl_karten": 456,
+    "anzahl_karten": 539,
     "karten_nach_typ": {
-      "abgrenzung": 61,
-      "anwendung": 53,
-      "falle": 69,
-      "rechnung": 32,
-      "wissen": 241
+      "abgrenzung": 80,
+      "anwendung": 62,
+      "falle": 94,
+      "rechnung": 44,
+      "wissen": 259
     },
     "karten_nach_status": {
-      "behandelt": 444,
-      "offen": 12
+      "behandelt": 525,
+      "offen": 14
     },
     "karten_nach_schwierigkeit": {
-      "1": 204,
-      "2": 233,
-      "3": 19
+      "1": 210,
+      "2": 295,
+      "3": 34
     },
     "felder": {
       "id": "Eindeutige Karten-ID aus Deck-Kürzel und laufender Nummer",
@@ -56,12 +56,12 @@
       "pruefungsbereich": "Prüfungsorganisation",
       "quelle": "Themenliste",
       "status": "behandelt",
-      "anzahl_karten": 11,
+      "anzahl_karten": 12,
       "karten": [
         {
           "id": "ORG-001",
           "frage": "Aus welchen Prüfungsbereichen besteht die AP2 FIDPA und wie werden sie gewichtet?",
-          "antwort": "Durchführen eines Projektes zur Datenanalyse (betriebliche Projektarbeit) 50 %, Durchführen einer Prozessanalyse 10 %, Sicherstellen der Datenqualität 10 %, Wirtschafts- und Sozialkunde 10 %. Die AP1 geht mit 20 % in die Gesamtnote ein.",
+          "antwort": "Planen und Durchführen eines Projektes der Datenanalyse (betriebliche Projektarbeit mit Dokumentation sowie Präsentation und Fachgespräch) 50 %, Durchführen einer Prozessanalyse 10 %, Sicherstellen der Datenqualität 10 %, Wirtschafts- und Sozialkunde 10 %. Die AP1 geht mit 20 % in die Gesamtnote ein.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -94,7 +94,7 @@
         {
           "id": "ORG-004",
           "frage": "Wie gehen Dokumentation sowie Präsentation mit Fachgespräch in die Bewertung der Projektarbeit ein?",
-          "antwort": "Gleichgewichtet – beide Komponenten zählen jeweils zur Hälfte. Präsentationstraining bringt damit genauso viele Punkte wie eine gute Doku.",
+          "antwort": "Gleichgewichtet (§ 28 Abs. 4 FIAusbV): Teil 1 (betriebliche Projektarbeit, bewertet über die Dokumentation mit praxisbezogenen Unterlagen) und Teil 2 (Präsentation und Fachgespräch) zählen je 50 % des Prüfungsbereichs, also je 25 % der Gesamtnote. Präsentationstraining bringt damit genauso viele Punkte wie eine gute Doku.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -175,6 +175,17 @@
             "taktik",
             "operatoren"
           ]
+        },
+        {
+          "id": "ORG-012",
+          "frage": "Darfst du in den schriftlichen AP2-Prüfungen Aufgaben abwählen – und welche Hilfsmittel sind erlaubt?",
+          "antwort": "Nein. Seit der Neuordnung 2020 gibt es keine Wahl- oder Abwahlaufgaben mehr: Alle Aufgaben sind zu bearbeiten. Erlaubt ist ein nicht programmierbarer Taschenrechner. Prozessanalyse und Datenqualität bestehen aus offenen (ungebundenen) Aufgaben, WiSo überwiegend aus gebundenen.",
+          "typ": "falle",
+          "schwierigkeit": 1,
+          "tags": [
+            "aufbau",
+            "taktik"
+          ]
         }
       ]
     },
@@ -184,7 +195,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 1",
       "status": "behandelt",
-      "anzahl_karten": 22,
+      "anzahl_karten": 29,
       "karten": [
         {
           "id": "SQL-001",
@@ -230,7 +241,7 @@
         {
           "id": "SQL-005",
           "frage": "Warum kann ein Spalten-Alias aus dem SELECT nicht in WHERE verwendet werden?",
-          "antwort": "SELECT wird logisch erst nach WHERE, GROUP BY und HAVING ausgewertet; der Alias existiert dort noch nicht. ORDER BY kennt ihn dagegen, weil es zuletzt ausgewertet wird.",
+          "antwort": "SELECT wird logisch erst nach WHERE, GROUP BY und HAVING ausgewertet; der Alias existiert dort noch nicht. ORDER BY kennt ihn dagegen, weil es zuletzt ausgewertet wird. (Standard-SQL; SQLite und MySQL dulden Aliase teilweise, z. B. in HAVING – in der Prüfung nicht darauf verlassen.)",
           "typ": "falle",
           "schwierigkeit": 2,
           "tags": [
@@ -241,7 +252,7 @@
         {
           "id": "SQL-006",
           "frage": "Welche Regel gilt für nicht aggregierte Spalten bei GROUP BY?",
-          "antwort": "Jede Spalte im SELECT, die nicht in einer Aggregatfunktion steht, muss im GROUP BY aufgeführt sein.",
+          "antwort": "Jede Spalte im SELECT, die nicht in einer Aggregatfunktion steht, muss im GROUP BY aufgeführt sein. SQLite (und MySQL ohne ONLY_FULL_GROUP_BY) führen Verstöße trotzdem aus – in der Prüfung bleibt es ein Fehler.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -293,7 +304,7 @@
         {
           "id": "SQL-011",
           "frage": "Wie findest du per SQL alle Kunden, die noch nie bestellt haben?",
-          "antwort": "SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON k.kunden_id = b.kunden_id\nWHERE b.bestell_id IS NULL;\nAlternative: WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung). Mit INNER JOIN ist die Aufgabe nicht lösbar.",
+          "antwort": "SELECT k.name\nFROM kunde k\nLEFT JOIN bestellung b ON k.kunden_id = b.kunden_id\nWHERE b.bestell_id IS NULL;\nAlternativen: WHERE NOT EXISTS (SELECT 1 FROM bestellung b WHERE b.kunden_id = k.kunden_id) oder WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung) – NOT IN aber nur, wenn die Unterabfrage keine NULL-Werte liefert. Mit INNER JOIN ist die Aufgabe nicht lösbar.",
           "typ": "anwendung",
           "schwierigkeit": 2,
           "tags": [
@@ -356,7 +367,7 @@
         {
           "id": "SQL-017",
           "frage": "Was bedeutet referenzielle Integrität, und welche Löschoptionen gibt es?",
-          "antwort": "Jeder Fremdschlüsselwert muss als Primärschlüssel in der referenzierten Tabelle existieren – keine verwaisten Datensätze. ON DELETE RESTRICT (Löschen verhindern), CASCADE (abhängige Sätze mitlöschen), SET NULL (Fremdschlüssel leeren).",
+          "antwort": "Jeder Fremdschlüsselwert muss als Primärschlüssel in der referenzierten Tabelle existieren – keine verwaisten Datensätze. ON DELETE RESTRICT (Löschen verhindern), CASCADE (abhängige Sätze mitlöschen), SET NULL (Fremdschlüssel leeren). Ohne Angabe gilt NO ACTION – verhindert das Löschen ebenfalls (Prüfung erst am Ende der Anweisung).",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -414,6 +425,82 @@
           "tags": [
             "qualitaetssicherung"
           ]
+        },
+        {
+          "id": "SQL-023",
+          "frage": "Warum liefert WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung) unter Umständen gar keine Zeile?",
+          "antwort": "Enthält die Unterabfrage einen NULL-Wert, ist der Vergleich für jede Zeile UNKNOWN statt wahr – das Ergebnis ist leer. Abhilfe: NOT EXISTS oder in der Unterabfrage WHERE kunden_id IS NOT NULL.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "null",
+            "unterabfrage"
+          ]
+        },
+        {
+          "id": "SQL-024",
+          "frage": "Warum verhält sich ein LEFT JOIN plötzlich wie ein INNER JOIN, wenn im WHERE eine Bedingung auf die rechte Tabelle steht?",
+          "antwort": "Für Zeilen ohne Treffer sind die rechten Spalten NULL; die WHERE-Bedingung wird dafür UNKNOWN und filtert sie heraus. Soll die linke Tabelle vollständig bleiben, gehört die Bedingung in die ON-Klausel.",
+          "typ": "falle",
+          "schwierigkeit": 3,
+          "tags": [
+            "join",
+            "null"
+          ]
+        },
+        {
+          "id": "SQL-025",
+          "frage": "Worin unterscheiden sich UNION und UNION ALL?",
+          "antwort": "UNION vereinigt zwei Ergebnismengen und entfernt Duplikate, UNION ALL behält alle Zeilen und ist schneller. Voraussetzung: gleiche Spaltenanzahl und verträgliche Datentypen.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "mengenoperationen"
+          ]
+        },
+        {
+          "id": "SQL-026",
+          "frage": "Wie unterscheidet sich eine Fensterfunktion (OVER/PARTITION BY) von GROUP BY?",
+          "antwort": "GROUP BY verdichtet jede Gruppe zu einer Zeile. Eine Fensterfunktion rechnet je Gruppe, behält aber alle Einzelzeilen. Ranglisten: ROW_NUMBER 1, 2, 3, 4 · RANK 1, 2, 2, 4 · DENSE_RANK 1, 2, 2, 3.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "fensterfunktion",
+            "group by"
+          ]
+        },
+        {
+          "id": "SQL-027",
+          "frage": "Worin unterscheiden sich DELETE, TRUNCATE und DROP?",
+          "antwort": "DELETE (DML) löscht Zeilen, mit WHERE auch gezielt, und lässt sich zurückrollen. TRUNCATE (DDL) leert die ganze Tabelle schnell, kein WHERE, in MySQL/Oracle nicht per ROLLBACK umkehrbar. DROP (DDL) entfernt die Tabelle samt Struktur.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "dml",
+            "ddl"
+          ]
+        },
+        {
+          "id": "SQL-028",
+          "frage": "Ein Analyst soll Umsätze auswerten, aber keine personenbezogenen Kundendaten sehen. Wie setzt du das in der Datenbank um?",
+          "antwort": "View mit nur den benötigten Spalten anlegen und der Rolle des Analysten per GRANT SELECT nur Zugriff auf diese View geben, nicht auf die Basistabellen (Prinzip der minimalen Rechte, Datenminimierung).",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "view",
+            "dcl"
+          ]
+        },
+        {
+          "id": "SQL-029",
+          "frage": "Eine Spalte enthält die Werte 10, NULL und 20. Was liefert AVG – und wie zählst du NULL als 0?",
+          "antwort": "AVG = 15, denn NULL wird ignoriert (30 / 2 Werte). Mit AVG(COALESCE(spalte, 0)) ergibt sich 10. Fachlich entscheiden, welche Variante richtig ist.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "aggregat",
+            "null"
+          ]
         }
       ]
     },
@@ -423,7 +510,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 2",
       "status": "behandelt",
-      "anzahl_karten": 16,
+      "anzahl_karten": 21,
       "karten": [
         {
           "id": "DM-001",
@@ -572,8 +659,8 @@
         },
         {
           "id": "DM-015",
-          "frage": "Warum speichert man den Verkaufspreis oft zusätzlich in der Bestellposition, obwohl das die 3. NF verletzt?",
-          "antwort": "produkt.preis ist der aktuelle Listenpreis und ändert sich. Der Preis zum Bestellzeitpunkt muss historisch korrekt bleiben, sonst verfälschen Preisänderungen rückwirkend alle Umsätze. Bewusste, begründete Redundanz zur Sicherung der Korrektheit.",
+          "frage": "Verstößt es gegen die Normalisierung, den Verkaufspreis zusätzlich in der Bestellposition zu speichern?",
+          "antwort": "Nur scheinbar: produkt.preis ist der aktuelle Listenpreis und ändert sich. Der Preis zum Bestellzeitpunkt ist ein eigenes Attribut, das von Bestellung und Produkt gemeinsam abhängt (voll funktional vom Schlüssel) – er muss historisch korrekt bleiben, sonst verfälschen Preisänderungen rückwirkend alle Umsätze. Bewusste Historisierung zur Sicherung der Korrektheit; ein 2.-NF-Verstoß wäre es nur, wenn dort stets der aktuelle Listenpreis mitgepflegt würde.",
           "typ": "anwendung",
           "schwierigkeit": 3,
           "tags": [
@@ -591,6 +678,60 @@
             "oltp",
             "olap"
           ]
+        },
+        {
+          "id": "DM-017",
+          "frage": "Wie wird KUNDE (0,n) — erteilt — (1,1) BESTELLUNG in Krähenfußnotation gezeichnet?",
+          "antwort": "KUNDE ||──o< BESTELLUNG. Krähenfuß liest wie Chen: Das Symbol bei BESTELLUNG (o< = null bis viele) sagt, wie viele Bestellungen ein Kunde hat; || bei KUNDE = genau ein Kunde je Bestellung. Gegenüber Min-Max stehen die Angaben also auf der anderen Seite. Inneres Zeichen = Maximum, äußeres = Minimum.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "kardinalitaet",
+            "notation"
+          ]
+        },
+        {
+          "id": "DM-018",
+          "frage": "Wie entscheidest du anhand der Min-Max-Notation, ob ein Fremdschlüssel NULL sein darf?",
+          "antwort": "Maßgeblich ist das Minimum der Seite, die den Fremdschlüssel trägt: (1,1) → NOT NULL (jede Bestellung braucht einen Kunden), (0,1) → NULL erlaubt (z. B. vorgesetzter_id, die Geschäftsführung hat keinen Vorgesetzten).",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "transformation",
+            "kardinalitaet"
+          ]
+        },
+        {
+          "id": "DM-019",
+          "frage": "Welche drei Möglichkeiten gibt es, eine Generalisierung/Spezialisierung (is-a) in Tabellen zu überführen?",
+          "antwort": "1) Eine Tabelle je Entitätstyp: PK der Untertabelle ist zugleich FK auf die Obertabelle (redundanzfrei, Joins nötig). 2) Nur Untertabellen, die die Attribute des Obertyps übernehmen (nur bei totaler, disjunkter Spezialisierung). 3) Eine Gesamttabelle mit Typ-Spalte (keine Joins, viele NULL-Werte).",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "transformation",
+            "generalisierung"
+          ]
+        },
+        {
+          "id": "DM-020",
+          "frage": "Wann ist eine Tabelle in 3. NF, aber nicht in BCNF?",
+          "antwort": "Wenn eine Determinante kein Schlüsselkandidat ist, das abhängige Attribut aber Teil eines Schlüsselkandidaten ist – nur möglich bei mehreren überlappenden zusammengesetzten Schlüsselkandidaten. Beispiel betreuung(kunden_id, kategorie, berater_id) mit berater_id → kategorie.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 3,
+          "tags": [
+            "bcnf",
+            "3nf"
+          ]
+        },
+        {
+          "id": "DM-021",
+          "frage": "Natürlicher Schlüssel oder Surrogatschlüssel – was spricht für den Surrogatschlüssel?",
+          "antwort": "Natürlich = fachlich vorhanden (ISBN, E-Mail), surrogat = künstlich (fortlaufende ID). Der Surrogatschlüssel ist stabil, kurz und ohne Fachbedeutung; natürliche Werte können sich ändern oder doppelt vorkommen. Den fachlichen Schlüssel trotzdem per UNIQUE absichern.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "schluessel"
+          ]
         }
       ]
     },
@@ -600,12 +741,12 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 3",
       "status": "behandelt",
-      "anzahl_karten": 24,
+      "anzahl_karten": 27,
       "karten": [
         {
           "id": "ST1-001",
           "frage": "Welche vier Skalenniveaus gibt es, und welches Lagemaß ist jeweils zulässig?",
-          "antwort": "Nominal (nur gleich/ungleich) → Modus. Ordinal (Rangfolge) → Median. Intervall (gleiche Abstände, kein absoluter Nullpunkt) → Mittelwert. Verhältnis (absoluter Nullpunkt) → Mittelwert und Verhältnisse. Intervall und Verhältnis zusammen heißen metrisch.",
+          "antwort": "Nominal (nur gleich/ungleich) → Modus. Ordinal (Rangfolge) → zusätzlich Median und Quartile. Intervall (gleiche Abstände, kein absoluter Nullpunkt) → zusätzlich Mittelwert und Standardabweichung. Verhältnis (absoluter Nullpunkt) → zusätzlich Verhältnisse und Variationskoeffizient. Jede Stufe erlaubt auch alle Maße der niedrigeren Stufen. Intervall und Verhältnis zusammen heißen metrisch.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -716,7 +857,7 @@
         {
           "id": "ST1-012",
           "frage": "Bei n = 10 liefert die Rechnung Position 7,5 für Q3. Wie gehst du vor?",
-          "antwort": "Konvention: nicht ganzzahlig → aufrunden auf Position 8 und den Wert an Position 8 ablesen. Bei 2, 3, 3, 4, 5, 5, 5, 6, 8, 19 ist das der Wert 6 – nicht 8! Immer beides notieren („Position 8 → Wert 6“) und die verwendete Konvention dazuschreiben.",
+          "antwort": "Konvention des Lernzettels (eine von mehreren): nicht ganzzahlig → aufrunden auf Position 8 und den Wert an Position 8 ablesen. Bei 2, 3, 3, 4, 5, 5, 5, 6, 8, 19 ist das der Wert 6 – nicht 8! Immer beides notieren („Position 8 → Wert 6“) und die verwendete Konvention dazuschreiben (Excel QUARTILE.INKL interpoliert z. B. zu 5,75).",
           "typ": "falle",
           "schwierigkeit": 2,
           "tags": [
@@ -848,6 +989,39 @@
             "skalenniveau",
             "befragung"
           ]
+        },
+        {
+          "id": "ST1-025",
+          "frage": "Excel liefert für Q1 einen anderen Wert als deine Handrechnung. Ist eine der Rechnungen falsch?",
+          "antwort": "Nicht unbedingt: Für Quartile gibt es mehrere Konventionen. Beispiel 2, 3, 3, 4, 5, 5, 5, 6, 8, 19: Lernzettel (n · p, aufrunden) Q1 = 3, Q3 = 6; Excel QUARTILE.INKL Q1 = 3,25, Q3 = 5,75; QUARTILE.EXKL Q1 = 3, Q3 = 6,5. Konvention nennen, durchgängig anwenden und prüfen, ob sich die Ausreißer-Aussage ändert.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "quartile"
+          ]
+        },
+        {
+          "id": "ST1-026",
+          "frage": "Welche Excel- und SQL-Funktionen berechnen Standardabweichung und Varianz mit ÷ n bzw. ÷ (n − 1)?",
+          "antwort": "Excel: STABW.N / VAR.P (÷ n, Grundgesamtheit), STABW.S / VAR.S (÷ (n − 1), Stichprobe). SQL: STDDEV_POP / VAR_POP bzw. STDDEV_SAMP / VAR_SAMP. Falle: STDDEV ohne Zusatz ist in PostgreSQL und Oracle die Stichproben-, in MySQL die Grundgesamtheitsvariante.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "varianz",
+            "standardabweichung",
+            "excel",
+            "sql"
+          ]
+        },
+        {
+          "id": "ST1-027",
+          "frage": "Drei unabhängige Aufträge werden mit je 5 % Wahrscheinlichkeit reklamiert. Wie wahrscheinlich ist mindestens eine Reklamation?",
+          "antwort": "Über das Gegenereignis: 1 − 0,95³ = 1 − 0,857 ≈ 0,143 = 14,3 %. Falsch wäre 3 · 5 % = 15 % – Addieren ist nur bei sich ausschließenden Ereignissen erlaubt.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "wahrscheinlichkeit"
+          ]
         }
       ]
     },
@@ -857,7 +1031,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 4",
       "status": "behandelt",
-      "anzahl_karten": 18,
+      "anzahl_karten": 22,
       "karten": [
         {
           "id": "ST2-001",
@@ -882,7 +1056,7 @@
         {
           "id": "ST2-003",
           "frage": "Wie interpretierst du |r|?",
-          "antwort": "0–0,2 kein bis sehr schwach · 0,2–0,5 schwach · 0,5–0,8 mittel · 0,8–1,0 stark. Zuerst das Vorzeichen deuten: positiv = gleichläufig, negativ = gegenläufig.",
+          "antwort": "0–0,2 kein bis sehr schwach · 0,2–0,5 schwach · 0,5–0,8 mittel · 0,8–1,0 stark. Zuerst das Vorzeichen deuten: positiv = gleichläufig, negativ = gegenläufig. Die Grenzen sind Konvention (je nach Lehrbuch z. B. auch 0,3/0,7) – in der Klausur zählt die begründete Einordnung „schwach/mittel/stark“ mit Vorzeichen.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -994,7 +1168,7 @@
         {
           "id": "ST2-014",
           "frage": "Was sagt R² aus, und wo liegen seine Grenzen?",
-          "antwort": "R² = r² ist der Anteil der Streuung von y, den das Modell erklärt (0 bis 1). Grenzen: misst nur die Anpassung an diese Daten, belegt weder Kausalität noch Prognosegüte und ist bei wenigen Datenpunkten leicht hoch.",
+          "antwort": "R² ist der Anteil der Streuung von y, den das Modell erklärt (auf den Trainingsdaten 0 bis 1, auf Testdaten auch negativ möglich); bei der einfachen linearen Regression gilt R² = r², allgemein R² = 1 − Σe² / Syy. Grenzen: misst nur die Anpassung an diese Daten, belegt weder Kausalität noch Prognosegüte und ist bei wenigen Datenpunkten leicht hoch.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -1040,6 +1214,49 @@
           "tags": [
             "wachstum"
           ]
+        },
+        {
+          "id": "ST2-019",
+          "frage": "Wie berechnest du die Rangkorrelation nach Spearman? Beispiel: n = 5, Σd² = 2.",
+          "antwort": "Messwerte in Ränge umwandeln, je Merkmalsträger Rangdifferenz d bilden. r_s = 1 − 6 · Σd² / (n · (n² − 1)) = 1 − 12 / 120 = 0,90 → starker positiver monotoner Zusammenhang. Bei gleichen Werten mittlere Ränge vergeben (Formel dann nur näherungsweise).",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "korrelation",
+            "spearman"
+          ]
+        },
+        {
+          "id": "ST2-020",
+          "frage": "Bei 2 Mio. Datensätzen ist r = 0,03 hochsignifikant (p < 0,001). Wichtiger Befund?",
+          "antwort": "Nein. Signifikant heißt nur „vermutlich kein Zufall“, nicht stark und nicht kausal. R² = 0,0009 → nur ca. 0,1 % erklärte Streuung. Bei sehr großen Datenmengen wird fast jeder Mini-Effekt signifikant; entscheidend ist die Stärke des Zusammenhangs.",
+          "typ": "falle",
+          "schwierigkeit": 3,
+          "tags": [
+            "korrelation",
+            "signifikanz"
+          ]
+        },
+        {
+          "id": "ST2-021",
+          "frage": "Umsatz 120 → 180 T€ über 7 Monatsschritte. Durchschnittliche Wachstumsrate je Monat?",
+          "antwort": "Geometrisches Mittel: (180 / 120)^(1/7) − 1 = 1,5^(1/7) − 1 ≈ 5,96 % je Monat. Das arithmetische Mittel der sieben Monatsraten (6,61 %) wäre falsch: 120 · 1,0661^7 ≈ 187,8 statt 180.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "wachstum",
+            "zeitreihe"
+          ]
+        },
+        {
+          "id": "ST2-022",
+          "frage": "r = 0,9829. Ein Prüfling rundet auf 0,98 und rechnet R² = 0,98² = 0,96. Was ist falsch?",
+          "antwort": "Mit gerundeten Zwischenergebnissen weitergerechnet. Richtig: R² = 0,9829² = 0,9660 ≈ 0,97. Kontrolle über die Residuen: R² = 1 − Σe² / Syy = 1 − 14,4 / 424 = 0,966.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "bestimmtheitsmass"
+          ]
         }
       ]
     },
@@ -1049,7 +1266,7 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 5 + BPMN-Vertiefung",
       "status": "behandelt",
-      "anzahl_karten": 41,
+      "anzahl_karten": 45,
       "karten": [
         {
           "id": "PRZ-001",
@@ -1191,8 +1408,8 @@
         },
         {
           "id": "PRZ-014",
-          "frage": "Welche zwei Modellierungsfehler machen ein Nachrichten-Boundary-Event häufig formal ungültig?",
-          "antwort": "1. Kein ausgehender Sequenzfluss – ein Boundary-Event braucht genau einen, sonst hat der Token kein Ziel. 2. Kein Absender – Nachrichten kommen von einem anderen Teilnehmer und müssen per Nachrichtenfluss aus einem zweiten Pool zugestellt werden.",
+          "frage": "Welche zwei Modellierungsfehler treten bei Nachrichten-Boundary-Events häufig auf?",
+          "antwort": "1. Kein ausgehender Sequenzfluss – ein Boundary-Event braucht genau einen, sonst hat der Token kein Ziel (formal ungültig). 2. Kein Absender – Nachrichten kommen von einem anderen Teilnehmer; in einem Kollaborationsdiagramm gehört dazu ein Nachrichtenfluss aus einem zweiten Pool (laut Spezifikation optional, in Prüfungen aber erwartet).",
           "typ": "falle",
           "schwierigkeit": 2,
           "tags": [
@@ -1482,6 +1699,51 @@
           "tags": [
             "kennzahlen"
           ]
+        },
+        {
+          "id": "PRZ-042",
+          "frage": "Was passiert, wenn du mit einem XOR-Gateway aufspaltest und mit einem AND-Gateway zusammenführst – und umgekehrt?",
+          "antwort": "XOR-Split + AND-Join: Deadlock – nur ein Pfad bekommt ein Token, das AND wartet ewig auf die anderen. AND-Split + XOR-Join: Das XOR lässt jedes Token sofort durch, der Folgeschritt läuft mehrfach (z. B. zwei Rechnungen). Deshalb mit gleichartigem Gateway zusammenführen.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "bpmn",
+            "gateway",
+            "token"
+          ]
+        },
+        {
+          "id": "PRZ-043",
+          "frage": "Welche Objekte ergänzt die erweiterte EPK (eEPK), und woran werden sie angehängt?",
+          "antwort": "Organisationseinheit (Ellipse), Informationsobjekt (Rechteck), Anwendungssystem (Rechteck mit seitlichen Doppellinien), dazu Prozesswegweiser als Verweis auf eine andere EPK. Zusatzobjekte hängen immer an Funktionen, nie an Ereignissen.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "epk",
+            "eepk"
+          ]
+        },
+        {
+          "id": "PRZ-044",
+          "frage": "200 Aufträge mit je 5 Fehlermöglichkeiten, 30 Fehler gefunden. Wie hoch ist der DPMO-Wert?",
+          "antwort": "DPMO = Fehler / (Einheiten · Fehlermöglichkeiten) · 1.000.000 = 30 / 1.000 · 1.000.000 = 30.000 DPMO – zwischen 3 Sigma (ca. 66.800) und 4 Sigma (ca. 6.200), weit weg vom Six-Sigma-Ziel 3,4 DPMO.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "six sigma",
+            "kennzahlen"
+          ]
+        },
+        {
+          "id": "PRZ-045",
+          "frage": "Woran unterscheidest du in BPMN User Task, Manual Task und Service Task?",
+          "antwort": "User Task (Personensymbol): Mensch arbeitet mit Softwareunterstützung. Manual Task (Hand): Tätigkeit ganz ohne IT. Service Task (Zahnrad): automatisiert vom System, z. B. Webservice-Aufruf.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "bpmn",
+            "task"
+          ]
         }
       ]
     },
@@ -1491,7 +1753,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 6",
       "status": "behandelt",
-      "anzahl_karten": 36,
+      "anzahl_karten": 42,
       "karten": [
         {
           "id": "ML-001",
@@ -1858,12 +2120,76 @@
         {
           "id": "ML-036",
           "frage": "Wie stuft die EU-KI-Verordnung KI-Systeme ein?",
-          "antwort": "Nach Risiko: verboten (z. B. Social Scoring durch Behörden), hohes Risiko (z. B. Bewerberauswahl, Kreditvergabe – strenge Pflichten), begrenztes Risiko (Transparenzpflicht), minimales Risiko (z. B. Spamfilter).",
+          "antwort": "Nach Risiko: verboten (z. B. Social Scoring – durch Behörden wie Unternehmen –, Emotionserkennung am Arbeitsplatz), hohes Risiko (z. B. Bewerberauswahl, Kreditwürdigkeitsprüfung – strenge Pflichten), begrenztes Risiko (Transparenzpflicht, Kennzeichnung von KI-Inhalten), minimales Risiko (z. B. Spamfilter). Dazu eigene Pflichten für KI-Modelle mit allgemeinem Verwendungszweck.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
             "ki",
             "recht"
+          ]
+        },
+        {
+          "id": "ML-037",
+          "frage": "Ab wann gelten die Regeln der KI-Verordnung (Stand 2026)?",
+          "antwort": "In Kraft seit 1. August 2024, gestaffelt anwendbar: Verbote und Förderung der KI-Kompetenz ab 2. Februar 2025, Pflichten für KI-Modelle mit allgemeinem Verwendungszweck ab 2. August 2025, allgemeine Anwendbarkeit und Transparenzpflichten ab 2. August 2026. Hochrisiko-Systeme nach Anhang III (z. B. Personalauswahl) erst ab 2. Dezember 2027, in Produkten nach Anhang I ab 2. August 2028 – verschoben durch den Digital Omnibus (VO (EU) 2026/1744).",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "ki",
+            "recht"
+          ]
+        },
+        {
+          "id": "ML-038",
+          "frage": "Wie findet der Apriori-Algorithmus Assoziationsregeln?",
+          "antwort": "Mit vorgegebenem Mindestsupport und Mindestkonfidenz: Zuerst alle Artikelkombinationen suchen, die den Mindestsupport erreichen (häufige Itemsets), daraus Regeln mit ausreichender Konfidenz bilden. Apriori-Prinzip: Ist eine Kombination selten, sind alle größeren Kombinationen mit ihr ebenfalls selten und werden nicht mehr gezählt.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "assoziation"
+          ]
+        },
+        {
+          "id": "ML-039",
+          "frage": "Wann ist eine ausschließlich automatisierte Entscheidung nach Art. 22 DSGVO doch zulässig, und was ist dann Pflicht?",
+          "antwort": "Wenn sie für einen Vertrag erforderlich ist, ein Gesetz sie erlaubt oder eine ausdrückliche Einwilligung vorliegt (Abs. 2). Bei Vertrag und Einwilligung muss der Verantwortliche mindestens das Eingreifen einer Person, die Darlegung des eigenen Standpunkts und die Anfechtung ermöglichen (Abs. 3); über die involvierte Logik ist zu informieren (Art. 13 Abs. 2 lit. f DSGVO).",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "recht",
+            "dsgvo"
+          ]
+        },
+        {
+          "id": "ML-040",
+          "frage": "Jahresumsatz 9.160 € bei einer Spanne von 200 bis 45.000 €; Lieferdauer 7 Tage bei Mittelwert 4 und Standardabweichung 1,5. Skaliere per Min-Max bzw. z-Transformation.",
+          "antwort": "Min-Max: (9.160 − 200) / (45.000 − 200) = 8.960 / 44.800 = 0,20. Standardisierung: z = (7 − 4) / 1,5 = 2,00 – zwei Standardabweichungen über dem Mittel.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "datenvorbereitung",
+            "skalierung"
+          ]
+        },
+        {
+          "id": "ML-041",
+          "frage": "Woraus werden Minimum, Maximum, Mittelwert und Standardabweichung für die Skalierung berechnet?",
+          "antwort": "Nur aus den Trainingsdaten – die Werte werden dann unverändert auf Test- und Betriebsdaten angewendet. Werden sie aus allen Daten berechnet, sickern Informationen aus den Testdaten ins Training (Data Leakage).",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "datenvorbereitung",
+            "data-leakage"
+          ]
+        },
+        {
+          "id": "ML-042",
+          "frage": "In welcher CRISP-DM-Phase wird laut Referenzmodell die Datenqualität geprüft, in welcher das Testdesign festgelegt?",
+          "antwort": "Datenqualität prüfen ist eine Aufgabe des Data Understanding (neben Daten sammeln, beschreiben, explorieren). Das Testdesign (z. B. Aufteilung in Trainings- und Testdaten) gehört zum Modeling (neben Verfahren auswählen, Modell erstellen, Modell bewerten).",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "crisp-dm"
           ]
         }
       ]
@@ -1874,7 +2200,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 7",
       "status": "behandelt",
-      "anzahl_karten": 18,
+      "anzahl_karten": 23,
       "karten": [
         {
           "id": "MG-001",
@@ -2010,7 +2336,7 @@
         {
           "id": "MG-014",
           "frage": "Was passiert mit Precision und Recall, wenn die Entscheidungsschwelle gesenkt wird?",
-          "antwort": "Das Modell stuft mehr Fälle als positiv ein: FN sinken, der Recall steigt; FP steigen, die Precision sinkt. Beide lassen sich meist nur gegeneinander verbessern.",
+          "antwort": "Das Modell stuft mehr Fälle als positiv ein: FN sinken, der Recall steigt; FP steigen, die Precision sinkt in der Regel (der Recall kann dabei nicht sinken, die Precision ist nicht streng monoton). Beide lassen sich meist nur gegeneinander verbessern.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -2058,6 +2384,61 @@
           "tags": [
             "kosten"
           ]
+        },
+        {
+          "id": "MG-019",
+          "frage": "Was sagt eine AUC von 0,5, von 0,9 und von 0,3 aus, und wann ist die AUC trügerisch?",
+          "antwort": "0,5: nicht besser als Zufall (ROC-Kurve auf der Diagonale). 0,9: gute Trennung – ein zufälliger positiver Fall erhält mit 90 % Wahrscheinlichkeit einen höheren Score als ein zufälliger negativer. 0,3: schlechter als Zufall, Vorhersagen systematisch vertauscht. Trügerisch: Die AUC kennt weder Schwelle noch Fehlerkosten und wirkt bei stark unausgeglichenen Klassen oft zu optimistisch (dann Precision-Recall-Kurve).",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "roc",
+            "auc"
+          ]
+        },
+        {
+          "id": "MG-020",
+          "frage": "Ein übersehener Reklamationsfall (FN) kostet 120 €, eine unnötige Prüfung (FP) 15 €. Ab welcher Reklamationswahrscheinlichkeit p sollte ein Auftrag geprüft werden?",
+          "antwort": "Prüfen, wenn p · 120 > (1 − p) · 15, also p > 15 / (15 + 120) = 11,11 %. Die Standardschwelle 50 % passt nur bei gleich teuren Fehlern; je teurer der FN, desto niedriger die Schwelle.",
+          "typ": "rechnung",
+          "schwierigkeit": 3,
+          "tags": [
+            "kosten",
+            "schwellenwert"
+          ]
+        },
+        {
+          "id": "MG-021",
+          "frage": "Ein Kollege vervielfältigt die Reklamationsfälle per Oversampling und teilt erst danach in Training und Test. Was ist falsch?",
+          "antwort": "Kopien desselben Falls landen in Training und Test – der Test misst Wiedererkennen, die Güte ist geschönt; außerdem hat der Test eine künstliche Klassenverteilung. Richtig: erst stratifiziert aufteilen, dann nur die Trainingsdaten resamplen.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "unausgeglichene-klassen",
+            "split"
+          ]
+        },
+        {
+          "id": "MG-022",
+          "frage": "y = 100, 120, 90, 130, 110; ŷ = 90, 126, 84, 132, 108. Berechne R² und MAPE.",
+          "antwort": "ȳ = 110, Σ(y − ȳ)² = 1.000, Σ(y − ŷ)² = 180 → R² = 1 − 180 / 1.000 = 0,82. MAPE = (10/100 + 6/120 + 6/90 + 2/130 + 2/110) / 5 ≈ 0,2502 / 5 = 5,00 %.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "regression",
+            "r2",
+            "mape"
+          ]
+        },
+        {
+          "id": "MG-023",
+          "frage": "Wie gehst du mit unausgeglichenen Klassen (z. B. 1 % Betrugsfälle) um?",
+          "antwort": "Bewerten mit Precision, Recall, F1 oder Balanced Accuracy statt Accuracy. Stratifiziert aufteilen (gleicher Klassenanteil in Training, Test und jedem Fold). Im Training Oversampling (z. B. SMOTE), Undersampling, Klassengewichte oder angepasste Schwelle – Resampling nur auf den Trainingsdaten.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "unausgeglichene-klassen"
+          ]
         }
       ]
     },
@@ -2067,7 +2448,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 8",
       "status": "behandelt",
-      "anzahl_karten": 18,
+      "anzahl_karten": 23,
       "karten": [
         {
           "id": "DWH-001",
@@ -2254,6 +2635,62 @@
           "tags": [
             "verarbeitung"
           ]
+        },
+        {
+          "id": "DWH-019",
+          "frage": "Wie unterscheiden sich die DWH-Ansätze nach Inmon und Kimball?",
+          "antwort": "Inmon (top-down): zuerst unternehmensweites, normalisiertes Core-DWH (3. NF), daraus Data Marts – hohe Integration, aber langer Aufbau. Kimball (bottom-up): zuerst dimensionale Data Marts (Star-Schema), verbunden über gemeinsame Conformed Dimensions (Bus-Architektur) – schneller Nutzen, Gefahr von Insellösungen.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "architektur",
+            "inmon",
+            "kimball"
+          ]
+        },
+        {
+          "id": "DWH-020",
+          "frage": "Was bedeuten SCD Typ 0, 4 und 6?",
+          "antwort": "Typ 0: ursprünglicher Wert bleibt, Änderungen werden ignoriert (z. B. Geburtsdatum). Typ 4: schnell wechselnde Merkmale in eigene Tabelle auslagern (Kimball: Mini-Dimension; oft auch: aktuelle Tabelle + Historientabelle). Typ 6: Kombination 1 + 2 + 3 – neue Zeile je Änderung plus eine überschriebene Spalte mit dem aktuellen Wert.",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "scd",
+            "historisierung"
+          ]
+        },
+        {
+          "id": "DWH-021",
+          "frage": "Ein Bericht addiert die Monatsendbestände Januar bis März zum Quartalsbestand. Was ist falsch?",
+          "antwort": "Lagerbestand ist semi-additiv: über die Zeit darf nicht summiert werden. Richtig ist der Stichtagswert (Bestand Ende März) oder der Durchschnittsbestand. Über Filialen am selben Stichtag darf dagegen summiert werden.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "kennzahlen"
+          ]
+        },
+        {
+          "id": "DWH-022",
+          "frage": "Wie unterscheiden sich MapReduce (Hadoop) und Apache Spark?",
+          "antwort": "Beide verteilen Speicherung bzw. Berechnung auf viele Knoten (horizontale Skalierung). MapReduce: Map erzeugt Schlüssel-Wert-Paare lokal, Shuffle gruppiert, Reduce fasst je Schlüssel zusammen; Zwischenergebnisse landen auf der Festplatte. Spark hält Zwischenergebnisse im Arbeitsspeicher – deutlich schneller, auch für SQL, Streaming und Machine Learning.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "big-data",
+            "hadoop",
+            "spark"
+          ]
+        },
+        {
+          "id": "DWH-023",
+          "frage": "Warum partitioniert man eine große Faktentabelle nach dem Datum?",
+          "antwort": "Auswertungen filtern fast immer einen Zeitraum, dann werden nur die betroffenen Partitionen gelesen (Partition Pruning). Ladeläufe betreffen nur die aktuelle Partition, alte Daten lassen sich als ganze Partition archivieren oder löschen.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "partitionierung",
+            "performance"
+          ]
         }
       ]
     },
@@ -2263,7 +2700,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 9",
       "status": "behandelt",
-      "anzahl_karten": 17,
+      "anzahl_karten": 21,
       "karten": [
         {
           "id": "DQ-001",
@@ -2430,11 +2867,53 @@
         {
           "id": "DQ-017",
           "frage": "Was ist Master Data Management?",
-          "antwort": "Das Prinzip, je Stammdatenart ein führendes System festzulegen, statt Stammdaten parallel in mehreren Systemen zu pflegen – das verhindert widersprüchliche Bestände.",
+          "antwort": "Prozesse, Rollen und Systeme, die je Stammdatenart (Kunde, Artikel, Lieferant) eine einheitliche, abgestimmte Version – den Golden Record – bereitstellen. Kern: ein führendes System je Stammdatenart statt paralleler Pflege, klare Zuständigkeit (Data Owner/Steward), Dublettenprüfung bei Neuanlage. Architekturstile: Registry, Consolidation, Coexistence, Centralized.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
             "mdm"
+          ]
+        },
+        {
+          "id": "DQ-018",
+          "frage": "Was unterscheidet MCAR, MAR und MNAR bei fehlenden Werten?",
+          "antwort": "MCAR: Fehlen völlig zufällig – Löschen verzerrt nicht. MAR: Fehlen hängt nur von anderen, beobachteten Merkmalen ab (ein bekannter Spediteur meldet nie) – Gesamtmittelwert verzerrt, nur gruppen- oder modellbasiert ersetzen. MNAR: Fehlen hängt vom fehlenden Wert selbst ab (lange Lieferdauern werden verschwiegen) – jede einfache Ersetzung verzerrt, Ursache klären.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 3,
+          "tags": [
+            "fehlende-werte"
+          ]
+        },
+        {
+          "id": "DQ-019",
+          "frage": "Dublettensuche mit GROUP BY email HAVING COUNT(*) > 1 – welches Scheinergebnis droht?",
+          "antwort": "GROUP BY fasst alle NULL-Werte zu einer Gruppe zusammen: Alle Kunden ohne E-Mail erscheinen als vermeintliche Dublette (in der DD9-Anlage drei Sätze). Abhilfe: WHERE email IS NOT NULL vor dem GROUP BY.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "dubletten",
+            "sql"
+          ]
+        },
+        {
+          "id": "DQ-020",
+          "frage": "Welche Referenzmodelle für Datenqualitätsdimensionen kennst du?",
+          "antwort": "DGIQ: 15 IQ-Dimensionen in vier Kategorien (systemunterstützt, inhärent, darstellungsbezogen, zweckabhängig), nach Wang/Strong 1996. ISO/IEC 25012: 15 Merkmale, inhärent bzw. systemabhängig. Dazu ISO 8000 (Datenqualität und Stammdaten) und DAMA-DMBOK (Datenmanagement).",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "dimensionen"
+          ]
+        },
+        {
+          "id": "DQ-021",
+          "frage": "Warum reicht ein UNIQUE-Constraint auf email nicht gegen Dubletten?",
+          "antwort": "UNIQUE verhindert nur exakt gleiche Werte. Derselbe Kunde mit anderer Schreibweise oder zweiter E-Mail-Adresse und Kunden ohne E-Mail (NULL meist mehrfach erlaubt) rutschen durch. Nötig: unscharfe Dublettenprüfung bei Neuanlage und ein führendes Stammdatensystem.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "dubletten",
+            "praevention"
           ]
         }
       ]
@@ -2445,7 +2924,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 10",
       "status": "behandelt",
-      "anzahl_karten": 19,
+      "anzahl_karten": 22,
       "karten": [
         {
           "id": "DS-001",
@@ -2541,7 +3020,7 @@
         {
           "id": "DS-010",
           "frage": "Ein Kunde verlangt die Löschung aller Daten; er hat vor drei Jahren eine Küche gekauft und den Newsletter abonniert. Wie gehst du vor?",
-          "antwort": "Newsletter-Daten sofort löschen (Einwilligung widerrufen), Adresse auf Sperrliste. Rechnungsdaten unterliegen 10 Jahren Aufbewahrung nach HGB/AO – diese Pflicht geht vor (Art. 17 Abs. 3): sperren (Art. 18), nach Fristablauf löschen. Den Kunden binnen eines Monats begründet informieren.",
+          "antwort": "Newsletter-Daten sofort löschen (Einwilligung widerrufen), Adresse auf Sperrliste. Rechnungsdaten unterliegen 8 Jahren Aufbewahrung nach HGB/AO (Buchungsbelege, seit 2025 – Stand 2026) – diese Pflicht geht vor (Art. 17 Abs. 3): sperren (Art. 18), nach Fristablauf löschen. Den Kunden binnen eines Monats begründet informieren.",
           "typ": "falle",
           "schwierigkeit": 2,
           "tags": [
@@ -2640,6 +3119,38 @@
             "beschaeftigtendatenschutz",
             "betriebsrat"
           ]
+        },
+        {
+          "id": "DS-020",
+          "frage": "Wie lange müssen Rechnungen aufbewahrt werden (Stand 2026)?",
+          "antwort": "Als Buchungsbelege 8 Jahre nach § 147 AO und § 257 HGB – seit 01.01.2025 (Bürokratieentlastungsgesetz IV), vorher 10 Jahre. Bücher, Inventare und Jahresabschlüsse weiterhin 10 Jahre, Handels- und Geschäftsbriefe 6 Jahre. Solange die Frist läuft, geht sie dem Löschanspruch vor (Art. 17 Abs. 3 lit. b) – Daten sperren statt löschen.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "aufbewahrung",
+            "loeschung"
+          ]
+        },
+        {
+          "id": "DS-021",
+          "frage": "Auf welcher Rechtsgrundlage verarbeitet ein Arbeitgeber Beschäftigtendaten nach dem EuGH-Urteil zu § 26 BDSG?",
+          "antwort": "§ 26 Abs. 1 Satz 1 BDSG ist seit EuGH C-34/21 (2023, vom BAG 2025 bestätigt) nicht mehr als eigene Rechtsgrundlage anwendbar. Grundlage ist direkt die DSGVO: Art. 6 Abs. 1 lit. b (Arbeitsvertrag), lit. c (gesetzliche Pflichten), lit. f (berechtigtes Interesse) oder eine Betriebsvereinbarung nach Art. 88 DSGVO, die die DSGVO voll einhalten muss. Ein Beschäftigtendatengesetz ist noch nicht verabschiedet (Stand 2026).",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "beschaeftigtendatenschutz"
+          ]
+        },
+        {
+          "id": "DS-022",
+          "frage": "Braucht ein Webshop für Cookies eine Einwilligung, und nach welchem Gesetz?",
+          "antwort": "Nach § 25 TDDDG ja, wenn Informationen auf dem Endgerät gespeichert oder ausgelesen werden (Tracking, Marketing) – außer sie sind für den gewünschten Dienst unbedingt erforderlich (z. B. Warenkorb, Login). Das TTDSG heißt seit Mai 2024 TDDDG; das Digitale-Dienste-Gesetz löste zugleich das TMG ab.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "cookies",
+            "tdddg"
+          ]
         }
       ]
     },
@@ -2649,7 +3160,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 10",
       "status": "behandelt",
-      "anzahl_karten": 21,
+      "anzahl_karten": 25,
       "karten": [
         {
           "id": "ITS-001",
@@ -2684,7 +3195,7 @@
         {
           "id": "ITS-004",
           "frage": "Warum ist Hashing keine Verschlüsselung, und wozu dient ein Salt?",
-          "antwort": "Hashing ist eine Einwegfunktion ohne Schlüssel und Rückweg – für Integritätsprüfung und Passwortspeicherung. Ein Salt (Zufallswert je Passwort) sorgt dafür, dass gleiche Passwörter verschiedene Hashes ergeben und vorberechnete Tabellen nutzlos werden.",
+          "antwort": "Hashing ist eine Einwegfunktion ohne Schlüssel und Rückweg – für Integritätsprüfung und Passwortspeicherung. Ein Salt (Zufallswert je Passwort) sorgt dafür, dass gleiche Passwörter verschiedene Hashes ergeben und vorberechnete Tabellen nutzlos werden. Für Passwörter bewusst langsame Verfahren (Argon2, bcrypt, scrypt, PBKDF2) statt schneller Hashes wie SHA-256; MD5 und SHA-1 gelten als unsicher.",
           "typ": "falle",
           "schwierigkeit": 2,
           "tags": [
@@ -2863,6 +3374,48 @@
           "tags": [
             "incident management"
           ]
+        },
+        {
+          "id": "ITS-022",
+          "frage": "Welche Pflichten bringt NIS2 in Deutschland, und wie unterscheidet sich die Meldung von der DSGVO-Meldung?",
+          "antwort": "NIS2-Umsetzungsgesetz, in Kraft seit 06.12.2025 (neues BSIG): Registrierung beim BSI binnen drei Monaten, Risikomanagementmaßnahmen, Haftung und Schulungspflicht der Geschäftsleitung, Meldung erheblicher Vorfälle an das BSI nach 24 h (Erstmeldung), 72 h (Bewertung) und einem Monat (Abschluss). Die DSGVO-Meldung (72 h) geht an die Datenschutz-Aufsicht und betrifft nur personenbezogene Daten – beide können parallel gelten.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "nis2",
+            "meldepflicht"
+          ]
+        },
+        {
+          "id": "ITS-023",
+          "frage": "Welche BSI-Standards gehören zum IT-Grundschutz?",
+          "antwort": "200-1: ISMS · 200-2: IT-Grundschutz-Methodik (Basis-, Standard-, Kern-Absicherung) · 200-3: Risikoanalyse · 200-4: Business Continuity Management (Nachfolger von 100-4). Stand 2026: Grundschutz++ löst das Kompendium mit mehrjähriger Übergangszeit ab.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "grundschutz"
+          ]
+        },
+        {
+          "id": "ITS-024",
+          "frage": "Was ist das Generationenprinzip bei der Datensicherung?",
+          "antwort": "Großvater-Vater-Sohn: Sicherungsmedien rotieren, ältere Stände werden aufbewahrt – z. B. tägliche Sicherungen eine Woche, wöchentliche einen Monat, monatliche ein Jahr. So lassen sich auch spät bemerkte Fehler oder Verschlüsselungen auf einen älteren Stand zurücksetzen.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "backup"
+          ]
+        },
+        {
+          "id": "ITS-025",
+          "frage": "Gilt das Maximumprinzip immer? Was sind Kumulations- und Verteilungseffekt?",
+          "antwort": "Nein. Kumulationseffekt: Viele Anwendungen mit normalem Schutzbedarf auf einem System summieren sich zu einem höheren Schutzbedarf. Verteilungseffekt: Der Schutzbedarf sinkt (meist bei Verfügbarkeit), wenn eine Anwendung redundant auf mehrere Systeme verteilt ist.",
+          "typ": "falle",
+          "schwierigkeit": 3,
+          "tags": [
+            "grundschutz",
+            "schutzbedarf"
+          ]
         }
       ]
     },
@@ -2872,7 +3425,7 @@
       "pruefungsbereich": "Prozessanalyse und Datenqualität",
       "quelle": "Deep Dive 11",
       "status": "behandelt",
-      "anzahl_karten": 12,
+      "anzahl_karten": 14,
       "karten": [
         {
           "id": "VIS-001",
@@ -2993,6 +3546,28 @@
           "tags": [
             "barrierefreiheit"
           ]
+        },
+        {
+          "id": "VIS-013",
+          "frage": "Umsätze 4,80 / 4,95 / 5,10 Mio. €, y-Achse ab 4,70 Mio. €. Wie groß ist der Lügenfaktor nach Tufte?",
+          "antwort": "Effekt in der Grafik: Säule wächst von 0,10 auf 0,40 = +300 % (Faktor 3,00). Effekt in den Daten: +6,25 % (0,0625). Lügenfaktor = 3,00 / 0,0625 = 48. Ehrlich wäre ein Wert um 1 (Tufte: 0,95 bis 1,05).",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "manipulation",
+            "tufte"
+          ]
+        },
+        {
+          "id": "VIS-014",
+          "frage": "Welche Farbskala passt zu welchen Daten?",
+          "antwort": "Qualitativ (klar unterscheidbare Farbtöne) für Kategorien · sequenziell (hell → dunkel in einem Farbton) für geordnete Werte, z. B. Heatmap · divergierend (zwei Farbtöne mit neutraler Mitte) für Abweichungen von einem Bezugswert, z. B. Ist gegen Plan.",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "farbe",
+            "gestaltung"
+          ]
         }
       ]
     },
@@ -3002,7 +3577,7 @@
       "pruefungsbereich": "Prozessanalyse und Datenqualität",
       "quelle": "Deep Dive 11",
       "status": "behandelt",
-      "anzahl_karten": 11,
+      "anzahl_karten": 15,
       "karten": [
         {
           "id": "ALG-001",
@@ -3027,7 +3602,7 @@
         {
           "id": "ALG-003",
           "frage": "Welche Merkmale hat ein Struktogramm im Vergleich zum Programmablaufplan?",
-          "antwort": "Struktogramm (Nassi-Shneiderman): blockorientiert, erzwingt strukturierte Programmierung, Sprünge sind nicht darstellbar, Änderungen aufwendig. PAP: zeigt den Kontrollfluss anschaulich, kann Sprünge darstellen und wird dadurch schnell unübersichtlich.",
+          "antwort": "Struktogramm (Nassi-Shneiderman, DIN 66261): blockorientiert, erzwingt strukturierte Programmierung, beliebige Sprünge (GOTO) sind nicht darstellbar, Änderungen aufwendig. PAP (DIN 66001): zeigt den Kontrollfluss anschaulich, kann Sprünge darstellen und wird dadurch schnell unübersichtlich.",
           "typ": "abgrenzung",
           "schwierigkeit": 2,
           "tags": [
@@ -3038,7 +3613,7 @@
         {
           "id": "ALG-004",
           "frage": "Welche Symbole verwendet ein Programmablaufplan?",
-          "antwort": "Oval: Start/Ende. Rechteck: Verarbeitung. Raute: Verzweigung mit ja/nein. Parallelogramm: Ein-/Ausgabe. Pfeil: Ablaufrichtung.",
+          "antwort": "Nach DIN 66001: Oval/abgerundetes Rechteck: Start/Ende. Rechteck: Verarbeitung. Raute: Verzweigung mit ja/nein. Parallelogramm: Ein-/Ausgabe. Rechteck mit doppelten Seitenlinien: Unterprogramm. Kreis: Übergangsstelle (Konnektor). Pfeil: Ablaufrichtung.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -3115,6 +3690,48 @@
           "tags": [
             "testen"
           ]
+        },
+        {
+          "id": "ALG-012",
+          "frage": "Ordne die Such- und Sortierverfahren ihrem Aufwand zu.",
+          "antwort": "Lineare Suche O(n), binäre Suche O(log n) (nur sortiert). Bubble, Selection, Insertion Sort O(n²) (Bubble/Insertion im besten Fall O(n)). Merge Sort immer O(n log n), stabil, braucht Zusatzspeicher. Quicksort im Mittel O(n log n), im schlechtesten Fall O(n²), nicht stabil.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "sortieren",
+            "suchen",
+            "komplexitaet"
+          ]
+        },
+        {
+          "id": "ALG-013",
+          "frage": "Welche Voraussetzung hat die binäre Suche, und wie viele Vergleiche braucht sie höchstens bei 1.000.000 Datensätzen?",
+          "antwort": "Die Liste muss sortiert sein – sonst liefert sie falsche Ergebnisse. Da sich der Suchbereich je Schritt halbiert, reichen höchstens 20 Vergleiche (2 hoch 20 = 1.048.576); die lineare Suche braucht bis zu 1.000.000.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "suchen"
+          ]
+        },
+        {
+          "id": "ALG-014",
+          "frage": "Sortiere 5 · 3 · 8 · 1 mit Bubble Sort. Wie sieht die Liste nach jedem Durchlauf aus?",
+          "antwort": "Durchlauf 1: 3 · 5 · 1 · 8. Durchlauf 2: 3 · 1 · 5 · 8. Durchlauf 3: 1 · 3 · 5 · 8. Insgesamt 6 Vergleiche (3 + 2 + 1) und 4 Vertauschungen; nach jedem Durchlauf steht das größte unsortierte Element am Ende.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "sortieren"
+          ]
+        },
+        {
+          "id": "ALG-015",
+          "frage": "Was passiert bei einer Rekursion ohne Abbruchbedingung?",
+          "antwort": "Die Funktion ruft sich endlos selbst auf, bis der Aufrufstapel überläuft (Stack Overflow). Jede Rekursion braucht einen Basisfall, z. B. fakultaet(1) = 1, und jeder Aufruf muss das Problem verkleinern.",
+          "typ": "falle",
+          "schwierigkeit": 1,
+          "tags": [
+            "rekursion"
+          ]
         }
       ]
     },
@@ -3124,12 +3741,12 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 12",
       "status": "behandelt",
-      "anzahl_karten": 22,
+      "anzahl_karten": 25,
       "karten": [
         {
           "id": "PM-001",
           "frage": "Welche Merkmale kennzeichnen ein Projekt?",
-          "antwort": "Einmalig, zeitlich befristet, zielorientiert, neuartig/komplex, begrenzte Ressourcen, meist interdisziplinär (DIN 69901). Eine monatliche Routineauswertung ist kein Projekt.",
+          "antwort": "Einmaligkeit der Bedingungen in ihrer Gesamtheit (DIN 69901-5): zielorientiert, zeitlich befristet, begrenzte Ressourcen, Abgrenzung zu anderen Vorhaben, projektspezifische Organisation; dazu neuartig/komplex und meist interdisziplinär. Eine monatliche Routineauswertung ist kein Projekt.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -3180,7 +3797,7 @@
         {
           "id": "PM-006",
           "frage": "Wie führst du eine Stakeholderanalyse durch?",
-          "antwort": "Beteiligte und Betroffene identifizieren, nach Einfluss und Interesse bewerten, Einbindungsstrategie ableiten (hoch/hoch eng einbinden, niedrig/niedrig informieren). In Datenprojekten Betriebsrat und Datenschutzbeauftragten nicht vergessen.",
+          "antwort": "Beteiligte und Betroffene identifizieren, nach Einfluss und Interesse bewerten, Einbindungsstrategie ableiten: hoch/hoch eng einbinden, hoher Einfluss/geringes Interesse zufriedenstellen, geringer Einfluss/hohes Interesse informieren, niedrig/niedrig beobachten. In Datenprojekten Betriebsrat und Datenschutzbeauftragten nicht vergessen.",
           "typ": "anwendung",
           "schwierigkeit": 2,
           "tags": [
@@ -3190,7 +3807,7 @@
         {
           "id": "PM-007",
           "frage": "Wie bewertest du Risiken, und welche vier Strategien gibt es?",
-          "antwort": "Risikoprioritätszahl = Eintrittswahrscheinlichkeit × Schadenshöhe. Strategien: vermeiden, vermindern, übertragen (Versicherung, Vertrag), akzeptieren (mit Rückfallplan).",
+          "antwort": "Risikowert = Eintrittswahrscheinlichkeit × Schadenshöhe (oft auch Risikozahl oder Risikoprioritätszahl genannt; nicht mit der FMEA-RPZ A · B · E verwechseln). Strategien: vermeiden, vermindern, übertragen (Versicherung, Vertrag), akzeptieren (mit Rückfallplan).",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -3210,7 +3827,7 @@
         {
           "id": "PM-009",
           "frage": "Welche Rollen, Artefakte und Events hat Scrum?",
-          "antwort": "Rollen: Product Owner, Scrum Master, Entwicklungsteam. Artefakte: Product Backlog, Sprint Backlog, Inkrement. Events: Sprint (2–4 Wochen), Sprint Planning, Daily Scrum (15 min), Sprint Review, Retrospektive.",
+          "antwort": "Verantwortlichkeiten (früher Rollen): Product Owner, Scrum Master, Developers (bis 2017 Entwicklungsteam). Artefakte mit Commitment: Product Backlog → Produktziel, Sprint Backlog → Sprint-Ziel, Inkrement → Definition of Done. Events: Sprint (max. 1 Monat), Sprint Planning (max. 8 h), Daily Scrum (15 min), Sprint Review (max. 4 h), Retrospektive (max. 3 h).",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -3348,6 +3965,37 @@
           "tags": [
             "vorgehensmodelle"
           ]
+        },
+        {
+          "id": "PM-023",
+          "frage": "Welche Commitments gehören nach dem Scrum Guide 2020 zu den drei Artefakten?",
+          "antwort": "Product Backlog → Produktziel (Product Goal), Sprint Backlog → Sprint-Ziel (Sprint Goal), Inkrement → Definition of Done. Die Commitments machen Fortschritt messbar und schaffen Transparenz.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "scrum"
+          ]
+        },
+        {
+          "id": "PM-024",
+          "frage": "Welche Timeboxes haben die Scrum-Events?",
+          "antwort": "Sprint höchstens ein Monat; bei einem Ein-Monats-Sprint maximal: Sprint Planning 8 h, Daily Scrum 15 min (immer), Sprint Review 4 h, Retrospektive 3 h. Backlog Refinement ist kein Event.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "scrum"
+          ]
+        },
+        {
+          "id": "PM-025",
+          "frage": "Risikowert im Projekt oder RPZ der FMEA – was ist der Unterschied?",
+          "antwort": "Risikowert = Eintrittswahrscheinlichkeit × Schadenshöhe (zwei Faktoren, z. B. je 1–5). RPZ der FMEA = Auftreten × Bedeutung × Entdeckung (drei Faktoren, je 1–10, Ergebnis 1–1.000).",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "risiko",
+            "fmea"
+          ]
         }
       ]
     },
@@ -3357,7 +4005,7 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 5 und 12",
       "status": "behandelt",
-      "anzahl_karten": 11,
+      "anzahl_karten": 13,
       "karten": [
         {
           "id": "WI-001",
@@ -3422,7 +4070,7 @@
         {
           "id": "WI-007",
           "frage": "Nutzwerte: Anbieter A 7,20, Anbieter B 7,30. Wie beurteilst du das Ergebnis?",
-          "antwort": "B gewinnt nur um 0,10 Punkte (ca. 1,4 %) – innerhalb der Unschärfe des Verfahrens. Eine leicht andere Gewichtung (Funktionsumfang 50 statt 40 %) dreht das Ergebnis. Sensitivitätsprüfung und Zusatzkriterien (Referenzen, Test, Vertrag) sind nötig.",
+          "antwort": "B gewinnt nur um 0,10 Punkte (ca. 1,4 %) – innerhalb der Unschärfe des Verfahrens. Eine leicht andere Gewichtung dreht das Ergebnis: Funktionsumfang 50 statt 40 % zulasten der Kosten (20 statt 30 %) ergibt A 7,50 zu B 7,00. Sensitivitätsprüfung und Zusatzkriterien (Referenzen, Test, Vertrag) sind nötig.",
           "typ": "falle",
           "schwierigkeit": 2,
           "tags": [
@@ -3468,6 +4116,28 @@
           "tags": [
             "wirtschaftlichkeit"
           ]
+        },
+        {
+          "id": "WI-012",
+          "frage": "Eigenentwicklung: 12.000 € Fixkosten pro Jahr + 2 € je Vorgang; Fremdbezug: 5 € je Vorgang. Ab welcher Menge lohnt sich Make?",
+          "antwort": "Kritische Menge: 12.000 + 2x = 5x → x = 12.000 / (5 − 2) = 4.000 Vorgänge pro Jahr. Darunter Buy, darüber Make – plus qualitative Kriterien (Know-how, Abhängigkeit).",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "make-or-buy",
+            "kostenvergleich"
+          ]
+        },
+        {
+          "id": "WI-013",
+          "frage": "Was unterscheidet statische Verfahren von der Kapitalwertmethode? Beispiel 45.000 € Investition, 18.000 € pro Jahr, 5 Jahre, 5 % Zins.",
+          "antwort": "Statische Verfahren (Amortisation, ROI, Kostenvergleich) ignorieren den Zeitwert des Geldes: Überschuss 45.000 €. Der Kapitalwert zinst ab: C0 = −45.000 + 18.000 · 4,3295 ≈ 32.931 €. Positiv → vorteilhafter als die Anlage zum Kalkulationszins.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 3,
+          "tags": [
+            "kapitalwert",
+            "wirtschaftlichkeit"
+          ]
         }
       ]
     },
@@ -3477,7 +4147,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 15",
       "status": "behandelt",
-      "anzahl_karten": 17,
+      "anzahl_karten": 24,
       "karten": [
         {
           "id": "TEC-001",
@@ -3553,7 +4223,7 @@
         {
           "id": "TEC-008",
           "frage": "Welche HTTP-Methoden gibt es bei REST, und was bewirken sie?",
-          "antwort": "GET: lesen. POST: neue Ressource anlegen. PUT: Ressource vollständig ersetzen. PATCH: teilweise ändern. DELETE: löschen. GET, PUT und DELETE sind idempotent, POST nicht.",
+          "antwort": "GET: lesen. POST: neue Ressource anlegen. PUT: Ressource vollständig ersetzen. PATCH: teilweise ändern. DELETE: löschen. GET, PUT und DELETE sind idempotent, POST nicht, PATCH nicht garantiert. GET ist zusätzlich sicher (verändert nichts auf dem Server).",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -3654,6 +4324,85 @@
           "tags": [
             "kodierung"
           ]
+        },
+        {
+          "id": "TEC-018",
+          "frage": "Welche JSON-Fehler führen typischerweise zur Ablehnung durch eine Schnittstelle?",
+          "antwort": "Einfache statt doppelte Anführungszeichen, Dezimalkomma statt Punkt, Komma nach dem letzten Element, Kommentare, True/False/NULL großgeschrieben, Datum ohne Anführungszeichen, Zahlen mit führender Null (PLZ 04109 als Zahl) sowie NaN/Infinity. JSON kennt keinen Datumstyp – Datum als ISO-8601-String.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "json"
+          ]
+        },
+        {
+          "id": "TEC-019",
+          "frage": "Was unterscheidet sichere und idempotente HTTP-Methoden?",
+          "antwort": "Sicher: Die Methode verändert nichts auf dem Server (GET, HEAD, OPTIONS). Idempotent: Mehrfaches Ausführen hinterlässt denselben Serverzustand wie einmaliges (alle sicheren Methoden sowie PUT und DELETE). POST ist weder sicher noch idempotent, PATCH nicht garantiert idempotent.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "http",
+            "rest"
+          ]
+        },
+        {
+          "id": "TEC-020",
+          "frage": "Wie unterscheiden sich REST, SOAP und GraphQL?",
+          "antwort": "REST: Ressourcen über URIs und HTTP-Methoden, meist JSON, beschrieben mit OpenAPI. SOAP: Protokoll mit XML-Nachrichten (Envelope), streng typisiert, beschrieben mit WSDL. GraphQL: Abfragesprache über einen einzigen Endpunkt, der Client fordert genau die benötigten Felder an (kein Over- oder Underfetching).",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "api",
+            "rest",
+            "soap",
+            "graphql"
+          ]
+        },
+        {
+          "id": "TEC-021",
+          "frage": "Wie funktionieren API-Schlüssel, OAuth 2.0 und JWT?",
+          "antwort": "API-Schlüssel: fester geheimer Schlüssel je Anwendung im Header – einfach, identifiziert aber nur die Anwendung. OAuth 2.0: Autorisierungsrahmen; ein Autorisierungsserver gibt ein zeitlich begrenztes Access Token mit festgelegten Rechten (Scopes) aus, die Anwendung sieht das Passwort nie. JWT: signiertes Token aus Header, Claims und Signatur (Base64url) – lesbar, nicht verschlüsselt, Ablaufzeit prüfen.",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "api",
+            "sicherheit",
+            "oauth",
+            "jwt"
+          ]
+        },
+        {
+          "id": "TEC-022",
+          "frage": "Was unterscheidet Aggregation und Komposition im UML-Klassendiagramm?",
+          "antwort": "Beides sind Teil-Ganzes-Beziehungen, die Raute sitzt am Ganzen. Aggregation (leere Raute): Teile existieren auch ohne das Ganze. Komposition (gefüllte Raute): Teile gehören zu genau einem Ganzen und werden mit ihm gelöscht (Bestellposition ohne Bestellung).",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "uml",
+            "klassendiagramm"
+          ]
+        },
+        {
+          "id": "TEC-023",
+          "frage": "Wie überträgst du die UML-Beziehung „Kunde 1 ——— 0..* Reparaturauftrag“ ins Min-Max-Modell?",
+          "antwort": "KUNDE (0,n) — (1,1) REPARATURAUFTRAG. UML-Multiplizitäten stehen wie bei Chen auf der gegenüberliegenden Seite, Min-Max-Angaben auf der eigenen Seite der Entität – die Werte wandern also auf die andere Seite.",
+          "typ": "falle",
+          "schwierigkeit": 3,
+          "tags": [
+            "uml",
+            "erm"
+          ]
+        },
+        {
+          "id": "TEC-024",
+          "frage": "Was zeigen Sequenzdiagramm und Zustandsdiagramm, und wie grenzen sie sich vom Aktivitätsdiagramm ab?",
+          "antwort": "Sequenzdiagramm: zeitlicher Nachrichtenaustausch zwischen Beteiligten (Lebenslinien, Zeit von oben nach unten). Zustandsdiagramm: Zustände eines Objekts und Übergänge (Ereignis [Bedingung] / Aktion), z. B. Lebenszyklus eines Auftrags. Aktivitätsdiagramm: Ablauf von Tätigkeiten mit Entscheidungen und Parallelität.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "uml"
+          ]
         }
       ]
     },
@@ -3663,7 +4412,7 @@
       "pruefungsbereich": "Prozessanalyse und Datenqualität",
       "quelle": "Deep Dive 16",
       "status": "behandelt",
-      "anzahl_karten": 15,
+      "anzahl_karten": 20,
       "karten": [
         {
           "id": "QS-001",
@@ -3822,6 +4571,60 @@
             "redundanz",
             "backup"
           ]
+        },
+        {
+          "id": "QS-016",
+          "frage": "Wie viele Qualitätsmerkmale nennt ISO/IEC 25010 – und welche Falle steckt in älteren Unterlagen?",
+          "antwort": "Die aktuelle Fassung ISO/IEC 25010:2023 nennt neun: funktionale Eignung, Leistungseffizienz, Kompatibilität, Interaktionsfähigkeit (früher Benutzbarkeit), Zuverlässigkeit, Sicherheit, Wartbarkeit, Flexibilität (früher Übertragbarkeit) und neu Betriebssicherheit (Safety). Ältere Unterlagen nennen die acht Merkmale von 2011 oder die sechs der ISO/IEC 9126.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "qualitätsmerkmale",
+            "iso 25010"
+          ]
+        },
+        {
+          "id": "QS-017",
+          "frage": "Vier Platten zu je 4 TB: Wie viel ist bei RAID 0, 5, 6 und 10 nutzbar, und wie viele Ausfälle werden verkraftet?",
+          "antwort": "RAID 0: 16 TB, kein Ausfall (keine Redundanz). RAID 5: (4 − 1) · 4 = 12 TB, eine Platte. RAID 6: (4 − 2) · 4 = 8 TB, zwei Platten. RAID 10: 16 / 2 = 8 TB, eine Platte je Spiegelpaar. Keines ersetzt ein Backup.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "raid",
+            "redundanz"
+          ]
+        },
+        {
+          "id": "QS-018",
+          "frage": "Fehlernachtest oder Regressionstest – was ist der Unterschied?",
+          "antwort": "Fehlernachtest (Bestätigungstest): Nach der Fehlerbehebung wird der fehlgeschlagene Testfall wiederholt – ist der Fehler weg? Regressionstest: Bereits bestandene Tests werden wiederholt – hat die Änderung woanders etwas kaputt gemacht?",
+          "typ": "abgrenzung",
+          "schwierigkeit": 1,
+          "tags": [
+            "testarten"
+          ]
+        },
+        {
+          "id": "QS-019",
+          "frage": "IF menge > 20 THEN Sonderanfrage (ohne Else). Ein Test mit menge = 25 – welche Überdeckung ist erreicht?",
+          "antwort": "100 % Anweisungsüberdeckung (C0), aber nur 50 % Zweigüberdeckung (C1): Der leere Else-Zweig wurde nicht durchlaufen. Für 100 % C1 braucht es zusätzlich z. B. menge = 10. 100 % C1 schließt 100 % C0 ein, nicht umgekehrt.",
+          "typ": "anwendung",
+          "schwierigkeit": 2,
+          "tags": [
+            "testverfahren",
+            "white-box"
+          ]
+        },
+        {
+          "id": "QS-020",
+          "frage": "Was bedeuten MTBF, MTTR und MTTF – und wie berechnet man MTBF aus Betriebsdaten?",
+          "antwort": "MTBF: mittlere Betriebszeit zwischen zwei Ausfällen (= Laufzeit / Anzahl Ausfälle). MTTR: mittlere Wiederherstellungsdauer (= Reparaturzeit / Anzahl Ausfälle). MTTF: mittlere Zeit bis zum Ausfall bei nicht reparierbaren Teilen. Achtung: Manche Quellen setzen MTBF = MTTF + MTTR, dann gilt V = MTTF / MTBF.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "verfügbarkeit",
+            "mtbf"
+          ]
         }
       ]
     },
@@ -3831,7 +4634,7 @@
       "pruefungsbereich": "Projektarbeit, Präsentation und Fachgespräch",
       "quelle": "Themenliste (noch nicht vertieft)",
       "status": "offen",
-      "anzahl_karten": 12,
+      "anzahl_karten": 14,
       "karten": [
         {
           "id": "PRJ-001",
@@ -3846,7 +4649,7 @@
         {
           "id": "PRJ-002",
           "frage": "Was gehört typischerweise in den Projektantrag?",
-          "antwort": "Projektbezeichnung, Ausgangssituation und Problemstellung, Projektziel, geplante Vorgehensweise, Zeitplanung mit Phasen und Stunden, ggf. Präsentationsmittel. Die genaue Form gibt die jeweilige IHK vor.",
+          "antwort": "Pflichtinhalt nach § 28 Abs. 2 FIAusbV: Ausgangssituation, Projektziel und Zeitplanung. Üblich zusätzlich: Projektbezeichnung, Kurzbeschreibung der Aufgabe, Ist-/Soll-Darstellung, Zeitplan mit Phasen und Stunden. Die genaue Form (z. B. Textfelder im IHK-Portal) gibt die jeweilige IHK vor.",
           "typ": "wissen",
           "schwierigkeit": 1,
           "tags": [
@@ -3956,6 +4759,30 @@
             "fachgespraech",
             "ergebnisse"
           ]
+        },
+        {
+          "id": "PRJ-013",
+          "frage": "Darfst du mit der Projektarbeit beginnen, bevor der Prüfungsausschuss den Antrag genehmigt hat – und wie zählen die 40 Stunden?",
+          "antwort": "Nein. Die Projektbeschreibung ist vor der Durchführung zur Genehmigung vorzulegen (§ 28 Abs. 2 FIAusbV); bei Genehmigung mit Auflagen sind diese umzusetzen. Die 40 Stunden sind effektive Arbeitszeit inklusive Dokumentation und dürfen über mehrere Tage verteilt werden; Zeit, in der z. B. ein Modell selbstständig trainiert, zählt nicht als Projektzeit.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "antrag",
+            "projektarbeit",
+            "zeit"
+          ]
+        },
+        {
+          "id": "PRJ-014",
+          "frage": "Was musst du beim Einsatz von KI-Werkzeugen in der Projektarbeit beachten?",
+          "antwort": "Vorgaben der eigenen IHK prüfen. Üblich: KI-Nutzung (z. B. bei Code) klar kennzeichnen, bewertet wird nur der eigene Anteil, der überwiegen muss. Nicht gekennzeichnete KI-Nutzung gilt als Täuschung und kann zu 0 Punkten führen; manche IHKs (z. B. Berlin) verbieten KI-Schreibwerkzeuge für die Dokumentation ganz.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "projektarbeit",
+            "dokumentation",
+            "ki"
+          ]
         }
       ]
     },
@@ -3965,7 +4792,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 13",
       "status": "behandelt",
-      "anzahl_karten": 24,
+      "anzahl_karten": 26,
       "karten": [
         {
           "id": "WS1-001",
@@ -4215,6 +5042,27 @@
           "tags": [
             "befristung"
           ]
+        },
+        {
+          "id": "WS1-025",
+          "frage": "Wie hoch ist die Mindestausbildungsvergütung bei Ausbildungsbeginn 2026?",
+          "antwort": "1. Jahr 724 €, 2. Jahr 854 € (+18 %), 3. Jahr 977 € (+35 %), 4. Jahr 1.014 € (+40 %) (§ 17 BBiG). Maßgeblich ist das Jahr des Ausbildungsbeginns; Tarifverträge gehen vor, nicht tarifgebundene Betriebe dürfen den Tarif um höchstens 20 % unterschreiten. Der gesetzliche Mindestlohn gilt für Azubis nicht.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "verguetung",
+            "bbig"
+          ]
+        },
+        {
+          "id": "WS1-026",
+          "frage": "Ein Bewerber wird wegen seines Alters abgelehnt. Kann er nach dem AGG seine Einstellung verlangen?",
+          "antwort": "Nein. Das AGG gibt nur Schadensersatz und Entschädigung – bei Nichteinstellung höchstens drei Monatsgehälter, wenn er auch ohne Benachteiligung nicht eingestellt worden wäre. Der Anspruch muss binnen zwei Monaten schriftlich geltend gemacht werden (§ 15 AGG).",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "agg"
+          ]
         }
       ]
     },
@@ -4271,7 +5119,7 @@
         {
           "id": "WS2-005",
           "frage": "Wann wird eine Jugend- und Auszubildendenvertretung gewählt?",
-          "antwort": "In Betrieben mit Betriebsrat und in der Regel mindestens fünf Beschäftigten unter 18 oder Auszubildenden unter 25. Wählbar sind Beschäftigte bis 25, die Amtszeit beträgt zwei Jahre. Die JAV vertritt ihre Belange über den Betriebsrat.",
+          "antwort": "In Betrieben mit Betriebsrat und in der Regel mindestens fünf Beschäftigten unter 18 oder Auszubildenden (seit 2021 ohne Altersgrenze). Wählbar sind Beschäftigte unter 25 sowie Auszubildende jeden Alters; die Amtszeit beträgt zwei Jahre. Die JAV vertritt ihre Belange über den Betriebsrat.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -4376,7 +5224,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 14",
       "status": "behandelt",
-      "anzahl_karten": 13,
+      "anzahl_karten": 15,
       "karten": [
         {
           "id": "WS3-001",
@@ -4402,7 +5250,7 @@
         {
           "id": "WS3-003",
           "frage": "Welche Beitragssätze gelten in der Sozialversicherung (Stand 2026)?",
-          "antwort": "Krankenversicherung 14,6 % plus kassenindividueller Zusatzbeitrag, Rentenversicherung 18,6 %, Arbeitslosenversicherung 2,6 %, Pflegeversicherung 3,6 % (Zuschlag 0,6 % für Kinderlose ab 23). Werte ändern sich; in Prüfungen werden sie meist vorgegeben.",
+          "antwort": "Krankenversicherung 14,6 % plus kassenindividueller Zusatzbeitrag (amtlicher Durchschnitt 2026: 2,9 %), Rentenversicherung 18,6 %, Arbeitslosenversicherung 2,6 %, Pflegeversicherung 3,6 % (Zuschlag 0,6 % für Kinderlose ab 23; ab dem 2. Kind unter 25 je 0,25 % Abschlag beim Arbeitnehmer; in Sachsen AN 2,3 % / AG 1,3 %). Werte ändern sich; in Prüfungen werden sie meist vorgegeben.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -4412,7 +5260,7 @@
         {
           "id": "WS3-004",
           "frage": "Was ist der Unterschied zwischen Beitragsbemessungsgrenze und Versicherungspflichtgrenze?",
-          "antwort": "Beitragsbemessungsgrenze: Beiträge werden nur bis zu dieser Einkommenshöhe berechnet, darüber ist das Einkommen beitragsfrei. Versicherungspflichtgrenze (Jahresarbeitsentgeltgrenze): Wer darüber verdient, kann in die private Krankenversicherung wechseln.",
+          "antwort": "Beitragsbemessungsgrenze: Beiträge werden nur bis zu dieser Einkommenshöhe berechnet, darüber ist das Einkommen beitragsfrei (2026: KV/PV 5.812,50 €, RV/ALV 8.450 € im Monat). Versicherungspflichtgrenze (Jahresarbeitsentgeltgrenze): Wer darüber verdient, kann in die private Krankenversicherung wechseln (2026: 77.400 € im Jahr).",
           "typ": "abgrenzung",
           "schwierigkeit": 2,
           "tags": [
@@ -4482,7 +5330,7 @@
         {
           "id": "WS3-011",
           "frage": "Was gilt für einen Minijob (Stand 2026)?",
-          "antwort": "Die Verdienstgrenze ist an den Mindestlohn gekoppelt und liegt 2026 bei 603 € monatlich (Mindestlohn 13,90 €). Für den Beschäftigten fallen grundsätzlich keine Steuern und Sozialabgaben an – außer zur Rentenversicherung, von der er sich befreien lassen kann. Der Arbeitgeber zahlt Pauschalabgaben.",
+          "antwort": "Die Verdienstgrenze ist an den Mindestlohn gekoppelt (Mindestlohn · 130 / 3, aufgerundet) und liegt 2026 bei 603 € monatlich (Mindestlohn 13,90 €), ab 2027 bei 633 € (Mindestlohn 14,60 €). Für den Beschäftigten fallen grundsätzlich keine Steuern und Sozialabgaben an – außer zur Rentenversicherung (Eigenanteil 3,6 %), von der er sich befreien lassen kann. Der Arbeitgeber zahlt Pauschalabgaben.",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -4508,6 +5356,28 @@
           "tags": [
             "arbeitslosengeld"
           ]
+        },
+        {
+          "id": "WS3-014",
+          "frage": "Wie hoch ist der Arbeitnehmeranteil zur Pflegeversicherung 2026 bei einem Beschäftigten (außerhalb Sachsens) mit drei Kindern unter 25 – und bei einem 30-jährigen Kinderlosen?",
+          "antwort": "Drei Kinder: 1,8 % − 2 · 0,25 % = 1,3 % (Abschlag ab dem 2. Kind, höchstens bis zum 5. Kind). Kinderlos ab 23: 1,8 % + 0,6 % = 2,4 %. Der Arbeitgeber zahlt in beiden Fällen 1,8 %.",
+          "typ": "rechnung",
+          "schwierigkeit": 3,
+          "tags": [
+            "beitraege",
+            "pflegeversicherung"
+          ]
+        },
+        {
+          "id": "WS3-015",
+          "frage": "Ein Auszubildender verdient 500 € im Monat. Gilt für ihn der Übergangsbereich (Midijob) oder die Geringverdienergrenze?",
+          "antwort": "Keins von beiden: Die Geringverdienergrenze (Arbeitgeber trägt alles) gilt nur bis 325 €, den Übergangsbereich gibt es für Azubis nicht. Er zahlt den vollen regulären Arbeitnehmeranteil.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "beitraege",
+            "azubi"
+          ]
         }
       ]
     },
@@ -4517,7 +5387,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 14",
       "status": "behandelt",
-      "anzahl_karten": 23,
+      "anzahl_karten": 25,
       "karten": [
         {
           "id": "WS4-001",
@@ -4749,6 +5619,27 @@
           "tags": [
             "uwg"
           ]
+        },
+        {
+          "id": "WS4-024",
+          "frage": "Was hat das MoPeG 2024 für die GbR geändert?",
+          "antwort": "Seit 01.01.2024 ist die GbR rechtsfähig und kann sich freiwillig ins neue Gesellschaftsregister eintragen lassen (eGbR) – nötig z. B. für den Erwerb von Grundstücken. Die Gesellschafter haften weiter unbeschränkt und gesamtschuldnerisch. OHG und KG stehen nun auch Freiberuflern offen.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "unternehmensformen",
+            "mopeg"
+          ]
+        },
+        {
+          "id": "WS4-025",
+          "frage": "Darf ein allgemeiner Handlungsbevollmächtigter einen Bankkredit aufnehmen?",
+          "antwort": "Nein – ohne besondere Befugnis darf er weder Darlehen aufnehmen noch Grundstücke veräußern oder belasten, Wechselverbindlichkeiten eingehen oder Prozesse führen (§ 54 Abs. 2 HGB). Ein Prokurist darf Kredite aufnehmen.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "vollmacht"
+          ]
         }
       ]
     },
@@ -4908,7 +5799,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 14",
       "status": "behandelt",
-      "anzahl_karten": 7,
+      "anzahl_karten": 8,
       "karten": [
         {
           "id": "WS6-001",
@@ -4963,7 +5854,7 @@
         {
           "id": "WS6-006",
           "frage": "Welche Green-IT-Maßnahmen kennst du, und was misst der PUE-Wert?",
-          "antwort": "Energieeffiziente Hardware, Virtualisierung und Serverkonsolidierung, Abschalten ungenutzter Systeme, effiziente Kühlung, Abwärmenutzung, längere Nutzungsdauer. PUE = Gesamtenergie des Rechenzentrums / Energie der IT-Geräte; ideal ist 1,0.",
+          "antwort": "Energieeffiziente Hardware, Virtualisierung und Serverkonsolidierung, Abschalten ungenutzter Systeme, effiziente Kühlung, Abwärmenutzung, längere Nutzungsdauer. PUE = Gesamtenergie des Rechenzentrums / Energie der IT-Geräte; ideal ist 1,0. Das Energieeffizienzgesetz schreibt Grenzwerte vor (neue Rechenzentren ab 07/2026: 1,2; Novelle mit Lockerung im Verfahren, Stand 2026).",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -4979,6 +5870,17 @@
           "tags": [
             "entsorgung",
             "datenschutz"
+          ]
+        },
+        {
+          "id": "WS6-008",
+          "frage": "Wer muss nach der CSRD einen Nachhaltigkeitsbericht erstellen, und was gilt beim Lieferkettengesetz (Stand 2026)?",
+          "antwort": "CSRD nach Omnibus I (RL (EU) 2026/470): nur Unternehmen mit mehr als 1.000 Beschäftigten und mehr als 450 Mio. € Umsatz; das deutsche Umsetzungsgesetz war 2026 noch im Verfahren. LkSG: gilt ab 1.000 Beschäftigten, die Sorgfaltspflichten bleiben, die Berichtspflicht soll rückwirkend entfallen; Ablösung durch die EU-Richtlinie CSDDD (ab 5.000 Beschäftigten, ab 2029).",
+          "typ": "wissen",
+          "schwierigkeit": 3,
+          "tags": [
+            "nachhaltigkeit",
+            "esg"
           ]
         }
       ]

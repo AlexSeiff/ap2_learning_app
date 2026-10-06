@@ -79,7 +79,7 @@ Schlussfolgerung: Da ein FN erheblich teurer ist als ein FP, wird ein hoher Reca
 
 **C3 (6 P):**
 Wird die Entscheidungsschwelle gesenkt, stuft das Modell mehr Aufträge als riskant ein. Dadurch werden zusätzliche echte Reklamationsfälle gefunden – die FN nehmen ab, der **Recall steigt**. *(3 P)*
-Gleichzeitig geraten mehr unproblematische Aufträge in die Positivgruppe – die FP nehmen zu, die **Precision sinkt**. *(3 P)*
+Gleichzeitig geraten mehr unproblematische Aufträge in die Positivgruppe – die FP nehmen zu, die **Precision sinkt** in der Regel. *(3 P)*
 Es handelt sich um eine Abwägung: Beide Kennzahlen lassen sich in der Regel nur gegeneinander verbessern; die richtige Schwelle ergibt sich aus den Kosten beider Fehlerarten.
 
 ---
@@ -91,7 +91,7 @@ Es handelt sich um eine Abwägung: Beide Kennzahlen lassen sich in der Regel nur
 - **Triviales Modell:** 100 FN · 120 € = **12.000 €** (keine FP, da nie ein Alarm ausgelöst wird) *(3 P)*
 
 **D2 (6 P):**
-Beurteilung: Der Einsatz ist klar zu empfehlen. Das Modell senkt die Fehlerkosten von 12.000 € auf 2.100 € und damit um **9.900 € (rund 82,5 %)** im Testzeitraum. Die geringere Accuracy-Differenz gegenüber dem trivialen Modell täuscht über diesen erheblichen wirtschaftlichen Vorteil hinweg. *(3 P)*
+Beurteilung: Der Einsatz ist klar zu empfehlen. Das Modell senkt die Fehlerkosten von 12.000 € auf 2.100 € und damit um **9.900 € (rund 82,5 %)** im Testzeitraum. Die geringe Accuracy-Differenz gegenüber dem trivialen Modell (93 % zu 90 %) täuscht über diesen erheblichen wirtschaftlichen Vorteil hinweg. *(3 P)*
 
 Nicht enthaltene Faktoren *(je 1,5 P, zwei genügen)*:
 - **Kosten für Entwicklung, Betrieb und Pflege** des Modells (Entwicklungszeit, Infrastruktur, Monitoring, Retraining).

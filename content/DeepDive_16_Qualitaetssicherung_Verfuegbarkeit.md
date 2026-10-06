@@ -27,14 +27,16 @@ Szenario: Die **Möbelhaus Nordholz GmbH** führt ein neues Reporting mit ETL-St
 
 Zur konstruktiven Qualitätssicherung gehört auch eine **Versionsverwaltung** (z. B. Git) für SQL-Skripte, ETL-Jobs und Berichtsdefinitionen: Jede Änderung ist nachvollziehbar (wer, wann, warum), ein fehlerhafter Stand lässt sich zurückholen, und mehrere Personen können parallel arbeiten, ohne sich Änderungen zu überschreiben.
 
-**Qualitätsmerkmale von Software (ISO/IEC 25010):** funktionale Eignung, Zuverlässigkeit, Benutzbarkeit, Leistungseffizienz, Wartbarkeit, Übertragbarkeit, Kompatibilität, Sicherheit. Sie sind die Vorlage für **nicht-funktionale Anforderungen** und damit auch für nicht-funktionale Tests.
+**Qualitätsmerkmale von Software (ISO/IEC 25010):** Die aktuelle Fassung **ISO/IEC 25010:2023** nennt neun Merkmale: funktionale Eignung, Leistungseffizienz, Kompatibilität, Interaktionsfähigkeit (früher Benutzbarkeit), Zuverlässigkeit (mit dem Teilmerkmal Verfügbarkeit → Teil 4), Sicherheit (Informationssicherheit, engl. security), Wartbarkeit, Flexibilität (früher Übertragbarkeit) und neu die Betriebssicherheit (engl. safety: keine Gefahr für Menschen und Umwelt). Ältere Unterlagen und Prüfungen nutzen oft noch die acht Merkmale der Fassung von 2011 (mit Benutzbarkeit und Übertragbarkeit, ohne Betriebssicherheit) oder die sechs der Vorgängernorm ISO/IEC 9126 (Funktionalität, Zuverlässigkeit, Benutzbarkeit, Effizienz, Änderbarkeit, Übertragbarkeit). Die Merkmale sind die Vorlage für **nicht-funktionale Anforderungen** und damit auch für nicht-funktionale Tests.
+
+Qualitätssicherung im Projekt ist Teil eines übergreifenden **Qualitätsmanagements** (QM-System nach ISO 9001, PDCA-Zyklus, FMEA, Ishikawa-Diagramm) – das ist in Deep Dive 5 ausführlich behandelt.
 
 ## 1.2 Statisch oder dynamisch prüfen?
 
 - **Statische Prüfung:** Das Prüfobjekt wird **nicht ausgeführt**. Dazu gehören **Reviews** von Dokumenten, Datenmodellen, SQL-Skripten oder Code und die **statische Codeanalyse** durch Werkzeuge (Linter), die etwa ungenutzte Variablen oder unsichere Konstrukte melden.
 - **Dynamische Prüfung:** Das Programm bzw. die ETL-Strecke **wird ausgeführt** und das Ergebnis mit dem erwarteten verglichen – das ist ein **Test**.
 
-Review-Arten (von locker bis formal): **Walkthrough** (Autor stellt das Ergebnis vor, Ziel: Verständnis und Hinweise), **technisches Review** (Fachkollegen prüfen gegen Vorgaben), **Inspektion** (formal mit Rollen, Checklisten, Protokoll und Metriken). Reviews finden Fehler früh und billig – ein Fehler im Pflichtenheft, der erst im Abnahmetest auffällt, kostet ein Vielfaches.
+Review-Arten (von locker bis formal): **informelles Review** (Kollege schaut drüber, ohne festen Ablauf, z. B. Pair Programming), **Walkthrough** (Autor stellt das Ergebnis vor, Ziel: Verständnis und Hinweise), **technisches Review** (Fachkollegen prüfen gegen Vorgaben), **Inspektion** (formal mit Rollen, Checklisten, Protokoll und Metriken). Reviews finden Fehler früh und billig – ein Fehler im Pflichtenheft, der erst im Abnahmetest auffällt, kostet ein Vielfaches.
 
 ## 1.3 Fehlerbegriffe
 
@@ -64,18 +66,23 @@ Review-Arten (von locker bis formal): **Walkthrough** (Autor stellt das Ergebnis
 
 Im **V-Modell** steht jeder Entwicklungsphase auf der linken Seite eine Teststufe auf der rechten Seite gegenüber: Anforderungen ↔ Abnahmetest, Systementwurf ↔ Systemtest, Architektur ↔ Integrationstest, Komponentenentwurf ↔ Komponententest. Die Testfälle entstehen schon zusammen mit der jeweiligen Entwurfsphase.
 
+Hinweis: Der aktuelle ISTQB-Lehrplan (Foundation Level 4.0) teilt den Integrationstest in **Komponentenintegrationstest** (Zusammenspiel der Bausteine eines Systems) und **Systemintegrationstest** (Zusammenspiel mit anderen Systemen, z. B. Shop → Data Warehouse) und kommt so auf fünf Teststufen. In IHK-Aufgaben genügen meist die vier klassischen Stufen.
+
 ## 2.2 Black-Box und White-Box
 
 | | Black-Box-Test | White-Box-Test |
 |---|---|---|
 | Grundlage | Spezifikation – der Code ist **unbekannt** | Quellcode – die **innere Struktur** ist bekannt |
 | Frage | Tut das System, was es soll? | Wird jeder Teil des Codes durchlaufen? |
-| Verfahren | **Äquivalenzklassen**, **Grenzwertanalyse**, Entscheidungstabellen | **Anweisungsüberdeckung** (C0), **Zweigüberdeckung** (C1) |
+| Verfahren | **Äquivalenzklassen**, **Grenzwertanalyse**, Entscheidungstabellen, Zustandsübergänge | **Anweisungsüberdeckung** (C0), **Zweigüberdeckung** (C1) |
 | Typische Stufe | System- und Abnahmetest | Komponententest |
 
 - **Äquivalenzklasse:** Menge von Eingaben, bei denen das System sich gleich verhalten soll. Aus jeder Klasse genügt **ein Repräsentant** – es gibt **gültige** und **ungültige** Klassen.
 - **Grenzwertanalyse:** Fehler sitzen bevorzugt an den Rändern (`<` statt `<=`). Getestet werden deshalb die Werte **direkt an und neben jeder Grenze**.
 - **Anweisungsüberdeckung (C0):** Jede Anweisung wird mindestens einmal ausgeführt. **Zweigüberdeckung (C1):** Jeder Zweig jeder Verzweigung (also auch der leere Else-Zweig) wird mindestens einmal durchlaufen – C1 ist strenger als C0.
+- Beispiel: Bei `IF menge > 20 THEN status = 'Sonderanfrage'` ohne Else erreicht ein einziger Test mit menge = 25 schon 100 % Anweisungsüberdeckung, aber nur 50 % Zweigüberdeckung – erst ein zweiter Test mit menge = 10 durchläuft auch den leeren Else-Zweig. 100 % C1 schließt 100 % C0 ein, umgekehrt nicht. Überdeckungsgrad = durchlaufene Anweisungen (bzw. Zweige) / alle Anweisungen (bzw. Zweige) · 100 %.
+- **Entscheidungstabellentest:** Für Regeln mit mehreren Bedingungen werden alle Kombinationen der Bedingungen (bei n Ja/Nein-Bedingungen bis zu 2ⁿ Regeln) mit der jeweils erwarteten Aktion in einer Tabelle aufgelistet; jede Spalte (Regel) wird ein Testfall.
+- **Zustandsübergangstest:** Für Systeme mit Zuständen (z. B. Bestellung: angelegt → bezahlt → versendet → storniert) wird jeder erlaubte Übergang mindestens einmal getestet – und geprüft, dass unerlaubte Übergänge (versendet → angelegt) abgewiesen werden.
 - **Grey-Box:** Mischform, z. B. ein Test der Schnittstelle mit Kenntnis des Datenmodells.
 
 ## 2.3 Durchgerechnetes Beispiel – Äquivalenzklassen und Grenzwerte
@@ -97,8 +104,11 @@ Mit **5 Repräsentanten und 6 Grenzwerten = 11 Testfällen** ist die Regel syste
 ## 2.4 Weitere Testarten
 
 - **Regressionstest:** Nach jeder Änderung werden bereits bestandene Tests **wiederholt**, um ungewollte Nebenwirkungen zu finden. Weil das oft passiert, lohnt sich hier **Testautomatisierung**.
-- Funktionale Tests prüfen *was* das System tut, **nicht-funktionale** *wie gut*: **Last- und Performancetest** (Antwortzeit bei 200 gleichzeitigen Nutzern), **Usability-Test** (→ Deep Dive 11), **Sicherheitstest** bzw. Penetrationstest (→ Deep Dive 10).
+- **Fehlernachtest** (Bestätigungstest, Re-Test): Nach der Behebung eines Fehlers wird genau der fehlgeschlagene Testfall wiederholt, um zu bestätigen, dass der Fehler behoben ist. Abgrenzung: Der Fehlernachtest prüft die Korrektur, der Regressionstest prüft, ob die Korrektur woanders etwas kaputt gemacht hat.
+- Funktionale Tests prüfen *was* das System tut, **nicht-funktionale** *wie gut*: **Last- und Performancetest** (Antwortzeit bei 200 gleichzeitigen Nutzern; beim **Stresstest** wird die Last bis über die Belastungsgrenze gesteigert), **Usability-Test** (→ Deep Dive 11), **Sicherheitstest** bzw. Penetrationstest (→ Deep Dive 10).
 - **Smoke-Test:** kurzer Grundtest nach einer Installation – startet das System, lässt sich der Bericht öffnen?
+- **Testpyramide:** Viele schnelle, billige Komponententests bilden die Basis, darüber weniger Integrationstests, an der Spitze wenige langsame und teure End-to-End- bzw. Oberflächentests. Wer überwiegend über die Oberfläche testet („Eistüte“), bekommt langsame, wartungsintensive Tests.
+- **Testgetriebene Entwicklung** (TDD, Test-Driven Development): Zuerst wird ein Test geschrieben, der fehlschlägt (Red), dann gerade so viel Code, dass er besteht (Green), anschließend wird der Code aufgeräumt (Refactor). Ergebnis: Jede Funktion hat von Anfang an automatisierte Komponententests, die als Regressionstests weiterlaufen.
 
 ## 2.5 Testen in der Datenanalyse
 
@@ -144,7 +154,8 @@ Das **Testprotokoll** dokumentiert jede Durchführung: Datum, Tester, Version de
 
 - Grundlage sind die vorab vereinbarten **Abnahmekriterien** (messbar, aus dem Lasten-/Pflichtenheft).
 - Das **Abnahmeprotokoll** enthält: Projekt und Version, Datum, Beteiligte, geprüfte Kriterien mit Ergebnis, festgestellte **Mängel** mit Frist zur Behebung, die **Entscheidung** (Abnahme, Abnahme unter Vorbehalt, Ablehnung) und die Unterschriften.
-- Rechtsfolgen der Abnahme beim Werkvertrag (§ 640 BGB): Die **Vergütung wird fällig**, die **Gewährleistungsfrist beginnt**, die **Gefahr geht über** und die **Beweislast kehrt sich um** – nach der Abnahme muss der Auftraggeber einen Mangel nachweisen.
+- Rechtsfolgen der Abnahme beim Werkvertrag (§ 640 BGB): Die **Vergütung wird fällig** (§ 641 BGB), die **Gewährleistungsfrist beginnt** (Verjährung der Mängelansprüche, § 634a Abs. 2 BGB), die **Gefahr geht über** (§ 644 BGB) und die **Beweislast kehrt sich um** – nach der Abnahme muss der Auftraggeber einen Mangel nachweisen.
+- Weitere Regeln aus § 640 BGB: Wegen unwesentlicher Mängel darf die Abnahme nicht verweigert werden (Abs. 1). Setzt der Auftragnehmer nach Fertigstellung eine angemessene Frist und verweigert der Auftraggeber die Abnahme nicht unter Angabe mindestens eines Mangels, gilt das Werk als abgenommen (**fiktive Abnahme**, Abs. 2). Wer einen bekannten Mangel nicht ausdrücklich vorbehält, verliert die Rechte auf Nacherfüllung, Selbstvornahme, Rücktritt und Minderung wegen dieses Mangels (Abs. 3) – deshalb gehören bekannte Mängel ins Abnahmeprotokoll.
 
 ---
 
@@ -156,22 +167,29 @@ Das **Testprotokoll** dokumentiert jede Durchführung: Datum, Tester, Version de
 
 Erlaubte Ausfallzeit bei einer Zielverfügbarkeit: $\text{Ausfall}_{max} = \text{Betriebszeit} \cdot (1 - V)$. Ein Jahr rund um die Uhr hat 365 · 24 = **8.760 Stunden**.
 
-| Verfügbarkeit | erlaubte Ausfallzeit pro Jahr (24/7) |
-|---|---|
-| 99 % | 87,6 Stunden (gut 3,5 Tage) |
-| 99,5 % | 43,8 Stunden |
-| 99,9 % | 8,76 Stunden |
-| 99,99 % | 52,56 Minuten |
-| 99,999 % | 5,26 Minuten |
+| Verfügbarkeit | erlaubte Ausfallzeit pro Jahr (24/7) | pro Monat (30 Tage, 24/7) |
+|---|---|---|
+| 99 % | 87,6 Stunden (gut 3,5 Tage) | 7,2 Stunden |
+| 99,5 % | 43,8 Stunden | 3,6 Stunden |
+| 99,9 % | 8,76 Stunden | 43,2 Minuten |
+| 99,99 % | 52,56 Minuten | 4,32 Minuten |
+| 99,999 % | 5,26 Minuten | rund 26 Sekunden |
 
 Jede weitere „Neun“ verkürzt die erlaubte Ausfallzeit auf ein Zehntel – und kostet deutlich mehr Redundanz.
+
+Das BSI ordnet Systeme im Hochverfügbarkeitskompendium in **Verfügbarkeitsklassen** ein: VK 0 (ohne zugesicherte Verfügbarkeit), VK 1 (normale Verfügbarkeit, 99 %), VK 2 (hohe, 99,9 %), VK 3 (sehr hohe, 99,99 %), VK 4 (höchste, 99,999 %) und VK 5 (desastertolerant, auch bei Katastrophen). Ab wie vielen Neunen man von **Hochverfügbarkeit** spricht, ist nicht einheitlich festgelegt – je nach Quelle ab 99,99 % oder erst ab 99,999 %.
 
 ## 4.2 MTBF und MTTR
 
 - **MTBF** (Mean Time Between Failures): mittlere Betriebszeit zwischen zwei Ausfällen – Maß für die **Zuverlässigkeit**.
 - **MTTR** (Mean Time To Repair): mittlere Dauer bis zur Wiederherstellung – Maß für die **Wartbarkeit**.
+- **MTTF** (Mean Time To Failure): mittlere Betriebsdauer bis zum Ausfall bei Teilen, die nicht repariert, sondern ausgetauscht werden (z. B. eine Festplatte).
+
+Aus Betriebsdaten: $MTBF = \frac{\text{gesamte Laufzeit}}{\text{Anzahl Ausfälle}}$ und $MTTR = \frac{\text{gesamte Reparaturzeit}}{\text{Anzahl Ausfälle}}$
 
 Formel: $V = \frac{MTBF}{MTBF + MTTR}$
+
+⚠️ **Achtung:** Manche Quellen zählen die Reparaturzeit in die MTBF hinein (MTBF = MTTF + MTTR, also von Ausfall zu Ausfall). Dann lautet die Formel V = MTTF / MTBF. Lies in der Aufgabe genau, wie die Werte definiert sind.
 
 **Beispiel:** Ein Server läuft im Mittel 990 Stunden zwischen zwei Ausfällen, die Reparatur dauert im Mittel 10 Stunden: $V = \frac{990}{990 + 10}$ = **99 %**. Die Verfügbarkeit steigt auf zwei Wegen: seltener ausfallen (MTBF hoch) oder **schneller wiederherstellen** (MTTR runter, z. B. durch Ersatzteile vor Ort und Bereitschaftsdienst).
 
@@ -218,8 +236,23 @@ Ein **SLA** ist die vertragliche Vereinbarung über messbare Dienstleistungsqual
 
 Redundanz erhöht die Verfügbarkeit, **ersetzt aber keine Datensicherung**: Ein versehentlich gelöschter Datensatz oder ein Ransomware-Angriff wird sofort auf alle gespiegelten Systeme übertragen.
 
+Die wichtigsten RAID-Level (n Platten mit je Kapazität K):
+
+| RAID | Prinzip | min. Platten | Nutzkapazität | verkraftet |
+|---|---|---|---|---|
+| **RAID 0** | Striping (Daten auf Platten verteilt) | 2 | n · K | keinen Ausfall – keine Redundanz |
+| **RAID 1** | Spiegelung | 2 | K (bei 2 Platten 50 %) | Ausfall einer Platte |
+| **RAID 5** | Striping mit verteilter Parität | 3 | (n − 1) · K | Ausfall einer Platte |
+| **RAID 6** | Striping mit doppelter Parität | 4 | (n − 2) · K | Ausfall von zwei Platten |
+| **RAID 10** | Spiegelpaare, darüber Striping | 4 | n · K / 2 | eine Platte je Spiegelpaar |
+
+Beispiel mit vier Platten zu je 4 TB: RAID 0 → 16 TB, RAID 5 → 12 TB, RAID 6 und RAID 10 → je 8 TB nutzbar. RAID 0 erhöht nur die Geschwindigkeit; fällt eine Platte aus, sind alle Daten verloren.
+
 > ❓ **Prüferfrage:** Warum ist eine Reihenschaltung aus drei Komponenten mit je 99 % Verfügbarkeit schlechter als jede einzelne Komponente?
 > *Das System läuft nur, wenn alle drei gleichzeitig laufen. Die Verfügbarkeiten werden multipliziert: 0,99 · 0,99 · 0,99 ≈ 0,970 – also rund 97 %. Jede zusätzliche Komponente in Reihe ist ein weiterer möglicher Ausfallgrund. Abhilfe schafft Redundanz an der schwächsten Stelle.*
+
+> ❓ **Prüferfrage:** Ihr Kollege schlägt vor, den Datenbankserver mit vier Platten in RAID 0 zu betreiben, „damit er schneller und ausfallsicherer wird“. Was antworten Sie?
+> *Schneller ja, ausfallsicherer nein: RAID 0 verteilt die Daten ohne Redundanz auf alle Platten. Fällt eine einzige Platte aus, sind alle Daten verloren – mit vier Platten steigt das Ausfallrisiko sogar, weil die Platten in Reihe geschaltet sind. Für Verfügbarkeit eignen sich RAID 5, 6 oder 10; bei vier Platten zu 4 TB bleiben 12 TB (RAID 5) bzw. 8 TB (RAID 6, RAID 10) nutzbar. Ein Backup ersetzt keines davon.*
 
 ---
 
@@ -301,6 +334,7 @@ c) *Begründen* Sie, warum gerade die Datenbank redundant ausgelegt wurde. (2 P)
 3. „Mit welchen Testdaten haben Sie gearbeitet – und warum nicht mit den echten Kundendaten?“
 4. „Was passiert, wenn Ihre ETL-Strecke nachts abbricht? Wer merkt das, und wann?“
 5. „Welche Verfügbarkeit braucht Ihr Bericht wirklich – und was würde eine höhere kosten?“
+6. „Wie stellen Sie sicher, dass eine spätere Änderung an Ihren Skripten die bestehenden Auswertungen nicht verfälscht?“
 
 ---
 
@@ -316,3 +350,5 @@ c) *Begründen* Sie, warum gerade die Datenbank redundant ausgelegt wurde. (2 P)
 - [ ] Ich berechne Reihen- und Parallelschaltungen und erkenne den Single Point of Failure.
 - [ ] Ich nenne die Inhalte eines SLA und begründe Redundanzmaßnahmen.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich nenne die Qualitätsmerkmale nach ISO/IEC 25010, grenze Fehlernachtest und Regressionstest ab und erkläre Testpyramide und TDD.
+- [ ] Ich berechne die Nutzkapazität von RAID 1, 5, 6 und 10 und weiß, wie viele Plattenausfälle sie verkraften.

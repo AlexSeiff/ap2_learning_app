@@ -91,7 +91,7 @@ $\bar{x} = \frac{2 + 4 + 5 + 6 + 8}{5} = \frac{25}{5} = 5$ Tage
 
 Varianz: $\sigma^2 = \frac{\sum (x_i - \bar{x})^2}{n} = \frac{20}{5}$ = **4 (Tage²)** · Standardabweichung: $\sigma = \sqrt{\sigma^2} = \sqrt{4}$ = **2,00 Tage**
 
-*Prüferkommentar: 2 P Mittelwert, 3 P vollständige Abweichungstabelle, 2 P Summe der Abweichungsquadrate, 2 P Varianz, 1 P Standardabweichung. Wer mit n − 1 rechnet (s² = 5, s = 2,24), erhält volle Punktzahl **nur**, wenn die Stichprobenannahme ausdrücklich benannt wird – die Aufgabe verlangte die Grundgesamtheit. Kontrolle: Σ(x − x̄) muss 0 ergeben.*
+*Prüferkommentar: 2 P Mittelwert, 3 P vollständige Abweichungstabelle, 2 P Summe der Abweichungsquadrate, 2 P Varianz, 1 P Standardabweichung. Wer mit n − 1 rechnet (s² = 5, s = 2,24), verfehlt die Aufgabenstellung – ausdrücklich verlangt war die Grundgesamtheit (÷ n). Mittelwert, Tabelle und Summe der Abweichungsquadrate bleiben bepunktet (max. 7 P), Varianz und Standardabweichung nicht. Kontrolle: Σ(x − x̄) muss 0 ergeben.*
 
 **D3 (4 P):**
 - Filiale Nord: $\text{VK} = \frac{\sigma}{\bar{x}} = \frac{5}{50} = 0{,}10$ = **10 %**
@@ -106,12 +106,12 @@ Beurteilung: Filiale Süd streut **absolut** stärker (8 min > 5 min), **relativ
 ## Block E – Boxplot und Ausreißer (20 P)
 
 **E1 (8 P):**
-Konvention: Position = n · p; bei nicht ganzzahligem Ergebnis wird aufgerundet und der Wert an dieser Position genommen. *(2 P – die Angabe der Konvention war ausdrücklich gefordert)*
+Konvention: Position = n · p; bei nicht ganzzahligem Ergebnis wird aufgerundet und der Wert an dieser Position genommen, bei ganzzahligem Ergebnis das Mittel aus diesem und dem nächsten Wert. *(2 P – die Angabe der Konvention war ausdrücklich gefordert)*
 - Q1: $n \cdot p = 11 \cdot 0{,}25 = 2{,}75$ → aufrunden auf Position 3 → **Q1 = 40** *(2 P)*
 - Q3: $n \cdot p = 11 \cdot 0{,}75 = 8{,}25$ → aufrunden auf Position 9 → **Q3 = 70** *(2 P)*
 - $\text{IQR} = Q_3 - Q_1 = 70 - 40$ = **30 Minuten** *(2 P)*
 
-*Prüferkommentar: Andere gängige Konventionen liefern hier leicht abweichende Werte (z. B. Q1 = 42,5 bei Interpolation). Diese werden voll anerkannt, sofern die Methode benannt und durchgängig angewendet wurde. Ohne Methodenangabe gibt es bei Abweichung von der Musterlösung Abzug – deshalb immer dazuschreiben.*
+*Prüferkommentar: Andere gängige Konventionen liefern hier leicht abweichende Werte (z. B. Q1 = 42,5 und Q3 = 67,5 bei linearer Interpolation wie Excel QUARTILE.INKL; IQR = 25, Zäune 5 und 105). Am Ergebnis von E2 und E3 ändert das nichts: 220 bleibt der einzige Ausreißer, die Whisker reichen von 35 bis 90. Diese werden voll anerkannt, sofern die Methode benannt und durchgängig angewendet wurde. Ohne Methodenangabe gibt es bei Abweichung von der Musterlösung Abzug – deshalb immer dazuschreiben.*
 
 **E2 (6 P):**
 - Unterer Zaun: $Q_1 - 1{,}5 \cdot \text{IQR} = 40 - 1{,}5 \cdot 30 = 40 - 45$ = **−5** *(2 P)*

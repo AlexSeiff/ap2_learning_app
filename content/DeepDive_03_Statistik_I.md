@@ -22,7 +22,7 @@ Das Skalenniveau entscheidet, **welche Rechenoperationen überhaupt zulässig si
 | **Nominal** | nur gleich/ungleich, keine Reihenfolge | Kundennummer, Reklamationsgrund, Postleitzahl | Häufigkeiten, **Modus** |
 | **Ordinal** | Rangfolge, aber ungleiche Abstände | Schulnote, Zufriedenheit (1–5), Prioritätsstufe | + **Median**, Quartile |
 | **Intervall** | gleiche Abstände, **kein** absoluter Nullpunkt | Temperatur °C, Kalenderjahr | + Mittelwert, Differenzen |
-| **Verhältnis (Ratio)** | gleiche Abstände **und** absoluter Nullpunkt | Umsatz, Dauer, Menge, Gewicht | + Verhältnisse („doppelt so viel") |
+| **Verhältnis (Ratio)** | gleiche Abstände **und** absoluter Nullpunkt | Umsatz, Dauer, Menge, Gewicht | + Verhältnisse („doppelt so viel"), Variationskoeffizient |
 
 Intervall und Verhältnis werden zusammen als **metrisch** (kardinal) bezeichnet. Zusätzlich unterscheidet man **diskret** (abzählbar: Anzahl Reklamationen) und **stetig** (beliebig teilbar: Bearbeitungsdauer).
 
@@ -75,7 +75,7 @@ Beispieldatensatz (Lieferzeiten in Tagen, n = 10), bereits sortiert:
 
 **Modus (Modalwert)** = häufigster Wert = **5 Tage** (kommt dreimal vor). Einziges Lagemaß für nominale Daten; eine Verteilung kann mehrere Modi haben.
 
-**Die entscheidende Interpretation:** Mittelwert (6,0) > Median (5,0). Diese Lücke entsteht durch den Ausreißer 19 – die Verteilung ist **rechtsschief**. Merksatz: *Liegt der Mittelwert deutlich über dem Median, ziehen große Ausreißer nach oben.* Genau diese Aussage bringt in Interpretationsaufgaben die Punkte.
+**Die entscheidende Interpretation:** Mittelwert (6,0) > Median (5,0). Diese Lücke entsteht durch den Ausreißer 19 – die Verteilung ist **rechtsschief** (gleichbedeutend: linkssteil – der „Berg“ liegt links, der lange Ausläufer rechts). Merksatz: *Liegt der Mittelwert deutlich über dem Median, ziehen große Ausreißer nach oben.* Umgekehrt (Mittelwert < Median) ist die Verteilung linksschief bzw. rechtssteil. Genau diese Aussage bringt in Interpretationsaufgaben die Punkte.
 
 **Gewichtetes arithmetisches Mittel** (wenn Werte unterschiedlich schwer wiegen):
 $\bar{x} = \frac{\sum (\text{Wert} \cdot \text{Gewicht})}{\sum \text{Gewichte}}$
@@ -97,7 +97,7 @@ $R = x_{\max} - x_{\min}$. Beim Beispiel: $19 - 2$ = **17 Tage**. Schnell berech
 
 Quartile teilen die sortierte Reihe in vier gleich große Teile: Q1 (25 %), Q2 = Median (50 %), Q3 (75 %).
 
-⚠️ **Wichtig:** Es existieren mehrere Berechnungskonventionen, die leicht unterschiedliche Werte liefern. In diesem Lernzettel (und üblicherweise in IHK-Aufgaben) gilt: Position = n · p; ist das Ergebnis **keine** ganze Zahl, wird **aufgerundet** und der Wert an dieser Position genommen; ist es eine ganze Zahl, wird das Mittel aus dieser und der nächsten Position gebildet. **Schreibe die verwendete Konvention in der Klausur dazu** – dann bekommst du auch bei abweichender Musterlösung deine Punkte.
+⚠️ **Wichtig:** Es existieren mehrere Berechnungskonventionen, die leicht unterschiedliche Werte liefern – keine davon ist „die richtige“. In diesem Lernzettel gilt die in deutschen Statistik-Lehrbüchern verbreitete Definition des empirischen Quantils: Position = n · p; ist das Ergebnis **keine** ganze Zahl, wird **aufgerundet** und der Wert an dieser Position genommen; ist es eine ganze Zahl, wird das Mittel aus dieser und der nächsten Position gebildet. **Schreibe die verwendete Konvention in der Klausur dazu** – dann bekommst du auch bei abweichender Musterlösung deine Punkte.
 
 Beispiel (n = 10) – sortierte Reihe mit Positionen:
 
@@ -110,6 +110,17 @@ Beispiel (n = 10) – sortierte Reihe mit Positionen:
 
 ⚠️ **Position ist nicht der Wert.** Hier besonders heimtückisch: Die Rechnung führt auf Position 8 – und die Zahl 8 kommt in den Daten ebenfalls vor, allerdings an Position 9. Wer beides verwechselt, notiert fälschlich Q3 = 8. Schreibe deshalb in der Klausur immer beides hin: „Position 8 → Wert 6".
 
+Zum Vergleich – dieselben zehn Lieferzeiten nach anderen gängigen Konventionen:
+
+| Konvention | Q1 | Q3 | IQR |
+|---|---|---|---|
+| Lernzettel: Position n · p, aufrunden bzw. Mittel mit dem nächsten Wert | 3 | 6 | 3 |
+| Tukey: Median der unteren bzw. oberen Hälfte | 3 | 6 | 3 |
+| Excel QUARTILE.INKL: Position 1 + (n − 1) · p, linear interpoliert | 3,25 | 5,75 | 2,5 |
+| Excel QUARTILE.EXKL: Position (n + 1) · p, linear interpoliert | 3 | 6,5 | 3,5 |
+
+Die Unterschiede sind klein, und die Schlussfolgerung (19 ist ein Ausreißer) bleibt bei allen Varianten gleich. Deshalb: Konvention nennen und durchgängig anwenden.
+
 $\text{IQR} = Q_3 - Q_1 = 6 - 3$ = **3 Tage** – die mittleren 50 % der Aufträge liegen in einem Bereich von nur 3 Tagen. Der IQR ist robust, weil er die Extremwerte ausblendet.
 
 ### 4.3 Varianz und Standardabweichung
@@ -118,7 +129,7 @@ Rechenweg in vier Schritten (immer so aufschreiben – jeder Schritt gibt Teilpu
 1. Mittelwert berechnen
 2. Abweichungen vom Mittelwert bilden
 3. Abweichungen quadrieren und aufsummieren (= Summe der Abweichungsquadrate, SAQ)
-4. Durch n teilen → Varianz; Wurzel ziehen → Standardabweichung
+4. Durch n (Grundgesamtheit) bzw. durch n − 1 (Stichprobe) teilen → Varianz; Wurzel ziehen → Standardabweichung
 
 Beispiel Durchlaufzeiten (Tage): 2, 4, 5, 6, 8 → $\bar{x} = \frac{25}{5} = 5$
 
@@ -131,17 +142,19 @@ Beispiel Durchlaufzeiten (Tage): 2, 4, 5, 6, 8 → $\bar{x} = \frac{25}{5} = 5$
 | 8 | 3 | 9 |
 | | **Σ = 0** | **Σ = 20** |
 
-Varianz: $\sigma^2 = \frac{\sum (x_i - \bar{x})^2}{n} = \frac{20}{5}$ = **4** · Standardabweichung: $\sigma = \sqrt{4}$ = **2 Tage**
+Varianz (Grundgesamtheit, ÷ n): $\sigma^2 = \frac{\sum (x_i - \bar{x})^2}{n} = \frac{20}{5}$ = **4 Tage²** · Standardabweichung: $\sigma = \sqrt{4}$ = **2 Tage**
 
 **Kontrolle:** Die Summe der einfachen Abweichungen ist immer 0 – deshalb wird überhaupt quadriert. Nutze das als Rechenprobe!
 
 ⚠️ **σ² (÷ n) oder s² (÷ n−1)?** Liegen alle Daten der **Grundgesamtheit** vor, wird durch n geteilt. Ist es eine **Stichprobe**, mit der auf die Grundgesamtheit geschlossen wird, durch n − 1. Im Beispiel: $s^2 = \frac{20}{4} = 5$ → $s = \sqrt{5} = 2{,}24$. Beides ist richtig – **im jeweiligen Kontext**. Schreibe hin, welche Variante du verwendest und warum; das ist prüfungssicher.
 
+**In Werkzeugen:** Excel unterscheidet VAR.P / STABW.N (÷ n) und VAR.S / STABW.S (÷ n − 1). SQL kennt VAR_POP / STDDEV_POP und VAR_SAMP / STDDEV_SAMP. Vorsicht bei Funktionen ohne Zusatz: STDDEV rechnet in PostgreSQL und Oracle als Stichprobe (÷ n − 1), in MySQL dagegen als Grundgesamtheit (÷ n); SQL Server unterscheidet STDEV und STDEVP. Im Zweifel die Dokumentation prüfen und die Variante im Bericht nennen.
+
 **Interpretation:** Die Standardabweichung steht in derselben Einheit wie die Daten (Tage) und ist damit direkt interpretierbar; die Varianz ist eine quadrierte Hilfsgröße. Faustregel bei annähernder Normalverteilung: ca. 68 % der Werte liegen im Bereich x̄ ± 1σ, ca. 95 % im Bereich x̄ ± 2σ.
 
 ### 4.4 Variationskoeffizient
 
-$\text{VK} = \frac{\sigma}{\bar{x}}$ (oft in %). Er macht die Streuung **vergleichbar** zwischen Datensätzen mit unterschiedlichem Niveau.
+$\text{VK} = \frac{\sigma}{\bar{x}}$ (oft in %; bei Stichproben mit s statt σ). Er macht die Streuung **vergleichbar** zwischen Datensätzen mit unterschiedlichem Niveau. Sinnvoll nur bei verhältnisskalierten Daten mit positivem Mittelwert – für Temperaturen in °C etwa ist er bedeutungslos.
 
 Beispiel: Team A: x̄ = 50 min, σ = 5 min → VK = 10 %. Team B: x̄ = 100 min, σ = 8 min → VK = 8 %. Team B streut **absolut** stärker (8 > 5), **relativ** aber weniger (8 % < 10 %) – arbeitet also gleichmäßiger. Genau diese Unterscheidung ist eine typische Beurteilungsfrage.
 
@@ -155,19 +168,23 @@ Beispiel: Team A: x̄ = 50 min, σ = 5 min → VK = 10 %. Team B: x̄ = 100 min,
         Q1      Median   Q3
          |         |      |
   |------[=========|======]--------|      o
- min                              max    Ausreißer
-(unterer Whisker)        (oberer Whisker)
+ unteres                      oberes   Ausreißer
+ Whisker-Ende           Whisker-Ende
+(kleinster Wert          (größter Wert
+ innerhalb der Zäune)     innerhalb der Zäune)
 ```
 
 - **Box:** von Q1 bis Q3, enthält die mittleren 50 % der Daten; die Boxbreite ist der IQR.
 - **Strich in der Box:** Median. Liegt er nicht mittig, ist die Verteilung **schief**.
-- **Whisker:** reichen bis zum letzten Wert innerhalb der 1,5-fachen IQR-Grenze.
+- **Whisker:** reichen bis zum letzten Wert innerhalb der 1,5-fachen IQR-Grenze. Nur wenn es keine Ausreißer gibt, sind das Minimum und Maximum.
 - **Punkte außerhalb:** Ausreißer, einzeln dargestellt.
+
+Das ist die verbreitete Variante nach Tukey. Manche Darstellungen ziehen die Whisker stattdessen immer bis Minimum und Maximum und zeigen keine Ausreißer – der Boxplot gibt dann genau die **Fünf-Punkte-Zusammenfassung** wieder (Minimum, Q1, Median, Q3, Maximum). Steht in der Aufgabe nichts anderes, gilt die 1,5-IQR-Variante.
 
 ### 5.2 Die 1,5-IQR-Regel
 
 Unterer Zaun $= Q_1 - 1{,}5 \cdot \text{IQR}$ · Oberer Zaun $= Q_3 + 1{,}5 \cdot \text{IQR}$
-Werte außerhalb gelten als Ausreißerverdacht.
+Werte außerhalb gelten als Ausreißerverdacht. Ein Wert genau auf dem Zaun ist noch kein Ausreißer. Werte jenseits von 3 · IQR (statt 1,5 · IQR) werden häufig als extreme Ausreißer bezeichnet.
 
 Beispiel Lieferzeiten: Q1 = 3, Q3 = 6, IQR = 3 → unterer Zaun $= 3 - 4{,}5 = -1{,}5$ · oberer Zaun $= 6 + 4{,}5$ = **10,5**. Der Wert **19** liegt darüber → Ausreißer. Der obere Whisker endet beim größten Wert innerhalb der Grenze, also bei 8.
 
@@ -210,7 +227,8 @@ Häufungen exakt gleicher Werte (z. B. auffällig viele Datensätze mit Geburtsd
 - **Laplace-Wahrscheinlichkeit** (alle Ergebnisse gleich wahrscheinlich): $P(A) = \frac{\text{günstige Fälle}}{\text{mögliche Fälle}}$. In der Praxis schätzt man Wahrscheinlichkeiten über **relative Häufigkeiten**: 3 von 60 Aufträgen wurden reklamiert → geschätzte Reklamationswahrscheinlichkeit 5 %.
 - **Gegenereignis:** $P(\text{nicht } A) = 1 - P(A)$ – mit 95 % Wahrscheinlichkeit wird ein Auftrag nicht reklamiert.
 - **Unabhängige Ereignisse, die beide eintreten** („und“): **multiplizieren**. Zwei voneinander unabhängige Prüfungen übersehen einen Fehler jeweils mit 10 % Wahrscheinlichkeit; beide übersehen ihn mit $0{,}1 \cdot 0{,}1 = 0{,}01$, also 1 %.
-- Sich ausschließende Ereignisse („oder“): **addieren**.
+- Sich ausschließende Ereignisse („oder“): **addieren**. Können beide gleichzeitig eintreten, wird die Schnittmenge abgezogen: $P(A \text{ oder } B) = P(A) + P(B) - P(A \text{ und } B)$
+- „Mindestens einmal“ rechnet man über das Gegenereignis: Bei drei unabhängigen Aufträgen mit je 5 % Reklamationswahrscheinlichkeit gilt $P(\text{mind. eine Reklamation}) = 1 - 0{,}95^3 = 1 - 0{,}857 \approx 0{,}143$ = **14,3 %** – nicht 3 · 5 % = 15 %.
 
 Eine **Zufallsvariable** ordnet jedem Ergebnis eines Zufallsvorgangs eine Zahl zu – etwa die Reparaturkosten eines Auftrags.
 
@@ -236,10 +254,12 @@ Viele Messgrößen (Bearbeitungszeiten, Messfehler, Körpergrößen) verteilen s
 | Mittelwert ± 2 σ | rund 95 % |
 | Mittelwert ± 3 σ | rund 99,7 % |
 
+Genau genommen umfasst ± 2 σ 95,45 %; exakt 95 % liegen im Bereich ± 1,96 σ. Für Klausurrechnungen reichen die gerundeten Werte.
+
 **Beispiel:** Reparaturzeiten sind normalverteilt mit Mittelwert 60 min und Standardabweichung 10 min.
 - 95 % der Reparaturen dauern zwischen 60 − 2 · 10 = **40** und 60 + 2 · 10 = **80** Minuten.
 - Länger als 80 Minuten dauern rund (100 % − 95 %) / 2 = **2,5 %** – die 5 % außerhalb verteilen sich symmetrisch auf beide Seiten.
-- Ein Auftrag mit 95 Minuten hat den **z-Wert** $z = \frac{x - \bar{x}}{s} = \frac{95 - 60}{10}$ = **3,5** – er liegt mehr als 3 Standardabweichungen vom Mittelwert entfernt und ist nach der **3-Sigma-Regel** ein Ausreißerkandidat (vgl. Teil 6: x̄ ± 3σ).
+- Ein Auftrag mit 95 Minuten hat den **z-Wert** $z = \frac{x - \mu}{\sigma} = \frac{95 - 60}{10}$ = **3,5** – er liegt mehr als 3 Standardabweichungen vom Mittelwert entfernt und ist nach der **3-Sigma-Regel** ein Ausreißerkandidat (vgl. Teil 6: x̄ ± 3σ).
 
 ⚠️ **Achtung:** Die 3-Sigma-Regel setzt eine annähernd **normalverteilte** Größe voraus. Bei **schiefen Verteilungen** – etwa Einkommen oder Bestellwerte mit wenigen sehr großen Werten (**rechtsschief**: Mittelwert > Median) – ist die 1,5-IQR-Regel aus Teil 5 robuster.
 
@@ -251,6 +271,9 @@ Viele Messgrößen (Bearbeitungszeiten, Messfehler, Körpergrößen) verteilen s
 > ❓ **Prüferfrage:** In einer Mitarbeiterbefragung ergibt sich auf einer fünfstufigen Likert-Skala ein Mittelwert von 3,4. Was ist an dieser Angabe kritisch?
 > *Die Likert-Skala ist ordinal: Die Abstände zwischen „stimme eher zu“ und „stimme voll zu“ sind nicht zwingend gleich. Ein Mittelwert unterstellt gleiche Abstände und kann zudem eine polarisierte Verteilung (viele 1er und viele 5er) verdecken. Besser sind Median und die Häufigkeitsverteilung der Antworten, ergänzend der Mittelwert mit ausdrücklichem Hinweis auf die Annahme.*
 
+> ❓ **Prüferfrage:** Excel liefert für Q1 Ihrer Daten einen anderen Wert als Ihre Handrechnung. Ist eine der beiden Rechnungen falsch?
+> *Nicht unbedingt. Für Quartile gibt es mehrere anerkannte Konventionen – etwa Position n · p mit Aufrunden, die Tukey-Hälften oder die lineare Interpolation von QUARTILE.INKL und QUARTILE.EXKL in Excel. Die Werte weichen leicht voneinander ab. Entscheidend ist, die verwendete Konvention zu nennen, sie durchgängig anzuwenden und zu prüfen, ob sich die Schlussfolgerung (etwa welche Werte Ausreißer sind) ändert.*
+
 ---
 
 ## Die 8 häufigsten Fehler aus Prüfersicht
@@ -258,7 +281,7 @@ Viele Messgrößen (Bearbeitungszeiten, Messfehler, Körpergrößen) verteilen s
 1. Mittelwert auf ordinal oder nominal skalierte Daten angewendet.
 2. Median bestimmt, ohne vorher zu **sortieren**.
 3. Bei geradem n den Median nicht als Mittel der beiden mittleren Werte gebildet.
-4. Varianz nicht durch n geteilt (Division vergessen) oder Wurzel am Ende vergessen.
+4. Varianz nicht durch n bzw. n − 1 geteilt (Division vergessen), Grundgesamtheit und Stichprobe verwechselt oder Wurzel am Ende vergessen.
 5. Verwechslung von Varianz und Standardabweichung (Einheit beachten!).
 6. Zäune der 1,5-IQR-Regel mit Q1/Q3 statt mit dem IQR gerechnet.
 7. Whisker bis zum Ausreißer gezeichnet statt bis zum letzten Wert innerhalb der Grenze.
@@ -345,3 +368,4 @@ Von 50 Reklamationen entfallen: Transportschaden 18, Montagefehler 15, Falschlie
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
 - [ ] Ich rechne mit Wahrscheinlichkeiten (Gegenereignis, unabhängige Ereignisse) und berechne einen Erwartungswert.
 - [ ] Ich wende die 68-95-99,7-Regel und den z-Wert an und beurteile Likert-Skala und Polaritätsprofil.
+- [ ] Ich weiß, dass Quartile je nach Konvention (Lernzettel, Tukey, Excel INKL/EXKL) leicht abweichen, und kenne die Excel- und SQL-Funktionen für Varianz und Standardabweichung mit ÷ n und ÷ (n − 1).

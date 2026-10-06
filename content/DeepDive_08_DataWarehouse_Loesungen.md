@@ -139,6 +139,8 @@ Nur so lassen sich Fakten der jeweils **zum Zeitpunkt gültigen** Version zuordn
 - (c) Kategorien in Zeilen, Monate in Spalten → **Pivot (Rotate)**
 - (d) Filialumsätze zu Regionsumsätzen zusammenfassen → **Roll-up**
 
+*Prüferkommentar zu (b): Slice, weil genau eine Dimension (Filiale/Ort, Hierarchieebene Region) auf einen einzigen Wert festgelegt wird. Dice wäre es erst, wenn zusätzlich eine weitere Dimension eingeschränkt würde (z. B. Region Nord und 1. Halbjahr).*
+
 **E3 (3 P):**
 **Batchverarbeitung** sammelt Daten und verarbeitet sie gebündelt in festen Intervallen – etwa der nächtliche DWH-Ladelauf für die Umsatzberichte. Sie ist einfach, robust und ressourcenschonend, liefert aber keine aktuellen Werte. *(1,5 P)*
 **Streamverarbeitung** verarbeitet Daten fortlaufend bei ihrem Entstehen – etwa eine sofortige Bestandswarnung bei Unterschreiten des Meldebestands oder Betrugserkennung im Zahlungsverkehr. Sie ist technisch aufwendiger, ermöglicht aber Reaktionen nahezu in Echtzeit. *(1,5 P)*

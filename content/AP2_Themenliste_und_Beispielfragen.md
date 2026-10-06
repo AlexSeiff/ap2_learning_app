@@ -7,15 +7,17 @@
 
 | Prüfungsbereich | Form | Dauer | Gewichtung (Gesamtnote) |
 |---|---|---|---|
-| Betriebliche Projektarbeit „Durchführen eines Projektes zur Datenanalyse" | Projekt (max. 40 h inkl. Doku) + Präsentation + Fachgespräch (zusammen max. 30 min, Präsentation max. 15 min) | – | **50 %** |
+| Planen und Durchführen eines Projektes der Datenanalyse (§ 28 FIAusbV) | Teil 1: betriebliche Projektarbeit + Dokumentation (zusammen max. 40 h) · Teil 2: Präsentation + Fachgespräch (zusammen max. 30 min, Präsentation max. 15 min); Teil 1 und Teil 2 je 50 % des Bereichs = je 25 % der Gesamtnote | – | **50 %** |
 | Durchführen einer Prozessanalyse | schriftlich, ungebundene Aufgaben | 90 min | **10 %** |
 | Sicherstellen der Datenqualität | schriftlich, ungebundene Aufgaben | 90 min | **10 %** |
 | Wirtschafts- und Sozialkunde | schriftlich, überwiegend gebundene Aufgaben (MC) | 60 min | **10 %** |
 | *(AP1 „Einrichten eines IT-gestützten Arbeitsplatzes" – bereits absolviert)* | | | *20 %* |
 
-**IHK-Notenschlüssel:** 100–92 = sehr gut (1) · 91–81 = gut (2) · 80–67 = befriedigend (3) · 66–50 = ausreichend (4) · 49–30 = mangelhaft (5) · 29–0 = ungenügend (6)
+**IHK-Notenschlüssel:** 100–92 = sehr gut (1) · unter 92–81 = gut (2) · unter 81–67 = befriedigend (3) · unter 67–50 = ausreichend (4) · unter 50–30 = mangelhaft (5) · unter 30–0 = ungenügend (6)
 
-**Bestehensregeln:** Gesamtergebnis (Teil 1 + Teil 2) mind. „ausreichend", Teil 2 mind. „ausreichend", mind. drei Prüfungsbereiche von Teil 2 mind. „ausreichend", kein Prüfungsbereich „ungenügend". Eine mündliche Ergänzungsprüfung (15 min, Gewichtung 2:1) ist in genau einem schriftlichen Bereich möglich.
+Rahmen der schriftlichen Prüfungen: Rechtsgrundlage §§ 27–33 FIAusbV 2020. Die Aufgaben sind praxisbezogen und schriftlich zu bearbeiten; in den beiden Fachbereichen offene (ungebundene) Aufgaben, die alle zu bearbeiten sind (seit der Neuordnung 2020 keine Abwahlaufgaben mehr). Hilfsmittel: nicht programmierbarer Taschenrechner. Die Themen legt der bundeseinheitliche AkA-Prüfungskatalog fest.
+
+**Bestehensregeln:** Gesamtergebnis (Teil 1 + Teil 2) mind. „ausreichend", Teil 2 mind. „ausreichend", mind. drei Prüfungsbereiche von Teil 2 mind. „ausreichend", kein Prüfungsbereich „ungenügend". Eine mündliche Ergänzungsprüfung (§ 33 FIAusbV: soll 15 min dauern, bisheriges Ergebnis zu mündlichem Ergebnis 2:1) ist auf Antrag in genau einem der Bereiche Prozessanalyse, Datenqualität oder WiSo möglich – nur wenn dieser schlechter als „ausreichend" bewertet wurde und die Ergänzungsprüfung für das Bestehen den Ausschlag geben kann (nicht zur Notenverbesserung, nicht für die Projektarbeit).
 
 **Wichtig für dein Ziel „Note 1":** Die Gesamtnote enthält dein AP1-Ergebnis mit 20 %. Beispiel: Bei 80 Punkten in AP1 brauchst du in Teil 2 im Schnitt ca. 95 Punkte für ein „sehr gut" insgesamt. Rechne das einmal mit deinem AP1-Ergebnis durch.
 
@@ -23,7 +25,7 @@
 
 ## 2. Themenblock A – Prüfung „Durchführen einer Prozessanalyse"
 
-Laut Verordnung wird geprüft, ob du Prozesse darstellen, Analysewerkzeuge anwenden, Optimierungen (inkl. rechtlicher Auswirkungen) vorschlagen sowie Qualitäts- und Wirtschaftlichkeitskontrollen planen kannst.
+Laut Verordnung wird geprüft, ob du Prozesse darstellen, Analysewerkzeuge anwenden, Optimierungen (inkl. rechtlicher Auswirkungen auf die betrieblichen Abläufe) vorschlagen sowie Qualitäts- und Wirtschaftlichkeitskontrollen planen und durchführen kannst (§ 29 FIAusbV).
 
 ### A1 Geschäftsprozesse & Prozessmodellierung
 - [ ] Prozessbegriff, Kern-/Unterstützungs-/Führungsprozesse
@@ -79,7 +81,7 @@ Laut Verordnung wird geprüft, ob du Prozesse darstellen, Analysewerkzeuge anwen
 
 ## 3. Themenblock B – Prüfung „Sicherstellen der Datenqualität"
 
-Laut Verordnung wird geprüft, ob du Daten identifizieren, klassifizieren und bereitstellen, Datenqualität prüfen und sicherstellen, Zugriff und Verfügbarkeit gewährleisten sowie Datenschutz und Datensicherheit anwendungsbezogen umsetzen kannst.
+Laut Verordnung wird geprüft, ob du Daten identifizieren, klassifizieren und bereitstellen, Datenqualität prüfen und sicherstellen, Zugriff und Verfügbarkeit gewährleisten sowie Datenschutz und Datensicherheit anwendungsbezogen umsetzen kannst (§ 30 FIAusbV).
 
 ### B1 Daten identifizieren, klassifizieren, bereitstellen
 - [ ] Strukturierte / semi-strukturierte / unstrukturierte Daten
@@ -167,10 +169,11 @@ Laut Verordnung wird geprüft, ob du Daten identifizieren, klassifizieren und be
 
 ## 5. Themenblock D – Projektarbeit, Präsentation & Fachgespräch (50 %!)
 
-- [ ] Projektantrag: reale betriebliche Problemstellung mit Datenanalyse-Bezug, Entscheidungs­spielraum, ca. 40 h
+- [ ] Projektantrag: reale betriebliche Problemstellung mit Datenanalyse-Bezug, Entscheidungs­spielraum, höchstens 40 h inkl. Dokumentation; Pflichtinhalt nach § 28 FIAusbV: Ausgangssituation, Projektziel, Zeitplanung. Mit der Durchführung erst nach Genehmigung durch den Prüfungsausschuss beginnen.
 - [ ] Doku-Struktur: Ausgangssituation → Ziele (SMART) → Ist-/Soll-Analyse → Wirtschaftlichkeitsbetrachtung → Durchführung (CRISP-DM-orientiert) → Qualitätssicherung & Datenschutz → Soll-Ist-Vergleich → Fazit
 - [ ] Präsentation: max. 15 min, Zielgruppe Prüfungsausschuss, roter Faden, Ergebnisse im Fokus
-- [ ] Fachgespräch: Vertiefung + Transferfragen rund um dein Projekt
+- [ ] Fachgespräch: Vertiefung + Transferfragen rund um dein Projekt; nutzt die restliche Zeit bis max. 30 min (bei 15 min Präsentation also ca. 15 min)
+- [ ] Formale Vorgaben der eigenen IHK prüfen (Seitenlimit, Anhang, Abgabeformat, Kennzeichnung von KI-Nutzung) – z. B. IHK Berlin: max. 15 Inhaltsseiten, Dokumentationsaufwand max. ca. 15 % (6 h) der 40 h
 
 **Typische Fachgespräch-Fragen des Ausschusses:**
 1. *Begründen* Sie die Wahl Ihres Vorgehensmodells und Ihres Analyseverfahrens. Welche Alternativen haben Sie verworfen – und warum?

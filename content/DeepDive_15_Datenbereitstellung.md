@@ -5,7 +5,7 @@
 
 ## Prüfungsrelevanz
 
-Die Verordnung nennt im Prüfungsbereich **„Sicherstellen der Datenqualität“** ausdrücklich: Daten **identifizieren, klassifizieren und bereitstellen** sowie **Zugriff und Verfügbarkeit gewährleisten**. Dieser Deep Dive schließt damit die letzte inhaltliche Lücke vor der Simulationsphase – ideal direkt vor einer Altklausur zum Bereich „Datenqualität“.
+Die Verordnung (§ 30 FIAusbV, 90 Minuten schriftlich) nennt im Prüfungsbereich **„Sicherstellen der Datenqualität“** ausdrücklich: Daten **identifizieren, klassifizieren und bereitstellen** sowie **Zugriff und Verfügbarkeit gewährleisten**. Dieser Deep Dive schließt damit die letzte inhaltliche Lücke vor der Simulationsphase – ideal direkt vor einer Altklausur zum Bereich „Datenqualität“.
 
 Typische Aufgaben: Datenarten und Schutzklassen zuordnen, CSV-Importprobleme erkennen, **JSON erstellen oder korrigieren**, eine **REST-Schnittstelle** entwerfen und beurteilen, eine Datenbankart begründet auswählen, Transaktionsprobleme erklären, UML-Multiplizitäten lesen.
 
@@ -52,7 +52,7 @@ Einfaches Textformat: eine Zeile je Datensatz, Felder durch Trennzeichen getrenn
 
 **Typische Importprobleme:**
 - **Trennzeichen:** Komma oder Semikolon? Deutsche Excel-Exporte nutzen meist das Semikolon.
-- **Trennzeichen im Feldinhalt:** Enthält ein Text das Trennzeichen, muss das Feld in Anführungszeichen stehen – sonst verrutschen alle Spalten.
+- **Trennzeichen im Feldinhalt:** Enthält ein Text das Trennzeichen, muss das Feld in Anführungszeichen stehen – sonst verrutschen alle Spalten. Nach **RFC 4180** gilt das ebenso für Zeilenumbrüche und Anführungszeichen im Feld; ein Anführungszeichen im Inhalt wird verdoppelt (`"Stuhl ""Comfort"""`). Der Standard selbst sieht übrigens das Komma als Trennzeichen und CRLF als Zeilenende vor – das Semikolon ist eine verbreitete Abweichung.
 - **Dezimal- und Tausendertrennzeichen:** „1.250,00“ (deutsch) gegen „1250.00“ (englisch) – gemischte Formate führen zu falschen Zahlen oder Importfehlern.
 - **Zeichenkodierung:** Umlaute werden zerstört, wenn Export und Import unterschiedlich kodieren.
 - **Keine Datentypen:** Alles ist Text; führende Nullen und Datumsformate gehen leicht verloren.
@@ -85,15 +85,20 @@ Schlüssel-Wert-Paare in geschweiften Klammern (**Objekte**), Listen in eckigen 
 - **Dezimaltrennzeichen ist der Punkt.**
 - **Kein Komma** nach dem letzten Element eines Objekts oder Arrays.
 - **Keine Kommentare.**
+- Zahlen ohne führende Null und ohne `NaN`/`Infinity`: `"plz": 04109` ist ungültig – Postleitzahlen gehören als String ins JSON (`"plz": "04109"`).
+- Die Regeln stehen in **RFC 8259**; für den Austausch zwischen Systemen ist **UTF-8** vorgeschrieben.
+
+⚠ **Geldbeträge in JSON:** Viele Parser lesen jede Number als Gleitkommazahl ein – beim Import also gezielt in DECIMAL umwandeln oder Beträge in Cent als Ganzzahl übertragen (→ 1.3).
 
 Ein Vorteil gegenüber CSV ist offensichtlich: Die Bestellung mit ihren Positionen steht zusammenhängend in einem Dokument, statt auf zwei Tabellen verteilt zu werden.
 
 ## 2.3 XML
 
 Daten in selbst definierten Tags: `<kunde id="1"><name>Huber GmbH</name></kunde>`.
-- **Wohlgeformt:** syntaktisch korrekt – genau ein Wurzelelement, jedes Tag geschlossen, korrekt verschachtelt.
-- **Valide:** zusätzlich konform zu einem Schema (**XSD**), das Struktur und Datentypen festlegt.
+- **Wohlgeformt:** syntaktisch korrekt – genau ein Wurzelelement, jedes Tag geschlossen, korrekt verschachtelt, Attributwerte in Anführungszeichen, Groß-/Kleinschreibung der Tags beachtet, Sonderzeichen maskiert (`&lt;`, `&amp;`).
+- **Valide:** zusätzlich konform zu einem Schema (**XSD** oder der älteren **DTD**), das Struktur und – bei XSD – auch Datentypen festlegt.
 - Jedes valide Dokument ist wohlgeformt, aber nicht umgekehrt.
+- **XPath** adressiert Knoten in einem XML-Dokument, z. B. `/kunde/name` (Kindelement), `//name` (beliebige Tiefe) oder `/kunde/@id` (Attribut).
 
 ## 2.4 Formate im Vergleich
 
@@ -106,10 +111,14 @@ Daten in selbst definierten Tags: `<kunde id="1"><name>Huber GmbH</name></kunde>
 | Größe | klein | mittel | groß | sehr klein (komprimiert) |
 | Typischer Einsatz | Excel-Austausch | Web-APIs | Behörden, Industrie | Data Lake, große Analysen |
 
+Zwei weitere Formate, die in Prüfungen auftauchen:
+- **YAML:** gut lesbares Textformat, Struktur über Einrückung statt Klammern, Kommentare mit `#` erlaubt; typisch für Konfigurationsdateien und API-Beschreibungen (OpenAPI). Ab Version 1.2 weitgehend eine Obermenge von JSON.
+- **Avro:** binäres, zeilenorientiertes Format mit mitgeliefertem Schema (in JSON definiert) und Schema-Evolution; typisch für Datenströme (Kafka). Faustregel: Avro zum Schreiben und Übertragen einzelner Datensätze, Parquet zum spaltenweisen Auswerten großer Datenmengen.
+
 ## 2.5 Zeichenkodierung
 
 - **ASCII:** 128 Zeichen, keine Umlaute.
-- **Latin-1 (ISO 8859-1):** ein Byte je Zeichen, enthält westeuropäische Umlaute.
+- **Latin-1 (ISO 8859-1):** ein Byte je Zeichen, enthält westeuropäische Umlaute – aber kein €-Zeichen (das hat erst Windows-1252 bzw. ISO 8859-15).
 - **UTF-8:** Unicode-Kodierung mit **1 bis 4 Bytes** je Zeichen, ASCII-kompatibel, Standard im Web.
 
 **Beispiel:** „Größe“ hat 5 Zeichen. In Latin-1 sind das **5 Bytes**, in UTF-8 **7 Bytes** – ö und ß belegen je 2 Bytes.
@@ -139,15 +148,17 @@ Daten in selbst definierten Tags: `<kunde id="1"><name>Huber GmbH</name></kunde>
 - **Zustandslos:** Jede Anfrage enthält alle nötigen Informationen; der Server speichert keinen Sitzungszustand.
 - Datenaustausch meist als JSON; Ergebnis wird über **Statuscodes** signalisiert.
 
-| Methode | Zweck | Idempotent | Typischer Erfolgscode |
-|---|---|---|---|
-| **GET** | lesen | ja | 200 OK |
-| **POST** | neu anlegen | **nein** | 201 Created |
-| **PUT** | vollständig ersetzen | ja | 200 OK / 204 No Content |
-| **PATCH** | teilweise ändern | nicht garantiert | 200 OK |
-| **DELETE** | löschen | ja | 204 No Content |
+| Methode | Zweck | Sicher | Idempotent | Typischer Erfolgscode |
+|---|---|---|---|---|
+| **GET** | lesen | ja | ja | 200 OK |
+| **POST** | neu anlegen | nein | **nein** | 201 Created |
+| **PUT** | vollständig ersetzen | nein | ja | 200 OK / 204 No Content |
+| **PATCH** | teilweise ändern | nein | nicht garantiert | 200 OK |
+| **DELETE** | löschen | nein | ja | 204 No Content |
 
-**Idempotent** heißt: Mehrfaches Ausführen führt zum selben Ergebnis wie einmaliges. Ein wiederholtes PUT setzt denselben Zustand erneut; ein wiederholtes POST legt dagegen einen zweiten Datensatz an – etwa eine doppelte Bestellung, wenn der Nutzer nach einem Timeout erneut klickt.
+**Idempotent** heißt: Mehrfaches Ausführen führt zum selben Ergebnis wie einmaliges. Ein wiederholtes PUT setzt denselben Zustand erneut; ein wiederholtes POST legt dagegen einen zweiten Datensatz an – etwa eine doppelte Bestellung, wenn der Nutzer nach einem Timeout erneut klickt. Gemeint ist der Zustand auf dem Server, nicht die Antwort: Ein zweites DELETE liefert vielleicht 404, die Ressource ist aber in beiden Fällen gelöscht.
+
+**Sicher** (safe) heißt strenger: Die Methode verändert auf dem Server gar nichts – das gilt nur für lesende Methoden wie GET (und HEAD, OPTIONS). Jede sichere Methode ist idempotent, aber nicht umgekehrt (RFC 9110).
 
 | Statuscode | Bedeutung |
 |---|---|
@@ -156,10 +167,20 @@ Daten in selbst definierten Tags: `<kunde id="1"><name>Huber GmbH</name></kunde>
 | **401** | **nicht authentifiziert** – wer bist du? |
 | **403** | **nicht berechtigt** – authentifiziert, aber kein Recht |
 | 404 | Ressource nicht gefunden |
+| 409 | Konflikt mit dem aktuellen Zustand (z. B. Versionskonflikt beim optimistischen Sperren) |
 | 429 | zu viele Anfragen (Rate Limit) |
 | 500 | Fehler auf dem Server |
+| 503 | Dienst vorübergehend nicht verfügbar (Wartung, Überlast) |
 
-Faustregel: **2xx Erfolg, 4xx Fehler des Clients, 5xx Fehler des Servers.**
+Faustregel: **2xx Erfolg, 3xx Umleitung, 4xx Fehler des Clients, 5xx Fehler des Servers.**
+
+**Andere Schnittstellenstile im Vergleich:**
+
+| Stil | Merkmal | Beschreibung der Schnittstelle |
+|---|---|---|
+| **REST** | Ressourcen + HTTP-Methoden, meist JSON | **OpenAPI** (früher Swagger), als YAML oder JSON |
+| **SOAP** | Protokoll mit XML-Nachrichten (Envelope, Header, Body), meist per HTTP POST; streng typisiert, verbreitet in Banken, Behörden, ERP | **WSDL** (XML) |
+| **GraphQL** | Abfragesprache über einen Endpunkt; der Client bestimmt genau die gewünschten Felder – kein Over- oder Underfetching | Schema mit Typsystem |
 
 ## 3.3 Sichere und praxistaugliche APIs
 
@@ -169,6 +190,15 @@ Faustregel: **2xx Erfolg, 4xx Fehler des Clients, 5xx Fehler des Servers.**
 - **Rate Limiting** schützt vor Überlastung (Statuscode 429).
 - **Datenminimierung:** Die Schnittstelle liefert nur die Felder, die der Empfänger braucht (→ Deep Dive 10).
 - **Versionierung** (`/v1/…`), damit Änderungen bestehende Nutzer nicht brechen.
+
+**Authentifizierung an APIs:**
+
+| Verfahren | Prinzip | Bewertung |
+|---|---|---|
+| **API-Schlüssel** | fester geheimer Schlüssel je Anwendung, im Header übertragen | einfach; identifiziert nur die Anwendung, nicht den Nutzer; bei Verlust sperren und neu ausgeben |
+| **Basic Auth** | Benutzername und Passwort Base64-kodiert im Header | Base64 ist keine Verschlüsselung – nur mit HTTPS vertretbar |
+| **OAuth 2.0** | Autorisierungsrahmen: Ein Autorisierungsserver stellt nach Zustimmung ein zeitlich begrenztes **Access Token** mit festgelegten Rechten (Scopes) aus; das Passwort erhält die Anwendung nie | Standard für delegierten Zugriff („Mit Konto X anmelden“); die Anmeldung selbst regelt der Zusatz OpenID Connect |
+| **JWT** (JSON Web Token) | Token aus Header, Nutzdaten (Claims) und Signatur, Base64url-kodiert, durch Punkte getrennt | signiert, aber nicht verschlüsselt – jeder kann den Inhalt lesen, also keine vertraulichen Daten hineinschreiben; Ablaufzeit (`exp`) prüfen |
 
 ---
 
@@ -183,13 +213,15 @@ Faustregel: **2xx Erfolg, 4xx Fehler des Clients, 5xx Fehler des Servers.**
 | **spaltenorientiert** (Wide Column) | Spaltenfamilien, verteilt | Cassandra | riesige Schreiblasten, Sensor- und Zeitreihendaten |
 | **Graph** | Knoten und Kanten | Neo4j | Beziehungsnetze, Empfehlungen über mehrere Stufen |
 
+Nicht verwechseln: Ein **Wide-Column-Store** wie Cassandra speichert Zeilen mit flexiblen Spalten in Spaltenfamilien. Ein **spaltenorientierter Speicher** im analytischen Sinn (Column Store, z. B. Parquet oder ein Data-Warehouse-System) legt dagegen jede Spalte am Stück ab, damit Aggregationen über wenige Spalten schnell sind.
+
 **Skalierung:** Relationale Datenbanken skalieren klassisch **vertikal** (stärkerer Server), viele NoSQL-Systeme **horizontal** (mehr Server).
 
 **CAP-Theorem:** Ein verteiltes System kann **Konsistenz, Verfügbarkeit und Partitionstoleranz** nicht alle gleichzeitig garantieren. Da Netzwerkausfälle unvermeidbar sind, muss im Störfall zwischen Konsistenz und Verfügbarkeit gewählt werden.
 
 **ACID oder BASE?** Relationale Systeme garantieren **ACID** (→ Deep Dive 1). Viele NoSQL-Systeme folgen **BASE**: Basically Available, Soft State, **Eventually Consistent** – Änderungen sind erst nach kurzer Zeit überall sichtbar.
 
-⚠ **Datenqualitäts-Perspektive:** „Schemafrei“ heißt nicht „ohne Regeln“. Die Datenbank prüft bei **Schema-on-Read** keine Pflichtfelder oder Datentypen mehr – diese Prüfungen wandern in die Anwendung oder die ETL-Strecke. Wer das übersieht, bekommt uneinheitliche Dokumente.
+⚠ **Datenqualitäts-Perspektive:** „Schemafrei“ heißt nicht „ohne Regeln“. Die Datenbank prüft bei **Schema-on-Read** keine Pflichtfelder oder Datentypen mehr – diese Prüfungen wandern in die Anwendung oder die ETL-Strecke. Wer das übersieht, bekommt uneinheitliche Dokumente. Viele Dokumentdatenbanken bieten optional eine Schemaprüfung beim Schreiben an (z. B. MongoDB mit JSON Schema) – die muss man aber bewusst einrichten.
 
 ## 4.2 Parallele Zugriffe
 
@@ -214,7 +246,7 @@ Je höher die Stufe, desto sicherer – und desto mehr Wartezeit durch Sperren.
 **Lost Update am Beispiel:** Zwei Disponenten lesen gleichzeitig den Lagerbestand 10. Beide verkaufen 3 Stück und schreiben 7 zurück. Richtig wäre **4**. Lösungen:
 - **Atomare Änderung:** `UPDATE lager SET bestand = bestand - 3 WHERE artikel_id = 10;` – die Datenbank rechnet selbst.
 - **Pessimistisches Sperren:** Datensatz beim Lesen sperren (`SELECT … FOR UPDATE`).
-- **Optimistisches Sperren:** Versionsspalte mitführen; das Update gelingt nur, wenn die Version unverändert ist – sonst Konflikt melden und neu lesen.
+- **Optimistisches Sperren:** Versionsspalte mitführen; das Update gelingt nur, wenn die Version unverändert ist – sonst Konflikt melden und neu lesen. Beispiel: `UPDATE lager SET bestand = 7, version = version + 1 WHERE artikel_id = 10 AND version = 3;` – trifft das Update 0 Zeilen, hat jemand anderes zwischenzeitlich geändert (eine REST-API meldet dann 409 Conflict).
 
 Ein **Deadlock** entsteht, wenn zwei Transaktionen gegenseitig auf Sperren warten; die Datenbank bricht dann eine davon ab.
 
@@ -226,6 +258,7 @@ Ein **Deadlock** entsteht, wenn zwei Transaktionen gegenseitig auf Sperren warte
 
 Zeigt, **wer** das System **wofür** nutzt – ohne Ablauf.
 - **Akteure** (Strichmännchen) außerhalb der **Systemgrenze** (Rechteck), **Anwendungsfälle** als Ellipsen.
+- Beide Beziehungen werden als gestrichelter Pfeil mit offener Spitze und dem Stereotyp in Guillemets gezeichnet.
 - **«include»:** Der Basisfall bindet einen anderen Fall **immer** ein – Pfeil **vom Basisfall zum eingebundenen Fall**. Beispiel: „Reparatur beauftragen“ «include» „Kunde anmelden“.
 - **«extend»:** Ein Fall erweitert den Basisfall nur **unter einer Bedingung** – Pfeil **vom erweiternden Fall zum Basisfall**. Beispiel: „Expressservice wählen“ «extend» „Reparatur beauftragen“.
 
@@ -235,11 +268,17 @@ Startknoten (gefüllter Kreis), Aktionen (abgerundete Rechtecke), Entscheidungen
 
 ## 5.3 Klassendiagramm und die Brücke zum ERM
 
-- **Klasse:** Name, Attribute, Methoden; Sichtbarkeit **+** public, **−** private, **#** protected.
-- **Assoziation** mit Multiplizitäten: `1`, `0..1`, `0..*`, `1..*`.
-- **Aggregation** (leere Raute): Teile existieren auch ohne das Ganze. **Komposition** (gefüllte Raute): Teile existieren nicht ohne das Ganze (Bestellposition ohne Bestellung). **Vererbung:** Pfeil mit leerem Dreieck zur Oberklasse.
+- **Klasse:** Name, Attribute, Methoden; Sichtbarkeit **+** public, **−** private, **#** protected, **~** package. Schreibweise: `− bestand: Integer`, `+ berechneSumme(): Decimal`. Abstrakte Klassen stehen kursiv.
+- **Assoziation** mit Multiplizitäten: `1`, `0..1`, `0..*`, `1..*` (`*` allein bedeutet `0..*`).
+- **Aggregation** (leere Raute): Teile existieren auch ohne das Ganze. **Komposition** (gefüllte Raute): Teile existieren nicht ohne das Ganze (Bestellposition ohne Bestellung) und gehören zu genau einem Ganzen. Die Raute sitzt jeweils am Ganzen. **Vererbung:** Pfeil mit leerem Dreieck zur Oberklasse.
 
 ⚠ **Die Leserichtung – dieselbe Falle wie in Deep Dive 2:** UML-Multiplizitäten stehen wie bei Chen an der **gegenüberliegenden Seite**. `Kunde 1 ——— 0..* Reparaturauftrag` heißt: Ein Kunde hat 0 bis viele Aufträge (die `0..*` steht beim Auftrag), jeder Auftrag gehört zu genau einem Kunden. In Min-Max lautet dieselbe Beziehung **KUNDE (0,n) — (1,1) REPARATURAUFTRAG** – die Angaben wandern also auf die jeweils andere Seite.
+
+## 5.4 Sequenz- und Zustandsdiagramm
+
+- **Sequenzdiagramm:** zeigt den **zeitlichen Nachrichtenaustausch** zwischen Objekten oder Systemen. Jeder Beteiligte hat eine gestrichelte **Lebenslinie** nach unten; die Zeit läuft von oben nach unten. Synchrone Nachrichten sind Pfeile mit gefüllter Spitze, Antworten gestrichelte Pfeile; schmale Balken zeigen, wann ein Objekt aktiv ist. Typisch für einen API-Aufruf: Filiale → API (`GET /reparaturauftraege/5001`) → Datenbank → Antwort 200 mit JSON zurück.
+- **Zustandsdiagramm** (Zustandsautomat): zeigt die **Zustände eines einzelnen Objekts** und die Übergänge dazwischen. Zustände als abgerundete Rechtecke, Übergänge als Pfeile mit `Ereignis [Bedingung] / Aktion`, Start- und Endzustand wie im Aktivitätsdiagramm. Beispiel Reparaturauftrag: angelegt → in Bearbeitung → erledigt, alternativ → storniert.
+- **Abgrenzung:** Aktivitätsdiagramm = Ablauf von Tätigkeiten, Sequenzdiagramm = wer schickt wem wann welche Nachricht, Zustandsdiagramm = Lebenszyklus eines Objekts. Für Datenanalysten nützlich: Das Zustandsdiagramm liefert die erlaubten Werte und Übergänge einer Statusspalte – Grundlage für Plausibilitätsprüfungen (ein Auftrag springt nicht von „storniert“ zurück auf „in Bearbeitung“).
 
 ---
 
@@ -336,6 +375,7 @@ b) Im Import erscheint „MÃ¼nchen“ statt „München“ und „KÃ¶ln“ s
 3. „Warum haben Sie Ihre Daten per Export und nicht per Schnittstelle bezogen – oder umgekehrt?“
 4. „Welche Zeichenkodierung haben Ihre Quelldaten, und woran hätten Sie einen Kodierungsfehler bemerkt?“
 5. „Was passiert in Ihrem Prozess, wenn zwei Personen gleichzeitig denselben Datensatz ändern?“
+6. „Wie haben Sie sich an der Schnittstelle authentifiziert, und wo lag der Zugangsschlüssel?“
 
 ---
 
@@ -351,3 +391,5 @@ b) Im Import erscheint „MÃ¼nchen“ statt „München“ und „KÃ¶ln“ s
 - [ ] Ich erkläre Lost Update, Isolationsstufen und Sperrverfahren.
 - [ ] Ich lese Use-Case- und Klassendiagramme und übertrage Multiplizitäten korrekt ins ERM.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich unterscheide sichere und idempotente HTTP-Methoden, grenze REST, SOAP und GraphQL ab und erkläre API-Schlüssel, OAuth 2.0 und JWT.
+- [ ] Ich lese Sequenz- und Zustandsdiagramme und grenze sie vom Aktivitätsdiagramm ab.

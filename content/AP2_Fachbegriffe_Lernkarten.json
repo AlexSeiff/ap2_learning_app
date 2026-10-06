@@ -7,7 +7,7 @@
     "version": "1.0",
     "sprache": "de",
     "anzahl_decks": 16,
-    "anzahl_karten": 648,
+    "anzahl_karten": 789,
     "felder": {
       "id": "FB- + Begriff als Kürzel (stabil, unabhängig von der Reihenfolge)",
       "frage": "der Fachbegriff (Vorderseite)",
@@ -23,7 +23,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 1",
       "status": "behandelt",
-      "anzahl_karten": 17,
+      "anzahl_karten": 23,
       "karten": [
         {
           "id": "FB-primarschlussel",
@@ -148,7 +148,7 @@
         {
           "id": "FB-dml",
           "frage": "DML",
-          "antwort": "Data Manipulation Language: Befehle, die Daten bearbeiten – INSERT, UPDATE, DELETE (und SELECT zum Lesen).",
+          "antwort": "Data Manipulation Language: Befehle, die Daten bearbeiten – INSERT, UPDATE, DELETE. SELECT wird je nach Einteilung zur DML gezählt oder als eigene DQL geführt.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -188,9 +188,69 @@
         {
           "id": "FB-unterabfrage",
           "frage": "Unterabfrage",
-          "antwort": "SELECT innerhalb einer anderen Abfrage, z. B. in WHERE (… WHERE preis > (SELECT AVG(preis) FROM artikel)).",
+          "antwort": "SELECT innerhalb einer anderen Abfrage, z. B. in WHERE (… WHERE preis > (SELECT AVG(preis) FROM produkt)).",
           "typ": "begriff",
           "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-coalesce",
+          "frage": "COALESCE",
+          "antwort": "Funktion, die das erste Argument zurückgibt, das nicht NULL ist – z. B. COALESCE(telefon, 'keine Angabe') oder COALESCE(umsatz, 0).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-dreiwertige-logik",
+          "frage": "Dreiwertige Logik",
+          "antwort": "In SQL ergibt eine Bedingung wahr, falsch oder UNKNOWN; jeder Vergleich mit NULL ist UNKNOWN, und WHERE übernimmt nur Zeilen mit wahr.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-cte",
+          "frage": "CTE (Common Table Expression)",
+          "antwort": "Mit WITH benanntes Zwischenergebnis, das nur innerhalb einer Abfrage gilt – lesbarer als verschachtelte Unterabfragen.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-fensterfunktion",
+          "frage": "Fensterfunktion",
+          "antwort": "Funktion mit OVER (…), die über eine Gruppe von Zeilen rechnet, ohne sie zu verdichten – z. B. SUM(menge) OVER (PARTITION BY bestell_id), RANK(), ROW_NUMBER().",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-materialized-view",
+          "frage": "Materialized View",
+          "antwort": "View, die ihr Ergebnis physisch speichert: schnelle Abfragen, muss aber regelmäßig aufgefrischt werden – im Gegensatz zur normalen View, die bei jedem Zugriff neu rechnet.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-autocommit",
+          "frage": "Autocommit",
+          "antwort": "Standardmodus vieler Datenbanksysteme: Jede Anweisung wird sofort als eigene Transaktion festgeschrieben; ein späteres ROLLBACK greift nicht. Mehrere Anweisungen bündelt man mit BEGIN … COMMIT.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
           "tags": [
             "fachbegriff"
           ]
@@ -203,7 +263,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 2",
       "status": "behandelt",
-      "anzahl_karten": 20,
+      "anzahl_karten": 26,
       "karten": [
         {
           "id": "FB-entitat",
@@ -248,7 +308,7 @@
         {
           "id": "FB-chen-notation",
           "frage": "Chen-Notation",
-          "antwort": "ERM-Notation mit Rechtecken, Rauten und Kardinalitäten 1:1, 1:n, m:n; beschreibt das Verhältnis der Entitätsmengen zueinander.",
+          "antwort": "ERM-Notation mit Rechtecken, Rauten und Kardinalitäten 1:1, 1:n, m:n; beschreibt das Verhältnis der Entitätsmengen zueinander, zeigt aber nur Maximalwerte (keine Pflicht/optional-Angabe).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -268,7 +328,7 @@
         {
           "id": "FB-krahenfussnotation",
           "frage": "Krähenfußnotation",
-          "antwort": "ERM-Notation, bei der Linienenden die Kardinalität zeigen: Krähenfuß = viele, Querstrich = genau 1, Kreis = optional (0).",
+          "antwort": "ERM-Notation (auch IE-/Martin-Notation), bei der Linienenden die Kardinalität zeigen: Krähenfuß = viele, Querstrich = genau 1, Kreis = optional (0). Leserichtung wie Chen, also umgekehrt zu Min-Max: KUNDE ||──o< BESTELLUNG.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -404,6 +464,66 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-boyce-codd-normalform",
+          "frage": "Boyce-Codd-Normalform (BCNF)",
+          "antwort": "Verschärfte 3. NF: Jede Determinante (linke Seite einer funktionalen Abhängigkeit) ist ein Schlüsselkandidat. Unterscheidet sich von der 3. NF nur bei überlappenden zusammengesetzten Schlüsselkandidaten.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-schlusselkandidat",
+          "frage": "Schlüsselkandidat",
+          "antwort": "Minimale Attributkombination, die jede Zeile eindeutig identifiziert; einer wird Primärschlüssel, die übrigen sind Alternativschlüssel (UNIQUE).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-zusammengesetzter-schlussel",
+          "frage": "Zusammengesetzter Schlüssel",
+          "antwort": "Primärschlüssel aus mehreren Attributen, z. B. (bestell_id, produkt_id) in einer Zwischentabelle; nur hier können partielle Abhängigkeiten auftreten.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-surrogatschlussel",
+          "frage": "Surrogatschlüssel",
+          "antwort": "Künstlicher Schlüssel ohne Fachbedeutung (z. B. fortlaufende ID); stabil und kurz – Gegenstück zum natürlichen, fachlichen Schlüssel.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mc-notation",
+          "frage": "MC-Notation",
+          "antwort": "Modifizierte Chen-Notation mit 1 (genau eins), c (null oder eins), m/n (eins oder mehrere), mc/nc (null oder mehrere); Leserichtung wie Chen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-rekursive-beziehung",
+          "frage": "Rekursive Beziehung",
+          "antwort": "Beziehung einer Entität zu sich selbst (Mitarbeiter führt Mitarbeiter); umgesetzt über einen NULL-fähigen Fremdschlüssel in derselben Tabelle.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -413,7 +533,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 3",
       "status": "behandelt",
-      "anzahl_karten": 30,
+      "anzahl_karten": 38,
       "karten": [
         {
           "id": "FB-skalenniveau",
@@ -578,7 +698,7 @@
         {
           "id": "FB-varianz",
           "frage": "Varianz",
-          "antwort": "Mittlere quadrierte Abweichung der Werte vom Mittelwert; Hilfsgröße mit quadrierter Einheit.",
+          "antwort": "Mittlere quadrierte Abweichung der Werte vom Mittelwert: Summe der Abweichungsquadrate ÷ n (Grundgesamtheit, σ²) bzw. ÷ (n − 1) (Stichprobe, s²); Hilfsgröße mit quadrierter Einheit.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -608,7 +728,7 @@
         {
           "id": "FB-quartil",
           "frage": "Quartil",
-          "antwort": "Q1 und Q3 teilen die sortierten Daten so, dass 25 % bzw. 75 % der Werte darunter liegen; Q2 ist der Median.",
+          "antwort": "Q1 und Q3 teilen die sortierten Daten so, dass rund 25 % bzw. 75 % der Werte darunter liegen; Q2 ist der Median. Es gibt mehrere Berechnungskonventionen (z. B. Position n · p mit Aufrunden, Excel QUARTILE.INKL/EXKL) – die verwendete immer nennen.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -714,6 +834,86 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-interquartilsabstand",
+          "frage": "Interquartilsabstand (IQR)",
+          "antwort": "Q3 − Q1: Breite des Bereichs, in dem die mittleren 50 % der Werte liegen; robustes Streuungsmaß und Grundlage der 1,5-IQR-Regel.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-funf-punkte-zusammenfassung",
+          "frage": "Fünf-Punkte-Zusammenfassung",
+          "antwort": "Minimum, Q1, Median, Q3 und Maximum – beschreibt eine Verteilung kompakt und ist die Grundlage des Boxplots.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-rechtsschief",
+          "frage": "Rechtsschief (linkssteil)",
+          "antwort": "Verteilung mit langem Ausläufer zu großen Werten; typisch Mittelwert > Median (z. B. Einkommen, Lieferzeiten mit Ausreißern).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-grundgesamtheit",
+          "frage": "Grundgesamtheit",
+          "antwort": "Menge aller Elemente, über die eine Aussage getroffen werden soll; liegen alle ihre Daten vor, teilt man bei der Varianz durch n.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-stichprobe",
+          "frage": "Stichprobe",
+          "antwort": "Ausgewählte Teilmenge der Grundgesamtheit, von der auf das Ganze geschlossen wird; Varianz dann mit ÷ (n − 1).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-normalverteilung",
+          "frage": "Normalverteilung",
+          "antwort": "Symmetrische Glockenkurve, beschrieben durch Mittelwert μ und Standardabweichung σ; Mittelwert = Median = Modus, rund 68/95/99,7 % der Werte in ± 1/2/3 σ.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-z-wert",
+          "frage": "z-Wert",
+          "antwort": "Standardisierter Abstand eines Werts vom Mittelwert in Standardabweichungen: z = (x − μ) / σ; |z| > 3 gilt bei Normalverteilung als Ausreißerverdacht.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-erwartungswert",
+          "frage": "Erwartungswert",
+          "antwort": "Gewichteter Durchschnitt aller möglichen Werte einer Zufallsvariablen: E(X) = Σ xᵢ · pᵢ – der Wert, der sich im Mittel vieler Wiederholungen einstellt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -723,7 +923,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 4",
       "status": "behandelt",
-      "anzahl_karten": 13,
+      "anzahl_karten": 17,
       "karten": [
         {
           "id": "FB-streudiagramm",
@@ -798,7 +998,7 @@
         {
           "id": "FB-bestimmtheitsmass",
           "frage": "Bestimmtheitsmaß",
-          "antwort": "R²: Anteil der Streuung von y, den das Modell erklärt (0 bis 1). Bei einfacher linearer Regression gleich r²; sagt nichts über Kausalität.",
+          "antwort": "R²: Anteil der Streuung von y, den das Modell erklärt (auf den Trainingsdaten 0 bis 1; auf Testdaten auch negativ möglich). Bei einfacher linearer Regression gleich r²; sagt nichts über Kausalität.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -854,6 +1054,46 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-signifikanz",
+          "frage": "Signifikanz",
+          "antwort": "Ein Ergebnis ist (statistisch) signifikant, wenn es bei Gültigkeit der Nullhypothese sehr unwahrscheinlich wäre (üblich: p < 0,05). Bedeutet nur „vermutlich kein Zufall“ – nicht „stark“ oder „kausal“.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-p-wert",
+          "frage": "p-Wert",
+          "antwort": "Wahrscheinlichkeit, ein mindestens so extremes Ergebnis zu erhalten, wenn die Nullhypothese (z. B. „kein Zusammenhang“) zutrifft. Kleiner p-Wert = Zufall als Erklärung unwahrscheinlich.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-nullhypothese",
+          "frage": "Nullhypothese",
+          "antwort": "Ausgangsannahme eines Signifikanztests, meist „es gibt keinen Effekt/Zusammenhang“ (H0). Sie wird nur verworfen, wenn die Daten sehr unwahrscheinlich unter ihr sind.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-geometrisches-mittel",
+          "frage": "Geometrisches Mittel",
+          "antwort": "n-te Wurzel aus dem Produkt von n Werten; für Wachstumsraten: (Endwert / Anfangswert)^(1/n) − 1. Richtig für durchschnittliche Wachstumsraten, weil jede Rate eine andere Basis hat.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -863,7 +1103,7 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 5",
       "status": "behandelt",
-      "anzahl_karten": 68,
+      "anzahl_karten": 75,
       "karten": [
         {
           "id": "FB-kernprozess",
@@ -1008,7 +1248,7 @@
         {
           "id": "FB-xor",
           "frage": "XOR",
-          "antwort": "Exklusives Oder: Genau **ein** Pfad wird gewählt (BPMN-Raute mit X, in der EPK ×-Konnektor).",
+          "antwort": "Exklusives Oder: Genau **ein** Pfad wird gewählt (BPMN-Raute mit X, in der EPK Kreis mit „XOR“).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -1308,7 +1548,7 @@
         {
           "id": "FB-total-quality-management",
           "frage": "Total Quality Management",
-          "antwort": "Qualität ist Aufgabe aller Beschäftigten und Prozesse, ausgerichtet auf Kundenzufriedenheit und ständige Verbesserung; Normgrundlage ISO 9001.",
+          "antwort": "Qualität ist Aufgabe aller Beschäftigten und Prozesse, ausgerichtet auf Kundenzufriedenheit und ständige Verbesserung. Geht über eine Norm hinaus (Bewertungsmodell z. B. EFQM); ein QM-System nach ISO 9001 ist oft die Basis.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -1544,6 +1784,76 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-sipoc",
+          "frage": "SIPOC",
+          "antwort": "Einseitige Prozessabgrenzung: Supplier, Input, Process (4–7 Hauptschritte), Output, Customer – typisch für die Define-Phase von Six Sigma.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-ereignisbasiertes-gateway",
+          "frage": "Ereignisbasiertes Gateway",
+          "antwort": "BPMN-Gateway (Raute mit Fünfeck im Doppelkreis), das auf das zuerst eintretende Ereignis wartet, z. B. Kundenantwort oder Timer nach 48 Stunden.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-standardfluss",
+          "frage": "Standardfluss",
+          "antwort": "Ausgehender Pfad eines XOR- oder OR-Gateways mit Querstrich; wird genommen, wenn keine andere Bedingung zutrifft (Default).",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-token",
+          "frage": "Token (BPMN)",
+          "antwort": "Gedachte Marke, die den Ablauf durch das Modell verfolgt: AND-Split kopiert sie, AND-Join wartet auf alle, XOR lässt genau eine durch.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-5s",
+          "frage": "5S",
+          "antwort": "Lean-Methode für einen geordneten Arbeitsplatz: Sortieren, Systematisieren, Säubern, Standardisieren, Selbstdisziplin – reduziert Suchen (Verschwendung Bewegung).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-dpmo",
+          "frage": "DPMO",
+          "antwort": "Defects per Million Opportunities: Fehler / (Einheiten · Fehlermöglichkeiten je Einheit) · 1.000.000; Six-Sigma-Ziel 3,4 DPMO.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-aufgabenprioritat",
+          "frage": "Aufgabenpriorität (FMEA)",
+          "antwort": "Ersatz der RPZ im AIAG-VDA-FMEA-Handbuch (2019): Einstufung hoch/mittel/niedrig, bei der die Bedeutung stärker zählt als bei A · B · E.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -1553,7 +1863,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 6",
       "status": "behandelt",
-      "anzahl_karten": 37,
+      "anzahl_karten": 44,
       "karten": [
         {
           "id": "FB-crisp-dm",
@@ -1618,7 +1928,7 @@
         {
           "id": "FB-ki-verordnung",
           "frage": "KI-Verordnung",
-          "antwort": "EU AI Act: regelt KI-Systeme nach Risiko – verboten, hohes Risiko (strenge Pflichten), begrenztes Risiko (Transparenz), minimales Risiko.",
+          "antwort": "EU AI Act, Verordnung (EU) 2024/1689: regelt KI-Systeme nach Risiko – verboten, hohes Risiko (strenge Pflichten), begrenztes Risiko (Transparenz), minimales Risiko. Hochrisiko-Pflichten nach Verschiebung ab 2. Dezember 2027 (Stand 2026).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -1924,6 +2234,76 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-validierungsdaten",
+          "frage": "Validierungsdaten",
+          "antwort": "Dritter Datenteil neben Trainings- und Testdaten, mit dem während der Entwicklung Parameter (z. B. k bei k-NN, Baumtiefe) eingestellt werden, damit die Testdaten bis zum Schluss unberührt bleiben.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-apriori-algorithmus",
+          "frage": "Apriori-Algorithmus",
+          "antwort": "Standardverfahren der Assoziationsanalyse: findet mit Mindestsupport häufige Artikelkombinationen und bildet daraus Regeln mit Mindestkonfidenz.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-min-max-normalisierung",
+          "frage": "Min-Max-Normalisierung",
+          "antwort": "Skalierung auf den Bereich 0 bis 1: x' = (x − min) / (max − min). Ausreißerempfindlich; nicht mit der Datenbank-Normalisierung verwechseln.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-standardisierung",
+          "frage": "Standardisierung",
+          "antwort": "z-Transformation: z = (x − Mittelwert) / Standardabweichung; danach hat das Merkmal Mittelwert 0 und Standardabweichung 1.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-bagging",
+          "frage": "Bagging",
+          "antwort": "Bootstrap Aggregating: viele Modelle auf Zufallsstichproben mit Zurücklegen trainieren und abstimmen lassen – Grundlage des Random Forest.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-testdesign",
+          "frage": "Testdesign",
+          "antwort": "CRISP-DM-Aufgabe der Phase Modeling: festlegen, wie das Modell geprüft wird, z. B. Aufteilung in Trainings- und Testdaten oder Kreuzvalidierung.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-k-means-plus-plus",
+          "frage": "k-Means++",
+          "antwort": "Startwertverfahren für k-Means, das die Startzentren möglichst weit auseinander legt und so schlechte lokale Optima seltener macht.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -1933,7 +2313,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 7",
       "status": "behandelt",
-      "anzahl_karten": 19,
+      "anzahl_karten": 27,
       "karten": [
         {
           "id": "FB-konfusionsmatrix",
@@ -2078,7 +2458,7 @@
         {
           "id": "FB-mae",
           "frage": "MAE",
-          "antwort": "Mittlerer absoluter Fehler: Σ|y − ŷ| / n; in der Einheit der Zielgröße, robust gegen Ausreißer.",
+          "antwort": "Mittlerer absoluter Fehler: Σ|y − ŷ| / n; in der Einheit der Zielgröße, robuster gegen Ausreißer als MSE/RMSE.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -2124,6 +2504,86 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-falsch-positiv-rate",
+          "frage": "Falsch-Positiv-Rate",
+          "antwort": "FPR = FP / (FP + TN) = 1 − Spezifität: Anteil der tatsächlich negativen Fälle, die fälschlich Alarm auslösen; x-Achse der ROC-Kurve.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-roc-kurve",
+          "frage": "ROC-Kurve",
+          "antwort": "Receiver Operating Characteristic: trägt für alle Entscheidungsschwellen die Richtig-Positiv-Rate (Recall) gegen die Falsch-Positiv-Rate ab; die Diagonale entspricht Zufall.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-auc",
+          "frage": "AUC",
+          "antwort": "Area Under the Curve: Fläche unter der ROC-Kurve; 1 = perfekte Trennung, 0,5 = Zufall. Schwellenunabhängiges Maß für die Trennschärfe eines Klassifikators.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mape",
+          "frage": "MAPE",
+          "antwort": "Mittlerer absoluter prozentualer Fehler: Σ(|y − ŷ| / |y|) / n · 100 %; gut vergleichbar, aber unbrauchbar, wenn y nahe 0 liegt.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-balanced-accuracy",
+          "frage": "Balanced Accuracy",
+          "antwort": "(Recall + Spezifität) / 2; bei unausgeglichenen Klassen aussagekräftiger als Accuracy – ein triviales Modell erreicht nur 50 %.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-stratifizierte-aufteilung",
+          "frage": "Stratifizierte Aufteilung",
+          "antwort": "Train-Test-Split bzw. Kreuzvalidierung, bei der jede Teilmenge denselben Klassenanteil wie der Gesamtbestand erhält; wichtig bei seltenen Klassen.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-oversampling",
+          "frage": "Oversampling",
+          "antwort": "Fälle der Minderheitsklasse im Trainingsdatensatz vervielfältigen oder synthetisch erzeugen (z. B. SMOTE), um unausgeglichene Klassen auszugleichen – nur nach dem Split und nur auf den Trainingsdaten.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-undersampling",
+          "frage": "Undersampling",
+          "antwort": "Fälle der Mehrheitsklasse im Trainingsdatensatz weglassen, um die Klassen auszugleichen; einfach, kostet aber Information.",
+          "typ": "begriff",
+          "schwierigkeit": 2,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -2133,7 +2593,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 8",
       "status": "behandelt",
-      "anzahl_karten": 33,
+      "anzahl_karten": 44,
       "karten": [
         {
           "id": "FB-oltp",
@@ -2408,7 +2868,7 @@
         {
           "id": "FB-big-data",
           "frage": "Big Data",
-          "antwort": "Datenbestände, die durch die 5 V (Volume, Velocity, Variety, Veracity, Value) klassische Verarbeitung überfordern.",
+          "antwort": "Datenbestände, die wegen Menge, Geschwindigkeit und Formatvielfalt (Volume, Velocity, Variety – die ursprünglichen 3 V nach Laney 2001) klassische Verarbeitung überfordern; erweitert um Veracity und Value zu den 5 V.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -2464,6 +2924,116 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-galaxy-schema",
+          "frage": "Galaxy-Schema",
+          "antwort": "Auch Fact Constellation: mehrere Faktentabellen (z. B. Verkauf, Lagerbestand) teilen sich gemeinsame Dimensionen wie Zeit und Produkt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-conformed-dimensions",
+          "frage": "Conformed Dimensions",
+          "antwort": "Einheitlich definierte Dimensionen, die von mehreren Faktentabellen bzw. Data Marts gemeinsam genutzt werden – Grundlage der Kimball-Bus-Architektur.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-lakehouse",
+          "frage": "Lakehouse",
+          "antwort": "Architektur, die Data Lake (günstiger Objektspeicher, offene Formate) mit DWH-Eigenschaften (ACID-Transaktionen, Schema, Qualität) verbindet, z. B. über Delta Lake oder Apache Iceberg.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mapreduce",
+          "frage": "MapReduce",
+          "antwort": "Verarbeitungsprinzip für verteilte Daten: Map erzeugt auf jedem Knoten Schlüssel-Wert-Paare, Shuffle gruppiert nach Schlüssel, Reduce fasst je Schlüssel zusammen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-hdfs",
+          "frage": "HDFS",
+          "antwort": "Hadoop Distributed File System: verteiltes Dateisystem von Apache Hadoop, das große Dateien in Blöcken redundant auf viele Knoten verteilt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-apache-spark",
+          "frage": "Apache Spark",
+          "antwort": "Framework für verteilte Datenverarbeitung, das Zwischenergebnisse im Arbeitsspeicher hält – schneller als MapReduce, auch für SQL, Streaming und Machine Learning.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-partitionierung",
+          "frage": "Partitionierung",
+          "antwort": "Physische Aufteilung einer großen Tabelle in Teile, die logisch eine Tabelle bleiben – horizontal (Range, Liste, Hash) oder vertikal (spaltenweise).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-partition-pruning",
+          "frage": "Partition Pruning",
+          "antwort": "Die Datenbank liest bei einem Filter auf das Partitionskriterium nur die betroffenen Partitionen und überspringt den Rest.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sharding",
+          "frage": "Sharding",
+          "antwort": "Horizontale Partitionierung, bei der die Teile (Shards) auf mehrere Server verteilt werden – Grundlage horizontaler Skalierung.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-spaltenorientierte-speicherung",
+          "frage": "Spaltenorientierte Speicherung",
+          "antwort": "Column Store: Werte einer Spalte liegen zusammen (z. B. Parquet) – analytische Abfragen lesen nur benötigte Spalten, starke Kompression; ideal für OLAP.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-molap",
+          "frage": "ROLAP / MOLAP",
+          "antwort": "Speicherformen für OLAP-Würfel: ROLAP relational auf dem Star-Schema, MOLAP in vorberechneter multidimensionaler Struktur (schnell, speicherintensiv), HOLAP als Mischform.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -2473,7 +3043,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 9",
       "status": "behandelt",
-      "anzahl_karten": 24,
+      "anzahl_karten": 30,
       "karten": [
         {
           "id": "FB-datenqualitat",
@@ -2714,6 +3284,66 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-mcar",
+          "frage": "MCAR",
+          "antwort": "Missing Completely at Random: Das Fehlen eines Werts ist völlig zufällig und hängt von keinem Merkmal ab; Löschen der Fälle verzerrt nicht.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mar",
+          "frage": "MAR",
+          "antwort": "Missing at Random: Das Fehlen hängt nur von anderen, beobachteten Merkmalen ab (z. B. ein bekannter Spediteur meldet nie); Ersetzen nur gruppen- oder modellbasiert.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mnar",
+          "frage": "MNAR",
+          "antwort": "Missing Not at Random: Das Fehlen hängt vom fehlenden Wert selbst ab (z. B. lange Lieferdauern werden nicht gemeldet); jede einfache Ersetzung verzerrt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-iso-iec-25012",
+          "frage": "ISO/IEC 25012",
+          "antwort": "Datenqualitätsmodell der ISO-25000-Reihe (SQuaRE) mit 15 Merkmalen, unterteilt in inhärente und systemabhängige Datenqualität.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-record-linkage",
+          "frage": "Record Linkage",
+          "antwort": "Abgleich von Datensätzen, die dieselbe Realweltentität beschreiben, über Ähnlichkeitsmaße; mit Blocking und zwei Schwellen (Match, Prüffall, Non-Match).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-platzhalterwert",
+          "frage": "Platzhalterwert",
+          "antwort": "Ersatzwert wie 01.01.1900, 0 oder „unbekannt“ statt NULL; täuscht Vollständigkeit vor und verfälscht Auswertungen, da er wie ein echter Wert mitgerechnet wird.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -2723,7 +3353,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 10",
       "status": "behandelt",
-      "anzahl_karten": 71,
+      "anzahl_karten": 81,
       "karten": [
         {
           "id": "FB-dsgvo",
@@ -2928,7 +3558,7 @@
         {
           "id": "FB-privacy-by-design",
           "frage": "Privacy by Design",
-          "antwort": "Datenschutz durch Technikgestaltung und datenschutzfreundliche Voreinstellungen (Art. 25 DSGVO).",
+          "antwort": "Datenschutz durch Technikgestaltung (Art. 25 Abs. 1 DSGVO): Datenschutz von Anfang an in Systeme einplanen; ergänzt durch Privacy by Default (Abs. 2), d. h. datenschutzfreundliche Voreinstellungen.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3088,7 +3718,7 @@
         {
           "id": "FB-hashing",
           "frage": "Hashing",
-          "antwort": "Einwegfunktion mit Ausgabe fester Länge, nicht umkehrbar; prüft Integrität und speichert Passwörter (mit Salt).",
+          "antwort": "Einwegfunktion mit Ausgabe fester Länge, nicht umkehrbar; prüft Integrität und speichert Passwörter (mit Salt und langsamen Verfahren wie Argon2 oder bcrypt).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3138,7 +3768,7 @@
         {
           "id": "FB-3-2-1-regel",
           "frage": "3-2-1-Regel",
-          "antwort": "Drei Kopien der Daten auf zwei verschiedenen Medien, eine davon außer Haus (offline oder an anderem Ort).",
+          "antwort": "Drei Kopien der Daten auf zwei verschiedenen Medientypen, eine davon außer Haus (offsite); ergänzend heute mindestens eine Kopie offline oder unveränderbar.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3434,6 +4064,106 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-verzeichnis-von-verarbeitungstatigkeiten",
+          "frage": "Verzeichnis von Verarbeitungstätigkeiten",
+          "antwort": "Pflichtdokumentation nach Art. 30 DSGVO: je Verarbeitung Zweck, Datenkategorien, Betroffene, Empfänger, Löschfristen und TOM.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-technische-und-organisatorische-massnahmen",
+          "frage": "Technische und organisatorische Maßnahmen",
+          "antwort": "TOM nach Art. 32 DSGVO: Schutzmaßnahmen wie Verschlüsselung, Pseudonymisierung, Zugriffskontrolle, Backup und regelmäßige Überprüfung.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-nis2",
+          "frage": "NIS2",
+          "antwort": "EU-Richtlinie zur Cybersicherheit; in Deutschland seit 06.12.2025 im BSIG umgesetzt: Registrierung, Risikomanagement und Meldung erheblicher Vorfälle an das BSI (24 h / 72 h / 1 Monat).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-tdddg",
+          "frage": "TDDDG",
+          "antwort": "Telekommunikation-Digitale-Dienste-Datenschutz-Gesetz (bis Mai 2024 TTDSG); § 25 verlangt eine Einwilligung für nicht notwendige Cookies.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-kumulationseffekt",
+          "frage": "Kumulationseffekt",
+          "antwort": "Viele kleine Schäden summieren sich: Mehrere Anwendungen mit normalem Schutzbedarf können für ein System zusammen einen hohen Schutzbedarf ergeben.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-verteilungseffekt",
+          "frage": "Verteilungseffekt",
+          "antwort": "Der Schutzbedarf eines Systems sinkt, weil eine Anwendung redundant auf mehrere Systeme verteilt ist (meist bei Verfügbarkeit).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-k-anonymitat",
+          "frage": "k-Anonymität",
+          "antwort": "Jede Merkmalskombination in einem Datensatz trifft auf mindestens k Personen zu – Schutz vor Re-Identifikation.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-salt",
+          "frage": "Salt",
+          "antwort": "Zufallswert, der je Passwort vor dem Hashen ergänzt wird, damit gleiche Passwörter verschiedene Hashes ergeben.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-pki",
+          "frage": "PKI",
+          "antwort": "Public-Key-Infrastruktur: Zertifizierungsstellen bestätigen per Zertifikat, dass ein öffentlicher Schlüssel zu einer Person oder Domain gehört.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-standardvertragsklauseln",
+          "frage": "Standardvertragsklauseln",
+          "antwort": "Von der EU-Kommission vorgegebene Vertragsklauseln, die einen Datentransfer in Drittländer ohne Angemessenheitsbeschluss absichern.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -3443,7 +4173,7 @@
       "pruefungsbereich": "Prozessanalyse und Datenqualität",
       "quelle": "Deep Dive 11",
       "status": "behandelt",
-      "anzahl_karten": 35,
+      "anzahl_karten": 48,
       "karten": [
         {
           "id": "FB-balkendiagramm",
@@ -3708,7 +4438,7 @@
         {
           "id": "FB-struktogramm",
           "frage": "Struktogramm",
-          "antwort": "Nassi-Shneiderman-Diagramm: blockorientierte Darstellung eines Algorithmus, die strukturierte Programmierung erzwingt (keine Sprünge).",
+          "antwort": "Nassi-Shneiderman-Diagramm nach DIN 66261: blockorientierte Darstellung eines Algorithmus, die strukturierte Programmierung erzwingt (keine beliebigen Sprünge).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3718,7 +4448,7 @@
         {
           "id": "FB-programmablaufplan",
           "frage": "Programmablaufplan",
-          "antwort": "PAP: Flussdiagramm eines Algorithmus mit Symbolen (Oval, Rechteck, Raute, Parallelogramm); kann Sprünge darstellen.",
+          "antwort": "PAP nach DIN 66001: Flussdiagramm eines Algorithmus mit Symbolen (Oval, Rechteck, Raute, Parallelogramm); kann Sprünge darstellen.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3788,7 +4518,137 @@
         {
           "id": "FB-bubble-sort",
           "frage": "Bubble Sort",
-          "antwort": "Sortierverfahren, das benachbarte Elemente vergleicht und bei falscher Reihenfolge tauscht, bis keine Vertauschung mehr nötig ist.",
+          "antwort": "Sortierverfahren, das benachbarte Elemente vergleicht und bei falscher Reihenfolge tauscht, bis keine Vertauschung mehr nötig ist; Aufwand O(n²), stabil.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-lugenfaktor",
+          "frage": "Lügenfaktor",
+          "antwort": "Maß nach Tufte für Verzerrung: Größe des Effekts in der Grafik geteilt durch Größe des Effekts in den Daten; ehrlich ist ein Wert um 1.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-data-ink-ratio",
+          "frage": "Data-Ink-Ratio",
+          "antwort": "Nach Tufte der Anteil der Diagramm-„Tinte“, der tatsächlich Daten zeigt – soll möglichst hoch sein.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-chartjunk",
+          "frage": "Chartjunk",
+          "antwort": "Diagrammelemente ohne Informationsgehalt (3D, Schatten, Hintergrundbilder, dicke Gitter), die vom Inhalt ablenken.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-heatmap",
+          "frage": "Heatmap",
+          "antwort": "Matrixdarstellung, in der Werte als Farbintensität codiert werden – z. B. Umsatz je Filiale und Monat; macht Muster sichtbar.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-o-notation",
+          "frage": "O-Notation",
+          "antwort": "Angabe des Aufwands eines Algorithmus in Abhängigkeit von der Datenmenge n, z. B. O(n), O(n log n), O(n²); konstante Faktoren entfallen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-lineare-suche",
+          "frage": "Lineare Suche",
+          "antwort": "Prüft die Elemente nacheinander von vorn bis zum Treffer; funktioniert auch unsortiert, Aufwand O(n).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-binare-suche",
+          "frage": "Binäre Suche",
+          "antwort": "Vergleicht mit dem mittleren Element und sucht nur in der passenden Hälfte weiter; setzt eine sortierte Liste voraus, Aufwand O(log n).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-selection-sort",
+          "frage": "Selection Sort",
+          "antwort": "Sortieren durch Auswählen: sucht im unsortierten Rest das kleinste Element und tauscht es nach vorn; immer O(n²).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-insertion-sort",
+          "frage": "Insertion Sort",
+          "antwort": "Sortieren durch Einfügen: jedes Element wird in den bereits sortierten Teil einsortiert; O(n²), bei fast sortierten Daten O(n).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-merge-sort",
+          "frage": "Merge Sort",
+          "antwort": "Teile-und-herrsche-Verfahren: Liste halbieren, Hälften rekursiv sortieren, sortiert zusammenführen; immer O(n log n), stabil, braucht Zusatzspeicher.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-quicksort",
+          "frage": "Quicksort",
+          "antwort": "Teile-und-herrsche-Verfahren mit Pivotelement: Aufteilen in kleinere und größere Werte, Teile rekursiv sortieren; im Mittel O(n log n), im schlechtesten Fall O(n²).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-stabiles-sortierverfahren",
+          "frage": "Stabiles Sortierverfahren",
+          "antwort": "Sortierverfahren, das Elemente mit gleichem Schlüssel in ihrer ursprünglichen Reihenfolge belässt (z. B. Bubble, Insertion, Merge Sort).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-rekursion",
+          "frage": "Rekursion",
+          "antwort": "Eine Funktion ruft sich selbst mit einem kleineren Teilproblem auf; benötigt zwingend eine Abbruchbedingung (Basisfall).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3803,7 +4663,7 @@
       "pruefungsbereich": "Durchführen einer Prozessanalyse",
       "quelle": "Deep Dive 12",
       "status": "behandelt",
-      "anzahl_karten": 45,
+      "anzahl_karten": 55,
       "karten": [
         {
           "id": "FB-projekt",
@@ -3908,7 +4768,7 @@
         {
           "id": "FB-scrum",
           "frage": "Scrum",
-          "antwort": "Agiles Rahmenwerk mit Sprints (2–4 Wochen), Rollen (Product Owner, Scrum Master, Entwicklungsteam), Events und Artefakten.",
+          "antwort": "Agiles Rahmenwerk mit Sprints (höchstens ein Monat), drei Verantwortlichkeiten (Product Owner, Scrum Master, Developers), fünf Events und drei Artefakten.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3928,7 +4788,7 @@
         {
           "id": "FB-scrum-master",
           "frage": "Scrum Master",
-          "antwort": "Scrum-Rolle: sorgt für die Einhaltung des Rahmenwerks und beseitigt Hindernisse – keine Führungskraft.",
+          "antwort": "Scrum-Verantwortlichkeit: sorgt für die Einführung und Einhaltung von Scrum, beseitigt Hindernisse – kein Vorgesetzter, sondern dienende Führungskraft.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3938,7 +4798,7 @@
         {
           "id": "FB-sprint",
           "frage": "Sprint",
-          "antwort": "Fester Zeitraum von 2–4 Wochen, in dem ein nutzbares Produktinkrement entsteht.",
+          "antwort": "Event fester Länge von höchstens einem Monat (meist 1–4 Wochen), in dem ein nutzbares Inkrement entsteht; enthält alle anderen Scrum-Events.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3948,7 +4808,7 @@
         {
           "id": "FB-product-backlog",
           "frage": "Product Backlog",
-          "antwort": "Priorisierte Liste aller Anforderungen an das Produkt, gepflegt vom Product Owner.",
+          "antwort": "Geordnete, sich laufend weiterentwickelnde Liste dessen, was am Produkt verbessert werden soll; verantwortet vom Product Owner, Commitment: Produktziel.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -3958,7 +4818,7 @@
         {
           "id": "FB-daily-scrum",
           "frage": "Daily Scrum",
-          "antwort": "Tägliches 15-Minuten-Treffen des Entwicklungsteams zur Abstimmung.",
+          "antwort": "Tägliches 15-Minuten-Event der Developers, um den Fortschritt zum Sprint-Ziel zu prüfen und den nächsten Arbeitstag zu planen.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4254,6 +5114,106 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-developers",
+          "frage": "Developers",
+          "antwort": "Scrum-Verantwortlichkeit (bis 2017 „Entwicklungsteam“): selbstmanagende Mitglieder des Scrum Teams, die in jedem Sprint ein nutzbares Inkrement erstellen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-definition-of-done",
+          "frage": "Definition of Done",
+          "antwort": "Gemeinsame, formale Beschreibung, wann ein Inkrement fertig ist; Commitment zum Inkrement im Scrum Guide 2020.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sprint-backlog",
+          "frage": "Sprint Backlog",
+          "antwort": "Sprint-Ziel, die dafür ausgewählten Product-Backlog-Einträge und der Plan zur Umsetzung; gehört den Developers, Commitment: Sprint-Ziel.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-inkrement",
+          "frage": "Inkrement",
+          "antwort": "Nutzbarer Zwischenstand des Produkts, der die Definition of Done erfüllt und auf allen vorherigen Inkrementen aufbaut.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sprint-review",
+          "frage": "Sprint Review",
+          "antwort": "Event am Sprintende (max. 4 h bei einem Monat): Scrum Team und Stakeholder prüfen das Ergebnis und passen das Product Backlog an.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sprint-planning",
+          "frage": "Sprint Planning",
+          "antwort": "Event zu Sprintbeginn (max. 8 h bei einem Monat): Warum ist der Sprint wertvoll (Sprint-Ziel), was wird umgesetzt und wie?",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-wip-limit",
+          "frage": "WIP-Limit",
+          "antwort": "Kanban: Obergrenze für gleichzeitig bearbeitete Aufgaben (Work in Progress) je Spalte; senkt die Durchlaufzeit und macht Engpässe sichtbar.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-kritische-menge",
+          "frage": "Kritische Menge",
+          "antwort": "Menge, bei der zwei Alternativen gleich viel kosten: Fixkostendifferenz / Differenz der variablen Stückkosten.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-kapitalwert",
+          "frage": "Kapitalwert",
+          "antwort": "Dynamisches Verfahren: Summe aller auf heute abgezinsten Rückflüsse minus Investition; positiv = vorteilhafter als die Anlage zum Kalkulationszins.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-teufelsquadrat",
+          "frage": "Teufelsquadrat",
+          "antwort": "Erweiterung des magischen Dreiecks nach Sneed: Qualität, Quantität, Zeit und Kosten; bei gleicher Kapazität geht jede Verbesserung zulasten einer anderen Größe.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -4263,7 +5223,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 13",
       "status": "behandelt",
-      "anzahl_karten": 42,
+      "anzahl_karten": 44,
       "karten": [
         {
           "id": "FB-duale-ausbildung",
@@ -4378,7 +5338,7 @@
         {
           "id": "FB-nachweisgesetz",
           "frage": "Nachweisgesetz",
-          "antwort": "Verpflichtet den Arbeitgeber, die wesentlichen Arbeitsbedingungen schriftlich auszuhändigen.",
+          "antwort": "Verpflichtet den Arbeitgeber, die wesentlichen Arbeitsbedingungen schriftlich nachzuweisen – seit 2025 auch in Textform (z. B. E-Mail), außer in Branchen nach § 2a SchwarzArbG oder wenn der Arbeitnehmer die Schriftform verlangt.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4498,7 +5458,7 @@
         {
           "id": "FB-arbeitszeitgesetz",
           "frage": "Arbeitszeitgesetz",
-          "antwort": "Höchstens 8 Stunden werktäglich, bis 10 bei Ausgleich; Pausen ab 6 Stunden 30 Minuten, ab 9 Stunden 45 Minuten; 11 Stunden Ruhezeit.",
+          "antwort": "Höchstens 8 Stunden werktäglich, bis 10 bei Ausgleich; Pausen bei mehr als 6 Stunden 30 Minuten, bei mehr als 9 Stunden 45 Minuten; 11 Stunden Ruhezeit.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4548,7 +5508,7 @@
         {
           "id": "FB-jugend-und-auszubildendenvertretung",
           "frage": "Jugend- und Auszubildendenvertretung",
-          "antwort": "JAV: vertritt Beschäftigte unter 18 und Azubis unter 25; Amtszeit 2 Jahre.",
+          "antwort": "JAV: vertritt Beschäftigte unter 18 und Auszubildende (seit 2021 ohne Altersgrenze); Amtszeit 2 Jahre, handelt über den Betriebsrat.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4684,6 +5644,26 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-agg",
+          "frage": "AGG",
+          "antwort": "Allgemeines Gleichbehandlungsgesetz: verbietet Benachteiligung wegen ethnischer Herkunft, Geschlecht, Religion/Weltanschauung, Behinderung, Alter oder sexueller Identität – auch schon bei der Bewerbung.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mindestausbildungsvergutung",
+          "frage": "Mindestausbildungsvergütung",
+          "antwort": "Gesetzliche Untergrenze der Ausbildungsvergütung (§ 17 BBiG), abhängig vom Jahr des Ausbildungsbeginns; 2026: 724 € im ersten Ausbildungsjahr (Stand 2026).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -4693,7 +5673,7 @@
       "pruefungsbereich": "Wirtschafts- und Sozialkunde",
       "quelle": "Deep Dive 14",
       "status": "behandelt",
-      "anzahl_karten": 97,
+      "anzahl_karten": 105,
       "karten": [
         {
           "id": "FB-sozialversicherung",
@@ -4778,7 +5758,7 @@
         {
           "id": "FB-beitragsbemessungsgrenze",
           "frage": "Beitragsbemessungsgrenze",
-          "antwort": "Einkommenshöhe, bis zu der Sozialversicherungsbeiträge erhoben werden; darüber ist das Einkommen beitragsfrei.",
+          "antwort": "Einkommenshöhe, bis zu der Sozialversicherungsbeiträge erhoben werden; darüber ist das Einkommen beitragsfrei (2026: KV/PV 5.812,50 €, RV/ALV 8.450 € im Monat).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4788,7 +5768,7 @@
         {
           "id": "FB-versicherungspflichtgrenze",
           "frage": "Versicherungspflichtgrenze",
-          "antwort": "Jahresarbeitsentgeltgrenze: Wer darüber verdient, kann in die private Krankenversicherung wechseln.",
+          "antwort": "Jahresarbeitsentgeltgrenze: Wer darüber verdient, kann in die private Krankenversicherung wechseln (2026: 77.400 € im Jahr).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4798,7 +5778,7 @@
         {
           "id": "FB-minijob",
           "frage": "Minijob",
-          "antwort": "Geringfügige Beschäftigung bis zur an den Mindestlohn gekoppelten Grenze (2026: 603 € monatlich); Arbeitgeber zahlt Pauschalabgaben.",
+          "antwort": "Geringfügige Beschäftigung bis zur an den Mindestlohn gekoppelten Grenze (2026: 603 €, ab 2027: 633 € monatlich); Arbeitgeber zahlt Pauschalabgaben.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4808,7 +5788,7 @@
         {
           "id": "FB-midijob",
           "frage": "Midijob",
-          "antwort": "Übergangsbereich (2026: 603,01 € bis 2.000 €) mit reduzierten, gleitend ansteigenden Arbeitnehmerbeiträgen.",
+          "antwort": "Übergangsbereich (2026: 603,01 € bis 2.000 €) mit reduzierten, gleitend ansteigenden Arbeitnehmerbeiträgen; gilt nicht für Auszubildende.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5328,7 +6308,7 @@
         {
           "id": "FB-ug",
           "frage": "UG (haftungsbeschränkt)",
-          "antwort": "„Mini-GmbH“ ab 1 € Stammkapital; muss Rücklagen bilden, bis 25.000 € erreicht sind.",
+          "antwort": "„Mini-GmbH“ ab 1 € Stammkapital; muss jährlich 25 % des Jahresüberschusses in eine Rücklage einstellen, bis das Stammkapital auf mindestens 25.000 € erhöht ist.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5358,7 +6338,7 @@
         {
           "id": "FB-prokura",
           "frage": "Prokura",
-          "antwort": "Umfassende Vollmacht nach HGB für alle Geschäfte eines Handelsgewerbes; im Handelsregister eingetragen, Zeichnung „ppa.“; nicht: Grundstücke veräußern, Bilanz unterschreiben.",
+          "antwort": "Umfassende Vollmacht nach HGB für alle Geschäfte eines Handelsgewerbes; im Handelsregister eingetragen, Zeichnung „ppa.“; nicht: Grundstücke veräußern oder belasten, Bilanz unterschreiben, Prokura erteilen.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5608,7 +6588,7 @@
         {
           "id": "FB-wegeunfall",
           "frage": "Wegeunfall",
-          "antwort": "Unfall auf dem direkten Weg zwischen Wohnung und Arbeit; über die Berufsgenossenschaft versichert.",
+          "antwort": "Unfall auf dem direkten Weg zwischen Wohnung und Arbeit bzw. Berufsschule (ab der Haustür des Wohngebäudes); über die Berufsgenossenschaft versichert – auch der Umweg zur Kita.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5664,6 +6644,86 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-gbr",
+          "frage": "GbR",
+          "antwort": "Gesellschaft bürgerlichen Rechts: Zusammenschluss zu einem gemeinsamen Zweck ohne Mindestkapital; Gesellschafter haften unbeschränkt; seit MoPeG 2024 rechtsfähig, als eGbR im Gesellschaftsregister eintragbar.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-esg",
+          "frage": "ESG",
+          "antwort": "Environmental, Social, Governance – Kriterien zur Bewertung der Nachhaltigkeit von Unternehmen, z. B. durch Investoren und Banken.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-csrd",
+          "frage": "CSRD",
+          "antwort": "EU-Richtlinie zur Nachhaltigkeitsberichterstattung nach den Standards ESRS; nach Omnibus I (2026) nur noch für Unternehmen mit mehr als 1.000 Beschäftigten und 450 Mio. € Umsatz.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-lieferkettengesetz",
+          "frage": "Lieferkettengesetz",
+          "antwort": "LkSG: Unternehmen ab 1.000 Beschäftigten müssen Menschenrechts- und Umweltrisiken in ihrer Lieferkette analysieren, vorbeugen und abstellen; die Berichtspflicht soll entfallen (Stand 2026).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-dguv",
+          "frage": "DGUV",
+          "antwort": "Deutsche Gesetzliche Unfallversicherung – Spitzenverband der Berufsgenossenschaften und Unfallkassen; DGUV Vorschrift 3 regelt die Prüfung elektrischer Geräte.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mindestlohn",
+          "frage": "Mindestlohn",
+          "antwort": "Gesetzliche Lohnuntergrenze pro Stunde: 13,90 € (2026), 14,60 € (ab 2027); bestimmt auch die Minijob-Grenze.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-grundfreibetrag",
+          "frage": "Grundfreibetrag",
+          "antwort": "Steuerfreies Existenzminimum bei der Einkommensteuer – 2026: 12.348 € zu versteuerndes Einkommen im Jahr.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-anfechtung",
+          "frage": "Anfechtung",
+          "antwort": "Rückwirkende Vernichtung eines zunächst wirksamen Rechtsgeschäfts wegen Irrtums (unverzüglich) oder arglistiger Täuschung bzw. Drohung (binnen eines Jahres).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -5673,7 +6733,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 15",
       "status": "behandelt",
-      "anzahl_karten": 56,
+      "anzahl_karten": 76,
       "karten": [
         {
           "id": "FB-strukturierte-daten",
@@ -5798,7 +6858,7 @@
         {
           "id": "FB-valide",
           "frage": "Valide",
-          "antwort": "XML ist wohlgeformt **und** entspricht einem Schema (XSD).",
+          "antwort": "XML ist wohlgeformt **und** entspricht einem Schema (XSD oder DTD).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5828,7 +6888,7 @@
         {
           "id": "FB-utf-8",
           "frage": "UTF-8",
-          "antwort": "Unicode-Kodierung, die alle Zeichen inklusive Umlauten abbildet; heutiger Standard für Datenaustausch.",
+          "antwort": "Unicode-Kodierung mit 1 bis 4 Bytes je Zeichen, ASCII-kompatibel (Umlaute belegen 2 Bytes); heutiger Standard für Datenaustausch.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5928,7 +6988,7 @@
         {
           "id": "FB-idempotent",
           "frage": "Idempotent",
-          "antwort": "Mehrfaches Ausführen führt zum selben Ergebnis wie einmaliges (PUT, DELETE – nicht POST).",
+          "antwort": "Mehrfaches Ausführen führt zum selben Serverzustand wie einmaliges (GET, PUT, DELETE – nicht POST).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -6234,6 +7294,206 @@
           "tags": [
             "fachbegriff"
           ]
+        },
+        {
+          "id": "FB-wide-column-store",
+          "frage": "Wide-Column-Store",
+          "antwort": "NoSQL-Typ (spaltenorientiert, z. B. Cassandra): Zeilen mit flexiblen Spalten in Spaltenfamilien, verteilt – für sehr hohe Schreiblasten und Zeitreihen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-parquet",
+          "frage": "Parquet",
+          "antwort": "Binäres, spaltenorientiertes und komprimiertes Dateiformat mit eingebettetem Schema – Standard für Data Lakes und große Analysen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-avro",
+          "frage": "Avro",
+          "antwort": "Binäres, zeilenorientiertes Format mit mitgeliefertem (JSON-)Schema und Schema-Evolution – typisch für Datenströme (Kafka).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-yaml",
+          "frage": "YAML",
+          "antwort": "Gut lesbares Textformat, Struktur über Einrückung, Kommentare mit # erlaubt – typisch für Konfigurationsdateien und OpenAPI.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-dtd",
+          "frage": "DTD",
+          "antwort": "Document Type Definition: ältere Schemasprache für XML; legt Elemente und Struktur fest, kennt aber kaum Datentypen (dafür XSD).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-xpath",
+          "frage": "XPath",
+          "antwort": "Pfadsprache zum Adressieren von Knoten in XML, z. B. /kunde/name oder //name, Attribute mit @.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-soap",
+          "frage": "SOAP",
+          "antwort": "XML-basiertes Protokoll für Webservices (Envelope, Header, Body), streng typisiert und mit WSDL beschrieben.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-wsdl",
+          "frage": "WSDL",
+          "antwort": "Web Services Description Language: XML-Beschreibung eines SOAP-Dienstes (Operationen, Nachrichten, Adresse).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-graphql",
+          "frage": "GraphQL",
+          "antwort": "Abfragesprache für APIs über einen einzigen Endpunkt; der Client fordert genau die benötigten Felder an.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-openapi",
+          "frage": "OpenAPI",
+          "antwort": "Standard (früher Swagger) zur maschinenlesbaren Beschreibung von REST-APIs in YAML oder JSON.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sichere-http-methode",
+          "frage": "Sichere HTTP-Methode",
+          "antwort": "Methode, die auf dem Server nichts verändert (GET, HEAD, OPTIONS); jede sichere Methode ist auch idempotent.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-api-schlussel",
+          "frage": "API-Schlüssel",
+          "antwort": "Geheimer Schlüssel, mit dem sich eine Anwendung an einer API ausweist – gehört in den Header, nie in die URL.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-oauth-2-0",
+          "frage": "OAuth 2.0",
+          "antwort": "Autorisierungsrahmen: Ein Autorisierungsserver stellt ein zeitlich begrenztes Access Token mit festgelegten Rechten aus, ohne dass die Anwendung das Passwort erhält.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-jwt",
+          "frage": "JWT",
+          "antwort": "JSON Web Token: Token aus Header, Claims und Signatur (Base64url) – signiert, aber nicht verschlüsselt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-webhook",
+          "frage": "Webhook",
+          "antwort": "Der Sender meldet Änderungen aktiv per HTTP-Aufruf an eine vereinbarte Adresse – Gegenstück zum Polling.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-polling",
+          "frage": "Polling",
+          "antwort": "Der Empfänger fragt regelmäßig nach Änderungen – einfach, erzeugt aber viele leere Anfragen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-multiplizitat",
+          "frage": "Multiplizität",
+          "antwort": "Angabe im UML-Klassendiagramm, wie viele Objekte an einer Assoziation beteiligt sind (1, 0..1, 0..*, 1..*); steht an der gegenüberliegenden Klasse.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-deadlock",
+          "frage": "Deadlock",
+          "antwort": "Zwei Transaktionen warten gegenseitig auf Sperren; die Datenbank bricht eine davon ab.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sequenzdiagramm",
+          "frage": "Sequenzdiagramm",
+          "antwort": "UML-Diagramm für den zeitlichen Nachrichtenaustausch zwischen Beteiligten (Lebenslinien, Zeit von oben nach unten).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-zustandsdiagramm",
+          "frage": "Zustandsdiagramm",
+          "antwort": "UML-Diagramm mit den Zuständen eines Objekts und den Übergängen dazwischen (Ereignis [Bedingung] / Aktion).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
         }
       ]
     },
@@ -6243,7 +7503,7 @@
       "pruefungsbereich": "Prozessanalyse und Datenqualität",
       "quelle": "Deep Dive 16",
       "status": "behandelt",
-      "anzahl_karten": 41,
+      "anzahl_karten": 56,
       "karten": [
         {
           "id": "FB-qualitatssicherung",
@@ -6528,7 +7788,7 @@
         {
           "id": "FB-verfugbarkeitsberechnung",
           "frage": "Verfügbarkeitsberechnung",
-          "antwort": "Anteil der Zeit, in der ein System nutzbar ist: V = MTBF / (MTBF + MTTR) oder Betriebszeit / vereinbarte Servicezeit.",
+          "antwort": "Anteil der vereinbarten Servicezeit, in der ein System nutzbar ist: V = (Servicezeit − Ausfallzeit) / Servicezeit oder V = MTBF / (MTBF + MTTR).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -6608,7 +7868,7 @@
         {
           "id": "FB-raid",
           "frage": "RAID",
-          "antwort": "Verbund mehrerer Festplatten mit Redundanz (z. B. RAID 1 Spiegelung, RAID 5 Parität); schützt vor Plattenausfall, ersetzt aber kein Backup.",
+          "antwort": "Verbund mehrerer Festplatten: RAID 0 Striping ohne Redundanz, RAID 1 Spiegelung, RAID 5 Parität (n − 1 Platten nutzbar, 1 Ausfall), RAID 6 doppelte Parität (n − 2, 2 Ausfälle), RAID 10 gespiegelte Paare (50 %); schützt vor Plattenausfall, ersetzt aber kein Backup.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -6649,6 +7909,156 @@
           "id": "FB-georedundanz",
           "frage": "Georedundanz",
           "antwort": "Zweites Rechenzentrum an einem entfernten Standort – schützt vor Brand, Hochwasser und regionalen Ausfällen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-fehlhandlung",
+          "frage": "Fehlhandlung",
+          "antwort": "Menschlicher Irrtum (engl. error, mistake), der zu einem Fehlerzustand führt – z. B. Netto und Brutto verwechselt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-anweisungsuberdeckung",
+          "frage": "Anweisungsüberdeckung (C0)",
+          "antwort": "White-Box-Kriterium: Jede Anweisung wird mindestens einmal ausgeführt; schwächer als die Zweigüberdeckung.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-zweiguberdeckung",
+          "frage": "Zweigüberdeckung (C1)",
+          "antwort": "White-Box-Kriterium: Jeder Zweig jeder Verzweigung, auch der leere Else-Zweig, wird mindestens einmal durchlaufen; 100 % C1 schließt 100 % C0 ein.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-entscheidungstabellentest",
+          "frage": "Entscheidungstabellentest",
+          "antwort": "Black-Box-Verfahren: Alle Kombinationen von Bedingungen werden mit der erwarteten Aktion als Regeln tabelliert; jede Regel wird ein Testfall.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-zustandsubergangstest",
+          "frage": "Zustandsübergangstest",
+          "antwort": "Black-Box-Verfahren für Systeme mit Zuständen: Jeder erlaubte Übergang wird getestet, unerlaubte Übergänge müssen abgewiesen werden.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-fehlernachtest",
+          "frage": "Fehlernachtest",
+          "antwort": "Bestätigungstest (Re-Test): Nach einer Fehlerbehebung wird der fehlgeschlagene Testfall wiederholt; der Regressionstest prüft dagegen auf Nebenwirkungen an anderer Stelle.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-testpyramide",
+          "frage": "Testpyramide",
+          "antwort": "Leitbild für die Testverteilung: viele schnelle Komponententests als Basis, weniger Integrationstests, wenige teure End-to-End- bzw. Oberflächentests an der Spitze.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-testgetriebene-entwicklung",
+          "frage": "Testgetriebene Entwicklung (TDD)",
+          "antwort": "Test-Driven Development: erst einen fehlschlagenden Test schreiben (Red), dann Code, bis er besteht (Green), dann aufräumen (Refactor).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-stresstest",
+          "frage": "Stresstest",
+          "antwort": "Nicht-funktionaler Test, bei dem die Last bis über die Belastungsgrenze gesteigert wird, um Bruchstelle und Verhalten bei Überlast zu finden.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-walkthrough",
+          "frage": "Walkthrough",
+          "antwort": "Wenig formales Review: Der Autor stellt sein Ergebnis vor, die Teilnehmer geben Hinweise; Ziel ist Verständnis.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-inspektion",
+          "frage": "Inspektion",
+          "antwort": "Formalste Review-Art mit festen Rollen (Moderator, Autor, Gutachter), Checklisten, Protokoll und Metriken.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mttf",
+          "frage": "MTTF",
+          "antwort": "Mean Time To Failure: mittlere Betriebsdauer bis zum Ausfall bei nicht reparierbaren Teilen, die ausgetauscht werden (z. B. Festplatte).",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-verfugbarkeitsklassen",
+          "frage": "Verfügbarkeitsklassen",
+          "antwort": "Einteilung des BSI (Hochverfügbarkeitskompendium): VK 0 ohne Zusage, VK 1 99 %, VK 2 99,9 %, VK 3 99,99 %, VK 4 99,999 %, VK 5 desastertolerant.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-fiktive-abnahme",
+          "frage": "Fiktive Abnahme",
+          "antwort": "§ 640 Abs. 2 BGB: Das Werk gilt als abgenommen, wenn der Besteller eine angemessene Abnahmefrist verstreichen lässt, ohne die Abnahme unter Angabe mindestens eines Mangels zu verweigern.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-iso-iec-25010",
+          "frage": "ISO/IEC 25010",
+          "antwort": "Norm für Software-Produktqualität; Fassung 2023 mit neun Merkmalen: funktionale Eignung, Leistungseffizienz, Kompatibilität, Interaktionsfähigkeit, Zuverlässigkeit, Sicherheit, Wartbarkeit, Flexibilität, Betriebssicherheit (Safety).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [

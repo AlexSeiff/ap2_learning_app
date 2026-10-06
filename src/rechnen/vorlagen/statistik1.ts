@@ -325,7 +325,7 @@ export const quartile = vorlage({
     });
 
     const excel =
-      'Das ist die Interpolations-Methode (wie Excel QUARTIL.INKL). In der Prüfung ok, wenn du die Methode nennst – hier gilt die Konvention des Lernblatts: Position n · p, aufrunden.';
+      'Das ist die Interpolations-Methode (wie Excel QUARTILE.INKL). In der Prüfung ok, wenn du die Methode nennst – hier gilt die Konvention des Lernblatts: Position n · p, aufrunden.';
     b.fehler('q1', quartilInterpoliert(s, 0.25), excel);
     b.fehler('q3', quartilInterpoliert(s, 0.75), excel);
     b.fehler('q1', Q1.ganz ? Q1.position : Math.ceil(Q1.position), 'Das ist die **Position** von Q1, nicht der Wert an dieser Position.');

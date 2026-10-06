@@ -56,6 +56,10 @@ $S_{xy} = \sum (x - \bar{x})(y - \bar{y})$ · $S_{xx} = \sum (x - \bar{x})^2$ ·
 
 **Für ordinale Daten** (z. B. Zufriedenheitsstufen) ist Pearson nicht zulässig – dort verwendet man die **Rangkorrelation nach Spearman**, die auf Rangplätzen statt Messwerten rechnet und auch nichtlineare, aber gleichgerichtete (monotone) Zusammenhänge erfasst.
 
+Spearman-Formel (ohne gleiche Ränge, d = Rangdifferenz je Merkmalsträger): $r_s = 1 - \dfrac{6 \cdot \sum d^2}{n \cdot (n^2 - 1)}$
+
+Beispiel: 5 Filialen, Rangdifferenzen mit $\sum d^2 = 2$ → $r_s = 1 - \frac{6 \cdot 2}{5 \cdot 24} = 1 - 0{,}1$ = **0,90**. Wie Pearson liegt $r_s$ zwischen −1 und +1; weil nur Ränge zählen, ist Spearman zudem robuster gegenüber Ausreißern. Gleiche Werte (Bindungen) erhalten den Mittelwert ihrer Rangplätze; die Kurzformel gilt dann nur noch näherungsweise.
+
 > ❓ **Prüferfrage:** Sie berechnen r = 0,05 zwischen Außentemperatur und Stromverbrauch eines Gebäudes und schließen daraus: „kein Zusammenhang". Was übersehen Sie?
 > *Der Zusammenhang ist vermutlich U-förmig – geheizt wird bei Kälte, gekühlt bei Hitze. Pearson misst nur Linearität und wird hier nahezu null, obwohl ein starker Zusammenhang besteht. Ein Streudiagramm hätte das sofort gezeigt.*
 
@@ -67,6 +71,8 @@ Der wichtigste Satz der ganzen Fachrichtung. Ein hoher Korrelationswert lässt *
 2. **y verursacht x** (umgekehrte Wirkungsrichtung)
 3. **Drittvariable (Confounder):** Eine dritte Größe beeinflusst beide. Klassiker: Eisverkauf und Sonnenbrände korrelieren – Ursache ist in beiden Fällen die Sonneneinstrahlung.
 4. **Zufall / Scheinkorrelation:** Bei vielen geprüften Merkmalspaaren treten hohe Korrelationen rein zufällig auf; besonders häufig bei parallel verlaufenden Zeitreihen (beide wachsen im Zeitverlauf, ohne inhaltlichen Bezug).
+
+Ob ein gemessenes r nur zufällig zustande gekommen sein kann, prüft man mit einem **Signifikanztest**. Ausgangspunkt ist die **Nullhypothese** „In der Grundgesamtheit besteht kein Zusammenhang". Der **p-Wert** gibt an, wie wahrscheinlich ein mindestens so starkes Ergebnis wäre, wenn die Nullhypothese stimmt; üblich ist die Schwelle p < 0,05 (Signifikanzniveau 5 %, ebenfalls eine Konvention). Zwei Prüfungsfallen: „signifikant" heißt nur „vermutlich kein Zufall" – nicht „kausal" und nicht „stark"; und bei sehr großen Datenmengen wird schon ein winziges, praktisch bedeutungsloses r signifikant. Umgekehrt kann bei sehr wenigen Wertepaaren selbst ein auffälliges r noch Zufall sein.
 
 **Für Kausalität sprechen:** zeitliche Abfolge (Ursache vor Wirkung), fachlich plausibler Wirkmechanismus, Bestätigung durch ein **kontrolliertes Experiment** (z. B. A/B-Test), Stabilität des Zusammenhangs über verschiedene Zeiträume und Teilgruppen.
 
@@ -90,7 +96,7 @@ $\hat{y} = a + b \cdot x$
 
 $b = \dfrac{S_{xy}}{S_{xx}}$ · $a = \bar{y} - b \cdot \bar{x}$
 
-Die Gerade wird nach der **Methode der kleinsten Quadrate** bestimmt: Die Summe der quadrierten senkrechten Abstände zwischen Beobachtungen und Gerade wird minimiert. Diese Abstände heißen **Residuen** ($e = y - \hat{y}$).
+Die Gerade wird nach der **Methode der kleinsten Quadrate** bestimmt: Die Summe der quadrierten senkrechten (in y-Richtung gemessenen, nicht rechtwinklig zur Geraden) Abstände zwischen Beobachtungen und Gerade wird minimiert. Diese Abstände heißen **Residuen** ($e = y - \hat{y}$).
 
 ## 2.2 Durchgerechnetes Beispiel
 
@@ -113,13 +119,15 @@ $b = \frac{64}{10}$ = **6,4** · $a = 44 - 6{,}4 \cdot 3 = 44 - 19{,}2$ = **24,8
 
 **Interpretation (so formulieren!):** Je zusätzlich eingesetzten 1.000 € Werbebudget steigt der Umsatz im Durchschnitt um 6.400 €. Der Achsenabschnitt von 24,8 T€ ist der rechnerische Grundumsatz ohne Werbung – ob er fachlich sinnvoll ist, hängt davon ab, ob x = 0 im beobachteten Wertebereich liegt.
 
-**Prognose für x = 6:** $\hat{y} = 24{,}8 + 6{,}4 \cdot 6$ = **63,2 T€**
+**Prognose für x = 6:** $\hat{y} = 24{,}8 + 6{,}4 \cdot 6$ = **63,2 T€** (x = 6 liegt knapp außerhalb des beobachteten Bereichs – leichte Extrapolation, nur unter Vorbehalt vertretbar)
 
 ⚠️ **Extrapolationswarnung:** Beobachtet wurde nur der Bereich x = 1 bis 5. Eine Prognose für x = 20 wäre unzulässig – außerhalb des Datenbereichs gilt der lineare Zusammenhang nicht notwendigerweise weiter (Sättigungseffekte). Diese Einschränkung **immer dazuschreiben**, sie ist regelmäßig eigenständig bepunktet.
 
 ## 2.3 Bestimmtheitsmaß R²
 
-$R^2 = r^2$ und liegt zwischen 0 und 1. Es gibt den **Anteil der Streuung von y an, der durch das Modell erklärt wird**.
+$R^2 = r^2$ (gilt so bei der einfachen linearen Regression mit **einem** x) und liegt zwischen 0 und 1. Es gibt den **Anteil der Streuung von y an, der durch das Modell erklärt wird**.
+
+Allgemeine Definition (gilt auch bei mehreren Einflussgrößen): $R^2 = 1 - \dfrac{\sum e^2}{S_{yy}}$ – also 1 minus „unerklärte Streuung (Residuen) durch Gesamtstreuung".
 
 Im Beispiel: $S_{yy} = 424$ → $r = \frac{64}{\sqrt{10 \cdot 424}} = \frac{64}{65{,}12}$ = **0,983** → $R^2 = 0{,}983^2$ = **0,966**
 
@@ -129,8 +137,13 @@ Interpretation: Rund 96,6 % der Umsatzschwankungen lassen sich durch das Werbebu
 
 **Residuen prüfen:** $e = y - \hat{y}$. Im Beispiel: −1,2 / +2,4 / −2,0 / +1,6 / −0,8. Erwünscht ist eine **zufällige** Streuung um null. Zeigen die Residuen ein Muster (z. B. erst alle negativ, dann alle positiv), ist der Zusammenhang nicht linear und das Modell ungeeignet.
 
+Kontrollen: Die Residuen der Kleinste-Quadrate-Geraden summieren sich immer zu null (−1,2 + 2,4 − 2,0 + 1,6 − 0,8 = 0). Ihre Quadratsumme liefert R² auf dem zweiten Weg: $\sum e^2 = 14{,}4$ → $R^2 = 1 - \frac{14{,}4}{424}$ = **0,966** ✓
+
 > ❓ **Prüferfrage:** Ihr Modell hat R² = 0,95. Ein Kollege sagt: „Damit können wir den Umsatz sicher vorhersagen." Beurteilen Sie das.
 > *Das ist zu optimistisch. R² beschreibt nur die Anpassungsgüte an die vorliegenden Daten. Aussagekraft für die Zukunft besteht nur, wenn sich die Rahmenbedingungen nicht ändern, die Prognose innerhalb des beobachteten Wertebereichs liegt und das Modell an unabhängigen Daten geprüft wurde – bei fünf Datenpunkten ist ein hohes R² zudem leicht zu erreichen.*
+
+> ❓ **Prüferfrage:** Bei 2 Millionen Kundendatensätzen ist die Korrelation zwischen Alter und Warenkorbwert mit r = 0,03 hochsignifikant (p < 0,001). Ist das ein wichtiger Befund?
+> *Nein. Signifikant heißt nur, dass der Zusammenhang vermutlich nicht zufällig ist. Mit r = 0,03 ist er praktisch bedeutungslos: R² = 0,0009, das Alter erklärt also nur rund 0,1 % der Streuung. Bei sehr großen Datenmengen wird fast jeder noch so kleine Effekt signifikant – entscheidend für die Bewertung ist die Stärke des Zusammenhangs, nicht der p-Wert.*
 
 ---
 
@@ -158,6 +171,10 @@ Von 120 auf 138: $\frac{138 - 120}{120} = 0{,}15$ = **+15,0 %**
 Gesamtentwicklung 120 → 180: $\frac{180 - 120}{120}$ = **+50,0 %**
 
 ⚠️ **Häufiger Fehler:** Prozentwerte einzelner Perioden dürfen nicht einfach addiert oder gemittelt werden – jede Rate bezieht sich auf eine andere Basis. Für die durchschnittliche Wachstumsrate über mehrere Perioden ist das **geometrische Mittel** korrekt.
+
+Durchschnittliche Wachstumsrate über n Perioden: $\bar{r} = \sqrt[n]{\frac{\text{Endwert}}{\text{Anfangswert}}} - 1$
+
+Beispiel 120 → 180 über 7 Monatsschritte: $\sqrt[7]{\frac{180}{120}} - 1 = \sqrt[7]{1{,}5} - 1$ = **+5,96 % je Monat**. Das arithmetische Mittel der sieben Monatsraten (+15,0 / −8,7 / +19,05 / −4,0 / +16,67 / −7,14 / +15,38 %) ergäbe dagegen 6,61 % – hochgerechnet $120 \cdot 1{,}0661^7 = 187{,}8$ statt der tatsächlichen 180 T€.
 
 Zusätzlich unterscheiden: **Prozentpunkte vs. Prozent.** Steigt eine Fehlerquote von 4 % auf 6 %, sind das **2 Prozentpunkte**, aber **+50 Prozent** relativ. In Berichten ist das ein beliebter Manipulationsspielraum – und eine gern gestellte Prüfungsfrage.
 
@@ -278,3 +295,4 @@ Monatsumsatz in T€: 120, 138, 126, 150, 144, 168, 156, 180
 - [ ] Ich berechne und interpretiere R² inklusive seiner Grenzen.
 - [ ] Ich beherrsche gleitenden Durchschnitt, Wachstumsraten und die Unterscheidung Prozent/Prozentpunkte.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich berechne die Spearman-Rangkorrelation, erkläre „signifikant" (p-Wert) korrekt und bestimme durchschnittliche Wachstumsraten mit dem geometrischen Mittel.

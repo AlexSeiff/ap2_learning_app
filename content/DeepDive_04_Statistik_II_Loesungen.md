@@ -109,7 +109,7 @@ Residuen $e = y - \hat{y}$:
 
 *(4 P für die korrekten Werte)*
 
-Zu achten ist auf eine **zufällige, musterlose Streuung um null**: Positive und negative Abweichungen sollten sich abwechseln und in etwa gleich groß sein. Zeigt sich ein systematisches Muster – etwa erst nur negative, dann nur positive Residuen, oder mit x wachsende Abweichungen –, ist der Zusammenhang nicht linear und das Modell ungeeignet. Hier wechseln die Vorzeichen unregelmäßig, das Modell passt. *(2 P)*
+Zu achten ist auf eine **zufällige, musterlose Streuung um null**: Positive und negative Abweichungen sollten in zufälliger Folge auftreten und in etwa gleich groß sein. Zeigt sich ein systematisches Muster – etwa erst nur negative, dann nur positive Residuen, oder mit x wachsende Abweichungen –, ist der Zusammenhang nicht linear und das Modell ungeeignet. Hier wechseln die Vorzeichen, die Beträge sind klein (max. 2,4 T€) und wachsen nicht mit x – kein Hinweis auf Nichtlinearität, das Modell passt (bei nur fünf Punkten mit begrenzter Aussagekraft). Kontrolle: Die Residuen summieren sich zu null. *(2 P)*
 
 ---
 
@@ -117,7 +117,9 @@ Zu achten ist auf eine **zufällige, musterlose Streuung um null**: Positive und
 
 **D1 (6 P):**
 $r = \frac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}} = \frac{64}{\sqrt{10 \cdot 424}} = \frac{64}{\sqrt{4240}} = \frac{64}{65{,}12}$ = **0,98**
-$R^2 = r^2 = 0{,}98^2$ ≈ **0,97** (exakt 0,9660)
+$R^2 = r^2 = 0{,}9829^2 = 0{,}9660$ ≈ **0,97**
+
+*Mit dem ungerundeten r weiterrechnen: Wer das gerundete 0,98 quadriert, erhält 0,9604 ≈ 0,96. Kontrolle über die Residuen aus C4: R² = 1 − Σe² / S<sub>yy</sub> = 1 − 14,4 / 424 = 0,9660.*
 
 *(3 P r, 3 P R². Der Rechenweg über R² = r² muss erkennbar sein.)*
 
@@ -135,7 +137,7 @@ Der Wert 15 statt 55 liegt weit unter dem Trend und wirkt als **Ausreißer mit s
 - Der Betrag von **r sinkt deutlich** – der lineare Zusammenhang erscheint schwächer, als er ist.
 - **R² fällt entsprechend**, das Modell scheint schlechter zu passen.
 - Die **Regressionsgerade wird nach unten gezogen**; ihre Steigung verringert sich, da der Punkt bei hohem x einen sehr niedrigen y-Wert hat.
-- Alle Prognosen werden systematisch zu niedrig; das Residuum dieses Punktes wäre auffällig groß – genau daran lässt sich der Erfassungsfehler erkennen.
+- Die Prognosen werden verzerrt – vor allem bei hohen Werbebudgets deutlich zu niedrig (am unteren Rand des Bereichs liegt die abgeflachte Gerade dagegen sogar höher); das Residuum dieses Punktes wäre auffällig groß – genau daran lässt sich der Erfassungsfehler erkennen.
 
 *Prüferkommentar: Der letzte Gedanke – Residuenanalyse als Werkzeug zum Aufspüren von Datenfehlern – verbindet Statistik mit Datenqualität und ist im Fachgespräch Gold wert.*
 
@@ -176,4 +178,4 @@ Die Angabe „+2 %" ist **falsch** – sie verwechselt Prozentpunkte mit Prozent
 | 81–91 | gut | Prüfe, ob die Punkte im Rechen- oder im Beurteilungsteil fehlten |
 | < 81 | | Teil 1–2 wiederholen, Klausur nach einer Woche neu schreiben |
 
-**Selbstdiagnose:** Zähle deine Punkte in den Blöcken A2, C1, D1 (Rechnen: 26 P) getrennt von den Blöcken B, C2/C3, D2/D3 (Beurteilen: 42 P). Fehlen dir Punkte im Rechenteil, hilft Üben. Fehlen sie im Beurteilungsteil, lerne die Standardformulierungen aus diesem Lernzettel auswendig – bei einer angestrebten 1 sind das die entscheidenden Punkte, und sie folgen immer demselben Muster: **Ergebnis nennen → inhaltlich deuten → Einschränkung benennen.**
+**Selbstdiagnose:** Zähle deine Punkte in den Blöcken A2, C1, D1 (Rechnen: 26 P) getrennt von den Blöcken B, C2/C3, D2/D3 (Beurteilen: 44 P). Fehlen dir Punkte im Rechenteil, hilft Üben. Fehlen sie im Beurteilungsteil, lerne die Standardformulierungen aus diesem Lernzettel auswendig – bei einer angestrebten 1 sind das die entscheidenden Punkte, und sie folgen immer demselben Muster: **Ergebnis nennen → inhaltlich deuten → Einschränkung benennen.**

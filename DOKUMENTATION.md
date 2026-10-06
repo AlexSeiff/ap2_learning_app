@@ -129,9 +129,9 @@ lern-app/
                "karten": [ { "id": "SQL-001", "frage": "…", "antwort": "…", "typ": "wissen", "schwierigkeit": 1, "tags": ["join"] } ] } ] }
 ```
 
-- Currently 25 decks and 456 cards (typ: wissen 241, falle 69, abgrenzung 61, anwendung 53, rechnung 32).
+- Currently 25 decks and 539 cards (typ: wissen 259, falle 94, abgrenzung 80, anwendung 62, rechnung 44).
 - **Term cards** `AP2_Fachbegriffe_Lernkarten.json` (same format, any `*Lernkarten*.json` is imported): 16 decks `fb01`–`fb16`, one per Deep Dive,
-  648 cards with `typ: "begriff"` – `frage` is just the term, `antwort` a one- or two-sentence explanation, ids `FB-<term-slug>` (stable,
+  789 cards with `typ: "begriff"` – `frage` is just the term, `antwort` a one- or two-sentence explanation, ids `FB-<term-slug>` (stable,
   independent of order). Terms already defined by a `wissen` card (ACID, KPI, PDCA …) are not repeated. In the app: Typ filter „Fachbegriff“
   (`/karteikarten?typ=begriff`), Leicht-Modus with automatic answers (`begriff` is in `LEICHT_TYPEN`), and the glossary uses them first.
 - `quelle` containing "Deep Dive N" maps the deck to a topic; decks without one (WiSo, project work) are reachable via the deck filter.
@@ -174,7 +174,7 @@ with a mock client – no API call in tests):**
 }
 ```
 
-Currently 3 datasets (`moebelhaus`, `datafit`, `kundenimport`) and 59 exercises.
+Currently 3 datasets (`moebelhaus`, `datafit`, `kundenimport`) and 63 exercises.
 
 ### 4.4 Rechenübungen `AP2_Rechen_Uebungen.json`
 

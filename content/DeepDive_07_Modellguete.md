@@ -70,12 +70,16 @@ Zunächst festlegen, was die **positive Klasse** ist – üblicherweise das selt
 | Kennzahl | Formel | Frage, die sie beantwortet |
 |---|---|---|
 | **Accuracy** (Korrektklassifikationsrate) | (TP + TN) / Gesamt | Wie viele Fälle insgesamt wurden richtig eingeordnet? |
-| **Precision** (Genauigkeit) | TP / (TP + FP) | Wie viele der als positiv **vorhergesagten** Fälle sind wirklich positiv? |
+| **Precision** (Genauigkeit, positiver Vorhersagewert) | TP / (TP + FP) | Wie viele der als positiv **vorhergesagten** Fälle sind wirklich positiv? |
 | **Recall** (Trefferquote, Sensitivität) | TP / (TP + FN) | Wie viele der **tatsächlich** positiven Fälle wurden gefunden? |
 | **F1-Maß** | 2 · (Precision · Recall) / (Precision + Recall) | Ausgewogenes Gesamtmaß (harmonisches Mittel) |
 | **Spezifität** | TN / (TN + FP) | Wie viele der tatsächlich negativen Fälle wurden richtig erkannt? |
 
 **Nenner-Merkhilfe:** Precision teilt durch die **Spalte** der positiven Vorhersagen, Recall durch die **Zeile** der tatsächlich positiven Fälle.
+
+Dazu gehört eine sechste Kennzahl, die du für die ROC-Kurve (→ 4.4) brauchst: die **Falsch-Positiv-Rate** (FPR) = FP / (FP + TN) = 1 − Spezifität – der Anteil der tatsächlich negativen Fälle, die fälschlich Alarm auslösen. Der Recall heißt in diesem Zusammenhang auch Richtig-Positiv-Rate (TPR).
+
+Achtung, Begriffsfalle: Im Deutschen wird „Genauigkeit" teils für Precision, teils für Accuracy verwendet. Nenne in der Prüfung deshalb immer den englischen Fachbegriff und zusätzlich die Formel.
 
 ## 2.3 Durchgerechnetes Beispiel – und die wichtigste Lehre
 
@@ -91,6 +95,7 @@ Zunächst festlegen, was die **positive Klasse** ist – üblicherweise das selt
 - Recall: $\frac{60}{60 + 40} = \frac{60}{100}$ = **60,00 %**
 - F1: $2 \cdot \frac{0{,}40 \cdot 0{,}60}{0{,}40 + 0{,}60} = \frac{0{,}48}{1{,}00}$ = **48,00 %**
 - Spezifität: $\frac{810}{900}$ = **90,00 %**
+- Falsch-Positiv-Rate: $\frac{90}{90 + 810} = 1 - 0{,}90$ = **10,00 %**
 
 **Das Accuracy-Paradox:** Ein triviales Modell, das **immer „keine Reklamation"** sagt, erreicht $\frac{900}{1000}$ = **90 % Accuracy** – und ist damit scheinbar besser als unser Modell mit 87 %. Es findet allerdings **keinen einzigen** Reklamationsfall (Recall = 0 %), ist also fachlich völlig wertlos.
 
@@ -98,7 +103,7 @@ Daraus folgt die zentrale Aussage: **Bei unausgeglichenen Klassen ist Accuracy i
 
 ## 2.4 Precision oder Recall? Die Abwägung
 
-Beide Kennzahlen lassen sich meist nur gegeneinander verbessern: Senkt man die Entscheidungsschwelle, findet das Modell mehr echte Fälle (Recall steigt), erzeugt aber mehr Fehlalarme (Precision sinkt) – und umgekehrt.
+Beide Kennzahlen lassen sich meist nur gegeneinander verbessern: Senkt man die Entscheidungsschwelle, findet das Modell mehr echte Fälle (Recall steigt oder bleibt gleich), erzeugt aber mehr Fehlalarme (Precision sinkt in der Regel) – und umgekehrt.
 
 **Welche Kennzahl zählt, entscheidet der fachliche Schaden:**
 
@@ -119,10 +124,11 @@ Bei stetiger Zielgröße (→ Deep Dive 4) gelten andere Maße:
 
 | Maß | Formel | Eigenschaft |
 |---|---|---|
-| **MAE** (mittlerer absoluter Fehler) | Σ\|y − ŷ\| / n | leicht interpretierbar, in der Einheit der Zielgröße, robust gegen Ausreißer |
+| **MAE** (mittlerer absoluter Fehler) | Σ\|y − ŷ\| / n | leicht interpretierbar, in der Einheit der Zielgröße, robuster gegen Ausreißer als MSE/RMSE |
 | **MSE** (mittlerer quadratischer Fehler) | Σ(y − ŷ)² / n | gewichtet große Fehler stärker, Einheit quadriert |
-| **RMSE** | √MSE | wie MSE, aber in der Einheit der Zielgröße |
-| **R²** | erklärter Streuungsanteil | Vergleich zum Mittelwertmodell, einheitenlos |
+| **RMSE** | √MSE | wie MSE, aber in der Einheit der Zielgröße; stets ≥ MAE |
+| **R²** | 1 − Σ(y − ŷ)² / Σ(y − ȳ)² (erklärter Streuungsanteil) | Vergleich zum Mittelwertmodell, einheitenlos; 1 = perfekt, 0 = nicht besser als der Mittelwert, auf Testdaten auch negativ möglich |
+| **MAPE** (mittlerer absoluter prozentualer Fehler) | Σ(\|y − ŷ\| / \|y\|) / n · 100 % | in Prozent, gut vergleichbar über Größenordnungen; unbrauchbar, wenn y nahe 0 liegt |
 
 **Beispiel:** Prognostizierte und tatsächliche Monatsumsätze (T€)
 
@@ -137,7 +143,13 @@ Bei stetiger Zielgröße (→ Deep Dive 4) gelten andere Maße:
 
 $\text{MAE} = \frac{26}{5}$ = **5,20 T€** · $\text{MSE} = \frac{180}{5}$ = **36,00** · $\text{RMSE} = \sqrt{36}$ = **6,00 T€**
 
-**Interpretation:** Der RMSE (6,00) liegt über dem MAE (5,20) – ein Hinweis darauf, dass einzelne größere Abweichungen (hier +10) vorliegen. Je weiter RMSE und MAE auseinanderliegen, desto ungleichmäßiger sind die Fehler verteilt.
+**Interpretation:** Der RMSE (6,00) liegt über dem MAE (5,20) – ein Hinweis darauf, dass einzelne größere Abweichungen (hier +10) vorliegen. Je weiter RMSE und MAE auseinanderliegen, desto ungleichmäßiger sind die Fehler verteilt. Gleich groß sind beide nur, wenn alle Fehlerbeträge identisch sind – kleiner als der MAE kann der RMSE nie werden.
+
+Ergänzend R² und MAPE für dasselbe Beispiel (Mittelwert $\bar{y} = \frac{550}{5} = 110$, Abweichungsquadrate 100 + 100 + 400 + 400 + 0 = 1.000):
+
+$R^2 = 1 - \frac{\sum (y - \hat{y})^2}{\sum (y - \bar{y})^2} = 1 - \frac{180}{1000}$ = **0,82** – das Modell erklärt 82 % der Streuung der Umsätze; ein Modell, das immer den Mittelwert 110 prognostiziert, hätte R² = 0.
+
+$\text{MAPE} = \frac{1}{5} \cdot \left(\frac{10}{100} + \frac{6}{120} + \frac{6}{90} + \frac{2}{130} + \frac{2}{110}\right) \approx \frac{0{,}2502}{5}$ = **5,00 %** – die Prognose liegt im Mittel um 5 % neben dem tatsächlichen Wert.
 
 ---
 
@@ -160,9 +172,62 @@ Prüfer schätzen es, wenn Kennzahlen in Geld übersetzt werden. Beispiel: Ein �
 
 Trotz der niedrigeren Accuracy ist das Modell wirtschaftlich klar überlegen. **Diese Rechnung ist das stärkste Argument, das du im Fachgespräch führen kannst.**
 
+Allgemein gilt: Fehlerkosten = FN · Kosten je FN + FP · Kosten je FP. Daraus folgt auch die **kostenoptimale Schwelle**: Die übliche Schwelle von 50 % passt nur, wenn beide Fehler gleich teuer sind. Hat ein Auftrag die Reklamationswahrscheinlichkeit p, lohnt die Prüfung, sobald die erwarteten Kosten des Nicht-Prüfens (p · 120 €) die eines womöglich unnötigen Prüfens ((1 − p) · 15 €) übersteigen – unter der Annahme dieses Beispiels, dass nur FN und FP Kosten verursachen:
+
+$p > \frac{K_{FP}}{K_{FP} + K_{FN}} = \frac{15}{15 + 120}$ = **11,11 %**
+
+Schon ab rund 11 % Risiko sollte also geprüft werden – je teurer der übersehene Fall, desto niedriger die Schwelle.
+
 ## 4.3 Betrieb und Nachhaltigkeit
 
 Die Modellgüte ist kein einmaliger Abnahmewert. Durch **Model Drift** (→ Deep Dive 6) verschlechtert sie sich schleichend. Notwendig sind daher: laufendes Monitoring der Kennzahlen, definierte Schwellenwerte für ein Retraining und eine benannte Verantwortlichkeit.
+
+## 4.4 ROC-Kurve und AUC
+
+Die meisten Klassifikationsmodelle liefern zunächst einen Score bzw. eine Wahrscheinlichkeit; erst die Entscheidungsschwelle macht daraus „positiv" oder „negativ". Jede Schwelle ergibt eine eigene Konfusionsmatrix.
+
+Die **ROC-Kurve** (Receiver Operating Characteristic) zeigt alle Schwellen auf einmal: Für jede Schwelle wird die Richtig-Positiv-Rate (= Recall) auf der y-Achse gegen die Falsch-Positiv-Rate (= 1 − Spezifität) auf der x-Achse eingetragen.
+
+| Punkt / Verlauf | Bedeutung |
+|---|---|
+| (0 \| 0) | Schwelle so hoch, dass nie ein Alarm ausgelöst wird (triviales Modell) |
+| (1 \| 1) | Schwelle so niedrig, dass jeder Fall als positiv gilt |
+| (0 \| 1), oben links | perfektes Modell: alle Positiven gefunden, kein Fehlalarm |
+| Diagonale | Zufallsraten – das Modell trennt die Klassen nicht |
+
+Das Modell aus 2.3 liegt mit FPR = 10 % und Recall = 60 % beim Punkt (0,10 | 0,60) – deutlich oberhalb der Diagonale.
+
+Die **AUC** (Area Under the Curve) ist die Fläche unter der ROC-Kurve und fasst die Trennschärfe in einer Zahl zusammen:
+
+- AUC = 1,0: perfekte Trennung; AUC = 0,5: nicht besser als Zufall; AUC < 0,5: schlechter als Zufall (Vorhersagen systematisch vertauscht).
+- Anschaulich: die Wahrscheinlichkeit, dass ein zufällig gewählter positiver Fall einen höheren Score erhält als ein zufällig gewählter negativer.
+- Vorteil: unabhängig von der gewählten Schwelle – gut zum Vergleich mehrerer Modelle.
+- Grenzen: Die AUC sagt nicht, welche Schwelle im Betrieb gilt, und kennt keine Fehlerkosten. Bei stark unausgeglichenen Klassen wirkt sie oft zu optimistisch; dann ist die Precision-Recall-Kurve aussagekräftiger.
+
+> ❓ **Prüferfrage:** Ihr Modell erreicht auf den Testdaten eine AUC von 0,5. Was bedeutet das?
+> *Das Modell trennt Reklamationen und Nicht-Reklamationen nicht besser als der Zufall – seine ROC-Kurve verläuft auf der Diagonale. Es ist in dieser Form wertlos, egal welche Schwelle gewählt wird. Ursachen prüfen: ungeeignete Merkmale, Fehler in der Datenaufbereitung oder ein vertauschtes Label. Erst ab deutlich über 0,5 lohnt die Schwellenwahl nach Kosten.*
+
+## 4.5 Unausgeglichene Klassen und Baselines
+
+Von **unausgeglichenen Klassen** (Class Imbalance) spricht man, wenn die interessierende Klasse selten ist – 10 % Reklamationen, unter 1 % Betrugsfälle. Dann gilt:
+
+- Bewerten: Accuracy meiden; Precision, Recall, F1 und die **Balanced Accuracy** = (Recall + Spezifität) / 2 verwenden. Im Beispiel aus 2.3: (60 % + 90 %) / 2 = 75 %, das triviale Modell erreicht nur (0 % + 100 %) / 2 = 50 %.
+- Aufteilen: **stratifiziert** – Trainings- und Testmenge (bzw. jeder Fold der Kreuzvalidierung) erhalten denselben Klassenanteil wie der Gesamtbestand.
+- Trainieren: **Oversampling** (Fälle der Minderheitsklasse vervielfältigen oder synthetisch erzeugen, z. B. mit **SMOTE**), **Undersampling** (Fälle der Mehrheitsklasse weglassen – kostet Information), Klassengewichte im Verfahren oder eine angepasste Entscheidungsschwelle (→ 4.2).
+- Falle: Resampling nur auf die Trainingsdaten anwenden, und zwar **nach** dem Split. Die Testdaten behalten die reale Verteilung – sonst landen Kopien desselben Falls in beiden Mengen und die Güte wird geschönt.
+
+Typische **Baseline-Modelle**:
+
+| Aufgabe | Baseline | Erreicht |
+|---|---|---|
+| Klassifikation | immer die Mehrheitsklasse | Accuracy = Anteil der Mehrheitsklasse, Recall = 0 % |
+| Klassifikation | Zufall nach Klassenanteil | AUC ≈ 0,5 |
+| Regression | immer der Mittelwert | R² = 0 (auf den Daten, aus denen der Mittelwert stammt) |
+| Zeitreihe | naive Prognose: letzter Wert bzw. Vorjahresmonat | Maßstab, den jedes Prognosemodell schlagen muss |
+| alle | bisherige Regel des Fachbereichs | zeigt den tatsächlichen Mehrwert im Betrieb |
+
+> ❓ **Prüferfrage:** Ein Kollege verdoppelt die Reklamationsfälle per Oversampling und teilt die Daten erst danach in Training und Test. Was ist das Problem?
+> *Kopien desselben Auftrags landen sowohl in den Trainings- als auch in den Testdaten – der Test misst dann teilweise nur das Wiedererkennen bekannter Fälle, die Güte ist geschönt. Außerdem entspricht die Klassenverteilung im Test nicht mehr der Realität. Richtig: zuerst (stratifiziert) aufteilen, dann nur die Trainingsdaten resamplen.*
 
 ---
 
@@ -245,6 +310,7 @@ Ein übersehener Reklamationsfall kostet durchschnittlich 120 €, eine unnötig
 3. „Was kostet ein Fehler Ihres Modells – und welche Fehlerart ist teurer?"
 4. „Wie haben Sie ausgeschlossen, dass Ihr Modell die Trainingsdaten nur auswendig gelernt hat?"
 5. „Ab welchem Wert würden Sie sagen: Das Modell muss neu trainiert werden?"
+6. „Ihre positive Klasse ist selten – wie sind Sie bei Aufteilung, Training und Bewertung damit umgegangen?"
 
 ---
 
@@ -259,3 +325,5 @@ Ein übersehener Reklamationsfall kostet durchschnittlich 120 €, eine unnötig
 - [ ] Ich vergleiche jedes Modell mit einer trivialen Baseline und rechne Fehler in Kosten um.
 - [ ] Ich berechne MAE und RMSE und erkläre deren unterschiedliches Verhalten bei Ausreißern.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich erkläre Falsch-Positiv-Rate, ROC-Kurve und AUC und leite eine kostenoptimale Schwelle aus FN- und FP-Kosten ab.
+- [ ] Ich berechne R² und MAPE und nenne Maßnahmen und Fallen bei unausgeglichenen Klassen (Stratifizierung, Resampling nur auf Trainingsdaten).

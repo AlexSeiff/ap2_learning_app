@@ -27,9 +27,15 @@ In der Prüfung bewegst du dich meist zwischen Ebene 1 und 2: ERM erstellen bzw.
 - **Attribut**: Eigenschaft einer Entität (name, preis); der **Schlüssel** identifiziert jede Ausprägung eindeutig.
 - **Beziehung**: Verbindung zwischen Entitäten (Kunde *erteilt* Bestellung) – klassisch als Raute. Beziehungen können **eigene Attribute** tragen (z. B. *menge* an der Beziehung „enthält").
 
+Schlüsselbegriffe, die in Begründungsaufgaben fallen:
+- **Schlüsselkandidat**: minimale Attributkombination, die jede Zeile eindeutig identifiziert (kein Attribut kann weggelassen werden). Einer wird **Primärschlüssel**, die übrigen bleiben **Alternativschlüssel** (in SQL per UNIQUE abgesichert).
+- **Zusammengesetzter Schlüssel**: Primärschlüssel aus mehreren Attributen, z. B. (bestell_id, produkt_id).
+- **Natürlicher Schlüssel** (fachlich vorhanden, z. B. ISBN, Kfz-Kennzeichen) vs. **Surrogatschlüssel** (künstlich, z. B. fortlaufende kunden_id): Der Surrogatschlüssel ist stabil, kurz und ohne Fachbedeutung – Namen, E-Mail-Adressen oder Kennzeichen können sich ändern oder doppelt vorkommen.
+- **Fremdschlüssel**: Attribut, das auf den Primärschlüssel einer anderen (oder derselben) Tabelle verweist.
+
 ## 1.3 Kardinalitäten – die drei Notationen
 
-**Chen-Notation:** 1:1, 1:n, m:n – beschreibt das Verhältnis der Entitätsmengen zueinander.
+**Chen-Notation:** 1:1, 1:n, m:n – beschreibt das Verhältnis der Entitätsmengen zueinander. Sie zeigt nur die **Maximalwerte**; ob eine Teilnahme Pflicht oder optional ist (Minimum 0 oder 1), lässt sich damit nicht ausdrücken.
 
 **Min-Max-Notation:** an jeder Entität steht (min, max) – *wie oft nimmt DIESE eine Ausprägung an der Beziehung teil?*
 
@@ -42,7 +48,15 @@ Gelesen: Ein Kunde erteilt 0 bis n Bestellungen (Neukunde ohne Bestellung mögli
 
 ⚠️ **Die klassische Prüfungsfalle:** In Chen steht das „n" auf der *anderen* Seite als in Min-Max! Chen: „KUNDE 1 —— n BESTELLUNG" (ein Kunde hat n Bestellungen, das n klebt an BESTELLUNG). Min-Max: das (0,n) steht bei KUNDE, weil es die Teilnahme *des Kunden* beschreibt. Wer das verwechselt, dreht alle Kardinalitäten um – und verliert die halbe Aufgabe.
 
-**Krähenfußnotation (Martin):** Linienenden codieren die Kardinalität – Krähenfuß = „viele", Querstrich = „genau 1", Kreis = „0/optional". Wird in Prüfungen ebenfalls verwendet; die Leserichtung entspricht der Min-Max-Logik (das Symbol beschreibt die *ferne* Seite der Linie).
+**Krähenfußnotation (Martin):** Linienenden codieren die Kardinalität – Krähenfuß = „viele", Querstrich = „genau 1", Kreis = „0/optional". Wird in Prüfungen ebenfalls verwendet (auch als IE-Notation, z. B. in MySQL Workbench); die Leserichtung entspricht der **Chen-Logik, nicht Min-Max**: Das Symbol am Linienende bei BESTELLUNG sagt, wie viele Bestellungen *ein* Kunde haben kann. Je Linienende stehen zwei Zeichen – das Zeichen direkt an der Entität ist das Maximum, das weiter außen das Minimum.
+
+```
+KUNDE ||──────o< BESTELLUNG
+```
+
+Gelesen: Ein Kunde hat null bis viele Bestellungen (o< bei BESTELLUNG); eine Bestellung gehört zu genau einem Kunden (|| bei KUNDE). Gegenüber Min-Max stehen die Angaben also auf der jeweils anderen Seite – dieselbe Falle wie bei Chen.
+
+**MC-Notation** (modifizierte Chen-Notation, in Berufsschul- und Prüfungsaufgaben verbreitet): 1 = genau eins, c = null oder eins, m bzw. n = eins oder mehrere, mc bzw. nc = null oder mehrere. Leserichtung wie Chen: KUNDE 1 ── mc BESTELLUNG. Auch **UML-Klassendiagramme** notieren Multiplizitäten (0..1, 1..*, 0..*) in dieser Chen-Leserichtung.
 
 > ❓ **Prüferfrage:** Was sagt die 0 in „KUNDE (0,n) – erteilt – (1,1) BESTELLUNG" fachlich aus?
 > *Ein Kunde kann im System existieren, ohne jemals eine Bestellung erteilt zu haben – z. B. ein neu angelegter Interessent. Genau diese Kunden fanden wir in Deep Dive 1 per LEFT JOIN.*
@@ -56,7 +70,16 @@ Eine Entität steht in Beziehung zu sich selbst: MITARBEITER *führt* MITARBEITE
 1. **Jede Entität** wird eine Tabelle mit Primärschlüssel.
 2. **1:n**: Der Primärschlüssel der 1-Seite wandert als Fremdschlüssel auf die n-Seite. (Der Kunde „weiß" nichts von seinen Bestellungen – die Bestellung kennt ihren Kunden.)
 3. **m:n**: Es entsteht eine **eigene Beziehungstabelle** mit zusammengesetztem Primärschlüssel aus beiden Fremdschlüsseln; Beziehungsattribute (menge, einkaufspreis) wandern dorthin.
-4. **1:1**: Fremdschlüssel auf einer Seite (mit UNIQUE) – oder beide Tabellen zusammenlegen, wenn fachlich sinnvoll.
+4. **1:1**: Fremdschlüssel auf einer Seite (mit UNIQUE) – oder beide Tabellen zusammenlegen, wenn fachlich sinnvoll. Am besten auf die Seite, die *zwingend* teilnimmt: Bei MITARBEITER (0,1) – nutzt – (1,1) FIRMENWAGEN bekommt firmenwagen den Fremdschlüssel mitarbeiter_id (NOT NULL, UNIQUE) – so entstehen keine NULL-Werte.
+
+**Vom Minimum zur NULL-Fähigkeit:** Die Min-Angabe der n-Seite entscheidet über den Fremdschlüssel. (1,1) bei BESTELLUNG → kunden_id ist **NOT NULL** (jede Bestellung braucht einen Kunden); (0,1) → der Fremdschlüssel darf NULL sein (z. B. vorgesetzter_id).
+
+**Referenzielle Integrität:** Jeder Fremdschlüsselwert muss als Primärschlüssel in der referenzierten Tabelle existieren (oder NULL sein) – keine verwaisten Datensätze. Das DBMS prüft das über FOREIGN KEY; beim Löschen/Ändern des referenzierten Satzes greift die festgelegte Regel: RESTRICT bzw. NO ACTION (verhindern), CASCADE (abhängige Sätze mitlöschen/-ändern), SET NULL (Fremdschlüssel auf NULL setzen) oder SET DEFAULT (→ Deep Dive 1).
+
+**Sonderfall Generalisierung/Spezialisierung** („ist-ein", im ERM als Dreieck oder Raute „is-a"): z. B. KUNDE mit den Spezialisierungen PRIVATKUNDE und GESCHÄFTSKUNDE. Drei Umsetzungsvarianten:
+- **Eine Tabelle je Entitätstyp**: kunde(**kunden_id**, name, ort), geschaeftskunde(**kunden_id↑**, ust_id) – der Primärschlüssel der Untertabelle ist zugleich Fremdschlüssel auf die Obertabelle (1:1). Redundanzfrei, aber Joins nötig.
+- **Nur Untertabellen**: Die Attribute des Obertyps werden in jede Untertabelle kopiert – nur sinnvoll, wenn jede Ausprägung genau einem Untertyp angehört (total und disjunkt).
+- **Eine Gesamttabelle**: alle Attribute in einer Tabelle plus Typ-Spalte (kundentyp) – keine Joins, aber viele NULL-Werte in den typfremden Spalten.
 
 **Schreibweise in der Prüfung** (Konvention am Blattrand angeben!): Primärschlüssel unterstreichen, Fremdschlüssel gestrichelt unterstreichen oder mit ↑ kennzeichnen. In diesem Dokument: **fett** = PK, ↑ = FK.
 
@@ -140,10 +163,12 @@ In *bestellung* gilt: bestell_id → kunden_id → kundenname, kundenort. Kunden
 - kunde(**kunden_id**, kundenname, kundenort)
 - bestellung(**bestell_id**, bestelldatum, kunden_id↑)
 
-**Endergebnis = exakt die vier Tabellen aus Deep Dive 1.** Die Datenbank, mit der du SQL geübt hast, ist das Produkt einer sauberen Normalisierung.
+**Endergebnis = die vier Tabellen aus Deep Dive 1** (dort zusätzlich mit Spalten wie kategorie und registriert_am, die im Altsystem-Export fehlen). Die Datenbank, mit der du SQL geübt hast, ist das Produkt einer sauberen Normalisierung.
 
 > ❓ **Prüferfrage (Transfer, gern im Fachgespräch):** In der Praxis speichert man den Verkaufspreis oft *zusätzlich* in der Bestellposition. Verstößt das nicht gegen die Normalisierung?
-> *Formal ja – bewusst. produkt.preis ist der aktuelle Listenpreis und ändert sich; der Preis zum Bestellzeitpunkt muss historisch korrekt bleiben, sonst verfälschen spätere Preisänderungen alle Umsatzauswertungen. Kontrollierte, begründete Redundanz zur Sicherung der Datenqualitätsdimension Korrektheit – wer das erklären kann, zeigt Prüfern echtes Verständnis.*
+> *Nur scheinbar. produkt.preis ist der aktuelle Listenpreis und ändert sich; der Preis zum Bestellzeitpunkt ist ein eigenes Attribut, das von Bestellung und Produkt gemeinsam abhängt – nicht allein von produkt_id. Formal liegt also keine partielle Abhängigkeit vor. Er muss historisch korrekt bleiben, sonst verfälschen spätere Preisänderungen alle Umsatzauswertungen. Diese bewusste Historisierung sichert die Datenqualitätsdimension Korrektheit – wer das erklären kann, zeigt Prüfern echtes Verständnis. Ein echter Verstoß gegen die 2. NF wäre es nur, wenn dort stets der aktuelle Listenpreis mitgepflegt würde.*
+
+**Über die 3. NF hinaus – BCNF:** Die **Boyce-Codd-Normalform** verschärft die 3. NF: Jede Determinante (linke Seite einer funktionalen Abhängigkeit) muss ein Schlüsselkandidat sein. Ein Unterschied zur 3. NF tritt nur bei mehreren, sich überlappenden zusammengesetzten Schlüsselkandidaten auf. Beispiel: betreuung(kunden_id, kategorie, berater_id) – jeder Berater betreut genau eine Kategorie, jeder Kunde hat je Kategorie genau einen Berater. Schlüsselkandidaten: (kunden_id, kategorie) und (kunden_id, berater_id). Die Abhängigkeit berater_id → kategorie verletzt die BCNF (berater_id ist kein Schlüsselkandidat), nicht aber die 3. NF (kategorie ist Teil eines Schlüsselkandidaten). Lösung: berater(**berater_id**, kategorie) und betreuung(**kunden_id↑, berater_id↑**). In der Prüfung wird meist nur bis zur 3. NF verlangt.
 
 ## Denormalisierung – die DPA-Perspektive
 
@@ -236,3 +261,4 @@ c) Ein Produkt lagert in mehreren Lagern, ein Lager führt viele Produkte; beide
 - [ ] Ich normalisiere jede breite Tabelle sicher bis zur 3. NF – mit Begründung je Schritt und vollständigen Schlüsselangaben.
 - [ ] Ich kann Denormalisierung im DWH-Kontext fachlich begründen.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich kann Generalisierung/Spezialisierung in Tabellen überführen und aus den Min-Angaben ableiten, ob ein Fremdschlüssel NULL sein darf.

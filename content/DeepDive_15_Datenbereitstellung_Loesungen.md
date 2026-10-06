@@ -114,7 +114,7 @@ Für (d) wird auch PUT akzeptiert, wenn der vollständige Auftrag übertragen wi
 **C3 (6 P):** *(je 2 P)*
 - **401 Unauthorized:** Eine Filiale ruft ohne oder mit abgelaufenem Token ab – sie ist nicht **authentifiziert**.
 - **403 Forbidden:** Eine angemeldete Partnerwerkstatt will Aufträge einer Filiale abrufen, für die sie keine Berechtigung hat – authentifiziert, aber nicht **autorisiert**.
-- **429 Too Many Requests:** Ein Filialskript fragt im Sekundentakt ab und überschreitet das **Rate Limit**; es muss die im Header angegebene Wartezeit einhalten.
+- **429 Too Many Requests:** Ein Filialskript fragt im Sekundentakt ab und überschreitet das **Rate Limit**; es muss die im Header `Retry-After` angegebene Wartezeit einhalten.
 
 **C4 (4 P):** PUT überträgt den vollständigen Zustand einer bereits adressierten Ressource – wird der Aufruf wiederholt, steht danach derselbe Zustand in der Datenbank (**idempotent**). POST legt bei jedem Aufruf eine **neue** Ressource an. Wiederholt ein Client die Anfrage nach einem Timeout, entsteht ein doppelter Reparaturauftrag – eine **Dublette**, die die Eindeutigkeit verletzt und Auswertungen verfälscht. Gegenmaßnahme: **Idempotenzschlüssel** im Header oder eine fachliche Dublettenprüfung.
 
@@ -137,7 +137,7 @@ Für (d) wird auch PUT akzeptiert, wenn der vollständige Auftrag übertragen wi
 - **Lösungen** *(je 2 P, zwei genügen)*:
   - **Atomares Update:** `UPDATE lager SET bestand = bestand - 3 WHERE artikel_id = 10;` – die Datenbank rechnet auf dem aktuellen Wert.
   - **Pessimistisches Sperren:** `SELECT … FOR UPDATE` sperrt den Datensatz bis zum Ende der Transaktion; der zweite Disponent wartet.
-  - **Optimistisches Sperren:** Versionsspalte; das Update enthält `WHERE version = 7`. Hat sich die Version geändert, trifft es 0 Zeilen – Konflikt melden und neu lesen.
+  - **Optimistisches Sperren:** Versionsspalte; das Update enthält zusätzlich die beim Lesen gemerkte Version, z. B. `AND version = 3`, und erhöht sie. Hat sich die Version inzwischen geändert, trifft es 0 Zeilen – Konflikt melden und neu lesen.
 
 **D3 (4 P):** Ohne festes Schema prüft die Datenbank weder Pflichtfelder noch Datentypen. Dokumente werden **uneinheitlich** – das Feld heißt einmal `plz`, einmal `postleitzahl`, Preise stehen mal als Zahl, mal als Text. Vollständigkeit und Konsistenz leiden. *(2 P)* **Gegensteuern:** Validierung in der Anwendung oder ETL-Strecke (z. B. mit JSON Schema), verbindliche Namenskonventionen im Datenkatalog, regelmäßiges Profiling. *(2 P)*
 

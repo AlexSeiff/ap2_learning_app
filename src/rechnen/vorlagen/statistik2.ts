@@ -158,7 +158,7 @@ function schritteKorrelation(b: LoesungsBau, x: number[], y: number[], k: Return
     einsetzen: L`r = \frac{${lz(k.sxy, 2)}}{\sqrt{${lz(k.sxx, 2)} \cdot ${lz(k.syy, 2)}}} = \frac{${lz(k.sxy, 2)}}{${lz(Math.sqrt(k.sxx * k.syy), 2)}}`,
     ergebnis: r,
     runden: 2,
-    hinweis: `${r < 0 ? 'Negativ: gegenläufiger' : 'Positiv: gleichläufiger'} Zusammenhang, ${Math.abs(r) >= 0.7 ? 'stark' : Math.abs(r) >= 0.3 ? 'mittel' : 'schwach'}.`,
+    hinweis: `${r < 0 ? 'Negativ: gegenläufiger' : 'Positiv: gleichläufiger'} Zusammenhang, ${Math.abs(r) >= 0.8 ? 'stark' : Math.abs(r) >= 0.5 ? 'mittel' : Math.abs(r) >= 0.2 ? 'schwach' : 'kein bis sehr schwach'} (Faustregel des Lernblatts).`,
   });
   b.schritt({ titel: 'Bestimmtheitsmaß', formel: F.bestimmtheitsmass.latex, einsetzen: L`R^2 = ${lzk(r, 4)}^2`, ergebnis: r2, runden: 2 });
 

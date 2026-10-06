@@ -30,7 +30,7 @@ Szenario: **Möbelhaus Nordholz GmbH** – 140 wahlberechtigte Beschäftigte, Be
 
 ## 1.2 Der Ausbildungsvertrag
 
-Der wesentliche Vertragsinhalt ist **unverzüglich nach Vertragsschluss, spätestens vor Ausbildungsbeginn**, niederzulegen (§ 11 BBiG) und wird ins Verzeichnis der Berufsausbildungsverhältnisse bei der IHK eingetragen. Bei Minderjährigen unterschreiben zusätzlich die gesetzlichen Vertreter.
+Der wesentliche Vertragsinhalt ist **unverzüglich nach Vertragsschluss, spätestens vor Ausbildungsbeginn**, festzuhalten (§ 11 BBiG) und wird ins Verzeichnis der Berufsausbildungsverhältnisse bei der IHK eingetragen. Seit 01.08.2024 genügt dafür die **Textform** (z. B. elektronisch, speicher- und ausdruckbar, mit Empfangsnachweis) – eine eigenhändige Unterschrift ist für die Vertragsabfassung nicht mehr vorgeschrieben. Bei Minderjährigen müssen die gesetzlichen Vertreter dem Vertragsschluss zustimmen und erhalten die Vertragsabfassung ebenfalls.
 
 **Mindestinhalte:** Art, Gliederung und Ziel der Ausbildung · Beginn und Dauer · Ausbildungsmaßnahmen außerhalb der Ausbildungsstätte · tägliche Ausbildungszeit · Probezeit · Vergütung · Ausgleich von Überstunden · Urlaub · Kündigungsvoraussetzungen · Hinweis auf Tarifverträge und Betriebsvereinbarungen · Form des Ausbildungsnachweises.
 
@@ -44,7 +44,7 @@ Der wesentliche Vertragsinhalt ist **unverzüglich nach Vertragsschluss, spätes
 
 ## 1.3 Pflichten beider Seiten
 
-| Auszubildende (§ 13 BBiG) | Ausbildende (§ 14 BBiG) |
+| Auszubildende (§ 13 BBiG) | Ausbildende (§§ 14, 16, 17 BBiG) |
 |---|---|
 | Lernpflicht, sorgfältige Ausführung der Aufgaben | Ausbildungspflicht nach Ausbildungsordnung |
 | Teilnahme an Berufsschule und Prüfungen | Freistellung für Berufsschule und Prüfungen |
@@ -52,6 +52,8 @@ Der wesentliche Vertragsinhalt ist **unverzüglich nach Vertragsschluss, spätes
 | Ausbildungsnachweis führen | kostenlose Ausbildungsmittel, Ausbildungsnachweis regelmäßig durchsehen |
 | Arbeitsmittel pfleglich behandeln | angemessene Vergütung (jährlich steigend) |
 | Stillschweigen über Betriebsgeheimnisse | Zeugnis ausstellen |
+
+**Mindestausbildungsvergütung (§ 17 BBiG, Stand 2026):** Maßgeblich ist das Jahr des **Ausbildungsbeginns**. Für einen Beginn im Jahr 2026 gelten mindestens **724 €** im 1. Ausbildungsjahr, 854 € im 2. (+18 %), 977 € im 3. (+35 %) und 1.014 € im 4. Jahr (+40 %). Der Betrag wird jährlich fortgeschrieben und bis 1. November für das Folgejahr bekanntgegeben (2025: 682 €). Tarifverträge gehen vor; ein nicht tarifgebundener Betrieb darf die tarifliche Vergütung um höchstens **20 %** unterschreiten. Für Auszubildende gilt **nicht** der gesetzliche Mindestlohn.
 
 Der **Ausbildungsnachweis** ist nicht nur Pflicht, sondern **Zulassungsvoraussetzung** zur Abschlussprüfung (§ 43 BBiG).
 
@@ -70,9 +72,10 @@ Der **Ausbildungsnachweis** ist nicht nur Pflicht, sondern **Zulassungsvorausset
 
 **Weitere prüfungsrelevante Punkte:**
 - **Verkürzung** auf gemeinsamen Antrag, wenn das Ziel in kürzerer Zeit erreichbar ist (§ 8); **vorzeitige Zulassung** zur Abschlussprüfung bei entsprechenden Leistungen (§ 45).
-- Streitigkeiten aus dem Ausbildungsverhältnis gehen zuerst an den **Schlichtungsausschuss der IHK**, erst danach an das Arbeitsgericht.
+- Streitigkeiten aus dem Ausbildungsverhältnis gehen zuerst an den **Schlichtungsausschuss der IHK** (sofern die Kammer einen eingerichtet hat, § 111 ArbGG), erst danach an das Arbeitsgericht.
+- Jede Kündigung des Ausbildungsverhältnisses ist **schriftlich** zu erklären, die **elektronische Form ist ausgeschlossen** (§ 22 Abs. 3). Eine fristlose Kündigung ist unwirksam, wenn der Kündigende die zugrunde liegenden Tatsachen schon **länger als zwei Wochen** kennt (§ 22 Abs. 4).
 
-**Zeugnis:** **einfaches Zeugnis** (Art, Dauer, Ziel, erworbene Fertigkeiten) ist Pflicht; das **qualifizierte Zeugnis** enthält zusätzlich **Verhalten und Leistung** und wird auf Verlangen ausgestellt. Krankheitstage gehören in kein Zeugnis.
+**Zeugnis:** **einfaches Zeugnis** (Art, Dauer, Ziel, erworbene Fertigkeiten) ist Pflicht; das **qualifizierte Zeugnis** enthält zusätzlich **Verhalten und Leistung** und wird auf Verlangen ausgestellt. Krankheitstage gehören in kein Zeugnis. Seit 2024 darf das Ausbildungszeugnis mit **Einwilligung** des Azubis auch elektronisch ausgestellt werden (§ 16 Abs. 1 BBiG) – anders als das Arbeitszeugnis nach § 109 GewO.
 
 ## 1.5 Freistellung und Anrechnung (§ 15 BBiG)
 
@@ -80,10 +83,10 @@ Seit 2020 gilt die Freistellungsregel **für alle Auszubildenden**, nicht nur f�
 
 | Freistellung | Anrechnung auf die Ausbildungszeit |
 |---|---|
-| Berufsschulunterricht | Unterrichtszeit einschließlich Pausen |
-| Berufsschultag mit **mehr als 5 Unterrichtsstunden à 45 min** (einmal pro Woche) | **durchschnittliche tägliche** Ausbildungszeit |
-| **Blockunterricht** mit mindestens 25 Stunden an 5 Tagen | **durchschnittliche wöchentliche** Ausbildungszeit |
-| Prüfungen und externe Ausbildungsmaßnahmen | Zeit der Teilnahme einschließlich Pausen |
+| Berufsschulunterricht | Unterrichtszeit einschließlich Pausen und notwendiger Wegezeiten zwischen Schule und Betrieb |
+| Berufsschultag mit **mehr als 5 Unterrichtsstunden à mindestens 45 min** (einmal pro Woche) | **durchschnittliche tägliche** Ausbildungszeit |
+| **Blockunterricht** mit mindestens 25 Stunden an mindestens 5 Tagen | **durchschnittliche wöchentliche** Ausbildungszeit |
+| Prüfungen und externe Ausbildungsmaßnahmen | Zeit der Teilnahme einschließlich Pausen und notwendiger Wegezeiten |
 | **Arbeitstag unmittelbar vor der schriftlichen Abschlussprüfung** | **durchschnittliche tägliche** Ausbildungszeit |
 
 Zusätzlich darf vor einem Berufsschulunterricht, der **vor 9 Uhr** beginnt, nicht beschäftigt werden.
@@ -101,12 +104,13 @@ Zusätzlich darf vor einem Berufsschulunterricht, der **vor 9 Uhr** beginnt, nic
 | Arbeitszeit | höchstens **8 Stunden täglich, 40 Stunden wöchentlich**, Fünf-Tage-Woche |
 | Ruhepausen | **30 min** bei mehr als 4,5 bis 6 Stunden, **60 min** bei mehr als 6 Stunden; nie länger als 4,5 Stunden am Stück |
 | Freizeit | mindestens **12 Stunden** zwischen zwei Arbeitstagen |
+| Berufsschule (§ 9) | Berufsschultag mit mehr als 5 Unterrichtsstunden à mindestens 45 min: einmal pro Woche keine Beschäftigung mehr, Anrechnung mit der **durchschnittlichen täglichen Arbeitszeit** (bei 40 Stunden an 5 Tagen = 8 Stunden); Blockwoche mit mindestens 25 Stunden an 5 Tagen: Anrechnung der durchschnittlichen Wochenarbeitszeit |
 | Nachtruhe | grundsätzlich keine Beschäftigung zwischen **20 und 6 Uhr** (branchenabhängige Ausnahmen ab 16) |
 | Urlaub | mind. **30** Werktage (zu Jahresbeginn noch nicht 16), **27** (noch nicht 17), **25** (noch nicht 18) |
 | Gesundheit | Erstuntersuchung vor Beginn, Nachuntersuchung nach einem Jahr |
 | Unterweisung | vor Beginn und mindestens **halbjährlich** |
 
-Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (geb. 15.03.2009) ist am 01.01.2026 16 Jahre alt, also „noch nicht 17“ → **27 Werktage** für 2026.
+Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (geb. 15.03.2009) ist am 01.01.2026 16 Jahre alt, also „noch nicht 17“ → **27 Werktage** für 2026. Vorsicht bei der Frage nach dem *tatsächlichen* Urlaub im Eintrittsjahr: Da Jonas erst am 01.08.2026 beginnt, erwirbt er 2026 nach § 5 BUrlG nur Teilurlaub – 27 · 5/12 = 11,25 → 11 Werktage (unter einem halben Tag wird nicht aufgerundet).
 
 ## 2.2 Arbeitszeitgesetz (Erwachsene)
 
@@ -123,9 +127,9 @@ Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (
 ## 2.4 Weitere Schutzvorschriften
 
 - **Mutterschutz:** Schutzfrist **6 Wochen vor und 8 Wochen nach** der Entbindung (12 bei Früh- und Mehrlingsgeburten); Kündigungsverbot während der Schwangerschaft bis 4 Monate nach der Entbindung.
-- **Elternzeit:** bis zu 3 Jahre je Kind, Kündigungsschutz während der Elternzeit.
-- **Schwerbehinderte Menschen:** Kündigung nur mit vorheriger Zustimmung des **Integrationsamts**; Zusatzurlaub.
-- **Mindestlohn (Stand 2026): 13,90 € pro Stunde.** Ausgenommen sind u. a. Auszubildende (für sie gilt die Mindestausbildungsvergütung), Pflichtpraktikanten und Jugendliche ohne abgeschlossene Berufsausbildung.
+- **Elternzeit:** bis zu 3 Jahre je Kind bis zum 8. Geburtstag (davon bis zu 24 Monate zwischen 3. und 8. Geburtstag); Anmeldung beim Arbeitgeber spätestens **7 Wochen** vor Beginn (13 Wochen bei Elternzeit nach dem 3. Geburtstag). Kündigungsschutz ab der Anmeldung, frühestens **8 Wochen** vor Beginn (bzw. 14 Wochen), und während der gesamten Elternzeit (§ 18 BEEG).
+- **Schwerbehinderte Menschen:** Kündigung nur mit vorheriger Zustimmung des **Integrationsamts**; Zusatzurlaub von 5 Arbeitstagen bei Fünf-Tage-Woche.
+- **Mindestlohn (Stand 2026): 13,90 € pro Stunde**, ab 01.01.2027 14,60 €. Ausgenommen sind u. a. Auszubildende (für sie gilt die Mindestausbildungsvergütung), Pflichtpraktikanten und Jugendliche ohne abgeschlossene Berufsausbildung.
 
 ---
 
@@ -133,7 +137,7 @@ Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (
 
 ## 3.1 Der Arbeitsvertrag
 
-Der Arbeitsvertrag ist ein **Dienstvertrag** und grundsätzlich **formfrei** gültig – der Arbeitgeber muss die wesentlichen Bedingungen aber nach dem **Nachweisgesetz** schriftlich nachweisen. Eine **Befristung** bedarf dagegen der **Schriftform**; ohne Sachgrund ist sie bis zu **zwei Jahre mit höchstens drei Verlängerungen** zulässig (§ 14 TzBfG).
+Der Arbeitsvertrag ist ein **Dienstvertrag** und grundsätzlich **formfrei** gültig – der Arbeitgeber muss die wesentlichen Bedingungen aber nach dem **Nachweisgesetz** nachweisen – seit 01.01.2025 auch in **Textform** (z. B. E-Mail mit Empfangsnachweis), außer in Branchen nach § 2a Schwarzarbeitsbekämpfungsgesetz (z. B. Bau, Gastronomie) oder wenn der Arbeitnehmer eine schriftliche Fassung verlangt. Eine **Befristung** bedarf dagegen der **Schriftform**; ohne Sachgrund ist sie bis zu **zwei Jahre mit höchstens drei Verlängerungen** zulässig (§ 14 TzBfG).
 
 | Pflichten des Arbeitnehmers | Pflichten des Arbeitgebers |
 |---|---|
@@ -186,7 +190,7 @@ Das KSchG gilt, wenn **beide** Voraussetzungen erfüllt sind: **mehr als 10 Arbe
 
 ## 3.5 Arbeitszeugnis
 
-Anspruch auf ein schriftliches Zeugnis bei Beendigung. Es muss **wahr und wohlwollend** formuliert sein – daher die codierte Zeugnissprache („stets zu unserer vollsten Zufriedenheit“ = sehr gut). **Unzulässig** sind Angaben zu Krankheiten, Betriebsratstätigkeit oder Gewerkschaftszugehörigkeit.
+Anspruch auf ein schriftliches Zeugnis bei Beendigung (§ 109 GewO): **einfaches Arbeitszeugnis** mit Art und Dauer der Tätigkeit, auf Verlangen **qualifiziertes Arbeitszeugnis** mit Leistung und Verhalten; die elektronische Form ist ausgeschlossen. Es muss **wahr und wohlwollend** formuliert sein – daher die codierte Zeugnissprache („stets zu unserer vollsten Zufriedenheit“ = sehr gut). **Unzulässig** sind Angaben zu Krankheiten, Betriebsratstätigkeit oder Gewerkschaftszugehörigkeit.
 
 ---
 
@@ -216,7 +220,7 @@ Das Möbelhaus mit 140 wahlberechtigten Beschäftigten hat also einen Betriebsra
 | **Information** | Arbeitgeber muss unterrichten | wirtschaftliche Lage, Personalplanung |
 | **Anhörung** | Betriebsrat muss gehört werden | **jede Kündigung (§ 102)** – ohne Anhörung ist sie **unwirksam** |
 | **Beratung** | gemeinsame Erörterung | Arbeitsplatzgestaltung |
-| **Widerspruch / Zustimmungsverweigerung** | Maßnahme kann blockiert werden | Einstellung, Versetzung, Eingruppierung (§ 99, ab 20 wahlberechtigten AN) |
+| **Widerspruch / Zustimmungsverweigerung** | Maßnahme kann blockiert werden | Einstellung, Versetzung, Eingruppierung (§ 99, in Unternehmen mit mehr als 20 wahlberechtigten AN) |
 | **Mitbestimmung** | ohne Zustimmung keine Maßnahme | **soziale Angelegenheiten (§ 87):** Beginn/Ende der Arbeitszeit, Pausen, Urlaubsgrundsätze, **technische Einrichtungen zur Verhaltens- und Leistungsüberwachung**, Entlohnungsgrundsätze |
 
 Bei Streit in mitbestimmungspflichtigen Angelegenheiten entscheidet die **Einigungsstelle** verbindlich. Bei Betriebsänderungen (§ 111) werden **Interessenausgleich und Sozialplan** verhandelt. In Unternehmen mit mehr als 100 Beschäftigten wird zusätzlich ein **Wirtschaftsausschuss** gebildet.
@@ -225,8 +229,8 @@ Bei Streit in mitbestimmungspflichtigen Angelegenheiten entscheidet die **Einigu
 
 ## 4.3 Jugend- und Auszubildendenvertretung (JAV)
 
-- **Voraussetzung:** **Betriebsrat vorhanden** und in der Regel mindestens **5** Beschäftigte unter 18 oder Auszubildende unter 25.
-- **Wählbar:** Beschäftigte, die das **25. Lebensjahr noch nicht vollendet** haben. **Amtszeit 2 Jahre.**
+- **Voraussetzung:** **Betriebsrat vorhanden** und in der Regel mindestens **5** Beschäftigte unter 18 oder Auszubildende – seit dem Betriebsrätemodernisierungsgesetz 2021 **ohne Altersgrenze** (§ 60). Wahlberechtigt ist genau dieser Personenkreis.
+- **Wählbar:** Beschäftigte, die das **25. Lebensjahr noch nicht vollendet** haben, sowie Auszubildende jeden Alters (§ 61); Betriebsratsmitglieder sind nicht wählbar. **Amtszeit 2 Jahre.**
 - Die JAV handelt **über den Betriebsrat**, nicht direkt gegenüber dem Arbeitgeber.
 - **Übernahmeanspruch (§ 78a):** Ein Azubi, der Mitglied der JAV oder des Betriebsrats ist und in den **letzten drei Monaten** vor Ausbildungsende schriftlich die Weiterbeschäftigung verlangt, wird in ein unbefristetes Arbeitsverhältnis übernommen.
 
@@ -268,6 +272,24 @@ Grundgesetz → Gesetze und Verordnungen → **Tarifvertrag → Betriebsvereinba
 
 - Rechtmäßig ist nur ein Streik, der von einer **Gewerkschaft** getragen wird, ein **tariflich regelbares Ziel** verfolgt und **verhältnismäßig** ist. **Politische Streiks** sind in Deutschland unzulässig.
 - Während des Streiks entfällt der Lohn; Gewerkschaftsmitglieder erhalten **Streikgeld**. Die Arbeitsagentur zahlt Streikenden **kein Arbeitslosengeld** (Neutralitätspflicht).
+
+---
+
+# Teil 6 – Gleichbehandlung
+
+## 6.1 Allgemeines Gleichbehandlungsgesetz (AGG)
+
+Das **AGG** verbietet Benachteiligungen aus sechs Gründen (§ 1): **ethnische Herkunft bzw. Rasse, Geschlecht, Religion oder Weltanschauung, Behinderung, Alter, sexuelle Identität**. Es gilt schon im **Bewerbungsverfahren** – Stellenanzeigen müssen neutral formuliert sein (daher „m/w/d“), Fragen nach Schwangerschaft, Religion oder Familienplanung sind unzulässig.
+
+| Punkt | Regel |
+|---|---|
+| Geschützter Personenkreis | Beschäftigte, Auszubildende **und Bewerber** |
+| Pflichten des Arbeitgebers | Schutzmaßnahmen und Schulungen, **Beschwerdestelle** einrichten, das Gesetz im Betrieb bekannt machen |
+| Ansprüche der Betroffenen | Schadensersatz und **Entschädigung**; bei Nichteinstellung höchstens **3 Monatsgehälter**, wenn die Person auch bei benachteiligungsfreier Auswahl nicht eingestellt worden wäre – ein Anspruch **auf Einstellung** besteht nie |
+| Fristen | Geltendmachung **schriftlich binnen 2 Monaten** (§ 15 Abs. 4 AGG), Klage binnen 3 Monaten danach (§ 61b ArbGG) |
+| Beweislast | Indizien für eine Benachteiligung genügen; dann muss der Arbeitgeber beweisen, dass keine vorlag (§ 22) |
+
+Erlaubt bleibt eine unterschiedliche Behandlung, wenn eine **wesentliche berufliche Anforderung** sie rechtfertigt (§ 8), sowie **positive Maßnahmen** zum Ausgleich bestehender Nachteile (§ 5).
 
 ---
 
@@ -459,3 +481,4 @@ a) Urabstimmung über den Streik · b) Tarifverhandlungen · c) Streik · d) Sch
 - [ ] Ich bestimme die Betriebsratsgröße und ordne die Beteiligungsrechte richtig zu.
 - [ ] Ich erkläre Tarifbindung, Friedenspflicht, Günstigkeitsprinzip und den Ablauf eines Arbeitskampfs.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich kenne die Mindestausbildungsvergütung 2026 sowie die sechs Merkmale und die Zwei-Monats-Frist des AGG.

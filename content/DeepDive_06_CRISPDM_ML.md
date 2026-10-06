@@ -5,7 +5,7 @@
 
 ## Prüfungsrelevanz
 
-CRISP-DM ist das **Vorgehensmodell deiner Fachrichtung** – und damit gleich doppelt wichtig: Es kommt im Prüfungsbereich „Sicherstellen der Datenqualität" vor **und** es ist die natürliche Gliederung für deine **Projektdokumentation** (50 % der Gesamtnote). Wer im Fachgespräch sein Projekt sauber entlang der sechs Phasen erzählen kann, wirkt sofort strukturiert.
+CRISP-DM ist das **Vorgehensmodell deiner Fachrichtung** – und damit gleich doppelt wichtig: Es kommt im Prüfungsbereich „Sicherstellen der Datenqualität" vor **und** es ist die natürliche Gliederung für deine **Projektdokumentation** (die betriebliche Projektarbeit – Dokumentation, Präsentation und Fachgespräch zusammen – zählt 50 % der Gesamtnote). Wer im Fachgespräch sein Projekt sauber entlang der sechs Phasen erzählen kann, wirkt sofort strukturiert.
 
 Der Machine-Learning-Teil wird auf **Verständnisebene** geprüft, nicht auf Programmierebene: Verfahren zuordnen, Auswahl begründen, kleine Rechnungen von Hand durchführen (k-Means, Assoziationsanalyse, k-NN, Entropie und Informationsgewinn bei ID3), Grenzen und rechtliche Anforderungen benennen. Niemand verlangt Python-Code auf dem Papier.
 
@@ -28,11 +28,22 @@ Szenario: **Möbelhaus Nordholz GmbH**.
 | 5 | **Evaluation** | Erfüllt das Ergebnis das **fachliche** Ziel? | Gütebewertung, Entscheidung über Freigabe |
 | 6 | **Deployment** | Wie kommt der Nutzen in den Betrieb? | Bericht/Dashboard, produktive Nutzung, Monitoring |
 
+**Die offiziellen Aufgaben je Phase** (CRISP-DM 1.0 – beliebt für Zuordnungsaufgaben „In welche Phase gehört …?"):
+
+| Phase | Aufgaben (Generic Tasks) |
+|---|---|
+| Business Understanding | Geschäftsziele bestimmen, Situation bewerten (Ressourcen, Risiken, Kosten/Nutzen), Data-Mining-Ziele ableiten, Projektplan erstellen |
+| Data Understanding | Daten sammeln, Daten beschreiben, Daten explorieren, Datenqualität prüfen |
+| Data Preparation | Daten auswählen, bereinigen, neue Merkmale bilden, Daten integrieren (zusammenführen), formatieren |
+| Modeling | Verfahren auswählen, **Testdesign** festlegen (z. B. Aufteilung in Trainings- und Testdaten), Modell erstellen, Modell technisch bewerten |
+| Evaluation | Ergebnisse am Geschäftsziel bewerten, Vorgehen überprüfen, nächste Schritte festlegen (Freigabe, neue Iteration oder Abbruch) |
+| Deployment | Einführung planen, Monitoring und Wartung planen, Abschlussbericht erstellen, Projektrückblick (Lessons Learned) |
+
 ## 1.2 Die drei Aussagen, die in Prüfungen zählen
 
 **1. Der Prozess ist iterativ, nicht linear.** Rücksprünge sind vorgesehen, insbesondere zwischen Data Understanding und Data Preparation (man findet beim Aufbereiten neue Qualitätsprobleme) sowie von Evaluation zurück zu Business Understanding (das Ergebnis zeigt, dass die Frage falsch gestellt war).
 
-**2. Der Aufwand liegt in Phase 2 und 3.** Erfahrungsgemäß entfallen **60–80 % des Projektaufwands** auf Datenverständnis und Datenaufbereitung – nicht auf die Modellierung. Wer im Projektantrag den Großteil der 40 Stunden für „Modell trainieren" einplant, plant unrealistisch.
+**2. Der Aufwand liegt in Phase 2 und 3.** Erfahrungsgemäß entfallen **60–80 % des Projektaufwands** auf Datenverständnis und Datenaufbereitung – nicht auf die Modellierung. Der CRISP-DM-Leitfaden selbst veranschlagt allein für die Data Preparation 50–70 % von Zeit und Aufwand. Wer im Projektantrag den Großteil der 40 Stunden für „Modell trainieren" einplant, plant unrealistisch.
 
 **3. Evaluation ≠ Modellgüte.** In Phase 5 wird nicht nur geprüft, ob das Modell technisch gut rechnet (das passiert schon in Phase 4), sondern ob es das **fachliche Ziel aus Phase 1** erfüllt. Ein Modell mit 95 % Trefferquote ist wertlos, wenn die Fachabteilung damit nicht arbeiten kann.
 
@@ -61,6 +72,7 @@ Szenario: **Möbelhaus Nordholz GmbH**.
 - **Datensatz / Beobachtung / Instanz:** eine Zeile
 - **Trainingsdaten:** Daten, aus denen das Modell lernt
 - **Testdaten:** zurückgehaltene Daten zur unabhängigen Prüfung
+- **Validierungsdaten:** dritter Teil der Daten, um während der Entwicklung Parameter (etwa k bei k-NN oder die Baumtiefe) einzustellen – damit die Testdaten bis zum Schluss unberührt bleiben (Aufteilung, Overfitting, Kreuzvalidierung → Deep Dive 7)
 - **Modell:** die aus den Daten gelernte Regel
 
 ## 2.2 Die drei Lernarten
@@ -69,7 +81,7 @@ Szenario: **Möbelhaus Nordholz GmbH**.
 |---|---|---|---|
 | **Überwacht** (supervised) | gelabelte Daten – die richtige Antwort ist bekannt | Vorhersage | Klassifikation, Regression |
 | **Unüberwacht** (unsupervised) | keine Labels | Struktur entdecken | Clustering, Assoziationsanalyse, Dimensionsreduktion |
-| **Bestärkend** (reinforcement) | Rückmeldung als Belohnung/Bestrafung | optimale Handlungsstrategie | Steuerung, Spiele, Robotik |
+| **Bestärkend** (reinforcement) | Rückmeldung als Belohnung/Bestrafung | optimale Handlungsstrategie | z. B. Q-Learning; Einsatz in Steuerung, Spielen, Robotik |
 
 **Die Entscheidungsfrage lautet immer: Habe ich Labels?** Existiert eine Spalte mit der bekannten richtigen Antwort (z. B. „Kunde hat gekündigt: ja/nein"), ist es überwachtes Lernen. Fehlt sie, bleibt nur unüberwachtes Lernen.
 
@@ -145,6 +157,8 @@ $Z_2 = \left(\frac{7+8+9}{3} \,\middle|\, \frac{8+7+9}{3}\right)$ = **(8 | 8)**
 2. **Das Ergebnis hängt von den Startzentren ab.** Ungünstige Startwerte führen zu einem schlechteren lokalen Optimum – deshalb mehrfach mit verschiedenen Startwerten rechnen.
 3. **Merkmale müssen skaliert werden.** Ohne Skalierung dominiert das Merkmal mit der größeren Zahlenspanne den Abstand vollständig – ein Bestellwert in Euro (0–5.000) überstimmt die Bestellanzahl (0–20) und macht das zweite Merkmal praktisch wirkungslos.
 
+Weitere Grenzen: k-Means ist ausreißerempfindlich (ein einzelner Extremwert verschiebt den Mittelwert und damit das Zentrum) und findet nur annähernd kugelförmige Cluster ähnlicher Größe. Gegen ungünstige Startzentren hilft die Startwertwahl **k-Means++**, die die Startzentren möglichst weit auseinander legt.
+
 > ❓ **Prüferfrage:** Ihre Clusteranalyse nutzt Jahresumsatz in € und Anzahl Reklamationen. Warum ist das Ergebnis ohne Vorverarbeitung wertlos?
 > *Der Umsatz bewegt sich in Tausenderbereichen, die Reklamationszahl im einstelligen Bereich. Im euklidischen Abstand geht die Reklamationszahl praktisch unter – das Modell clustert faktisch nur nach Umsatz. Notwendig ist eine Normalisierung oder Standardisierung beider Merkmale auf einen vergleichbaren Wertebereich.*
 
@@ -170,6 +184,8 @@ Für die Regel **A → B** (Wenn A, dann auch B):
 - **Lift < 1:** negativer Zusammenhang – der Kauf von A macht den Kauf von B unwahrscheinlicher (z. B. Substitutionsprodukte)
 
 **Wichtige Eigenschaft:** Die **Konfidenz ist richtungsabhängig** (A → B ≠ B → A), der **Lift ist symmetrisch** (identisch in beide Richtungen). Eine hohe Konfidenz allein kann täuschen: Ist B ohnehin in fast jedem Warenkorb, ist auch die Konfidenz jeder Regel auf B hoch – erst der Lift zeigt, ob wirklich ein Zusammenhang besteht.
+
+**Apriori-Algorithmus:** Das Standardverfahren, um solche Regeln in großen Datenbeständen zu finden. Vorgegeben werden ein **Mindestsupport** und eine **Mindestkonfidenz**. Zuerst werden alle Artikelkombinationen gesucht, die den Mindestsupport erreichen (häufige Itemsets), daraus dann die Regeln mit ausreichender Konfidenz gebildet. Das Apriori-Prinzip spart dabei Rechenaufwand: Ist eine Kombination selten, sind alle größeren Kombinationen, die sie enthalten, ebenfalls selten und müssen nicht mehr gezählt werden.
 
 ## 4.2 Durchgerechnetes Beispiel
 
@@ -202,10 +218,18 @@ Diese Phase entscheidet über die Qualität des Ergebnisses – „Garbage in, g
 |---|---|
 | **Fehlende Werte** | löschen, ersetzen (Median/Modus) oder als eigene Kategorie kennzeichnen (→ Deep Dive 3) |
 | **Kategorien kodieren** | One-Hot-Encoding: Aus der Spalte „Kategorie" mit den Werten Möbel/Elektronik/Zubehör werden drei 0/1-Spalten. Nötig, weil Verfahren nur mit Zahlen rechnen |
-| **Skalieren** | **Normalisierung** bringt alle Werte auf 0–1; **Standardisierung** auf Mittelwert 0 und Standardabweichung 1. Pflicht bei k-Means und k-NN |
+| **Skalieren** | **Min-Max-Normalisierung** bringt alle Werte auf 0–1; **Standardisierung** auf Mittelwert 0 und Standardabweichung 1. Pflicht bei k-Means und k-NN |
 | **Ausreißer** | prüfen, nicht blind löschen (→ Deep Dive 3) |
 | **Merkmale bilden** | Aus Start- und Endzeitstempel die Bearbeitungsdauer berechnen; aus dem Geburtsdatum das Alter |
 | **Unausgeglichene Klassen** | Bei 2 % Reklamationsfällen erreicht ein Modell 98 % Accuracy, indem es immer „keine Reklamation" sagt. Gegenmaßnahmen: Über-/Unterabtastung, geeignetere Gütemaße (→ Deep Dive 7) |
+
+**Die beiden Skalierungsformeln:**
+
+Min-Max-Normalisierung: $x' = \frac{x - x_{min}}{x_{max} - x_{min}}$ – Beispiel: Jahresumsatz 9.160 € bei einer Spanne von 200 bis 45.000 €: $x' = \frac{9160 - 200}{45000 - 200} = \frac{8960}{44800}$ = **0,20**
+
+Standardisierung (z-Transformation): $z = \frac{x - \mu}{\sigma}$ – Beispiel: Lieferdauer 7 Tage bei Mittelwert 4 Tage und Standardabweichung 1,5 Tage: $z = \frac{7 - 4}{1{,}5}$ = **2,00** (zwei Standardabweichungen über dem Mittel)
+
+Die Min-Max-Normalisierung ist ausreißerempfindlich (ein Extremwert staucht alle übrigen Werte zusammen), die Standardisierung weniger. Achtung, Begriffsfalle: „Normalisierung" bei Datenbanken (1. bis 3. Normalform) ist etwas völlig anderes. Und: Minimum, Maximum, Mittelwert und Standardabweichung werden nur aus den Trainingsdaten berechnet und dann auf die Testdaten angewendet – sonst sickern Informationen aus den Testdaten ins Training (Data Leakage). Entscheidungsbäume brauchen übrigens keine Skalierung, weil sie nur Schwellenwerte je Merkmal vergleichen.
 
 **Data Leakage – der teuerste Anfängerfehler:** Enthalten die Trainingsdaten Informationen, die zum Vorhersagezeitpunkt real noch nicht vorliegen (z. B. das Feld „Reklamationsdatum" bei der Vorhersage von Reklamationen), erzielt das Modell im Test glänzende Werte und versagt im Betrieb vollständig. Prüffrage bei jedem Merkmal: **War diese Information zum Entscheidungszeitpunkt bereits bekannt?**
 
@@ -223,6 +247,9 @@ Diese Phase entscheidet über die Qualität des Ergebnisses – „Garbage in, g
 ## 6.2 Rechtliche Anforderungen
 
 - **Art. 22 DSGVO – automatisierte Entscheidungen:** Betroffene haben grundsätzlich das Recht, nicht einer ausschließlich automatisierten Entscheidung mit rechtlicher Wirkung oder erheblicher Beeinträchtigung unterworfen zu werden (Beispiel: automatische Ablehnung eines Ratenkaufs). Praktische Folge: **menschliche Prüfinstanz** vorsehen, Entscheidung begründbar machen, Widerspruchsmöglichkeit einräumen.
+  - Ausnahmen (Art. 22 Abs. 2): Die Entscheidung ist für einen Vertrag erforderlich, durch Gesetz erlaubt oder beruht auf ausdrücklicher Einwilligung. Auch dann muss der Verantwortliche nach Abs. 3 mindestens das Recht auf Eingreifen einer Person, auf Darlegung des eigenen Standpunkts und auf Anfechtung der Entscheidung gewährleisten.
+  - Informationspflicht: Bei automatisierten Entscheidungen sind „aussagekräftige Informationen über die involvierte Logik" und die angestrebten Auswirkungen mitzuteilen (Art. 13 Abs. 2 lit. f, Art. 14 Abs. 2 lit. g, Auskunft nach Art. 15 Abs. 1 lit. h DSGVO).
+  - Laut EuGH (SCHUFA-Urteil, C-634/21, Dezember 2023) kann schon die Berechnung eines Scores eine solche Entscheidung sein, wenn der Empfänger sich maßgeblich danach richtet – „das Modell gibt nur eine Empfehlung" schützt also nicht, wenn faktisch niemand mehr abweicht.
 - **Transparenz und Erklärbarkeit:** Betroffene und Fachbereich müssen nachvollziehen können, worauf eine Entscheidung beruht – ein wesentliches Argument für erklärbare Verfahren wie Entscheidungsbäume.
 - **Zweckbindung und Datenminimierung:** Für die Analyse nur die Merkmale verwenden, die fachlich erforderlich sind.
 - **Bias / Verzerrung:** Ein Modell lernt die Muster seiner Trainingsdaten – **einschließlich vorhandener Benachteiligungen**. Auch wenn geschützte Merkmale (Geschlecht, Herkunft) entfernt werden, können Stellvertretermerkmale wie die Postleitzahl sie indirekt abbilden. Gegenmaßnahmen: Datenbasis auf Repräsentativität prüfen, Ergebnisse nach Teilgruppen auswerten, menschliche Kontrolle.
@@ -294,7 +321,7 @@ Neuer Auftrag: **N(4|3)**, k = 3. Wird er reklamiert?
 
 **ID3** (Iterative Dichotomiser 3) baut einen Entscheidungsbaum von oben nach unten auf. An jedem Knoten wählt er das Merkmal, das die Daten **am saubersten nach der Zielklasse trennt**. Gemessen wird das mit Entropie und Informationsgewinn.
 
-**Entropie:** Maß für die Unordnung (Unreinheit) einer Datenmenge bezogen auf die Zielklasse. 0 = alle Fälle in derselben Klasse (rein), 1 = bei zwei Klassen genau halbe-halbe (maximal gemischt). Formel: $H(S) = -\sum_i p_i \cdot \log_2 p_i$ mit $p_i$ als Anteil der Klasse i.
+**Entropie:** Maß für die Unordnung (Unreinheit) einer Datenmenge bezogen auf die Zielklasse. 0 = alle Fälle in derselben Klasse (rein), 1 = bei zwei Klassen genau halbe-halbe (maximal gemischt). Formel: $H(S) = -\sum_i p_i \cdot \log_2 p_i$ mit $p_i$ als Anteil der Klasse i. Bei mehr als zwei Klassen kann die Entropie über 1 steigen (Maximum $\log_2$ der Klassenanzahl, z. B. 1,585 bei drei gleich großen Klassen); ein Summand mit $p_i = 0$ zählt als 0.
 
 **Informationsgewinn:** Um wie viel die Entropie sinkt, wenn man die Daten nach Merkmal A aufteilt. Die Entropien der Teilmengen werden dabei **nach ihrem Anteil gewichtet**. Formel: $IG(S, A) = H(S) - \sum_v \frac{|S_v|}{|S|} \cdot H(S_v)$ mit $S_v$ als Teilmenge mit Ausprägung v.
 
@@ -351,7 +378,7 @@ IG(Verpackung) = 0,971 − 0,951 = **0,020**
 
 **Schritt 3 – Wurzel:** Der größte Informationsgewinn gehört zu **Spediteur** (0,371) → Wurzel des Baums. Der Ast **Eigenlieferung** ist bereits rein und wird zum Blatt „nein".
 
-**Schritt 4 – nächste Ebene:** Für den Ast **Nordtrans** (Aufträge 1–4, H = 0,811) wird mit den verbliebenen Merkmalen neu gerechnet: IG(Lieferdauer) = 0,811 (lang → 3 × ja, kurz → 1 × nein, beide rein) gegenüber IG(Verpackung) = 0,311. Gewählt wird **Lieferdauer**. Im Ast **Rheinlogistik** (Aufträge 5–7) trennt die **Verpackung** perfekt (Spezial → ja, Standard → nein).
+**Schritt 4 – nächste Ebene:** Für den Ast **Nordtrans** (Aufträge 1–4, H = 0,811) wird mit den verbliebenen Merkmalen neu gerechnet: IG(Lieferdauer) = 0,811 (lang → 3 × ja, kurz → 1 × nein, beide rein) gegenüber IG(Verpackung) = 0,311. Gewählt wird **Lieferdauer**. Im Ast **Rheinlogistik** (Aufträge 5–7, H = 0,918) trennt die **Verpackung** perfekt (Spezial → ja, Standard → nein): IG(Verpackung) = 0,918 gegenüber IG(Lieferdauer) ≈ 0,25.
 
 **Der fertige Baum:**
 
@@ -409,16 +436,30 @@ Die drei Begriffe sind ineinander verschachtelt – jede Ebene ist ein Teil der 
 
 ## 8.3 Random Forest und Support Vector Machine
 
-- **Random Forest:** Viele Entscheidungsbäume werden auf **zufälligen Stichproben** der Trainingsdaten und mit **zufälligen Teilmengen der Merkmale** trainiert (Bagging). Für einen neuen Fall stimmen alle Bäume ab, die Mehrheit entscheidet. Einzelne Bäume überanpassen leicht; ihre Fehler gleichen sich im Wald weitgehend aus – das Verfahren ist robust und meist genauer als ein einzelner Baum, verliert aber dessen Lesbarkeit.
+- **Random Forest:** Viele Entscheidungsbäume werden auf **zufälligen Stichproben** der Trainingsdaten (Ziehen mit Zurücklegen – das ist das **Bagging**, Bootstrap Aggregating) trainiert; zusätzlich darf jeder Baum an jedem Knoten nur aus einer **zufälligen Teilmenge der Merkmale** wählen. Für einen neuen Fall stimmen alle Bäume ab, die Mehrheit entscheidet. Einzelne Bäume überanpassen leicht; ihre Fehler gleichen sich im Wald weitgehend aus – das Verfahren ist robust und meist genauer als ein einzelner Baum, verliert aber dessen Lesbarkeit.
 - **Support Vector Machine (SVM):** sucht die Trennlinie (allgemein: Hyperebene) zwischen zwei Klassen, die den **größten Abstand** (Margin) zu den nächstgelegenen Punkten beider Klassen hat. Diese Grenzpunkte heißen **Stützvektoren**. Über den **Kernel-Trick** lassen sich auch nicht geradlinig trennbare Klassen trennen. Gut bei vielen Merkmalen und mittleren Datenmengen, schwer zu erklären.
 
 ## 8.4 Generative KI und KI-Verordnung
 
 - **Generative KI** (z. B. große Sprachmodelle) erzeugt neue Inhalte – Texte, Code, Bilder. In der Datenanalyse hilft sie beim Schreiben von SQL oder bei Zusammenfassungen. Risiken: **Halluzinationen** (überzeugend formulierte, aber falsche Aussagen – Ergebnisse immer prüfen), **Datenschutz** (keine personenbezogenen oder vertraulichen Daten in externe Dienste eingeben) und ungeklärte Urheberrechte.
-- Die **EU-KI-Verordnung (AI Act)** regelt KI-Systeme nach ihrem **Risiko**: **verboten** (z. B. Social Scoring durch Behörden), **hohes Risiko** (z. B. KI bei der Bewerberauswahl oder Kreditvergabe – strenge Pflichten zu Datenqualität, Dokumentation, menschlicher Aufsicht), **begrenztes Risiko** (Transparenzpflicht: Nutzer müssen erkennen, dass sie mit einer KI interagieren), **minimales Risiko** (z. B. Spamfilter – keine besonderen Pflichten).
+- Die **EU-KI-Verordnung (AI Act)** regelt KI-Systeme nach ihrem **Risiko**: **verboten** (z. B. Social Scoring – durch Behörden ebenso wie durch Unternehmen –, Emotionserkennung am Arbeitsplatz, manipulative Techniken), **hohes Risiko** (z. B. KI bei der Bewerberauswahl oder der Kreditwürdigkeitsprüfung – strenge Pflichten zu Risikomanagement, Datenqualität, Dokumentation, menschlicher Aufsicht), **begrenztes Risiko** (Transparenzpflicht: Nutzer müssen erkennen, dass sie mit einer KI interagieren; KI-generierte Inhalte und Deepfakes sind zu kennzeichnen), **minimales Risiko** (z. B. Spamfilter – keine besonderen Pflichten). Für große **KI-Modelle mit allgemeinem Verwendungszweck** (General Purpose AI, etwa Sprachmodelle) gelten eigene Pflichten (technische Dokumentation, Urheberrechtsstrategie).
+- Rechtsgrundlage ist die Verordnung (EU) 2024/1689, in Kraft seit 1. August 2024 und gestaffelt anwendbar. Der Zeitplan wurde durch den „Digital Omnibus zur KI" (Verordnung (EU) 2026/1744, in Kraft seit 27. Juli 2026) teilweise verschoben (Stand 2026):
+
+| Ab | Was gilt |
+|---|---|
+| 2. Februar 2025 | Verbotene Praktiken; Pflicht der Anbieter und Betreiber, die KI-Kompetenz ihres Personals zu fördern (Art. 4) |
+| 2. August 2025 | Pflichten für KI-Modelle mit allgemeinem Verwendungszweck; Sanktionsregeln |
+| 2. August 2026 | Allgemeine Anwendbarkeit, Transparenzpflichten (Art. 50) |
+| 2. Dezember 2027 | Hochrisiko-KI-Systeme nach Anhang III (z. B. Personalauswahl, Kreditwürdigkeit) – ursprünglich 2. August 2026 |
+| 2. August 2028 | Hochrisiko-KI in regulierten Produkten nach Anhang I (z. B. Maschinen, Medizinprodukte) – ursprünglich 2. August 2027 |
+
+- Bußgelder: bis zu 35 Mio. € oder 7 % des weltweiten Jahresumsatzes bei verbotenen Praktiken (je nachdem, welcher Betrag höher ist). Die KI-Verordnung ersetzt die DSGVO nicht – bei personenbezogenen Daten gelten beide nebeneinander.
 
 > ❓ **Prüferfrage:** Ihr Fachbereich möchte für die Reklamationsvorhersage „Deep Learning, weil das die modernste KI ist“. Was entgegnen Sie?
 > *Deep Learning spielt seine Stärken bei sehr großen Datenmengen und unstrukturierten Daten wie Bildern oder Texten aus. Für 18.000 tabellarische Aufträge mit wenigen Merkmalen ist ein Entscheidungsbaum oder Random Forest in der Regel ebenso gut, braucht weniger Daten und Rechenleistung und – beim Entscheidungsbaum – bleibt erklärbar. Die Verfahrenswahl richtet sich nach Daten, Ziel und Erklärbarkeit, nicht nach Modernität.*
+
+> ❓ **Prüferfrage:** Die Personalabteilung will Bewerbungen von einer KI vorsortieren lassen. Wie ordnen Sie das nach der KI-Verordnung ein?
+> *KI in der Personalauswahl ist ein Hochrisiko-System nach Anhang III. Damit gelten Pflichten wie Risikomanagement, hohe Datenqualität ohne diskriminierende Verzerrungen, technische Dokumentation, Protokollierung und menschliche Aufsicht; diese Pflichten greifen nach der Verschiebung durch den Digital Omnibus ab dem 2. Dezember 2027 (Stand 2026). Unabhängig davon gilt schon heute Art. 22 DSGVO: Eine Absage darf nicht ausschließlich automatisiert erfolgen.*
 
 ---
 
@@ -525,3 +566,5 @@ Zehn Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe):
 - [ ] Ich klassifiziere einen neuen Fall mit k-NN von Hand und erkläre, wie die Wahl von k das Ergebnis beeinflusst.
 - [ ] Ich berechne Entropie und Informationsgewinn und bestimme mit ID3 die Wurzel eines Entscheidungsbaums.
 - [ ] Ich grenze KI, Machine Learning und Deep Learning ab und erkläre Aufbau und Grenzen neuronaler Netze, Random Forest und SVM.
+- [ ] Ich ordne ein KI-System einer Risikoklasse der KI-Verordnung zu und kenne die Anwendungstermine (Stand 2026).
+- [ ] Ich skaliere einen Wert per Min-Max-Normalisierung und Standardisierung von Hand.

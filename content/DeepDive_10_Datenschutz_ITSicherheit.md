@@ -49,46 +49,56 @@ Eine Verarbeitung ist nur zulässig, wenn **mindestens eine** dieser Grundlagen 
 
 | Grundlage | Beispiel im Möbelhaus |
 |---|---|
-| **Einwilligung** | Newsletter-Versand |
-| **Vertragserfüllung** | Adresse für die Lieferung des gekauften Sofas |
-| **Rechtliche Verpflichtung** | Aufbewahrung von Rechnungen nach HGB/AO |
-| **Lebenswichtige Interessen** | Notfallsituation |
-| **Öffentliche Aufgabe** | für Behörden relevant |
-| **Berechtigtes Interesse** | Betrugsprävention – nach Abwägung gegen die Interessen der Betroffenen |
+| **Einwilligung** (lit. a) | Newsletter-Versand |
+| **Vertragserfüllung** (lit. b) | Adresse für die Lieferung des gekauften Sofas |
+| **Rechtliche Verpflichtung** (lit. c) | Aufbewahrung von Rechnungen nach HGB/AO |
+| **Lebenswichtige Interessen** (lit. d) | Notfallsituation |
+| **Öffentliche Aufgabe** (lit. e) | für Behörden relevant |
+| **Berechtigtes Interesse** (lit. f) | Betrugsprävention – nach Abwägung gegen die Interessen der Betroffenen |
 
-**Die Einwilligung** muss freiwillig, informiert, zweckbezogen und **jederzeit widerrufbar** sein; vorangekreuzte Kästchen sind unwirksam. Wichtig: Sie ist nur **eine von sechs** Grundlagen – für die Lieferadresse braucht es keine Einwilligung, sie ergibt sich aus dem Vertrag. Wer für alles eine Einwilligung einholt, macht es falsch herum.
+**Die Einwilligung** muss freiwillig, informiert, zweckbezogen und **jederzeit widerrufbar** sein; vorangekreuzte Kästchen sind unwirksam. Nach Art. 7 muss der Verantwortliche die Einwilligung **nachweisen** können, und der Widerruf muss so einfach sein wie die Erteilung; er wirkt nur für die Zukunft. Bei Online-Diensten für Kinder gilt in Deutschland eine Altersgrenze von **16 Jahren** (Art. 8). Wichtig: Sie ist nur **eine von sechs** Grundlagen – für die Lieferadresse braucht es keine Einwilligung, sie ergibt sich aus dem Vertrag. Wer für alles eine Einwilligung einholt, macht es falsch herum.
 
-**Art. 9 – besondere Kategorien:** Gesundheitsdaten, biometrische Daten, Religion, politische Meinung, Gewerkschaftszugehörigkeit, ethnische Herkunft, sexuelle Orientierung. Verarbeitung grundsätzlich **verboten**, nur bei engen Ausnahmen (z. B. ausdrückliche Einwilligung) zulässig.
+**Art. 9 – besondere Kategorien:** Gesundheitsdaten, genetische und biometrische Daten (zur eindeutigen Identifizierung), religiöse oder weltanschauliche Überzeugungen, politische Meinung, Gewerkschaftszugehörigkeit, ethnische Herkunft, Sexualleben und sexuelle Orientierung. Verarbeitung grundsätzlich **verboten**, nur bei engen Ausnahmen (z. B. ausdrückliche Einwilligung) zulässig.
+
+**Beschäftigtendaten** (Stand 2026): Die frühere deutsche Generalklausel **§ 26 Abs. 1 Satz 1 BDSG** darf nach dem EuGH-Urteil vom 30.03.2023 (C-34/21) nicht mehr als eigenständige Rechtsgrundlage herangezogen werden; das BAG hat das 2025 bestätigt. Rechtsgrundlage ist seitdem direkt die DSGVO – vor allem Art. 6 Abs. 1 lit. b (Arbeitsvertrag), lit. c (z. B. Lohnsteuer, Sozialversicherung) und lit. f. **Betriebsvereinbarungen** bleiben als Rechtsgrundlage möglich (Art. 88 DSGVO), müssen aber die Anforderungen der DSGVO voll erfüllen (EuGH C-65/23, 2024). Ein eigenes Beschäftigtendatengesetz ist angekündigt, aber noch nicht verabschiedet.
 
 ## 2.3 Betroffenenrechte
 
 | Recht | Artikel | Inhalt |
 |---|---|---|
+| Information | 13/14 | Bei der Erhebung von sich aus informieren: Verantwortlicher, Zweck, Rechtsgrundlage, Speicherdauer, Empfänger, Rechte (Datenschutzerklärung) |
 | Auskunft | 15 | Welche Daten werden zu welchem Zweck verarbeitet? |
 | Berichtigung | 16 | Korrektur unrichtiger Daten |
 | Löschung („Vergessenwerden") | 17 | Löschung, wenn der Zweck entfallen ist |
 | Einschränkung | 18 | Sperren statt löschen |
 | Datenübertragbarkeit | 20 | Herausgabe in maschinenlesbarem Format |
-| Widerspruch | 21 | gegen Verarbeitung auf Basis berechtigten Interesses |
+| Widerspruch | 21 | gegen Verarbeitung auf Basis berechtigten Interesses oder öffentlicher Aufgabe; gegen Direktwerbung immer |
 | Keine automatisierte Entscheidung | 22 | → Deep Dive 6 |
 
-**Frist:** Anträge sind **unverzüglich, spätestens innerhalb eines Monats** zu beantworten (bei komplexen Fällen um zwei Monate verlängerbar).
+**Frist:** Anträge sind **unverzüglich, spätestens innerhalb eines Monats** zu beantworten (bei komplexen Fällen um zwei weitere Monate verlängerbar; Art. 12 Abs. 3). Die Auskunft ist grundsätzlich **kostenlos**.
 
-⚠️ **Der Klassiker-Konflikt:** Ein Kunde verlangt Löschung – die Rechnung muss aber nach HGB und AO **zehn Jahre** aufbewahrt werden. Auflösung: Die gesetzliche Aufbewahrungspflicht geht vor; die Daten werden **für die weitere Nutzung gesperrt** (eingeschränkte Verarbeitung nach Art. 18) und nach Ablauf der Frist gelöscht. Werbedaten und die Newsletter-Anmeldung sind dagegen sofort zu löschen.
+⚠️ **Der Klassiker-Konflikt:** Ein Kunde verlangt Löschung – die Rechnung ist aber ein Buchungsbeleg und muss nach HGB und AO **acht Jahre** aufbewahrt werden (seit 01.01.2025 durch das Bürokratieentlastungsgesetz IV, vorher zehn Jahre; Bücher, Inventare und Jahresabschlüsse weiterhin zehn Jahre – Stand 2026). Auflösung: Die gesetzliche Aufbewahrungspflicht geht vor (Art. 17 Abs. 3 lit. b); die Daten werden **für die weitere Nutzung gesperrt** (eingeschränkte Verarbeitung nach Art. 18, in Deutschland ausdrücklich § 35 Abs. 3 BDSG) und nach Ablauf der Frist gelöscht. Werbedaten und die Newsletter-Anmeldung sind dagegen sofort zu löschen.
 
 ## 2.4 Weitere prüfungsrelevante Pflichten
 
 | Artikel | Pflicht |
 |---|---|
 | **Art. 25** | **Privacy by Design** (Datenschutz von Anfang an mitentwickeln) und **Privacy by Default** (datenschutzfreundliche Voreinstellungen) |
-| **Art. 28** | **Auftragsverarbeitungsvertrag (AVV)** – zwingend bei externen Dienstleistern |
-| **Art. 30** | **Verzeichnis von Verarbeitungstätigkeiten** – die zentrale Dokumentation |
-| **Art. 32** | **Technische und organisatorische Maßnahmen (TOM)** |
-| **Art. 33/34** | **Meldepflicht bei Datenpannen: 72 Stunden** an die Aufsichtsbehörde; bei hohem Risiko zusätzlich Information der Betroffenen |
+| **Art. 28** | **Auftragsverarbeitungsvertrag (AVV)** – zwingend bei externen Dienstleistern, die personenbezogene Daten im Auftrag und weisungsgebunden verarbeiten (z. B. Cloud, Rechenzentrum; nicht z. B. Steuerberater, die selbst verantwortlich sind) |
+| **Art. 30** | **Verzeichnis von Verarbeitungstätigkeiten** – die zentrale Dokumentation (die Ausnahme für Unternehmen unter 250 Beschäftigten greift bei regelmäßiger Verarbeitung praktisch nie) |
+| **Art. 32** | **Technische und organisatorische Maßnahmen (TOM)** – z. B. Pseudonymisierung, Verschlüsselung, Sicherstellung von Vertraulichkeit, Integrität, Verfügbarkeit und Belastbarkeit, Wiederherstellbarkeit, regelmäßige Überprüfung |
+| **Art. 33/34** | **Meldepflicht bei Datenpannen: 72 Stunden** nach Bekanntwerden an die Aufsichtsbehörde – entfällt nur, wenn voraussichtlich kein Risiko besteht; bei hohem Risiko zusätzlich unverzügliche Information der Betroffenen. Ein Auftragsverarbeiter meldet die Panne unverzüglich dem Verantwortlichen |
 | **Art. 35** | **Datenschutz-Folgenabschätzung (DSFA)** bei voraussichtlich hohem Risiko |
-| **Art. 83** | Bußgelder bis **20 Mio. € oder 4 % des weltweiten Jahresumsatzes** – der höhere Wert gilt |
+| **Art. 37–39** | Benennung, Stellung und Aufgaben des **Datenschutzbeauftragten**: weisungsfrei, berichtet direkt der Geschäftsleitung, darf wegen seiner Aufgabe nicht benachteiligt werden; berät und überwacht, entscheidet aber nicht – die Verantwortung bleibt beim Unternehmen |
+| **Art. 44 ff.** | **Drittlandtransfer** (außerhalb EU/EWR) nur mit Angemessenheitsbeschluss (USA: EU-US Data Privacy Framework seit 2023 für zertifizierte Unternehmen – Stand 2026 gültig, Rechtsmittel beim EuGH anhängig) oder geeigneten Garantien wie **Standardvertragsklauseln** |
+| **Art. 82** | Schadensersatz für Betroffene – auch für immaterielle Schäden |
+| **Art. 83** | Bußgelder bis **20 Mio. € oder 4 % des weltweiten Jahresumsatzes** – der höhere Wert gilt (z. B. Verstöße gegen Grundsätze, Rechtsgrundlagen, Betroffenenrechte); für Verstöße gegen Organisationspflichten (z. B. Art. 28, 30, 32, 33) bis 10 Mio. € oder 2 % |
 
-**Betrieblicher Datenschutzbeauftragter:** in Deutschland verpflichtend, sobald in der Regel **mindestens 20 Personen** ständig mit automatisierter Verarbeitung personenbezogener Daten beschäftigt sind (§ 38 BDSG) – oder wenn eine DSFA erforderlich ist.
+**Betrieblicher Datenschutzbeauftragter:** in Deutschland verpflichtend, sobald in der Regel **mindestens 20 Personen** ständig mit automatisierter Verarbeitung personenbezogener Daten beschäftigt sind (§ 38 BDSG, Stand 2026; eine Streichung dieser nationalen Schwelle ist politisch angekündigt – vor der Prüfung prüfen) – oder unabhängig von der Zahl, wenn eine DSFA erforderlich ist oder Daten geschäftsmäßig zur Übermittlung bzw. Markt- und Meinungsforschung verarbeitet werden.
+
+*Hinweis (Stand 2026):* Die EU-Kommission hat mit dem „Digital Omnibus“ Änderungen der DSGVO vorgeschlagen (u. a. Meldung nur noch bei hohem Risiko, Frist 96 Stunden). Sie sind noch nicht beschlossen – in der Prüfung gilt die **72-Stunden-Frist**.
+
+*Cookies und Tracking:* Das Speichern von Informationen auf dem Endgerät (Cookies, Tracking-Pixel, Fingerprinting) braucht nach **§ 25 TDDDG** eine Einwilligung, außer es ist für den vom Nutzer gewünschten Dienst unbedingt erforderlich (z. B. Warenkorb-Cookie). Das Gesetz hieß bis Mai 2024 **TTDSG** und wurde mit Inkrafttreten des Digitale-Dienste-Gesetzes in **TDDDG** (Telekommunikation-Digitale-Dienste-Datenschutz-Gesetz) umbenannt; das Telemediengesetz (TMG) wurde durch das **DDG** abgelöst (Impressumspflicht jetzt § 5 DDG).
 
 ---
 
@@ -105,7 +115,7 @@ Die wichtigste Unterscheidung für Datenanalysten:
 
 **Die Falle:** Pseudonymisierung wird gern als Freibrief missverstanden. Sie ist eine **Schutzmaßnahme nach Art. 32**, keine Befreiung von der DSGVO. Erst echte Anonymisierung führt aus dem Anwendungsbereich heraus.
 
-**Und echte Anonymisierung ist schwer:** Bei kleinen Gruppen genügen wenige Merkmale zur Re-Identifikation. „Weiblich, Filiale Köln, Abteilungsleitung" ist faktisch eine Person. Gegenmaßnahmen: Mindestgruppengrößen festlegen (kein Auswertungsfeld mit weniger als fünf Personen), Merkmale vergröbern (Altersgruppen statt Geburtsdatum), Kombinationsmöglichkeiten begrenzen.
+**Und echte Anonymisierung ist schwer:** Bei kleinen Gruppen genügen wenige Merkmale zur Re-Identifikation. „Weiblich, Filiale Köln, Abteilungsleitung" ist faktisch eine Person. Gegenmaßnahmen: Mindestgruppengrößen festlegen (kein Auswertungsfeld mit weniger als fünf Personen), Merkmale vergröbern (Altersgruppen statt Geburtsdatum), Kombinationsmöglichkeiten begrenzen. Das Ziel heißt **k-Anonymität**: Jede Merkmalskombination trifft auf mindestens k Personen zu.
 
 > ❓ **Prüferfrage:** Sie pseudonymisieren die Mitarbeiternamen in Ihrem Event Log. Genügt das, um die DSGVO nicht mehr beachten zu müssen?
 > *Nein. Pseudonymisierte Daten bleiben personenbezogen, solange die Zuordnung – hier über die Schlüsseltabelle – möglich ist. Die DSGVO gilt weiterhin vollständig. Zusätzlich bleibt die Mitbestimmung des Betriebsrats nach § 87 Abs. 1 Nr. 6 BetrVG bestehen, da das System weiterhin zur Leistungskontrolle geeignet ist.*
@@ -122,7 +132,7 @@ Die wichtigste Unterscheidung für Datenanalysten:
 | **Integrität** | Daten sind unverändert und vollständig | Hashwerte, Signaturen, Protokollierung |
 | **Verfügbarkeit** | Systeme sind nutzbar, wenn sie gebraucht werden | Backup, Redundanz, USV |
 | *(Authentizität)* | Der Absender ist der, der er vorgibt zu sein | digitale Signatur, Zertifikate |
-| *(Verbindlichkeit)* | Handlungen sind nachweisbar und nicht abstreitbar | revisionssichere Protokolle |
+| *(Verbindlichkeit)* | Handlungen sind nachweisbar und nicht abstreitbar (Nichtabstreitbarkeit, engl. Non-Repudiation) | revisionssichere Protokolle, qualifizierte Signatur |
 
 Die ersten drei bilden die klassische **CIA-Trias** (Confidentiality, Integrity, Availability). Merke: Die Ziele stehen teilweise im **Zielkonflikt** – maximale Vertraulichkeit (alles verschlüsselt, niemand hat Rechte) senkt die Verfügbarkeit. Sicherheitskonzepte sind immer Abwägungen.
 
@@ -135,9 +145,11 @@ Die ersten drei bilden die klassische **CIA-Trias** (Confidentiality, Integrity,
 | **Hybrid** | asymmetrisch den Sitzungsschlüssel übertragen, dann symmetrisch verschlüsseln | Praxisstandard | TLS/HTTPS |
 | **Hashing** | Einwegfunktion, feste Länge, nicht umkehrbar | Integritätsprüfung, Passwortspeicherung | SHA-256 |
 
-**Hashing ist keine Verschlüsselung** – es gibt keinen Rückweg. Passwörter werden gehasht gespeichert, zusätzlich mit einem **Salt** (Zufallswert je Passwort), damit gleiche Passwörter unterschiedliche Hashes ergeben und vorberechnete Tabellen nutzlos werden.
+**Hashing ist keine Verschlüsselung** – es gibt keinen Rückweg. Passwörter werden gehasht gespeichert, zusätzlich mit einem **Salt** (Zufallswert je Passwort), damit gleiche Passwörter unterschiedliche Hashes ergeben und vorberechnete Tabellen nutzlos werden. Für Passwörter nimmt man bewusst **langsame** Verfahren wie Argon2, bcrypt, scrypt oder PBKDF2, die Brute-Force-Angriffe ausbremsen; schnelle Hashes wie SHA-256 sind dafür allein nicht geeignet. MD5 und SHA-1 gelten als unsicher.
 
-**Digitale Signatur:** Der Absender verschlüsselt den Hash des Dokuments mit seinem **privaten** Schlüssel. Jeder kann mit dem öffentlichen Schlüssel prüfen, ob Absender und Inhalt stimmen – das sichert Authentizität und Integrität, nicht aber Vertraulichkeit.
+*TLS genauer:* Der Server weist sich mit einem **Zertifikat** aus, in dem eine Zertifizierungsstelle (CA) bestätigt, dass der öffentliche Schlüssel zu dieser Domain gehört (**PKI**, Public-Key-Infrastruktur). Den Sitzungsschlüssel handeln Client und Server bei TLS 1.3 per Diffie-Hellman-Verfahren aus, statt ihn verschlüsselt zu übertragen – das Prinzip „asymmetrisch einigen, symmetrisch verschlüsseln“ bleibt gleich.
+
+**Digitale Signatur:** Der Absender verschlüsselt (genauer: signiert) den Hash des Dokuments mit seinem **privaten** Schlüssel. Jeder kann mit dem öffentlichen Schlüssel prüfen, ob Absender und Inhalt stimmen – das sichert Authentizität und Integrität, nicht aber Vertraulichkeit.
 
 ## 4.3 Zugriffsschutz
 
@@ -155,6 +167,8 @@ Die ersten drei bilden die klassische **CIA-Trias** (Confidentiality, Integrity,
 | **Inkrementell** | alle Änderungen **seit der letzten Sicherung** | kurz, konstant | viele Medien (Voll + **alle** inkrementellen) |
 
 **Die Abwägung in einem Satz:** Inkrementell sichert am schnellsten, stellt am langsamsten wieder her – differenziell umgekehrt.
+
+**Generationenprinzip (Großvater-Vater-Sohn):** Sicherungsmedien werden rotierend wiederverwendet, ältere Stände aber aufbewahrt – z. B. tägliche Sicherungen (Söhne) eine Woche, wöchentliche (Väter) einen Monat, monatliche (Großväter) ein Jahr. So lässt sich auch ein Stand von vor Wochen zurückholen, etwa wenn ein Fehler oder eine Verschlüsselung erst spät bemerkt wird.
 
 **3-2-1-Regel:** 3 Kopien der Daten, auf 2 verschiedenen Medientypen, davon 1 an einem anderen Ort (offsite). Ergänzend gilt heute: mindestens eine Kopie **offline oder unveränderbar** (Schutz vor Ransomware, die erreichbare Backups mitverschlüsselt).
 
@@ -188,12 +202,16 @@ Der **IT-Grundschutz** des **BSI** (Bundesamt für Sicherheit in der Information
 2. **Schutzbedarfsfeststellung:** je Objekt und Schutzziel (Vertraulichkeit, Integrität, Verfügbarkeit) den Schutzbedarf **normal**, **hoch** oder **sehr hoch** bestimmen – anhand der möglichen Schäden (Gesetzesverstöße, finanzielle Folgen, Imageschaden, Beeinträchtigung der Aufgabe)
 3. Modellierung: passende **Bausteine** aus dem IT-Grundschutz-Kompendium zuordnen
 4. **IT-Grundschutz-Check:** Soll-Ist-Vergleich der Anforderungen
-5. Risikoanalyse für Objekte mit hohem oder sehr hohem Schutzbedarf
+5. Risikoanalyse für Objekte mit hohem oder sehr hohem Schutzbedarf (oder wenn kein passender Baustein existiert)
 6. Umsetzung und regelmäßige Überprüfung
 
-**Maximumprinzip:** Ein Server erbt den **höchsten** Schutzbedarf der Anwendungen, die auf ihm laufen. Läuft die Gehaltsabrechnung neben dem Kantinenplan, gilt für den ganzen Server „sehr hoch“.
+**Schutzbedarfskategorien** (BSI-Standard 200-2): **normal** – Schadensauswirkungen begrenzt und überschaubar; **hoch** – beträchtlich; **sehr hoch** – existenziell bedrohlich, katastrophal.
 
-Ein **ISMS** (Informationssicherheits-Managementsystem) nach **ISO/IEC 27001** organisiert Sicherheit als dauerhaften Prozess mit Verantwortlichen, Richtlinien und PDCA-Kreislauf; ISO 27001 auf Basis von IT-Grundschutz ist die deutsche Zertifizierungsvariante. **Compliance** heißt, Gesetze, Verträge und interne Regeln nachweisbar einzuhalten – das ISMS liefert die Nachweise.
+**Maximumprinzip:** Ein Server erbt den **höchsten** Schutzbedarf der Anwendungen, die auf ihm laufen. Läuft die Gehaltsabrechnung neben dem Kantinenplan, gilt für den ganzen Server der Schutzbedarf der Gehaltsabrechnung (Vertraulichkeit mindestens „hoch“). Zwei Ausnahmen werden gern geprüft: Beim **Kumulationseffekt** steigt der Schutzbedarf, weil sich viele kleine Schäden summieren (viele „normale“ Anwendungen auf einem Server ergeben zusammen „hoch“); beim **Verteilungseffekt** sinkt er, z. B. für die Verfügbarkeit, wenn eine Anwendung redundant auf mehrere Server verteilt ist.
+
+*Die BSI-Standards:* 200-1 Managementsysteme für Informationssicherheit (ISMS) · 200-2 IT-Grundschutz-Methodik (mit den Varianten **Basis-Absicherung**, **Standard-Absicherung** und **Kern-Absicherung**) · 200-3 Risikoanalyse auf Basis von IT-Grundschutz · 200-4 Business Continuity Management (löste 2023 den Standard 100-4 ab). *Stand 2026:* Das BSI führt mit **Grundschutz++** ein schlankeres, maschinenlesbares Regelwerk ein, das das Kompendium ablöst; die bisherige Methodik bleibt in einer mehrjährigen Übergangszeit (Zertifizierung bis 2031) gültig.
+
+Ein **ISMS** (Informationssicherheits-Managementsystem) nach **ISO/IEC 27001** (aktuelle Fassung 2022, Stand 2026) organisiert Sicherheit als dauerhaften Prozess mit Verantwortlichen, Richtlinien und PDCA-Kreislauf; ISO 27001 auf Basis von IT-Grundschutz ist die deutsche Zertifizierungsvariante. **Compliance** heißt, Gesetze, Verträge und interne Regeln nachweisbar einzuhalten – das ISMS liefert die Nachweise.
 
 ## 5.2 Weitere Bedrohungen
 
@@ -229,7 +247,25 @@ Sind personenbezogene Daten betroffen, läuft parallel die **72-Stunden-Meldefri
 - Notfallübungen: Ein Plan, der nie geübt wurde, funktioniert im Ernstfall selten. Auch die Rücksicherung eines Backups muss regelmäßig getestet werden.
 
 > ❓ **Prüferfrage:** Ein Dashboard-Server enthält nur öffentliche Produktdaten, auf ihm läuft aber auch die Auswertung der Gehaltsdaten. Welchen Schutzbedarf hat der Server?
-> *Nach dem Maximumprinzip übernimmt der Server den höchsten Schutzbedarf der auf ihm verarbeiteten Daten – hier also mindestens „hoch“, bei Gehaltsdaten in der Regel „sehr hoch“ für die Vertraulichkeit. Besser ist es, die Anwendungen zu trennen, damit nicht der gesamte Server mit dem höchsten Aufwand geschützt werden muss.*
+> *Nach dem Maximumprinzip übernimmt der Server den höchsten Schutzbedarf der auf ihm verarbeiteten Daten – hier also für die Vertraulichkeit mindestens „hoch“, „sehr hoch“ nur, wenn ein Bekanntwerden existenzbedrohende Folgen hätte. Besser ist es, die Anwendungen zu trennen, damit nicht der gesamte Server mit dem höchsten Aufwand geschützt werden muss.*
+
+## 5.5 NIS2 und IT-Sicherheitsrecht (Stand 2026)
+
+Die EU-Richtlinie **NIS2** ist in Deutschland mit dem **NIS2-Umsetzungsgesetz** umgesetzt, das am **6. Dezember 2025** in Kraft getreten ist und das **BSI-Gesetz (BSIG)** neu gefasst hat. Statt bisher im Wesentlichen nur KRITIS-Betreibern sind nun rund 30.000 Unternehmen erfasst.
+
+| Punkt | Regelung |
+|---|---|
+| Wer? | Unternehmen in den Sektoren der Anlagen 1 und 2 des BSIG (z. B. Energie, Gesundheit, Verkehr, digitale Infrastruktur, Abfall, Lebensmittel, verarbeitendes Gewerbe). **Wichtige Einrichtung** ab 50 Beschäftigten oder über 10 Mio. € Umsatz und Bilanzsumme; **besonders wichtige Einrichtung** ab 250 Beschäftigten oder über 50 Mio. € Umsatz und über 43 Mio. € Bilanzsumme (§ 28 BSIG) |
+| Registrierung | beim BSI innerhalb von drei Monaten, nachdem die Einrichtung erstmals unter das Gesetz fällt |
+| Risikomanagement | angemessene technische und organisatorische Maßnahmen, u. a. Backup und Notfallmanagement, Zugriffskontrolle, MFA, Kryptografie, Sicherheit der Lieferkette, Schulungen |
+| Meldepflicht (§ 32 BSIG) | erhebliche Sicherheitsvorfälle an das BSI: **Erstmeldung nach 24 Stunden**, Meldung mit erster Bewertung **nach 72 Stunden**, **Abschlussmeldung nach einem Monat** |
+| Geschäftsleitung | muss die Maßnahmen billigen und überwachen, regelmäßig an Schulungen teilnehmen und haftet bei Pflichtverletzung |
+| Bußgelder | besonders wichtige Einrichtungen bis 10 Mio. € oder 2 %, wichtige bis 7 Mio. € oder 1,4 % des weltweiten Jahresumsatzes |
+
+⚠️ *Nicht verwechseln:* Die NIS2-Meldung geht an das **BSI** und betrifft jeden erheblichen Sicherheitsvorfall; die DSGVO-Meldung nach Art. 33 geht an die **Datenschutz-Aufsichtsbehörde** und betrifft nur Vorfälle mit personenbezogenen Daten. Ein Ransomware-Angriff auf Kundendaten kann **beide** Pflichten auslösen.
+
+> ❓ **Prüferfrage:** Bei einem Ransomware-Angriff auf ein NIS2-pflichtiges Unternehmen werden auch Kundendaten verschlüsselt und abgezogen. Wer muss wann informiert werden?
+> *Nach NIS2 (§ 32 BSIG) das BSI: Erstmeldung innerhalb von 24 Stunden, Folgemeldung nach 72 Stunden, Abschlussmeldung nach einem Monat. Nach Art. 33 DSGVO zusätzlich die Datenschutz-Aufsichtsbehörde innerhalb von 72 Stunden nach Bekanntwerden. Da die Daten abgeflossen sind, besteht voraussichtlich ein hohes Risiko – die betroffenen Kunden sind nach Art. 34 unverzüglich zu benachrichtigen. Alles wird intern dokumentiert.*
 
 ---
 
@@ -308,6 +344,7 @@ Das Unternehmen sichert sonntags vollständig (800 GB) und montags bis samstags 
 4. „Wie sind die Daten in Ihrem Projekt geschützt – im Transport und im Ruhezustand?"
 5. „Was passiert mit Ihren Analysedaten, wenn das Projekt beendet ist?" (Erwartet: Löschkonzept, Speicherbegrenzung.)
 6. „Angenommen, ein Kunde verlangt Auskunft über die von Ihnen verarbeiteten Daten – könnten Sie diese liefern?"
+7. „Wie haben Sie in Ihrem Projekt sichergestellt, dass Auswertungen keine Rückschlüsse auf einzelne Mitarbeitende zulassen?" (Erwartet: Aggregation, Mindestgruppengröße, Pseudonymisierung, Betriebsrat.)
 
 ---
 
@@ -326,3 +363,5 @@ Das Unternehmen sichert sonntags vollständig (800 GB) und montags bis samstags 
 - [ ] Ich beschreibe das Vorgehen nach IT-Grundschutz, die Schutzbedarfskategorien und das Maximumprinzip.
 - [ ] Ich nenne DDoS, Schadsoftwarearten und präventive Maßnahmen und grenze Penetrationstest und Schwachstellenscan ab.
 - [ ] Ich beschreibe den Ablauf bei einem Sicherheitsvorfall und die Bausteine des Notfallmanagements.
+- [ ] Ich kenne die aktuellen Fristen (Rechnungen acht Jahre aufbewahren) und die Rechtslage bei Beschäftigtendaten nach dem EuGH-Urteil zu § 26 BDSG.
+- [ ] Ich nenne die BSI-Standards 200-1 bis 200-4, das Generationenprinzip und grenze die NIS2-Meldung an das BSI von der DSGVO-Meldung ab.

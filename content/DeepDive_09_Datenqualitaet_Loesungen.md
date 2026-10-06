@@ -84,7 +84,7 @@ Erläuterung: Die Kennzahl bezieht sich auf **alle Zellen über sechs Felder**, 
 ## Block D – Bereinigen (18 P)
 
 **D1 (8 P):**
-**Exakte Dubletten** (Datensatz 1 und 6): Alle Feldwerte stimmen überein. Erkennung über eine Gruppierung nach den relevanten Feldern mit `HAVING COUNT(*) > 1` oder über einen UNIQUE-Vergleich. *(2 P)*
+**Exakte Dubletten** (Datensatz 1 und 6): Alle fachlichen Feldwerte stimmen überein – nur der technische Schlüssel `kunden_id` (K-1001 / K-1006) unterscheidet sich und darf deshalb nicht in den Vergleich einfließen. Erkennung über eine Gruppierung nach den relevanten Feldern mit `HAVING COUNT(*) > 1` oder über einen UNIQUE-Vergleich. *(2 P)*
 
 **Unscharfe Dubletten** (Datensatz 5 und 8): „Braun GmbH" gegenüber „Braun G.m.b.H." – identische E-Mail, PLZ und Geburtsdatum, abweichende Schreibweise des Namens. Vorgehen: *(4 P)*
 1. **Normalisieren:** Groß-/Kleinschreibung vereinheitlichen, Punkte und Sonderzeichen entfernen, Rechtsformzusätze standardisieren, Umlaute umschreiben.
@@ -102,7 +102,7 @@ Erläuterung: Die Kennzahl bezieht sich auf **alle Zellen über sechs Felder**, 
 *Ebenfalls anerkannt: eigene Kategorie „unbekannt" (bei kategorialen Feldern); Kennzeichnung imputierter Werte in einer Zusatzspalte.*
 
 **D3 (4 P):**
-Ein Ersetzen durch den Mittelwert ist hier **nicht vertretbar**. Die Lücken sind **nicht zufällig** verteilt, sondern systematisch an einen Spediteur gebunden. Der Mittelwert stammt jedoch überwiegend aus den Daten der anderen Spediteure und bildet die Lieferdauer dieses einen Anbieters nicht ab. *(2 P)*
+Ein Ersetzen durch den Mittelwert ist hier **nicht vertretbar**. Die Lücken sind **nicht zufällig** verteilt, sondern systematisch an einen Spediteur gebunden. Der Mittelwert stammt jedoch überwiegend aus den Daten der anderen Spediteure und bildet die Lieferdauer dieses einen Anbieters nicht ab. Fachbegriff: Hängt das Fehlen nur am (bekannten) Spediteur, liegt **MAR** vor; fehlen gerade die langen Lieferungen, liegt **MNAR** vor – in beiden Fällen nicht MCAR, ein Gesamtmittelwert verzerrt. Ein Gruppenmittelwert scheidet ebenfalls aus, weil für diesen Spediteur gar keine Werte vorliegen. *(2 P)*
 
 Folge: Weicht der betroffene Spediteur tatsächlich vom Durchschnitt ab – was angesichts der fehlenden Meldung plausibel ist –, wird ausgerechnet der auffällige Fall systematisch geschönt und der Zusammenhang zwischen Spediteur und Lieferdauer verschwindet aus der Analyse. Richtig ist, die **Ursache zu klären** (fehlt die Schnittstelle, wird nicht gemeldet, wird anders erfasst?), die Lücke bis dahin als „unbekannt" zu kennzeichnen und die Auswertung mit und ohne diese Fälle zu rechnen und transparent zu berichten. *(2 P)*
 
@@ -152,4 +152,4 @@ Argumentation mit der **1-10-100-Regel**: Einen Fehler bereits bei der Erfassung
 
 Mit Deep Dive 9 ist die **Vertiefung der Kernthemen** weitgehend abgedeckt. Es fehlen noch: DSGVO und IT-Sicherheit (Deep Dive 10) sowie Visualisierung und Pseudocode (Deep Dive 11). Danach folgt die Anwendung mit Projektmanagement, WiSo und den ersten vollständigen Altklausuren.
 
-Vergiss über dem schriftlichen Stoff nicht den **Projektantrag** – er ist mit 50 % der Gesamtnote der größte Einzelposten und die Frist deiner IHK liegt erfahrungsgemäß deutlich vor dem Prüfungstermin.
+Vergiss über dem schriftlichen Stoff nicht den **Projektantrag** – er ist die Grundlage für den Prüfungsbereich „Planen und Durchführen eines Projektes der Datenanalyse“, der mit 50 % der Gesamtnote der größte Einzelposten ist (§ 32 FIAusbV), und die Frist deiner IHK liegt erfahrungsgemäß deutlich vor dem Prüfungstermin. Der Prüfungsbereich „Sicherstellen der Datenqualität“ selbst zählt 10 % (90 Minuten, schriftlich).

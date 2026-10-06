@@ -58,7 +58,7 @@ BPMN (Business Process Model and Notation) ist der internationale Standard und i
 **Aktivitäten (abgerundetes Rechteck)** – etwas wird getan:
 - **Task:** einzelne Aufgabe („Auftrag erfassen") – immer mit **Verb + Objekt** benennen
 - **Teilprozess:** mit „+"-Zeichen, kann aufgeklappt werden
-- Marker: Personensymbol = manuelle/User-Task, Zahnrad = automatisierte Service-Task
+- Marker: Personensymbol = **User Task** (Mensch arbeitet mit Softwareunterstützung), Hand = **Manual Task** (ganz ohne IT), Zahnrad = **Service Task** (automatisiert, z. B. Webservice-Aufruf), Umschlag = Send/Receive Task (gefüllt = senden, leer = empfangen)
 
 **Gateways (Rauten)** – der Ablauf verzweigt oder führt zusammen:
 
@@ -73,6 +73,20 @@ BPMN (Business Process Model and Notation) ist der internationale Standard und i
 - Was ein Gateway aufspaltet, sollte ein **gleichartiges** Gateway wieder zusammenführen.
 - Beim XOR-Gateway müssen die Bedingungen **vollständig und überschneidungsfrei** sein – jeder Fall genau einmal abgedeckt.
 
+Eine leere Raute ohne Symbol bedeutet ebenfalls XOR; einheitlich mit „X" zu zeichnen ist aber klarer. Ein Pfeil mit Querstrich am Gateway-Ausgang ist der **Standardfluss** (Default): Er wird genommen, wenn keine andere Bedingung zutrifft.
+
+**Token-Semantik – so „liest" man ein BPMN-Modell:** Man denkt sich eine Marke (**Token**), die vom Startereignis aus den Sequenzflüssen folgt.
+
+| Gateway | Aufspalten (Split) | Zusammenführen (Join) |
+|---|---|---|
+| XOR | Token läuft in genau einen Pfad | jedes ankommende Token wird sofort durchgelassen – keine Synchronisation |
+| AND | Token wird für jeden Pfad kopiert | wartet, bis von **allen** Eingängen ein Token da ist, dann geht genau eines weiter |
+| OR | Token für jeden Pfad, dessen Bedingung zutrifft | wartet auf alle **tatsächlich aktivierten** Pfade |
+
+⚠️ **Typische Prüfungsfalle:** XOR-Split mit AND-Join → **Deadlock**, weil das AND auf einen Pfad wartet, der nie ein Token bekommt. AND-Split mit XOR-Join → der Folgeschritt wird **mehrfach** ausgeführt (z. B. zwei Rechnungen).
+
+Das **ereignisbasierte Gateway** (Raute mit Fünfeck im Doppelkreis) wartet auf das **zuerst eintretende** Ereignis – z. B. Kundenantwort (Nachricht) oder Ablauf von 48 Stunden (Timer). Nicht die Daten entscheiden, sondern was zuerst passiert.
+
 **Pools und Lanes:**
 - **Pool** = eigenständiger Teilnehmer/Organisation (Kunde, Lieferant, Möbelhaus)
 - **Lane** = Rolle oder Abteilung **innerhalb** eines Pools (Serviceannahme, Werkstatt, Buchhaltung)
@@ -82,7 +96,7 @@ BPMN (Business Process Model and Notation) ist der internationale Standard und i
 - **Nachrichtenfluss** (gestrichelter Pfeil): Kommunikation **zwischen** Pools
 - **Datenobjekt** (Blattsymbol) und **Anmerkung**: Artefakte ohne Ablaufwirkung
 
-⚠️ **Der Standardfehler:** ein durchgezogener Sequenzfluss zwischen zwei Pools. Zwischen Pools fließen **nur Nachrichten** – ein anderes Unternehmen hat keinen gemeinsamen Ablauf mit dir.
+⚠️ **Der Standardfehler:** ein durchgezogener Sequenzfluss zwischen zwei Pools. Zwischen Pools fließen **nur Nachrichten** – ein anderes Unternehmen hat keinen gemeinsamen Ablauf mit dir. Umgekehrt gilt: Zwischen **Lanes desselben Pools** steht ein normaler Sequenzfluss, kein Nachrichtenfluss.
 
 ## 2.2 Beispiel – Reparaturprozess Möbelhaus Nordholz
 
@@ -90,31 +104,32 @@ BPMN (Business Process Model and Notation) ist der internationale Standard und i
 Pool: MÖBELHAUS NORDHOLZ
 ┌──────────────────────────────────────────────────────────────────────┐
 │ Lane: Serviceannahme                                                 │
-│  (○)──▶[Reparaturauftrag erfassen]──▶[Kostenvoranschlag erstellen]──┐ │
-│   ▲                                                              │  │
-│   │ Nachricht                                        ◇ XOR ◀─────┘  │
-│   │                                          abgelehnt│  │angenommen │
-│   │                                     [Absage senden]  │           │
-│   │                                          ((●))       │           │
-├───┼──────────────────────────────────────────────────────┼───────────┤
-│ Lane: Werkstatt                                          ▼           │
-│   │                        ┌──▶[Ersatzteil bestellen]──┐             │
-│   │                  ◇ AND─┤                           ├─◇ AND──┐    │
-│   │                        └──▶[Techniker einplanen]───┘        ▼    │
-│   │                                                    [Reparatur    │
-│   │                                                     durchführen] │
-├───┼──────────────────────────────────────────────────────────────┼───┤
-│ Lane: Buchhaltung                                                ▼   │
-│   └────────────────────────────────[Rechnung stellen]◀────────────   │
-│                                          ((●))                       │
-└──────────────────────────────────────────────────────────────────────┘
-          ▲ gestrichelt (Nachrichtenfluss)
-┌─────────┴────────────────────────────────────────────────────────────┐
+│  (○)──▶[Auftrag erfassen]──▶[Kostenvoranschlag erstellen]──┐         │
+│   ▲                                                        │         │
+│   ┆       ┌────────────────────────────────────────────────┘         │
+│   ┆       ▼               abgelehnt                                  │
+│   ┆      ◇X─────────────────────────▶[Absage senden]──▶((●))         │
+│   ┆       │ angenommen                                               │
+├───┆───────┼──────────────────────────────────────────────────────────┤
+│   ┆       │                                   Lane: Werkstatt        │
+│   ┆       │     ┌──▶[Ersatzteil bestellen]──┐                        │
+│   ┆       └──▶◇+┤                           ├─▶◇+──▶[Reparatur       │
+│   ┆             └──▶[Techniker einplanen]───┘      durchführen]──┐   │
+├───┆──────────────────────────────────────────────────────────────┼───┤
+│   ┆                                         Lane: Buchhaltung    │   │
+│   ┆          ((●))◀──[Rechnung stellen]◀─────────────────────────┘   │
+│   ┆                         ┆                                        │
+└───┆─────────────────────────┆────────────────────────────────────────┘
+    ┆ Nachrichtenfluss        ┆ Nachrichtenfluss
+    ┆ (Reparaturmeldung)      ▼ (Rechnung)
+┌───┴──────────────────────────────────────────────────────────────────┐
 │ Pool: KUNDE (zugeklappt / Black Box)                                 │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
 Zu erkennen: ein **XOR** nach der Kostenvoranschlagsprüfung (genau ein Pfad), ein **AND** für Ersatzteilbestellung und Technikereinplanung (laufen parallel), drei Lanes für die beteiligten Rollen, ein separater Pool für den Kunden mit gestricheltem Nachrichtenfluss.
+
+Legende: (○) Startereignis (hier ausgelöst durch die Nachricht des Kunden), ((●)) Endereignis, ◇X XOR-Gateway, ◇+ AND-Gateway (Aufspalten und Zusammenführen), ┆ Nachrichtenfluss. Aus Platzgründen fehlen die Nachrichtenflüsse für Kostenvoranschlag, Kundenantwort und Absage – in einer Prüfungslösung sollten sie eingezeichnet sein.
 
 ## 2.3 EPK – die Alternative
 
@@ -128,6 +143,19 @@ Die **ereignisgesteuerte Prozesskette** stammt aus dem ARIS-Umfeld und ist in Pr
 1. **Ereignis und Funktion wechseln sich streng ab.** Nie zwei Funktionen oder zwei Ereignisse direkt hintereinander.
 2. Eine EPK **beginnt und endet mit einem Ereignis**.
 3. **Nach einem einzelnen Ereignis darf keine XOR- oder OR-Verzweigung folgen** – Ereignisse sind passive Zustände und können keine Entscheidung treffen. Entscheidungen gehen immer von einer **Funktion** aus.
+
+Was **nach einem Ereignis** erlaubt ist: eine AND-Verzweigung (der Zustand löst mehrere Funktionen gleichzeitig aus) sowie das **Zusammenführen** von Ereignissen mit jedem Konnektor. Nach einer Funktion sind AND-, OR- und XOR-Verzweigungen erlaubt. Weitere Formregeln: Ereignisse und Funktionen haben jeweils höchstens eine eingehende und eine ausgehende Kante – verzweigt wird nur über Konnektoren; ein Konnektor spaltet entweder auf oder führt zusammen, nicht beides. Symbole der Konnektoren: Kreis mit „XOR", ∨ (OR), ∧ (AND).
+
+**Erweiterte EPK (eEPK):** ergänzt die Ablauflogik um das *Wer* und *Womit*:
+
+| Objekt | Symbol | Beispiel |
+|---|---|---|
+| **Organisationseinheit** | Ellipse, mit der Funktion verbunden | Serviceannahme, Werkstatt |
+| **Informationsobjekt** | Rechteck | Auftragsdaten, Kostenvoranschlag |
+| **Anwendungssystem** | Rechteck mit seitlichen Doppellinien | ERP-System, Werkstatt-App |
+| **Prozesswegweiser** | Funktionssymbol vor einem Sechseck | Sprung in die EPK „Rechnungsstellung" |
+
+Zusatzobjekte hängen immer an einer **Funktion**, nie an einem Ereignis.
 
 | | BPMN 2.0 | EPK |
 |---|---|---|
@@ -155,6 +183,8 @@ Gesamtzeit vom Prozessstart bis zum Prozessende.
 Wertschöpfungsanteil (Flussgrad) $= \frac{\text{Bearbeitungszeit}}{\text{Durchlaufzeit}} \cdot 100$
 
 In der Praxis liegt dieser Anteil oft unter 10 %. Das bedeutet: **Der Hebel liegt fast immer bei den Liegezeiten, nicht bei der Beschleunigung der Bearbeitung.** Wer in einer Klausur vorschlägt, „die Techniker sollen schneller arbeiten", hat die Aufgabe nicht verstanden.
+
+⚠️ Der Begriff *Flussgrad* wird nicht einheitlich verwendet: In der Produktionslogistik ist er oft umgekehrt definiert (Durchlaufzeit / Bearbeitungszeit, Wert ≥ 1 – je größer, desto schlechter). Nutze in der Prüfung die angegebene Formel und benenne sie als **Wertschöpfungsanteil**.
 
 Beispiel Möbelhaus: Bearbeitungszeit 1,5 h, Liegezeit 28,5 h → DLZ = 30 h → Wertschöpfungsanteil $= \frac{1{,}5}{30}$ = **5 %**. In 95 % der Zeit passiert mit dem Auftrag nichts.
 
@@ -190,7 +220,8 @@ Punkt 4 wird am häufigsten vergessen und ist regelmäßig eigenständig bepunkt
 - **Ishikawa-Diagramm (Ursache-Wirkungs-Diagramm, „Fischgräte"):** systematische Ursachensuche entlang der **6M** – Mensch, Maschine, Material, Methode, Milieu (Umgebung), Messung.
 - **5-Why-Methode:** fünfmal „Warum?" fragen, um von Symptom zur Grundursache zu gelangen.
 - **Pareto-Analyse:** Ursachen nach Häufigkeit sortieren; wenige Ursachen erklären den Großteil der Fälle (→ Deep Dive 3).
-- **Wertstromanalyse:** Bearbeitungs- und Liegezeiten je Schritt visualisieren, um Verschwendung sichtbar zu machen.
+- **Wertstromanalyse:** Bearbeitungs- und Liegezeiten je Schritt visualisieren, um Verschwendung sichtbar zu machen. Lean-Methode (Value Stream Mapping): Material- und Informationsfluss werden vom Kunden rückwärts aufgenommen, unten im Diagramm läuft eine **Zeitlinie** mit Bearbeitungs- und Liegezeiten – daraus ergibt sich direkt der Wertschöpfungsanteil. Auf den Ist-Wertstrom folgt das **Wertstromdesign** (Soll).
+- **SIPOC:** Prozessabgrenzung auf einer Seite – **S**upplier (Lieferant), **I**nput, **P**rocess (4–7 Hauptschritte), **O**utput, **C**ustomer. Typisch für die Define-Phase von Six Sigma und für Schritt 1 der Prozessanalyse (Start, Ende, Schnittstellen). Beispiel Reparaturservice: Kunde/Ersatzteillieferant → Reparaturmeldung, Ersatzteil → erfassen, Kostenvoranschlag, reparieren, abrechnen → reparierte Ware, Rechnung → Kunde.
 
 ## 4.2 Typische Schwachstellen und ihre Gegenmaßnahmen
 
@@ -249,6 +280,7 @@ Ein Event Log mit dem Feld *Resource* enthält **personenbezogene Daten** und er
 - **Mitbestimmung des Betriebsrats** nach § 87 Abs. 1 Nr. 6 BetrVG: Systeme, die zur Überwachung von Verhalten oder Leistung der Beschäftigten **geeignet** sind, sind mitbestimmungspflichtig – die Eignung genügt, eine Überwachungsabsicht ist nicht erforderlich.
 - **DSGVO:** Rechtsgrundlage klären, **Zweckbindung** und **Datenminimierung** beachten, Betroffene informieren; bei umfangreicher systematischer Überwachung kann eine **Datenschutz-Folgenabschätzung** (Art. 35) erforderlich sein.
 - **Praktische Lösung:** Auswertung auf **aggregierter Ebene** (Team/Abteilung statt Person), **Pseudonymisierung** der Resource-Spalte, Schwellenwerte für Mindestgruppengrößen, Regelung in einer Betriebsvereinbarung.
+- ⚠️ Pseudonymisierte Daten bleiben **personenbezogen** (Art. 4 Nr. 5 DSGVO) – die DSGVO gilt weiter, nur das Risiko sinkt. Erst echt **anonymisierte** oder ausreichend aggregierte Daten fallen aus der DSGVO heraus.
 
 > ❓ **Prüferfrage:** Warum genügt es nicht, dem Betriebsrat zu versichern, man wolle keine Leistungskontrolle betreiben?
 > *Das Mitbestimmungsrecht knüpft an die technische **Eignung** zur Verhaltens- und Leistungskontrolle an, nicht an die Absicht. Sobald individuell zurechenbare Daten erfasst werden, greift § 87 Abs. 1 Nr. 6 BetrVG unabhängig vom Verwendungszweck.*
@@ -289,6 +321,7 @@ Oft wird als achte Art **ungenutztes Wissen der Beschäftigten** ergänzt.
 
 - **Kaizen** (japanisch „Veränderung zum Besseren“) ist die Haltung hinter dem **KVP**: viele kleine Verbesserungen durch die Beschäftigten selbst, ständig statt einmalig.
 - Der **SDCA-Zyklus** (Standardize – Do – Check – Act) sichert das Erreichte: Erst wenn eine Verbesserung als Standard festgeschrieben ist, startet der nächste PDCA-Zyklus. Ohne Standard fällt der Prozess in alte Gewohnheiten zurück.
+- **5S** ist die Lean-Methode für einen geordneten Arbeitsplatz (auch digital: Ablagestruktur, Laufwerke): Sortieren, Systematisieren (Ordnung schaffen), Säubern, Standardisieren, Selbstdisziplin (Einhalten und Verbessern). Sie greift direkt die Verschwendungsart *Bewegung* (Suchen) an.
 - **Business Process Reengineering (BPR)** ist das Gegenmodell: **radikale** Neugestaltung eines Prozesses „auf der grünen Wiese“ statt schrittweiser Verbesserung – große Wirkung, aber hohes Risiko und Widerstand.
 
 ## 6.3 Six Sigma und Total Quality Management
@@ -302,7 +335,11 @@ Oft wird als achte Art **ungenutztes Wissen der Beschäftigten** ergänzt.
 
 Als Datenanalyst bist du hier in deinem Element: Measure und Analyze sind Statistik (→ Deep Dive 3 und 4).
 
-**Total Quality Management (TQM)** ist die umfassendste Sicht: Qualität ist Aufgabe **aller** Beschäftigten und aller Prozesse, ausgerichtet auf Kundenzufriedenheit und ständige Verbesserung. Normgrundlage für ein Qualitätsmanagementsystem ist die **ISO 9001**.
+Gemessen wird in **DPMO** (Defects per Million Opportunities): $\text{DPMO} = \frac{\text{Fehler}}{\text{Einheiten} \cdot \text{Fehlermöglichkeiten je Einheit}} \cdot 1.000.000$
+
+Beispiel: 200 Aufträge mit je 5 Fehlermöglichkeiten, 30 Fehler gefunden: $\frac{30}{200 \cdot 5} \cdot 1.000.000$ = **30.000 DPMO** – das liegt zwischen 3 Sigma (rund 66.800 DPMO) und 4 Sigma (rund 6.200 DPMO), weit entfernt von 3,4 DPMO. Die 3,4 DPMO gelten für 6 Sigma unter der üblichen Annahme, dass sich der Prozessmittelwert langfristig um 1,5 Sigma verschiebt.
+
+**Total Quality Management (TQM)** ist die umfassendste Sicht: Qualität ist Aufgabe **aller** Beschäftigten und aller Prozesse, ausgerichtet auf Kundenzufriedenheit und ständige Verbesserung. TQM geht über eine Norm hinaus; ein verbreitetes Bewertungsmodell dafür ist das **EFQM-Modell**. Normgrundlage für ein zertifizierbares Qualitätsmanagementsystem ist die **ISO 9001** – seit 16.09.2026 in der Fassung **ISO 9001:2026**, die ISO 9001:2015 ablöst; bestehende Zertifikate müssen bis September 2029 umgestellt werden (Stand 2026).
 
 ## 6.4 FMEA – Fehler vorbeugen, bevor sie passieren
 
@@ -329,6 +366,8 @@ Die **FMEA** (Fehlermöglichkeits- und -einflussanalyse) bewertet **mögliche** 
 Vorrang hat der **nicht dokumentierte Vorschaden** (RPZ 168): Er tritt selten auf, wird aber kaum entdeckt und führt zu teuren Streitfällen um die Haftung. Maßnahme: Fotodokumentation als Pflichtschritt in der App vor der Abholung – das senkt E deutlich. Unabhängig von der RPZ werden Fehler mit sehr hoher Bedeutung (B ≥ 9) immer betrachtet.
 
 **Abgrenzung zur Risikoanalyse im Projekt** (→ Deep Dive 12): Dort zählen nur Eintrittswahrscheinlichkeit · Schadensausmaß. Die FMEA nimmt die **Entdeckbarkeit** als dritten Faktor dazu.
+
+Hinweis für die Praxis: Das in der Automobilindustrie maßgebliche AIAG-VDA-FMEA-Handbuch (2019) ersetzt die RPZ durch die **Aufgabenpriorität** (AP: hoch/mittel/niedrig), bei der die Bedeutung stärker gewichtet wird – denn dieselbe RPZ kann sehr unterschiedliche Risiken beschreiben (2 · 10 · 5 = 100 wie 5 · 4 · 5 = 100). In IHK-Aufgaben wird weiterhin mit der RPZ gerechnet.
 
 ## 6.5 Strategische Analysemethoden
 
@@ -367,6 +406,9 @@ Zwei von sechs Artikeln (33 %) machen 76,7 % des Werts aus – auf sie konzentri
 > ❓ **Prüferfrage:** Warum reicht es nicht, bei der FMEA nur auf Auftreten und Bedeutung zu schauen?
 > *Ein Fehler, der zwar selten auftritt, aber vor dem Kunden kaum entdeckt wird, richtet oft mehr Schaden an als ein häufiger Fehler, den eine Kontrolle zuverlässig abfängt. Die Entdeckungswahrscheinlichkeit zeigt, wo zusätzliche Prüfungen den größten Nutzen bringen – sie ist der Hebel, den man im Prozess am leichtesten beeinflussen kann.*
 
+> ❓ **Prüferfrage:** Ein Prüfling spaltet mit einem XOR-Gateway auf und führt mit einem AND-Gateway wieder zusammen. Was passiert beim Ablauf?
+> *Ein Deadlock: Nach dem XOR läuft das Token nur über einen Pfad, das AND-Gateway wartet aber auf Token von allen Eingängen und bleibt für immer stehen. Umgekehrt (AND aufspalten, XOR zusammenführen) würde der Folgeschritt mehrfach ausgeführt. Deshalb führt man mit einem gleichartigen Gateway zusammen.*
+
 ---
 
 ## Die 8 häufigsten Fehler aus Prüfersicht
@@ -375,7 +417,7 @@ Zwei von sechs Artikeln (33 %) machen 76,7 % des Werts aus – auf sie konzentri
 2. XOR und AND verwechselt – parallele Schritte als Entscheidung modelliert.
 3. Ausgehende Pfade eines XOR-Gateways nicht beschriftet.
 4. Gateway ohne vorherige Aktivität, die die Entscheidungsgrundlage schafft.
-5. In der EPK zwei Funktionen direkt hintereinander oder Verzweigung nach einem Ereignis.
+5. In der EPK zwei Funktionen direkt hintereinander oder XOR-/OR-Verzweigung nach einem einzelnen Ereignis.
 6. Bei der Optimierung nur die Bearbeitungszeit betrachtet, obwohl die Liegezeit 90 %+ ausmacht.
 7. Wirtschaftlichkeitsrechnung ohne Beurteilung und ohne qualitative Faktoren.
 8. Datenschutz und Betriebsrat bei Prozessdatenauswertungen nicht erwähnt.
@@ -481,6 +523,8 @@ Weitere Daten: 200 Aufträge im Betrachtungsmonat, davon 24 mit erforderlicher N
 - [ ] Ich erkläre Lean (sieben Verschwendungsarten), Kaizen, SDCA, BPR, Six Sigma (DMAIC) und TQM.
 - [ ] Ich berechne die RPZ einer FMEA und begründe, welcher Fehler Vorrang hat.
 - [ ] Ich führe eine ABC-Analyse durch und wende SWOT, Benchmarking, Wertschöpfungskette und BCG-Matrix an.
+- [ ] Ich erkläre das Token-Verhalten an XOR-, AND- und OR-Gateways (inklusive Deadlock-Falle) und nenne die Zusatzobjekte der eEPK.
+- [ ] Ich grenze einen Prozess mit SIPOC ab und berechne DPMO.
 
 ---
 

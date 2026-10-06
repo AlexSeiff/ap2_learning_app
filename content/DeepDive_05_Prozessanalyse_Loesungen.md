@@ -135,7 +135,7 @@ Das Feld *Resource* macht die Auswertung **personenbezogen**. Ein System, das zu
 
 Zwei Maßnahmen: *(je 1 P)*
 - **Aggregation:** Auswertung nur auf Team- oder Abteilungsebene mit einer Mindestgruppengröße, sodass keine Rückschlüsse auf Einzelpersonen möglich sind.
-- **Pseudonymisierung** der Resource-Spalte; der Zuordnungsschlüssel wird getrennt aufbewahrt und nur bei berechtigtem Anlass verwendet. Ebenfalls anerkannt: Abschluss einer Betriebsvereinbarung, die Zweck und Grenzen der Auswertung verbindlich regelt; frühzeitige Einbindung von Betriebsrat und Datenschutzbeauftragtem.
+- **Pseudonymisierung** der Resource-Spalte; der Zuordnungsschlüssel wird getrennt aufbewahrt und nur bei berechtigtem Anlass verwendet. Die Daten bleiben dabei personenbezogen (Art. 4 Nr. 5 DSGVO) – die Pseudonymisierung senkt das Risiko, ersetzt aber nicht die Beteiligung des Betriebsrats. Ebenfalls anerkannt: Abschluss einer Betriebsvereinbarung, die Zweck und Grenzen der Auswertung verbindlich regelt; frühzeitige Einbindung von Betriebsrat und Datenschutzbeauftragtem.
 
 ---
 

@@ -19,9 +19,9 @@ Szenario: **Möbelhaus Nordholz GmbH**.
 
 ## 1.1 Was ein Projekt ausmacht
 
-Merkmale nach DIN 69901: **einmalig**, **zeitlich befristet** (definierter Anfang und Ende), **zielorientiert**, **neuartig/komplex**, mit **begrenzten Ressourcen** und meist **interdisziplinär**. Wiederkehrende Routineaufgaben sind kein Projekt – das ist die klassische Abgrenzungsfrage.
+DIN 69901-5 definiert ein Projekt als Vorhaben, das im Wesentlichen durch die **Einmaligkeit der Bedingungen in ihrer Gesamtheit** gekennzeichnet ist – z. B. Zielvorgabe, zeitliche, finanzielle und personelle Begrenzungen, Abgrenzung gegenüber anderen Vorhaben und **projektspezifische Organisation**. Daraus ergeben sich die üblichen Merkmale: **einmalig**, **zeitlich befristet** (definierter Anfang und Ende), **zielorientiert**, **neuartig/komplex**, mit **begrenzten Ressourcen**, eigener Projektorganisation und meist **interdisziplinär**. Wiederkehrende Routineaufgaben sind kein Projekt – das ist die klassische Abgrenzungsfrage.
 
-**Magisches Dreieck:** **Zeit – Kosten – Leistung/Qualität**. Die drei Größen stehen in Konkurrenz: Wer den Termin vorzieht, muss Kosten erhöhen oder Umfang reduzieren. „Alles gleichzeitig optimieren" gibt es nicht – genau diese Abwägung erwarten Prüfer als Antwort.
+**Magisches Dreieck:** **Zeit – Kosten – Leistung/Qualität**. Die drei Größen stehen in Konkurrenz: Wer den Termin vorzieht, muss Kosten erhöhen oder Umfang reduzieren. „Alles gleichzeitig optimieren" gibt es nicht – genau diese Abwägung erwarten Prüfer als Antwort. Erweiterung: Das **Teufelsquadrat** (nach Sneed) trennt die Leistung in **Quantität** (Umfang) und **Qualität** – mit Zeit und Kosten vier Eckpunkte, deren Fläche (die Kapazität des Teams) konstant bleibt.
 
 ## 1.2 Ziele und Anforderungen
 
@@ -47,12 +47,14 @@ Schlecht: „Die Prozesse sollen verbessert werden." Gut: „Die durchschnittlic
 
 Das Pflichtenheft wird vom Auftraggeber **abgenommen** und ist damit die verbindliche Grundlage für die spätere Abnahme des Ergebnisses.
 
+Normbezug: Nach DIN 69901-5 ist das Lastenheft die „vom Auftraggeber festgelegte Gesamtheit der Forderungen an die Lieferungen und Leistungen eines Auftragnehmers"; das Pflichtenheft enthält die „vom Auftragnehmer erarbeiteten Realisierungsvorgaben" auf Basis des Lastenhefts. Die Merkformel „Was und wofür" (Lastenheft) gegenüber „Wie und womit" (Pflichtenheft) stammt aus der Richtlinie VDI 2519 Blatt 1.
+
 ## 1.4 Stakeholder und Risiken
 
-**Stakeholderanalyse:** Betroffene und Beteiligte identifizieren, nach **Einfluss** und **Interesse** bewerten und daraus die Einbindungsstrategie ableiten. Hoher Einfluss plus hohes Interesse bedeutet enge Einbindung; niedrig/niedrig bedeutet lediglich informieren. Typische Stakeholder eines Datenprojekts: Fachbereich, IT, Geschäftsführung, **Betriebsrat**, Datenschutzbeauftragter, externe Dienstleister.
+**Stakeholderanalyse:** Betroffene und Beteiligte identifizieren, nach **Einfluss** und **Interesse** bewerten und daraus die Einbindungsstrategie ableiten. Die Einfluss-Interesse-Matrix ergibt vier Felder: hoher Einfluss und hohes Interesse → **eng einbinden** (Schlüsselakteure); hoher Einfluss, geringes Interesse → **zufriedenstellen**; geringer Einfluss, hohes Interesse → **informieren**; niedrig/niedrig → nur **beobachten** (minimaler Aufwand). Typische Stakeholder eines Datenprojekts: Fachbereich, IT, Geschäftsführung, **Betriebsrat**, Datenschutzbeauftragter, externe Dienstleister.
 
 **Risikomanagement:** Risiken identifizieren → bewerten → Maßnahmen festlegen → überwachen.
-**Risikoprioritätszahl = Eintrittswahrscheinlichkeit × Schadenshöhe** (jeweils auf einer Skala, z. B. 1–5).
+**Risikowert = Eintrittswahrscheinlichkeit × Schadenshöhe** (jeweils auf einer Skala, z. B. 1–5; in vielen Unterlagen und Aufgaben auch Risikozahl oder Risikoprioritätszahl genannt). Falle: Die **Risikoprioritätszahl der FMEA** (Deep Dive 5) hat drei Faktoren – Auftreten × Bedeutung × Entdeckung, je 1–10, also 1 bis 1.000. Im Projekt-Risikomanagement werden nur zwei Faktoren multipliziert. Darstellung oft als **Risikomatrix** (W auf der einen, S auf der anderen Achse, Ampelfarben).
 Vier Strategien: **vermeiden** (Ursache ausschalten), **vermindern** (Wahrscheinlichkeit oder Schaden senken), **übertragen** (Versicherung, Vertrag), **akzeptieren** (bewusst tragen, mit Rückfallplan).
 
 ---
@@ -64,12 +66,17 @@ Vier Strategien: **vermeiden** (Ursache ausschalten), **vermindern** (Wahrschein
 | **Wasserfall** | streng sequenzielle Phasen | klare Planung, feste Termine und Kosten | starr; Änderungen sind teuer; Ergebnis erst am Ende sichtbar |
 | **V-Modell** | Wasserfall mit zugeordneten Teststufen je Phase | hohe Qualitätssicherung, Nachweisbarkeit | ebenso starr, hoher Dokumentationsaufwand |
 | **Scrum** | iterativ-inkrementell in Sprints | schnelle Rückmeldung, flexibel bei unklaren Anforderungen | Aufwand und Endtermin schwerer festzulegen |
-| **Kanban** | Fluss visualisieren, WIP begrenzen | einfach einführbar, für laufenden Betrieb geeignet | keine feste Planungsstruktur |
+| **Kanban** | Fluss visualisieren, WIP begrenzen, Pull-Prinzip | einfach einführbar, für laufenden Betrieb geeignet | keine feste Planungsstruktur |
 
-**Scrum im Detail** (wird regelmäßig abgefragt):
-- **Rollen:** **Product Owner** (verantwortet das Produkt und die Priorisierung des Backlogs), **Scrum Master** (sorgt für die Einhaltung des Rahmenwerks, beseitigt Hindernisse – keine Führungskraft), **Entwicklungsteam** (selbstorganisiert, liefert das Inkrement)
-- **Artefakte:** Product Backlog, Sprint Backlog, Inkrement
-- **Events:** Sprint (2–4 Wochen), Sprint Planning, Daily Scrum (15 Minuten), Sprint Review (Ergebnis zeigen), Retrospektive (Zusammenarbeit verbessern)
+**Scrum im Detail** (wird regelmäßig abgefragt; Stand: Scrum Guide 2020):
+- **Rollen** (im Scrum Guide 2020 **Verantwortlichkeiten**, engl. accountabilities): **Product Owner** (verantwortet den Wert des Produkts und die Reihenfolge des Product Backlogs), **Scrum Master** (verantwortet die Einführung von Scrum und die Effektivität des Teams, beseitigt Hindernisse – kein Vorgesetzter, sondern dienende Führungskraft), **Developers**/Entwickler (bis zum Scrum Guide 2017 „Entwicklungsteam"; selbstmanagend, erstellen in jedem Sprint ein nutzbares Inkrement). Alle zusammen bilden ein **Scrum Team** ohne Unterteams und Hierarchien.
+- **Artefakte** mit je einer **Verpflichtung** (Commitment): Product Backlog → **Produktziel** (Product Goal) · Sprint Backlog → **Sprint-Ziel** (Sprint Goal) · Inkrement → **Definition of Done**
+- **Events** mit Timebox (Maximalwerte bei einem Ein-Monats-Sprint, bei kürzeren Sprints meist kürzer): **Sprint** (feste Länge, höchstens ein Monat – in der Praxis meist 1–4 Wochen) · Sprint Planning (max. 8 Stunden) · Daily Scrum (15 Minuten, für die Developers) · Sprint Review (max. 4 Stunden; Ergebnis mit Stakeholdern prüfen und das weitere Vorgehen anpassen) · Sprint-Retrospektive (max. 3 Stunden; Zusammenarbeit, Prozesse und Qualität verbessern)
+- Falle: **Backlog Refinement** ist kein Event, sondern eine laufende Tätigkeit.
+
+**Kanban im Detail:** Spalten auf dem Board (z. B. To do – In Arbeit – Test – Fertig), **WIP-Limits** je Spalte begrenzen die gleichzeitig bearbeiteten Aufgaben, Arbeit wird nach dem **Pull-Prinzip** gezogen statt zugewiesen. Es gibt keine Sprints und keine vorgeschriebenen Rollen; gesteuert wird über Kennzahlen wie die Durchlaufzeit (Lead Time).
+
+**V-Modell XT:** Das „Vorgehensmodell des Bundes" ist der Standard für IT-Projekte der öffentlichen Verwaltung in Deutschland. Kennzeichen sind Projekttypen, Vorgehensbausteine und Entscheidungspunkte; das XT steht für „Extreme Tailoring" (Anpassung an das jeweilige Projekt).
 
 **Auswahlbegründung in Prüfungen:** Sind die Anforderungen **klar und stabil**, passt ein klassisches Modell. Sind sie **unklar oder veränderlich** und ist der Fachbereich laufend verfügbar, passt ein agiles Modell. Bei Ausbildungsprojekten mit fester IHK-Frist ist oft ein **hybrides** Vorgehen sinnvoll: klassischer Rahmen mit festen Meilensteinen, iterative Umsetzung im Inneren.
 
@@ -92,6 +99,8 @@ Der **Projektstrukturplan (PSP)** zerlegt das Projekt hierarchisch in Teilaufgab
 $t_e = \dfrac{\text{optimistisch} + 4 \cdot \text{wahrscheinlich} + \text{pessimistisch}}{6}$
 
 Beispiel: o = 4, m = 7, p = 16 Tage → $t_e = \frac{4 + 4 \cdot 7 + 16}{6} = \frac{4 + 28 + 16}{6}$ = **8 Tage**. Der pessimistische Wert zieht den Erwartungswert nach oben – genau das ist gewollt, denn Aufwände werden systematisch unterschätzt.
+
+Die Unsicherheit der Schätzung zeigt die Standardabweichung: $\sigma = \dfrac{p - o}{6}$, im Beispiel $\frac{16 - 4}{6}$ = **2 Tage**. Je weiter optimistischer und pessimistischer Wert auseinanderliegen, desto unsicherer die Schätzung.
 
 ## 3.2 Netzplantechnik – der Rechenteil
 
@@ -136,7 +145,9 @@ Beispiel: $\frac{45.000\ \text{€}}{18.000\ \text{€ pro Jahr}}$ = **2,5 Jahre
 
 **Return on Investment (ROI):** $\text{ROI} = \dfrac{\text{Gewinn}}{\text{eingesetztes Kapital}} \cdot 100$
 Bei fünf Jahren Nutzungsdauer: Gesamtersparnis $5 \cdot 18.000 = 90.000$ €, abzüglich Investition 45.000 € → Gewinn 45.000 €.
-ROI über die Laufzeit: $\frac{45.000}{45.000}$ = **100 %**, entspricht **20 % pro Jahr**.
+ROI über die Laufzeit: $\frac{45.000}{45.000}$ = **100 %**, entspricht **20 % pro Jahr** (einfacher Durchschnitt ohne Zinseszins).
+
+**Statisch oder dynamisch?** Amortisation, ROI, Break-even und Kostenvergleich sind **statische Verfahren**: Ein Euro in fünf Jahren zählt so viel wie ein Euro heute. Die **Kapitalwertmethode** (dynamisch) zinst jeden künftigen Rückfluss auf heute ab: $C_0 = -I_0 + \sum_{t=1}^{n} \dfrac{R_t}{(1 + i)^t}$. Für das Beispiel mit 5 % Kalkulationszins (Rentenbarwertfaktor für 5 Jahre: 4,3295): $C_0 = -45.000 + 18.000 \cdot 4{,}3295$ = **rund 32.931 €**. Ein positiver Kapitalwert bedeutet: Die Investition ist vorteilhafter als die Anlage zum Kalkulationszins. Der Überschuss ist kleiner als statisch gerechnet (45.000 €), weil spätere Ersparnisse weniger wert sind.
 
 **Break-even-Menge:** $\dfrac{\text{Fixkosten}}{\text{Preis} - \text{variable Stückkosten}}$
 Beispiel: $\frac{24.000\ \text{€}}{80\ \text{€} - 50\ \text{€}} = \frac{24.000}{30}$ = **800 Stück**. Der Nenner ist der **Deckungsbeitrag je Stück**.
@@ -152,7 +163,7 @@ Beispiel: $\frac{24.000\ \text{€}}{80\ \text{€} - 50\ \text{€}} = \frac{24
 | Support | 10 % | 7 | 0,70 | 8 | 0,80 |
 | **Nutzwert** | **100 %** | | **7,20** | | **7,30** |
 
-Anbieter B gewinnt – aber nur um 0,10 Punkte. **Genau das gehört in die Beurteilung:** Bei so knappem Abstand entscheidet die subjektive Gewichtung das Ergebnis. Eine **Sensitivitätsprüfung** (was passiert, wenn Kosten nur 20 % statt 30 % wiegen?) ist dann Pflicht.
+Anbieter B gewinnt – aber nur um 0,10 Punkte. **Genau das gehört in die Beurteilung:** Bei so knappem Abstand entscheidet die subjektive Gewichtung das Ergebnis. Eine **Sensitivitätsprüfung** (was passiert, wenn Kosten nur 20 % statt 30 % wiegen?) ist dann Pflicht. Rechnerisch genügt hier schon eine Verschiebung von rund 2 Prozentpunkten von den Kosten zum Funktionsumfang, um das Ergebnis zu kippen; bei Kosten 20 % und Funktionsumfang 50 % liegt A mit 7,50 zu 7,00 vorn.
 
 **Grenzen der Nutzwertanalyse:** Kriterienauswahl, Gewichtung und Punktvergabe sind subjektiv; die Scheingenauigkeit der Zahlen verdeckt das. Vorteil bleibt: Sie macht qualitative Kriterien vergleichbar und die Entscheidung **nachvollziehbar dokumentiert**.
 
@@ -163,18 +174,24 @@ Anbieter B gewinnt – aber nur um 0,10 Punkte. **Genau das gehört in die Beurt
 | Pro | passgenau, Know-how bleibt im Haus, keine Lizenzkosten, unabhängig | schnell verfügbar, kalkulierbare Kosten, Support, erprobt |
 | Contra | Personalbindung, Wartung dauerhaft selbst, Risiko | Anbieterabhängigkeit, laufende Lizenzkosten, eingeschränkte Anpassbarkeit |
 
+**Kostenvergleichsrechnung – kritische Menge:** Hat die eine Alternative hohe Fixkosten und niedrige variable Kosten, die andere umgekehrt, gibt es eine Menge, bei der beide gleich teuer sind. Ansatz: $K_{fix,1} + k_{v,1} \cdot x = K_{fix,2} + k_{v,2} \cdot x$, also $x = \dfrac{K_{fix,1} - K_{fix,2}}{k_{v,2} - k_{v,1}}$.
+Beispiel: Eigenentwicklung 12.000 € Fixkosten pro Jahr plus 2 € je Vorgang, Fremdbezug 5 € je Vorgang ohne Fixkosten → $x = \frac{12.000 - 0}{5 - 2}$ = **4.000 Vorgänge pro Jahr**. Darunter ist Kaufen günstiger, darüber Selbermachen. In der Beurteilung gehören die qualitativen Kriterien aus der Tabelle dazu – die Rechnung allein entscheidet nie.
+
 ---
 
 # Teil 5 – Steuerung und Abschluss
 
 - **Meilensteine:** Zeitpunkte mit überprüfbarem Ergebnis, keine Aktivitäten. Sie haben die Dauer null.
 - **Soll-Ist-Vergleich:** regelmäßiger Abgleich von Terminen, Kosten und Leistung – die Grundlage jeder Steuerung und der **Kern deines Abschlusskapitels** in der Projektdokumentation.
-- **Änderungsmanagement:** Änderungswünsche bewerten (Auswirkung auf Zeit, Kosten, Qualität), entscheiden, dokumentieren – nicht stillschweigend einbauen. Unkontrolliertes Anwachsen des Umfangs heißt **Scope Creep** und ist die häufigste Ursache für gerissene Termine.
-- **Abnahme:** formale Prüfung gegen das Pflichtenheft bzw. die vereinbarten Abnahmekriterien.
+- **Änderungsmanagement:** Änderungswünsche bewerten (Auswirkung auf Zeit, Kosten, Qualität), entscheiden, dokumentieren – nicht stillschweigend einbauen. Unkontrolliertes Anwachsen des Umfangs heißt **Scope Creep** und ist eine der häufigsten Ursachen für gerissene Termine.
+- **Abnahme:** formale Prüfung gegen das Pflichtenheft bzw. die vereinbarten Abnahmekriterien, festgehalten im Abnahmeprotokoll. Beim Werkvertrag hat sie Rechtsfolgen: Die Vergütung wird fällig (§ 641 BGB), die Gefahr geht auf den Auftraggeber über (§ 644 BGB), die Verjährung der Mängelansprüche beginnt (§ 634a Abs. 2 BGB), und für Mängel trägt danach der Auftraggeber die Beweislast.
 - **Projektabschluss:** Ergebnisübergabe, Dokumentation, **Lessons Learned**, Entlastung des Teams.
 
 > ❓ **Prüferfrage:** Warum gehört in jede Wirtschaftlichkeitsbetrachtung auch eine qualitative Bewertung?
 > *Weil sich wesentliche Effekte nicht sinnvoll in Euro ausdrücken lassen – Fehlerreduktion, Mitarbeiterakzeptanz, Kundenzufriedenheit, Skalierbarkeit, Abhängigkeit vom Anbieter. Eine rein monetäre Rechnung wirkt präzise, blendet aber genau die Faktoren aus, an denen Projekte in der Praxis scheitern.*
+
+> ❓ **Prüferfrage:** Was unterscheidet den Risikowert im Projekt-Risikomanagement von der Risikoprioritätszahl der FMEA?
+> *Der Risikowert multipliziert zwei Faktoren: Eintrittswahrscheinlichkeit mal Schadenshöhe, meist auf einer Skala von 1 bis 5. Die RPZ der FMEA multipliziert drei Faktoren – Auftreten, Bedeutung und Entdeckungswahrscheinlichkeit, je 1 bis 10, Ergebnis 1 bis 1.000. Wer in einer FMEA-Aufgabe die Entdeckung weglässt, rechnet falsch.*
 
 ---
 
@@ -285,3 +302,5 @@ b) *Beurteilen* Sie das Ergebnis kritisch. (4 P)
 - [ ] Ich erkläre TCO, Risikoprioritätszahl, die vier Risikostrategien und Scope Creep.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
 - [ ] Ich erkläre Planning Poker, die Kennzeichen von PRINCE2 und die Prüffelder einer Machbarkeitsstudie.
+- [ ] Ich nenne die Scrum-Artefakte mit ihren Commitments und die Timeboxes der Events nach Scrum Guide 2020.
+- [ ] Ich berechne die kritische Menge eines Kostenvergleichs und erkläre den Unterschied zwischen statischer Rechnung und Kapitalwert.

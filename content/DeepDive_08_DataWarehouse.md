@@ -51,6 +51,18 @@ Quellsysteme      Staging Area       Core-DWH          Data Marts        Auswert
 **Die vier Merkmale eines DWH nach Inmon** (Standarddefinition, gern abgefragt):
 **themenorientiert** (an fachlichen Themen ausgerichtet, nicht an Prozessen) · **integriert** (vereinheitlichte Formate, Codes und Bezeichnungen) · **zeitbezogen** (historisiert statt überschrieben) · **beständig** (nicht flüchtig – einmal geladene Daten werden nicht geändert oder gelöscht).
 
+**Inmon oder Kimball?** Die zwei klassischen Architekturansätze:
+
+| | **Inmon** (Top-down) | **Kimball** (Bottom-up) |
+|---|---|---|
+| Vorgehen | zuerst das unternehmensweite Core-DWH, daraus die Data Marts ableiten | zuerst fachbereichsbezogene Data Marts, schrittweise zusammenwachsend |
+| Modell des Kerns | **normalisiert** (3. NF) | **dimensional** (Star-Schema) |
+| Integration | zentral im Core-DWH | über gemeinsam genutzte Dimensionen (**Conformed Dimensions**, „Bus-Architektur") |
+| Stärke | hohe Integration, eine konsistente Datenbasis | schneller erster Nutzen, für Fachanwender verständlich |
+| Schwäche | lange Aufbauzeit, hoher Anfangsaufwand | Gefahr uneinheitlicher Insellösungen ohne Abstimmung |
+
+Die Schichtenarchitektur oben (Staging → Core-DWH → Data Marts) entspricht dem Inmon-Ansatz; in der Praxis sind Mischformen üblich.
+
 ---
 
 # Teil 3 – ETL und ELT
@@ -76,7 +88,7 @@ Quellsysteme      Staging Area       Core-DWH          Data Marts        Auswert
 | Reihenfolge | Transformation **vor** dem Laden | erst laden, dann transformieren |
 | Zielsystem | klassisches DWH | Data Lake, Cloud-Plattform |
 | Vorteil | nur geprüfte Daten im Ziel, kleineres Zielsystem | Rohdaten bleiben erhalten, spätere Auswertungen mit anderer Logik möglich, nutzt Rechenleistung des Zielsystems |
-| Nachteil | Rohdaten gehen verloren, Änderungen erfordern erneutes Laden | Zielsystem enthält auch ungeprüfte Daten, Governance aufwendiger |
+| Nachteil | Rohdaten liegen im Ziel nicht vor, Änderungen der Logik erfordern erneutes Laden | Zielsystem enthält auch ungeprüfte Daten, Governance aufwendiger |
 
 ## 3.3 Datenqualität im ETL
 
@@ -99,8 +111,10 @@ Der ETL-Prozess ist der **wichtigste Ort für Qualitätssicherung** – hier pas
 
 **Kennzahlentypen** (gern abgefragt):
 - **additiv:** über alle Dimensionen summierbar (Umsatz, Menge)
-- **semi-additiv:** über manche Dimensionen summierbar, über die Zeit nicht (Lagerbestand – Bestände mehrerer Tage zu addieren ergibt keinen Sinn)
-- **nicht-additiv:** gar nicht summierbar (Prozentsätze, Durchschnittspreise – diese müssen aus den Grundgrößen neu berechnet werden)
+- **semi-additiv:** über manche Dimensionen summierbar, über die Zeit nicht (Lagerbestand – Bestände mehrerer Tage zu addieren ergibt keinen Sinn; über die Zeit verdichtet man mit Stichtagswert, z. B. Monatsendbestand, oder Durchschnitt. Über alle Filialen am selben Tag darf summiert werden.)
+- **nicht-additiv:** gar nicht summierbar (Prozentsätze, Durchschnittspreise – diese müssen aus den Grundgrößen neu berechnet werden, z. B. Marge = Summe Deckungsbeitrag / Summe Umsatz, nicht Summe der Einzelmargen)
+
+**Arten von Faktentabellen** (nach Kimball): **Transaktions-Faktentabelle** (eine Zeile je Ereignis, z. B. Bestellposition) · **periodischer Snapshot** (Zustand in festen Abständen, z. B. Lagerbestand je Tag – typisch semi-additiv) · **akkumulierender Snapshot** (eine Zeile je Vorgang, die mit jedem Prozessschritt aktualisiert wird, z. B. Bestellung → Lieferung → Zahlung mit mehreren Datumsspalten).
 
 ## 4.2 Star-Schema
 
@@ -153,6 +167,8 @@ Die Dimensionen werden zusätzlich **normalisiert**: `dim_produkt` verweist auf 
 
 **Prüfungsantwort:** In der Praxis überwiegt das **Star-Schema**, weil Speicherplatz billig, Abfragegeschwindigkeit und Verständlichkeit dagegen wertvoll sind. Das Snowflake-Schema lohnt bei sehr großen Dimensionen mit häufig geänderten Hierarchien.
 
+**Galaxy-Schema** (auch **Fact Constellation**): mehrere Faktentabellen teilen sich gemeinsame Dimensionen. Beispiel: `fakt_verkauf` und `fakt_lagerbestand` nutzen beide `dim_zeit` und `dim_produkt` – dadurch lassen sich Verkauf und Bestand je Artikel und Monat direkt gegenüberstellen. Voraussetzung sind einheitlich definierte, gemeinsam genutzte Dimensionen (**Conformed Dimensions**).
+
 ## 4.4 Historisierung: Slowly Changing Dimensions
 
 Was passiert, wenn ein Kunde umzieht? Drei Standardstrategien:
@@ -162,6 +178,8 @@ Was passiert, wenn ein Kunde umzieht? Drei Standardstrategien:
 | **SCD Typ 1** | alten Wert **überschreiben** | keine Historie; alte Auswertungen ändern sich rückwirkend |
 | **SCD Typ 2** | **neue Zeile** anlegen mit Gültigkeitszeitraum | vollständige Historie; die Dimension wächst |
 | **SCD Typ 3** | zusätzliche Spalte „vorheriger Wert" | nur der letzte Stand bleibt erhalten |
+
+Weitere Typen (seltener gefragt, Systematik nach Kimball): **Typ 0** – Wert bleibt immer der ursprüngliche, Änderungen werden ignoriert (z. B. Geburtsdatum, Erstkaufdatum) · **Typ 4** – schnell wechselnde Merkmale werden in eine eigene Tabelle ausgelagert (Kimball: Mini-Dimension; in deutscher Literatur oft: aktuelle Tabelle plus separate Historientabelle) · **Typ 6** – Kombination aus 1 + 2 + 3 (= 6): neue Zeile je Änderung **und** eine Spalte mit dem aktuellen Wert, die in allen Versionen überschrieben wird. Typ 5 und Typ 7 sind weitere Kombinationen.
 
 **SCD Typ 2 im Detail** – der Standardfall und häufigster Prüfungsstoff:
 
@@ -185,6 +203,8 @@ Der **Surrogatschlüssel** (kunde_sk) ist ein künstlicher, im DWH vergebener Sc
 | **Dice** | mehrere Dimensionen auf **Bereiche** einschränken | Kategorie Möbel **und** Region Nord **und** 1. Halbjahr |
 | **Pivot / Rotate** | Achsen vertauschen | Produkte in Zeilen statt Spalten |
 
+Roll-up heißt auch **Drill-up** (Verdichten). Merkhilfe Slice/Dice: Slice schneidet eine Scheibe aus dem Würfel (eine Dimension fest auf einen Wert), Dice einen Teilwürfel (Einschränkung in mehreren Dimensionen). Technisch wird ein OLAP-Würfel entweder relational auf dem Star-Schema abgebildet (**ROLAP**), in einer eigenen multidimensionalen Speicherstruktur vorberechnet (**MOLAP**, sehr schnell, aber speicherintensiv) oder gemischt (**HOLAP**).
+
 ---
 
 # Teil 5 – Data Lake und Big Data
@@ -199,7 +219,7 @@ Der **Surrogatschlüssel** (kunde_sk) ist ein künstlicher, im DWH vergebener Sc
 | Stärke | verlässliche, geprüfte Kennzahlen | Flexibilität, auch für später unbekannte Fragen |
 | Risiko | unflexibel bei neuen Anforderungen | **Data Swamp** – ohne Katalog und Governance wird der See unbrauchbar |
 
-Der Begriff **Lakehouse** bezeichnet Ansätze, die Flexibilität des Data Lake mit den Struktur- und Qualitätsgarantien des DWH verbinden.
+Der Begriff **Lakehouse** bezeichnet Ansätze, die Flexibilität des Data Lake mit den Struktur- und Qualitätsgarantien des DWH verbinden. Technisch liegen die Daten in günstigem Objektspeicher in offenen Dateiformaten (z. B. Parquet); ein Tabellenformat wie Delta Lake oder Apache Iceberg ergänzt Transaktionen (ACID), Schemaprüfung und Versionierung. Häufig werden die Daten dabei in Stufen veredelt: Rohdaten → bereinigt → auswertungsfertig (oft „Bronze/Silver/Gold" genannt) – das entspricht der Idee Staging → Core → Data Mart.
 
 ## 5.2 Die 5 V von Big Data
 
@@ -211,9 +231,24 @@ Der Begriff **Lakehouse** bezeichnet Ansätze, die Flexibilität des Data Lake m
 | **Veracity** | Verlässlichkeit / Wahrhaftigkeit | Bewertungstexte unklarer Herkunft, fehlerhafte Sensorwerte |
 | **Value** | Wertschöpfung aus den Daten | konkreter Nutzen – ohne ihn ist der Rest Selbstzweck |
 
+Ursprünglich wurden nur die 3 V Volume, Velocity und Variety genannt (Doug Laney, 2001); Veracity und Value kamen später hinzu. Manche Quellen erweitern auf noch mehr V (z. B. Variability, Visualization) – in der Prüfung sind die 3 bzw. 5 V gängig.
+
 **Batch- oder Streamverarbeitung?** Batch verarbeitet Daten gesammelt in festen Intervallen (nächtlicher DWH-Lauf) – einfach und robust. Streaming verarbeitet fortlaufend (Betrugserkennung, Bestandswarnung) – aufwendiger, aber nahezu in Echtzeit. Die Wahl richtet sich nach der Frage: **Wie aktuell muss die Information sein, damit die Entscheidung noch etwas nützt?**
 
-Werkzeuge für Big Data: Wenn ein einzelner Server nicht mehr reicht, wird die Arbeit auf viele Rechner verteilt. **Apache Hadoop** speichert große Dateien verteilt (HDFS) und verarbeitet sie parallel nach dem Prinzip **MapReduce**: Teilaufgaben werden auf die Knoten verteilt (Map) und die Teilergebnisse zusammengeführt (Reduce). **Apache Spark** arbeitet nach demselben Grundgedanken, hält die Daten aber im **Arbeitsspeicher** und ist dadurch deutlich schneller – auch für Streaming und Machine Learning. Prüfungsrelevant ist nicht die Bedienung, sondern das Prinzip: **horizontale Skalierung** durch Verteilung von Speicherung und Berechnung.
+Werkzeuge für Big Data: Wenn ein einzelner Server nicht mehr reicht, wird die Arbeit auf viele Rechner verteilt. **Apache Hadoop** speichert große Dateien verteilt (HDFS) und verarbeitet sie parallel nach dem Prinzip **MapReduce**: Jeder Knoten verarbeitet seine lokal gespeicherten Datenblöcke und erzeugt Schlüssel-Wert-Paare (Map), diese werden nach Schlüssel gruppiert (Shuffle) und je Schlüssel zum Teilergebnis zusammengefasst (Reduce) – z. B. Map: je Kassenbon „Filiale → Umsatz", Reduce: Summe je Filiale. Grundidee: Die Berechnung wandert zu den Daten, nicht umgekehrt. **Apache Spark** arbeitet nach demselben Grundgedanken, hält Zwischenergebnisse aber im **Arbeitsspeicher** statt sie nach jedem Schritt auf die Festplatte zu schreiben, und ist dadurch deutlich schneller – auch für SQL, Streaming und Machine Learning. Prüfungsrelevant ist nicht die Bedienung, sondern das Prinzip: **horizontale Skalierung** (Scale-out: mehr Rechner) durch Verteilung von Speicherung und Berechnung – im Gegensatz zur vertikalen Skalierung (Scale-up: stärkerer Einzelserver). Für verteilte Datenhaltung gilt das **CAP-Theorem** (→ Deep Dive 15): Bei einer Netzwerkstörung muss zwischen Konsistenz und Verfügbarkeit gewählt werden.
+
+## 5.3 Partitionierung und spaltenorientierte Speicherung
+
+Große Faktentabellen werden **partitioniert**: physisch in Teile zerlegt, die logisch eine Tabelle bleiben.
+- **Horizontale Partitionierung** (zeilenweise): nach Bereich (Range, z. B. je Monat), nach Liste (z. B. je Region) oder per Hash-Funktion (gleichmäßige Verteilung). Verteilt man die Partitionen auf mehrere Server, spricht man von **Sharding**.
+- **Vertikale Partitionierung** (spaltenweise): selten genutzte oder große Spalten werden in eine eigene Tabelle ausgelagert.
+
+Nutzen: Abfragen mit Filter auf das Partitionskriterium lesen nur die betroffenen Partitionen (**Partition Pruning**), alte Daten lassen sich als ganze Partition archivieren oder löschen, und Ladeläufe betreffen nur die aktuelle Partition.
+
+**Spaltenorientierte Speicherung** (Column Store, z. B. Dateiformat Parquet): Die Werte einer Spalte liegen zusammen. Analytische Abfragen lesen nur die benötigten Spalten und lassen sich stark komprimieren – ideal für OLAP. Zeilenorientierte Speicherung (Row Store) bleibt für OLTP besser, weil dort ganze Datensätze gelesen und geschrieben werden.
+
+> ❓ **Prüferfrage:** Warum partitioniert man eine große Faktentabelle typischerweise nach dem Datum?
+> *Weil fast alle Auswertungen einen Zeitraum filtern und dann nur die betroffenen Partitionen gelesen werden (Partition Pruning). Zusätzlich lädt der tägliche Lauf nur in die aktuelle Partition, und Daten außerhalb der Aufbewahrungsfrist lassen sich als ganze Partition archivieren oder löschen, ohne die übrige Tabelle zu belasten.*
 
 ---
 
@@ -222,7 +257,7 @@ Werkzeuge für Big Data: Wenn ein einzelner Server nicht mehr reicht, wird die A
 1. Kennzahlen in die Dimensionstabelle und beschreibende Merkmale in die Faktentabelle gelegt.
 2. Faktentabelle ohne Fremdschlüssel zu allen Dimensionen modelliert.
 3. Star und Snowflake verwechselt oder ohne Nennung des Unterschieds beim Normalisierungsgrad.
-4. Behauptet, das DWH sei normalisiert – Denormalisierung ist dort gerade der Zweck.
+4. Behauptet, das Analysemodell (Star-Schema, Data Mart) sei normalisiert – Denormalisierung ist dort gerade der Zweck. (Nur das Core-DWH nach Inmon ist bewusst normalisiert.)
 5. Historisierung nicht erwähnt, obwohl die Aufgabe nach Zeitvergleichen fragt.
 6. Surrogatschlüssel und fachlichen Schlüssel gleichgesetzt.
 7. Bei ETL nur „Daten kopieren" beschrieben, ohne Bereinigung und Vereinheitlichung.
@@ -302,3 +337,4 @@ Die Möbelhaus Nordholz GmbH betreibt acht Filialen und führt rund 500 Artikel.
 - [ ] Ich stelle SCD Typ 2 mit Gültigkeitszeitraum und Surrogatschlüssel dar.
 - [ ] Ich nenne die 5 V und ordne die OLAP-Operationen sicher zu.
 - [ ] Übungsklausur mit ≥ 92 Punkten bestanden.
+- [ ] Ich grenze Inmon und Kimball ab und erkläre Galaxy-Schema, Partitionierung und MapReduce.

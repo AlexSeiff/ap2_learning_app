@@ -264,7 +264,7 @@
         "LEFT JOIN behält alle Kunden. Ohne Treffer sind die Bestellspalten NULL.",
         "Filtere auf b.bestell_id IS NULL."
       ],
-      "erklaerung": "Ergebnis: Weber e.K., Braun GmbH. Genauso richtig: WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung).",
+      "erklaerung": "Ergebnis: Weber e.K., Braun GmbH. Genauso richtig: WHERE NOT EXISTS (SELECT 1 FROM bestellung b WHERE b.kunden_id = k.kunden_id) oder WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung) – NOT IN nur, solange die Unterabfrage keine NULL-Werte liefert.",
       "quelle_aufgabe": "DD1 Übungsklausur B9"
     },
     {
@@ -315,7 +315,7 @@
       "hinweise": [
         "Gruppiert wird nach der Spalte, die du ausgibst.",
         "Die Bedingung auf die Anzahl gehört in HAVING.",
-        "Der Alias anzahl ist dort noch nicht bekannt – schreib COUNT(*)."
+        "Schreib im HAVING COUNT(*) statt des Alias anzahl – SQLite würde den Alias zwar akzeptieren, in Standard-SQL (Prüfung) ist er dort noch nicht bekannt."
       ],
       "erklaerung": "Ergebnis: München 2, Hamburg 2. Die drei Fehler im Original: Aggregat in WHERE, Alias in WHERE, GROUP BY name statt ort.",
       "quelle_aufgabe": "DD1 Übungsklausur A3"
@@ -771,6 +771,123 @@
       "quelle_aufgabe": "DD1 Teil 2, 2.4 DML"
     },
     {
+      "id": "SQL-MH-029",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Kunden ohne Bestellung mit NOT EXISTS",
+      "aufgabe": "Gib alle Kunden (name) aus, die noch nie bestellt haben. Verwende NOT EXISTS mit einer korrelierten Unterabfrage.",
+      "schwierigkeit": 2,
+      "tags": [
+        "unterabfrage",
+        "not exists",
+        "null"
+      ],
+      "loesung": "SELECT k.name\nFROM kunde k\nWHERE NOT EXISTS (\n  SELECT 1\n  FROM bestellung b\n  WHERE b.kunden_id = k.kunden_id\n);",
+      "vergleich": {
+        "reihenfolge": "auto"
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Die Unterabfrage bezieht sich auf die Zeile der äußeren Abfrage (k.kunden_id).",
+        "NOT EXISTS ist wahr, wenn die Unterabfrage keine Zeile liefert.",
+        "Was im SELECT der Unterabfrage steht, ist egal – üblich ist SELECT 1."
+      ],
+      "erklaerung": "Ergebnis: Weber e.K., Braun GmbH. Anders als NOT IN bleibt NOT EXISTS auch dann korrekt, wenn bestellung.kunden_id NULL-Werte enthielte.",
+      "quelle_aufgabe": "DD1 Teil 3, 3.1 NULL-Fallen"
+    },
+    {
+      "id": "SQL-MH-030",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Preisklassen mit CASE",
+      "aufgabe": "Gib bezeichnung, preis und eine Preisklasse (preisklasse) aller Produkte aus: ab 200 € 'hoch', ab 100 € 'mittel', sonst 'niedrig'.",
+      "schwierigkeit": 2,
+      "tags": [
+        "case",
+        "berechnete spalte"
+      ],
+      "loesung": "SELECT bezeichnung, preis,\n       CASE WHEN preis >= 200 THEN 'hoch'\n            WHEN preis >= 100 THEN 'mittel'\n            ELSE 'niedrig'\n       END AS preisklasse\nFROM produkt;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "bezeichnung",
+          "preis",
+          "preisklasse"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "CASE WHEN … THEN … ELSE … END erzeugt eine berechnete Spalte.",
+        "Die erste zutreffende Bedingung gewinnt – prüfe zuerst die höchste Grenze.",
+        "Den Spaltennamen vergibst du mit AS nach dem END."
+      ],
+      "erklaerung": "Ergebnis: Bürostuhl Comfort und Schreibtisch Basic hoch, Monitor 27 Zoll und Dockingstation mittel, Schreibtischlampe niedrig. Ohne ELSE stünde bei der Lampe NULL.",
+      "quelle_aufgabe": "DD1 Teil 3, 3.2 CASE"
+    },
+    {
+      "id": "SQL-MH-031",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Umsatz aller Kunden – auch 0",
+      "aufgabe": "Gib für alle Kunden name und Umsatz (umsatz = menge × preis) aus, absteigend nach Umsatz. Kunden ohne Bestellung sollen mit 0 erscheinen, nicht mit NULL.",
+      "schwierigkeit": 3,
+      "tags": [
+        "cte",
+        "left join",
+        "coalesce",
+        "null"
+      ],
+      "loesung": "WITH umsatz_je_kunde AS (\n  SELECT b.kunden_id, SUM(bp.menge * p.preis) AS umsatz\n  FROM bestellung b\n  JOIN bestellposition bp ON b.bestell_id = bp.bestell_id\n  JOIN produkt p ON bp.produkt_id = p.produkt_id\n  GROUP BY b.kunden_id\n)\nSELECT k.name, COALESCE(u.umsatz, 0) AS umsatz\nFROM kunde k\nLEFT JOIN umsatz_je_kunde u ON k.kunden_id = u.kunden_id\nORDER BY umsatz DESC;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "name",
+          "umsatz"
+        ],
+        "toleranz": 0.005
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "Erst den Umsatz je kunden_id berechnen (WITH … AS oder Unterabfrage).",
+        "Dann kunde LEFT JOIN auf dieses Zwischenergebnis – so bleiben alle Kunden erhalten.",
+        "COALESCE(u.umsatz, 0) macht aus NULL eine 0."
+      ],
+      "erklaerung": "Ergebnis: Huber GmbH 1471.80 · Schmidt AG 945.00 · Fischer KG 767.70 · Weber e.K. 0 · Braun GmbH 0. Gleichwertig: alle vier Tabellen per LEFT JOIN verketten und COALESCE(SUM(bp.menge * p.preis), 0) je Kunde bilden.",
+      "quelle_aufgabe": "DD1 Teil 3, 3.8 CTE"
+    },
+    {
+      "id": "SQL-MH-032",
+      "datensatz": "moebelhaus",
+      "thema": "Deep Dive 1",
+      "titel": "Menge je Bestellung neben jeder Position",
+      "aufgabe": "Gib alle Bestellpositionen (bestell_id, produkt_id, menge) aus und zusätzlich in jeder Zeile die Gesamtmenge der jeweiligen Bestellung (menge_bestellung). Die Einzelzeilen sollen erhalten bleiben.",
+      "schwierigkeit": 3,
+      "tags": [
+        "fensterfunktion",
+        "over",
+        "partition by"
+      ],
+      "loesung": "SELECT bestell_id, produkt_id, menge,\n       SUM(menge) OVER (PARTITION BY bestell_id) AS menge_bestellung\nFROM bestellposition;",
+      "vergleich": {
+        "reihenfolge": "auto",
+        "spaltennamen": [
+          "bestell_id",
+          "produkt_id",
+          "menge",
+          "menge_bestellung"
+        ]
+      },
+      "pruefabfrage": null,
+      "hinweise": [
+        "GROUP BY würde die Positionen zu einer Zeile je Bestellung verdichten.",
+        "Eine Fensterfunktion behält alle Zeilen: SUM(menge) OVER (…).",
+        "PARTITION BY bestell_id legt fest, über welche Zeilen summiert wird."
+      ],
+      "erklaerung": "Ergebnis: 8 Zeilen; die Positionen der Bestellungen 100 und 101 zeigen je menge_bestellung 4, Bestellung 102 4, 103 5, 104 1, 105 2. Alternative ohne Fensterfunktion: Join auf eine gruppierte Unterabfrage.",
+      "quelle_aufgabe": "DD1 Teil 3, 3.8 Fensterfunktionen"
+    },
+    {
       "id": "SQL-DF-001",
       "datensatz": "datafit",
       "thema": "Deep Dive 1",
@@ -997,7 +1114,7 @@
         "INNER JOIN verliert genau die gesuchten Kunden.",
         "LEFT JOIN + WHERE b.bestell_id IS NULL."
       ],
-      "erklaerung": "Ergebnis: David Meyer. Gleichwertig: WHERE kunden_id NOT IN (SELECT kunden_id FROM bestellung).",
+      "erklaerung": "Ergebnis: David Meyer. Gleichwertig: WHERE NOT EXISTS (SELECT 1 FROM bestellung b WHERE b.kunden_id = k.kunden_id). NOT IN (SELECT kunden_id FROM bestellung) klappt nur, solange bestellung.kunden_id keine NULL-Werte enthält – die Spalte ist hier nicht NOT NULL.",
       "quelle_aufgabe": "DataFit Übungsklausur C4"
     },
     {
@@ -1207,7 +1324,7 @@
         "Erst die Positionen der stornierten Bestellungen löschen – die bestell_id liefert eine Unterabfrage.",
         "Dann die Bestellungen selbst."
       ],
-      "erklaerung": "Referenzielle Integrität in Aktion: Die Datenbank verhindert verwaiste Positionen (ON DELETE RESTRICT ist Standard). Mit ON DELETE CASCADE würden die Positionen automatisch mitgelöscht.",
+      "erklaerung": "Referenzielle Integrität in Aktion: Die Datenbank verhindert verwaiste Positionen (ohne ON DELETE-Angabe gilt NO ACTION – wirkt wie RESTRICT). Mit ON DELETE CASCADE würden die Positionen automatisch mitgelöscht.",
       "quelle_aufgabe": "DataFit Abschnitt 3.4 DML / 3.5 DDL"
     },
     {

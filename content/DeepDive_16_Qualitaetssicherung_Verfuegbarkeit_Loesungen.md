@@ -93,9 +93,9 @@ Inhalte des Abnahmeprotokolls *(je 1 P, vier genügen)*: Projekt bzw. Liefergege
 
 Rechtsfolgen *(je 2 P, zwei genügen)*:
 - Die **Vergütung wird fällig** (§ 641 BGB).
-- Die **Gewährleistungsfrist beginnt** zu laufen.
+- Die **Gewährleistungsfrist beginnt** zu laufen (§ 634a Abs. 2 BGB).
 - Die **Beweislast kehrt sich um**: Nach der Abnahme muss der Auftraggeber nachweisen, dass ein Mangel vorliegt.
-- Die **Gefahr geht über**: Für zufällige Verschlechterung haftet ab jetzt der Auftraggeber.
+- Die **Gefahr geht über** (§ 644 BGB): Das Risiko des zufälligen Untergangs oder der zufälligen Verschlechterung trägt ab jetzt der Auftraggeber.
 
 ---
 
