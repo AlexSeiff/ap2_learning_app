@@ -10,6 +10,7 @@ export function useStelle(bereit = true) {
   const stelle = params.get('stelle');
   useEffect(() => {
     if (!stelle || !bereit) return;
+    let nachher = 0;
     // Nach dem Rendern (und nachdem lazy Teile wie KaTeX Platz bekommen haben) springen.
     const t = window.setTimeout(() => {
       const el = document.getElementById(stelle);
@@ -17,8 +18,25 @@ export function useStelle(bereit = true) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       el.classList.add('stelle-ziel');
       window.setTimeout(() => el.classList.remove('stelle-ziel'), 2500);
+      // Nachladende Teile darüber (Formeln, Diagramme) verschieben das Ziel während des sanften Scrollens noch. Sobald das Scrollen
+      // steht, einmal nachkorrigieren, damit das Ziel nicht unter der Kopfleiste landet (scroll-margin-top in styles.css).
+      let letzteY = -1;
+      let runden = 0;
+      nachher = window.setInterval(() => {
+        runden++;
+        if (window.scrollY !== letzteY && runden < 20) {
+          letzteY = window.scrollY;
+          return;
+        }
+        window.clearInterval(nachher);
+        const soll = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+        if (Math.abs(el.getBoundingClientRect().top - soll) > 4) el.scrollIntoView({ block: 'start' });
+      }, 150);
     }, 80);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      window.clearInterval(nachher);
+    };
   }, [stelle, bereit]);
   return stelle;
 }

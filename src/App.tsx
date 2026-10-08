@@ -1,13 +1,14 @@
 import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
-import { HashRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Icon, type IconName } from './components/Icon';
+import { Icon } from './components/Icon';
+import { Kopfleiste } from './components/Kopfleiste';
 import { HeuteLeiste } from './components/HeuteLeiste';
 import { MobileNav } from './components/MobileNav';
 import { UpdateHinweis } from './components/UpdateHinweis';
 import { IS_STATIC } from './lib/api';
-import { GLOSSAR_PFAD, passtZuZiel } from './lib/navigation';
+import type { NavBadge } from './lib/navigation';
 import { isDue } from './lib/progress';
 import { rechenSummary } from './lib/rechnen';
 import { sqlSummary } from './lib/sql';
@@ -40,7 +41,7 @@ const Operatoren = lazy(() => import('./pages/Operatoren').then((m) => ({ defaul
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
 // Glossar lazy: baut den Index der Begriffe erst beim Öffnen.
 const Glossar = lazy(() => import('./pages/Glossar').then((m) => ({ default: m.Glossar })));
-// Globale Suche lazy: Index und Dialog laden erst beim ersten Öffnen (Strg+K oder „🔎 Suchen“).
+// Globale Suche lazy: Index und Dialog laden erst beim ersten Öffnen (Strg+K oder Lupe in der Kopfleiste).
 const SucheDialog = lazy(() => import('./components/SucheDialog').then((m) => ({ default: m.SucheDialog })));
 
 /** Suche öffnen/schließen; Strg+K (Mac: ⌘K) überall in der App. Nach dem Schließen geht der Fokus zurück. */
@@ -69,101 +70,46 @@ function useSuche() {
   return { offen, oeffnen, schliessen };
 }
 
-function useTheme() {
-  const [theme, setTheme] = useState<string>(() => {
-    try {
-      return localStorage.getItem('theme') ?? 'system';
-    } catch {
-      return 'system';
-    }
-  });
-  useEffect(() => {
-    if (theme === 'system') document.documentElement.removeAttribute('data-theme');
-    else document.documentElement.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('theme', theme);
-    } catch {
-      /* ohne Speicher einfach nicht merken */
-    }
-  }, [theme]);
-  const next = theme === 'system' ? 'dark' : theme === 'dark' ? 'light' : 'system';
-  const icon: IconName = theme === 'dark' ? 'moon' : theme === 'light' ? 'sun' : 'monitor';
-  return { icon, toggle: () => setTheme(next), label: `Design: ${theme === 'system' ? 'System' : theme === 'dark' ? 'Dunkel' : 'Hell'}` };
+/** Fällige Wiederholungen je Art (Badges in Kopfleiste, Unterleiste und Tab-Bar). */
+function useNavBadges(): Record<NavBadge, number> {
+  const { content, progress } = useStore();
+  return {
+    journal: Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length,
+    sql: sqlSummary(
+      progress,
+      content.sqlExercises.map((e) => e.id),
+    ).due,
+    rechnen: rechenSummary(
+      progress,
+      content.rechenUebungen.map((u) => u.id),
+    ).due,
+  };
 }
 
+const SAVE_TEXT: Record<string, string> = {
+  gespeichert: 'Gespeichert',
+  speichert: 'Speichert …',
+  konflikt: 'Nicht gespeichert – neu laden',
+  fehler: 'Speichern fehlgeschlagen',
+};
+
 function Nav({ onSuche }: { onSuche: () => void }) {
-  const { content, progress, saveState } = useStore();
-  const { pathname } = useLocation();
-  const theme = useTheme();
-  const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
-  const dueSql = sqlSummary(
-    progress,
-    content.sqlExercises.map((e) => e.id),
-  ).due;
-  const dueRechnen = rechenSummary(
-    progress,
-    content.rechenUebungen.map((u) => u.id),
-  ).due;
-  // „Lernen“ ist nicht zusätzlich hervorgehoben, wenn das Glossar-Thema (eigener Eintrag) offen ist.
-  const imGlossar = passtZuZiel(GLOSSAR_PFAD, pathname);
-  const link = (to: string, icon: IconName, label: string, badge?: number) => (
-    <NavLink to={to} end={to === '/'} className={({ isActive }) => (isActive && !(to === '/lernen' && imGlossar) ? 'active' : '')}>
-      <span className="nav-label">
-        <Icon name={icon} /> {label}
-      </span>
-      {!!badge && <span className="nav-badge">{badge}</span>}
-    </NavLink>
-  );
-  const saveText =
-    saveState === 'gespeichert'
-      ? 'Gespeichert'
-      : saveState === 'speichert'
-        ? 'Speichert …'
-        : saveState === 'konflikt'
-          ? 'Nicht gespeichert – neu laden'
-          : 'Speichern fehlgeschlagen';
+  const { saveState } = useStore();
+  const badges = useNavBadges();
   return (
     <>
-      <nav className="sidebar">
-        <div className="brand">
-          <Icon name="graduation-cap" /> AP2 Lern-App
-        </div>
-        <button type="button" className="suche-knopf" onClick={onSuche} title="Suchen (Strg+K)">
-          <span>
-            <Icon name="search" /> Suchen
-          </span>
-          <kbd>Strg K</kbd>
-        </button>
-        {link('/', 'house', 'Übersicht')}
-        {link('/heute', 'play', 'Heute lernen')}
-        {link('/lernen', 'book-open', 'Lernen')}
-        {content.topics.some((t) => GLOSSAR_PFAD === `/lernen/${t.id}`) && link(GLOSSAR_PFAD, 'book-bookmark', 'Glossar & Diagramme')}
-        {link('/karteikarten', 'layers', 'Karteikarten')}
-        {link('/klausur', 'timer', 'Übungsklausur')}
-        {link('/aufgaben', 'file-pen-line', 'Einzelaufgaben')}
-        {link('/sql', 'database', 'SQL-Editor', dueSql)}
-        {link('/rechnen', 'calculator', 'Rechenübungen', dueRechnen)}
-        {link('/fehlerjournal', 'notebook-pen', 'Fehlerjournal', dueJournal)}
-        {/* Pages hat keine KI (Roadmap 7.4, Entscheidung Q3) */}
-        {!IS_STATIC && link('/generator', 'sparkles', 'KI-Aufgaben')}
-        {link('/material', 'library', 'Material')}
-        {link('/einstellungen', 'settings', 'Einstellungen')}
-        {link('/daten', 'save', 'Daten & Import')}
-        <div className="sidebar-foot">
-          <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>
-            <Icon name={theme.icon} /> {theme.label}
-          </button>
-          <span className={`save-state ${saveState}`}>{saveText}</span>
-        </div>
-      </nav>
-      <MobileNav
-        onSuche={onSuche}
-        badges={{ sql: dueSql, rechnen: dueRechnen, journal: dueJournal }}
-        theme={theme}
-        saveText={saveText}
-        saveState={saveState}
-      />
+      <Kopfleiste onSuche={onSuche} badges={badges} saveText={SAVE_TEXT[saveState] ?? SAVE_TEXT.fehler} saveState={saveState} />
+      <MobileNav badges={badges} />
     </>
+  );
+}
+
+/** „Zum Inhalt springen“: erstes fokussierbares Element, damit Tastatur und Screenreader die Navigation überspringen können. */
+function SkipLink() {
+  return (
+    <button type="button" className="skip-link" onClick={() => document.getElementById('inhalt')?.focus()}>
+      Zum Inhalt springen
+    </button>
   );
 }
 
@@ -213,8 +159,9 @@ function Layout() {
           path="*"
           element={
             <div className="layout">
+              <SkipLink />
               <Nav onSuche={sucheSteuerung.oeffnen} />
-              <main>
+              <main id="inhalt" tabIndex={-1}>
                 <SaveErrorBanner />
                 <HeuteLeiste />
                 <PageErrorBoundary>

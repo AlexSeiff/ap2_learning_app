@@ -42,9 +42,6 @@ export function Operatoren() {
 
   return (
     <div className="page">
-      <p className="crumbs">
-        <Link to="/material">Material</Link> / Operatoren
-      </p>
       <h1>
         <Icon name="message-square-quote" /> Operatoren-Trainer
       </h1>

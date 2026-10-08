@@ -162,8 +162,8 @@ function Uebersicht() {
                 <th>Klausur (bestes)</th>
                 <th>Ø Aufgaben</th>
                 <th>Karten sicher</th>
-                <th>Lernziele</th>
-                <th>Fehlerjournal</th>
+                <th className="nur-breit">Lernziele</th>
+                <th className="nur-breit">Fehlerjournal</th>
               </tr>
             </thead>
             <tbody>
@@ -184,10 +184,10 @@ function Uebersicht() {
                   <td>
                     {s.cardsKnown}/{s.cardsTotal}
                   </td>
-                  <td>
+                  <td className="nur-breit">
                     {s.lernzieleDone}/{s.topic.lernziele.length}
                   </td>
-                  <td>{s.openJournal || ''}</td>
+                  <td className="nur-breit">{s.openJournal || ''}</td>
                 </tr>
               ))}
             </tbody>

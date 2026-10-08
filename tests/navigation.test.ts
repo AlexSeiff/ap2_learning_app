@@ -2,70 +2,139 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
+import { Kopfleiste } from '../src/components/Kopfleiste';
 import { MobileNav } from '../src/components/MobileNav';
-import { aktiveGruppe, badgeSumme, MEHR_ZIELE, passtZuZiel, UEBEN_ZIELE } from '../src/lib/navigation';
+import {
+  aktiverBereich,
+  aktivesUnterziel,
+  badgeSumme,
+  bereich,
+  BEREICHE,
+  GLOSSAR_PFAD,
+  passtZuZiel,
+  sichtbareZiele,
+} from '../src/lib/navigation';
 
-describe('Navigation für Handys (Roadmap 7.2)', () => {
-  it('ordnet jeden Pfad dem richtigen Platz zu', () => {
-    expect(aktiveGruppe('/')).toBe('uebersicht');
-    expect(aktiveGruppe('/lernen/03')).toBe('lernen');
-    expect(aktiveGruppe('/karteikarten')).toBe('karteikarten');
-    for (const p of [
-      '/heute',
-      '/klausur',
-      '/klausur/03',
-      '/aufgaben',
-      '/aufgabe/03-A1',
-      '/sql',
-      '/sql/uebung/SQL-MH-001',
-      '/rechnen/RE-ST1-001',
-    ]) {
-      expect(aktiveGruppe(p)).toBe('ueben');
-    }
-    for (const p of ['/fehlerjournal', '/generator', '/material/lernzettel', '/einstellungen', '/daten'])
-      expect(aktiveGruppe(p)).toBe('mehr');
-    expect(aktiveGruppe('/gibtsnicht')).toBeUndefined();
-    // Glossar & Diagramme hat einen eigenen Eintrag unter „Mehr“, die anderen Themen gehören zu „Lernen“.
-    expect(aktiveGruppe('/lernen/17')).toBe('mehr');
-    expect(aktiveGruppe('/lernen/03')).toBe('lernen');
+// Navigation (Umsetzungsplan Phase 2): vier Bereiche mit Unterzielen, Kopfleiste oben, Tab-Bar unten auf dem Handy.
+
+const ohneTrenner = (html: string) => html.replace(/<!-- -->/g, '');
+
+describe('Bereiche', () => {
+  it('ordnet jeden Pfad dem richtigen Bereich zu', () => {
+    const erwartet: Record<string, string | undefined> = {
+      '/': undefined,
+      '/gibtsnicht': undefined,
+      '/heute': 'lernen',
+      '/lernen': 'lernen',
+      '/lernen/03': 'lernen',
+      '/karteikarten': 'lernen',
+      '/aufgaben': 'lernen',
+      '/aufgabe/03-A1': 'lernen',
+      '/rechnen': 'lernen',
+      '/rechnen/RE-ST1-001': 'lernen',
+      '/klausur': 'lernen',
+      '/klausur/03': 'lernen',
+      '/fehlerjournal': 'lernen',
+      [GLOSSAR_PFAD]: 'glossar',
+      '/material/glossar': 'glossar',
+      '/material/formeln': 'glossar',
+      '/material/operatoren': 'glossar',
+      '/sql': 'sql',
+      '/sql/uebungen': 'sql',
+      '/sql/uebung/SQL-MH-001': 'sql',
+      '/einstellungen': 'einstellungen',
+      '/material': 'einstellungen',
+      '/material/lernzettel': 'einstellungen',
+      '/daten': 'einstellungen',
+      '/generator': 'einstellungen',
+    };
+    for (const [pfad, b] of Object.entries(erwartet)) expect(aktiverBereich(pfad), pfad).toBe(b);
+  });
+
+  it('jedes Unterziel gehört zu seinem eigenen Bereich (keine Ziele, die woanders hervorgehoben würden)', () => {
+    for (const b of BEREICHE) for (const z of b.unter) expect(aktiverBereich(z.to), z.to).toBe(b.id);
+    for (const b of BEREICHE) expect(aktiverBereich(b.to), b.to).toBe(b.id);
+  });
+
+  it('hebt das passende Unterziel hervor – das längste passende, mit Sonderfällen', () => {
+    const ziel = (pfad: string) => aktivesUnterziel(pfad, bereich(aktiverBereich(pfad)!))?.label;
+    expect(ziel('/lernen')).toBe('Themen');
+    expect(ziel('/lernen/06')).toBe('Themen');
+    expect(ziel(GLOSSAR_PFAD)).toBe('Diagramme');
+    expect(ziel('/aufgabe/01-A1')).toBe('Einzelaufgaben');
+    expect(ziel('/klausur/mix-gemischt-5')).toBe('Übungsklausur');
+    expect(ziel('/sql')).toBe('Freier Editor');
+    expect(ziel('/sql/uebungen')).toBe('Übungen');
+    expect(ziel('/sql/uebung/SQL-MH-001')).toBe('Übungen');
+    expect(ziel('/material')).toBe('Material');
+    expect(ziel('/material/lernzettel')).toBe('Material');
+    expect(ziel('/material/glossar')).toBe('Begriffe A–Z');
+    expect(ziel('/daten')).toBe('Daten & Import');
   });
 
   it('passtZuZiel: Präfix nur an Pfadgrenzen', () => {
     expect(passtZuZiel('/sql', '/sqlx')).toBe(false);
     expect(passtZuZiel('/', '/lernen')).toBe(false);
+    expect(passtZuZiel('/sql/uebungen', '/sql/uebung/X')).toBe(true);
   });
 
-  it('Üben enthält Heute lernen, Klausur, Einzelaufgaben, SQL und Rechnen; Mehr enthält Fehlerjournal, Material, Einstellungen, Daten', () => {
-    expect(UEBEN_ZIELE.map((z) => z.to)).toEqual(['/heute', '/klausur', '/aufgaben', '/sql', '/rechnen']);
-    expect(MEHR_ZIELE.map((z) => z.to)).toEqual(
-      expect.arrayContaining(['/fehlerjournal', '/material', '/lernen/17', '/einstellungen', '/daten']),
-    );
-  });
-
-  it('Badge am Menüknopf = Summe der fälligen Einträge darin', () => {
+  it('KI-Aufgaben nur lokal; Badges = Summe der fälligen Einträge eines Bereichs', () => {
+    const e = bereich('einstellungen');
+    expect(sichtbareZiele(e, true).map((z) => z.to)).not.toContain('/generator');
+    expect(sichtbareZiele(e, false).map((z) => z.to)).toContain('/generator');
     const badges = { sql: 2, rechnen: 3, journal: 4 };
-    expect(badgeSumme(UEBEN_ZIELE, badges)).toBe(5);
-    expect(badgeSumme(MEHR_ZIELE, badges)).toBe(4);
+    expect(badgeSumme(bereich('lernen').unter, badges)).toBe(7);
+    expect(badgeSumme(bereich('sql').unter, badges)).toBe(2);
+    expect(badgeSumme(bereich('glossar').unter, badges)).toBe(0);
+  });
+});
+
+describe('Komponenten', () => {
+  const badges = { sql: 2, rechnen: 0, journal: 1 };
+
+  it('Tab-Bar: Übersicht und vier Bereiche, aktiver Tab mit aria-current, Badges', () => {
+    const html = ohneTrenner(
+      renderToString(createElement(MemoryRouter, { initialEntries: ['/sql/uebungen'] }, createElement(MobileNav, { badges }))),
+    );
+    for (const l of ['Übersicht', 'Lernen', 'Glossar', 'SQL', 'Einstellungen'])
+      expect(html).toContain(`<span class="bn-label">${l}</span>`);
+    expect(html.match(/aria-current="page"/g)).toHaveLength(1);
+    expect(html).toMatch(/class="active" aria-current="page" href="\/sql".*?<span class="nav-badge">2<\/span>/);
+    expect(html).toContain(', 1 fällig');
+    expect(html).not.toContain('bn-panel');
   });
 
-  it('rendert fünf Plätze, Menüs geschlossen, Badges sichtbar', () => {
-    const html = renderToString(
-      createElement(
-        MemoryRouter,
-        { initialEntries: ['/sql'] },
-        createElement(MobileNav, {
-          onSuche: () => {},
-          badges: { sql: 2, rechnen: 0, journal: 1 },
-          theme: { icon: 'monitor', label: 'Design: System', toggle: () => {} },
-          saveText: '✓ gespeichert',
-          saveState: 'gespeichert',
-        }),
+  it('Kopfleiste: Logo, vier Bereiche, Suche, Speicherstatus und die Unterleiste des aktiven Bereichs', () => {
+    const html = ohneTrenner(
+      renderToString(
+        createElement(
+          MemoryRouter,
+          { initialEntries: ['/karteikarten'] },
+          createElement(Kopfleiste, { onSuche: () => {}, badges, saveText: 'Gespeichert', saveState: 'gespeichert' }),
+        ),
       ),
-    ).replace(/<!-- -->/g, '');
-    for (const l of ['Übersicht', 'Lernen', 'Karteikarten', 'Üben', 'Mehr']) expect(html).toContain(`<span class="bn-label">${l}</span>`);
-    expect(html.match(/aria-expanded="false"/g)).toHaveLength(2);
-    expect(html).not.toContain('bn-panel');
-    expect(html).toMatch(/class="bn-menu active"[^>]*>.*?<span class="nav-badge">2<\/span>/);
-    expect(html).toContain(', 1 fällig');
+    );
+    expect(html).toContain('AP2 Lern-App');
+    for (const l of ['Lernen', 'Glossar', 'SQL-Editor', 'Einstellungen']) expect(html).toContain(`<span class="kopf-label">${l}</span>`);
+    expect(html).toContain('<span class="kopf-label">Suchen</span>');
+    expect(html).toContain('Gespeichert');
+    // Unterleiste „Lernen“ mit Karteikarten als aktivem Ziel
+    expect(html).toContain('<nav class="unterleiste" aria-label="Lernen">');
+    expect(html).toMatch(/class="active" aria-current="page" href="\/karteikarten"/);
+    expect(html).toContain('Fehlerjournal<span class="nav-badge">1</span>');
+  });
+
+  it('Übersicht ohne Unterleiste; Speicherfehler sichtbar als Text', () => {
+    const html = ohneTrenner(
+      renderToString(
+        createElement(
+          MemoryRouter,
+          { initialEntries: ['/'] },
+          createElement(Kopfleiste, { onSuche: () => {}, badges, saveText: 'Speichern fehlgeschlagen', saveState: 'fehler' }),
+        ),
+      ),
+    );
+    expect(html).not.toContain('unterleiste');
+    expect(html).toContain('<span class="">Speichern fehlgeschlagen</span>');
   });
 });

@@ -1,53 +1,135 @@
-// Untere Navigation für schmale Bildschirme (Roadmap 7.2, unter 600 px): fünf Plätze, „Üben“ und „Mehr“ öffnen ein Menü.
-// Rein, ohne React – die Komponente steht in components/MobileNav.tsx.
+// Navigation (Umsetzungsplan Phase 2): vier Bereiche – Lernen, Glossar, SQL-Editor, Einstellungen – mit Unterzielen.
+// Desktop: Kopfleiste oben mit Unterleiste; Handy (unter 600 px): Tab-Bar unten (Übersicht + die vier Bereiche).
+// Rein, ohne React – die Komponenten stehen in components/Kopfleiste.tsx und components/MobileNav.tsx.
+// Keine URL hat sich geändert: Die Bereiche ordnen nur die bestehenden Routen.
 
 import type { IconName } from './icons';
 
 export type NavBadge = 'sql' | 'rechnen' | 'journal';
 
-export type NavZiel = { to: string; icon: IconName; label: string; badge?: NavBadge; nurLokal?: boolean };
+export type NavZiel = {
+  to: string;
+  icon: IconName;
+  label: string;
+  badge?: NavBadge;
+  /** Nur in der lokalen App (KI). */
+  nurLokal?: boolean;
+  /** Nur genau dieser Pfad (z. B. `/sql`, nicht `/sql/uebungen`). */
+  genau?: boolean;
+};
 
-export type NavGruppe = 'uebersicht' | 'lernen' | 'karteikarten' | 'ueben' | 'mehr';
+export type BereichId = 'lernen' | 'glossar' | 'sql' | 'einstellungen';
 
-export const UEBEN_ZIELE: NavZiel[] = [
-  { to: '/heute', icon: 'play', label: 'Heute lernen' },
-  { to: '/klausur', icon: 'timer', label: 'Übungsklausur' },
-  { to: '/aufgaben', icon: 'file-pen-line', label: 'Einzelaufgaben' },
-  { to: '/sql', icon: 'database', label: 'SQL-Editor', badge: 'sql' },
-  { to: '/rechnen', icon: 'calculator', label: 'Rechenübungen', badge: 'rechnen' },
-];
+export interface Bereich {
+  id: BereichId;
+  /** Ziel beim Klick auf den Bereich. */
+  to: string;
+  icon: IconName;
+  label: string;
+  /** Kurzform für die Tab-Bar. */
+  kurz: string;
+  unter: NavZiel[];
+}
 
-/** Thema „Glossar & Diagramme“ (Deep Dive 17): eigener Eintrag in der Navigation, damit Begriffe und Diagramme mit einem Klick erreichbar sind. */
+/** Thema „Glossar & Diagramme“ (Deep Dive 17): gehört zum Bereich Glossar. */
 export const GLOSSAR_PFAD = '/lernen/17';
 
-export const MEHR_ZIELE: NavZiel[] = [
-  { to: '/fehlerjournal', icon: 'notebook-pen', label: 'Fehlerjournal', badge: 'journal' },
-  { to: '/generator', icon: 'sparkles', label: 'KI-Aufgaben', nurLokal: true },
-  { to: '/material', icon: 'library', label: 'Material' },
-  { to: GLOSSAR_PFAD, icon: 'book-bookmark', label: 'Glossar & Diagramme' },
-  { to: '/einstellungen', icon: 'settings', label: 'Einstellungen' },
-  { to: '/daten', icon: 'save', label: 'Daten & Import' },
+export const BEREICHE: Bereich[] = [
+  {
+    id: 'lernen',
+    to: '/lernen',
+    icon: 'book-open',
+    label: 'Lernen',
+    kurz: 'Lernen',
+    unter: [
+      { to: '/heute', icon: 'play', label: 'Heute lernen' },
+      { to: '/lernen', icon: 'book-open', label: 'Themen' },
+      { to: '/karteikarten', icon: 'layers', label: 'Karteikarten' },
+      { to: '/aufgaben', icon: 'file-pen-line', label: 'Einzelaufgaben' },
+      { to: '/rechnen', icon: 'calculator', label: 'Rechenübungen', badge: 'rechnen' },
+      { to: '/klausur', icon: 'timer', label: 'Übungsklausur' },
+      { to: '/fehlerjournal', icon: 'notebook-pen', label: 'Fehlerjournal', badge: 'journal' },
+    ],
+  },
+  {
+    id: 'glossar',
+    to: '/material/glossar',
+    icon: 'book-bookmark',
+    label: 'Glossar',
+    kurz: 'Glossar',
+    unter: [
+      { to: '/material/glossar', icon: 'library', label: 'Begriffe A–Z' },
+      { to: GLOSSAR_PFAD, icon: 'book-bookmark', label: 'Diagramme' },
+      { to: '/material/formeln', icon: 'sigma', label: 'Formelsammlung' },
+      { to: '/material/operatoren', icon: 'message-square-quote', label: 'Operatoren' },
+    ],
+  },
+  {
+    id: 'sql',
+    to: '/sql',
+    icon: 'database',
+    label: 'SQL-Editor',
+    kurz: 'SQL',
+    unter: [
+      { to: '/sql', icon: 'pencil', label: 'Freier Editor', genau: true },
+      { to: '/sql/uebungen', icon: 'target', label: 'Übungen', badge: 'sql' },
+    ],
+  },
+  {
+    id: 'einstellungen',
+    to: '/einstellungen',
+    icon: 'settings',
+    label: 'Einstellungen',
+    kurz: 'Einstellungen',
+    unter: [
+      { to: '/einstellungen', icon: 'settings', label: 'Einstellungen' },
+      { to: '/material', icon: 'library', label: 'Material' },
+      { to: '/daten', icon: 'save', label: 'Daten & Import' },
+      { to: '/generator', icon: 'sparkles', label: 'KI-Aufgaben', nurLokal: true },
+    ],
+  },
 ];
 
-/** Gehört der Pfad zu diesem Ziel? `/aufgaben` umfasst auch `/aufgabe/:id`, `/sql` auch `/sql/uebungen` usw. */
+/** Gehört der Pfad zu diesem Ziel? `/aufgaben` umfasst auch `/aufgabe/:id`, `/sql/uebungen` auch `/sql/uebung/:id` usw. */
 export function passtZuZiel(to: string, pathname: string): boolean {
   if (to === '/') return pathname === '/';
   if (to === '/aufgaben' && pathname.startsWith('/aufgabe/')) return true;
+  if (to === '/sql/uebungen' && pathname.startsWith('/sql/uebung/')) return true;
   return pathname === to || pathname.startsWith(`${to}/`);
 }
 
-/** Welcher der fünf Plätze ist für diesen Pfad hervorgehoben? */
-export function aktiveGruppe(pathname: string): NavGruppe | undefined {
-  if (passtZuZiel('/', pathname)) return 'uebersicht';
-  if (passtZuZiel(GLOSSAR_PFAD, pathname)) return 'mehr';
-  if (passtZuZiel('/lernen', pathname)) return 'lernen';
-  if (passtZuZiel('/karteikarten', pathname)) return 'karteikarten';
-  if (UEBEN_ZIELE.some((z) => passtZuZiel(z.to, pathname))) return 'ueben';
-  if (MEHR_ZIELE.some((z) => passtZuZiel(z.to, pathname))) return 'mehr';
+/** Seiten des Materials, die zum Glossar gehören (Nachschlagen); alles andere unter /material gehört zu den Einstellungen. */
+const GLOSSAR_MATERIAL = ['/material/glossar', '/material/formeln', '/material/operatoren'];
+const LERNEN = ['/heute', '/lernen', '/karteikarten', '/aufgaben', '/rechnen', '/klausur', '/fehlerjournal'];
+const EINSTELLUNGEN = ['/material', '/einstellungen', '/daten', '/generator'];
+
+/** Zu welchem Bereich gehört der Pfad? Die Übersicht (`/`) und unbekannte Pfade gehören zu keinem. */
+export function aktiverBereich(pathname: string): BereichId | undefined {
+  if (pathname === '/') return undefined;
+  if (passtZuZiel(GLOSSAR_PFAD, pathname) || GLOSSAR_MATERIAL.some((to) => passtZuZiel(to, pathname))) return 'glossar';
+  if (EINSTELLUNGEN.some((to) => passtZuZiel(to, pathname))) return 'einstellungen';
+  if (passtZuZiel('/sql', pathname)) return 'sql';
+  if (LERNEN.some((to) => passtZuZiel(to, pathname))) return 'lernen';
   return undefined;
 }
 
-/** Summe der fälligen Wiederholungen einer Ziel-Liste (Badge am Menüknopf). */
+export const bereich = (id: BereichId): Bereich => BEREICHE.find((b) => b.id === id)!;
+
+/** Unterziele eines Bereichs, ohne die nur lokalen in der Pages-Version. */
+export const sichtbareZiele = (b: Bereich, statisch: boolean): NavZiel[] => b.unter.filter((z) => !(z.nurLokal && statisch));
+
+/** Das hervorgehobene Unterziel: das mit dem längsten passenden Pfad (`/lernen/17` gehört nicht zu „Themen“). */
+export function aktivesUnterziel(pathname: string, b: Bereich): NavZiel | undefined {
+  const passend = b.unter.filter((z) => {
+    if (z.genau) return pathname === z.to;
+    if (z.to === '/lernen' && passtZuZiel(GLOSSAR_PFAD, pathname)) return false;
+    if (z.to === '/material' && GLOSSAR_MATERIAL.some((to) => passtZuZiel(to, pathname))) return false;
+    return passtZuZiel(z.to, pathname);
+  });
+  return passend.sort((a, c) => c.to.length - a.to.length)[0];
+}
+
+/** Summe der fälligen Wiederholungen einer Ziel-Liste (Badge am Bereich). */
 export function badgeSumme(ziele: NavZiel[], badges: Record<NavBadge, number>): number {
   return ziele.reduce((s, z) => s + (z.badge ? badges[z.badge] : 0), 0);
 }

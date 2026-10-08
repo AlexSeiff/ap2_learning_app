@@ -5,7 +5,11 @@ import { ConfirmProvider } from './components/ConfirmDialog';
 import { IS_STATIC } from './lib/api';
 import { registriereServiceWorker } from './lib/pwa';
 import { StoreProvider } from './lib/store';
+import { leseTheme, wendeThemeAn } from './lib/theme';
 import './styles.css';
+
+// Farbschema vor dem ersten Zeichnen setzen (kein Aufblitzen im falschen Design).
+wendeThemeAn(leseTheme());
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

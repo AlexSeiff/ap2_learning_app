@@ -92,7 +92,7 @@ lern-app/
 │  ├─ hooks/            useExamRun, useCardSession (+ useCardFilters), useSqlSession, useRechenUebung, useConfirm, useBackupDownload,
 │  │                    useHeute (running „Heute lernen“ session)
 │  ├─ components/       AnswerInput, Markdown (+ MathMarkdown, markdownComponents), TheoryMarkdown, Rechenweg, TaskParts, ErrorBoundary,
-│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs, MobileNav (bottom bar < 600 px), UpdateHinweis (PWA toast),
+│  │                    ConfirmDialog, SqlEditor, ResultTable, SchemaBrowser, SqlTabs, Kopfleiste (header + Unterleiste), MobileNav (tab bar < 600 px), UpdateHinweis (PWA toast),
 │  │                    HeuteLeiste, EigeneAntwort, SicherheitWahl, OperatorTipp, FehlergrundWahl + FehlergrundKarte (8.7),
 │  │                    SucheDialog (8.8, lazy) (phase 8)
 │  ├─ lib/              pure logic (progress, grading, stats, cards, leicht + leichtRechnen (Leicht-Modus), shuffle, examTimer, sheets, sql, sqlLinks, loesungStil, mathDollar,
@@ -334,7 +334,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list, tiles "📏 Formelsammlung" and "🗣️ Operatoren-Trainer" |
 | `/material/operatoren` | Operatoren-Trainer | lazy page: quiz "Was verlangt der Operator hier?" with real tasks, table of all operators (§ 5 phase 8.4) |
 | `/material/glossar` | Glossar | lazy page: terms A–Z from `begriff` and `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources (§ 5 phase 8.9) |
-| (dialog) | Suche | `Strg+K` / `⌘K`, "🔎 Suchen" in the sidebar and first entry of the mobile "Mehr" menu: global search, lazy (§ 5 phase 8.8) |
+| (dialog) | Suche | `Strg+K` / `⌘K`, search button in the header (Kopfleiste): global search, lazy (§ 5 phase 8.8) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
@@ -471,7 +471,7 @@ mode is meant as an entry point; the Dashboard shows "🟢 Leicht-Modus ist zum 
 - **Session** (`src/lib/heuteSitzung.ts`, pure + tiny store for `useSyncExternalStore`): `{ datum, items, index, erledigt, uebersprungen }` in
   `localStorage` key **`ap2-heute`** (try/catch, read tolerantly with `leseSitzung`). Only valid on the same day and device – it is navigation
   state, not progress, so it is not part of `Progress` or the backup.
-- Entry points: Dashboard button (shows "fortsetzen (n/m)" while running), sidebar "▶ Heute lernen", first entry of the mobile "Üben" menu.
+- Entry points: Dashboard button (shows "fortsetzen (n/m)" while running), first sub-target of the area „Lernen“.
 
 ### Deine Antwort (phase 8.2)
 
@@ -589,7 +589,7 @@ only in `useCardSession` state and is cleared for the next card – **not persis
   (`glossarThema`: the section whose heading is the term, else one starting with it, else the first sheet source). Term cards (`typ: begriff`)
   whose term is already a glossary hit are left out of the index (same definition twice).
 - **Dialog** `components/SucheDialog.tsx` is a lazy chunk together with the index, formulas, operators and glossary; it loads on the first
-  `Strg+K`/`⌘K` (listener in `App.tsx`, `useSuche`) or click on "🔎 Suchen" (sidebar, first entry of the mobile "Mehr" menu). Combobox pattern
+  `Strg+K`/`⌘K` (listener in `App.tsx`, `useSuche`) or click on the search button in the header. Combobox pattern
   (`role=combobox` + `listbox`/`option`, `aria-activedescendant`), ↑/↓/Home, Enter opens, Esc or a click outside closes, focus returns.
 - **Jump**: `hooks/useStelle.ts` reads `?stelle=<id>` (a hash anchor can't be used with the HashRouter), scrolls the element into view and
   highlights it briefly (`.stelle-ziel`). Used by Thema, Formelsammlung, Operatoren and Glossar.
@@ -610,29 +610,55 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     normalised letter (Ä → A), `#` otherwise. Today **1.135 terms, 1.064 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
 - **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
-  term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). Mobile: the page belongs to "Mehr" via `/material`.
-- **Navigation to Deep Dive 17**: sidebar entry „📘 Glossar & Diagramme“ under „Lernen“ (`GLOSSAR_PFAD = '/lernen/17'` in `navigation.ts`; „Lernen“ is
-  not highlighted at the same time) and an entry in the mobile „Mehr“ menu (`aktiveGruppe('/lernen/17')` → `mehr`).
+  term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). It belongs to the area „Glossar“ (sub-target „Begriffe A–Z“).
+- **Navigation to Deep Dive 17**: sub-target „Diagramme“ of the area „Glossar“ (`GLOSSAR_PFAD = '/lernen/17'` in `navigation.ts`; „Themen“ is
+  not highlighted at the same time).
 - **Topic list A–Z** (Deep Dive 17, `src/lib/glossarThema.ts`, `ergaenzeGlossarThema`, called in `loadContent` – so local app, Pages build and
   tests are identical): the section with `<!-- glossar-a-z -->` gets a count sentence, and one section per letter (`17-begriffe-a` …, `generiert: true`)
   is inserted after it, one line per entry `- Begriff – Definition *(DD n)*`. The lines contain no bold, so `baueGlossar` (which only reads bold
   terms) is unchanged by them; the search skips `generiert` sections because the glossary entries are already indexed.
 
-**Other**: theme toggle (system/dark/light, localStorage), error boundary per route, own confirm dialog (`useConfirm`),
-print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the top) and below 600 px (bottom bar, see below).
+**Other**: theme switch (system/light/dark) in **Einstellungen → Design** (`src/lib/theme.ts`, `hooks/useTheme.ts`; localStorage key `theme`,
+applied in `main.tsx` before the first render), error boundary per route, own confirm dialog (`useConfirm`), print CSS (no navigation).
 
-### Mobile (phase 7.2, 7.3)
+### Navigation (plan phase 2; replaces the sidebar and the mobile „Üben“/„Mehr“ menus)
 
-- **Below 600 px** the sidebar is hidden and `components/MobileNav.tsx` shows a fixed **bottom bar** with five places: 🏠 Übersicht,
-  📖 Lernen, 🃏 Karteikarten, ✏️ **Üben** (menu: ▶ Heute lernen, Übungsklausur, Einzelaufgaben, SQL-Editor, Rechenübungen) and ☰ **Mehr** (menu: 🔎 Suchen (opens the search dialog), Fehlerjournal,
-  KI-Aufgaben (local app only), Material, Einstellungen, Daten & Import, theme toggle, save state). Both are always rendered; CSS decides which
-  is visible, so the desktop sidebar (≥ 900 px) and the wrapped row (600–899 px) are unchanged.
-- Groups and path matching are pure (`src/lib/navigation.ts`: `UEBEN_ZIELE`, `MEHR_ZIELE`, `aktiveGruppe`, `badgeSumme`, tested): the place of the
-  current route is highlighted (`/aufgabe/:id` belongs to Üben, `/material/:docId` to Mehr). **Due badges**: a menu button shows the sum of
-  its entries (Üben = SQL + Rechnen, Mehr = Fehlerjournal), each menu entry its own badge (screen readers get ", n fällig").
-- Accessibility: the menu buttons are `<button aria-expanded aria-controls>` (disclosure pattern, not `role=menu`); opening focuses the first entry,
-  **Escape** closes and returns focus to the button, tapping outside or choosing an entry closes it, a route change closes it too
-  (the open state remembers the path it was opened on). `main` gets bottom padding so the bar never hides content; the PWA toast sits above it.
+- **Four areas** (`BEREICHE` in `src/lib/navigation.ts`, pure and tested), the logo leads to the Übersicht (`/`). No URL changed – the areas
+  only group the existing routes:
+
+  | Area | Sub-targets (Unterleiste) |
+  |---|---|
+  | Lernen (`/lernen`) | Heute lernen, Themen, Karteikarten, Einzelaufgaben, Rechenübungen, Übungsklausur, Fehlerjournal |
+  | Glossar (`/material/glossar`) | Begriffe A–Z, Diagramme (`GLOSSAR_PFAD` = `/lernen/17`), Formelsammlung, Operatoren |
+  | SQL-Editor (`/sql`) | Freier Editor (exact match), Übungen (incl. `/sql/uebung/:id`) |
+  | Einstellungen (`/einstellungen`) | Einstellungen, Material (`/material`, `/material/:docId`), Daten & Import, KI-Aufgaben (local only) |
+
+  `aktiverBereich(pathname)` maps every route (`/lernen/17` and the three glossary pages under `/material` → Glossar, other `/material/*` →
+  Einstellungen); `aktivesUnterziel` picks the longest matching sub-target. **Due badges**: an area shows the sum of its sub-targets
+  (Lernen = Rechnen + Fehlerjournal, SQL = SQL), each sub-target its own; screen readers get ", n fällig".
+- **Desktop/tablet** (`components/Kopfleiste.tsx`): sticky translucent header (`.kopf`, height `--kopf-hoehe` 56 px + safe area =
+  `--kopf-gesamt`) with logo, the four areas (pill, `aria-current="page"`), save state (green dot; text only on error/conflict) and search
+  button (`⌘K` on Apple devices, otherwise `Strg K`). Below it the **Unterleiste** of the active area (pills, horizontally scrollable, the
+  active pill is scrolled into view; not on the Übersicht). Below 760 px the header shows icons only (labels stay as screen-reader text).
+- **Phone (< 600 px)**: slim header (48 px) with logo, area title and round search button; the Unterleiste as swipeable pills; fixed **tab
+  bar** at the bottom (`components/MobileNav.tsx`): Übersicht, Lernen, Glossar, SQL, Einstellungen. `main` has bottom padding so the bar never
+  hides content; the PWA toast sits above it.
+- **Sticky offsets**: everything that sticks or is a jump target respects the header: `.toc`, `.exam-bar`, `.glossar-abc` use
+  `top: var(--kopf-gesamt)`, `.theory`, glossary entries and `.stelle-ziel` have `scroll-margin-top`. `useStelle` corrects the position once
+  scrolling has settled (content above, e.g. formulas, can still grow during smooth scrolling).
+- **Accessibility**: „Zum Inhalt springen“ (`.skip-link`, first focusable element, focuses `main#inhalt`); labels hidden on small screens
+  are visually hidden, not removed (accessible names stay).
+- `index.html`: `viewport-fit=cover` (safe areas for notch and home indicator), `theme-color` light `#f2f2f7` / dark `#000000`, SVG favicon
+  (graduation cap). Manifest `theme_color`/`background_color` `#f2f2f7`.
+
+### Mobile details (phase 7.3, plan phase 2)
+
+- **iPhone fixes** (findings in `AP-2/Messung_Ausgangslage.md`), all below 600 px: inputs, selects, textareas and the SQL editor use 16 px
+  (iOS Safari no longer zooms in), page padding 16 px, KPI tiles in two columns, tables keep a minimum column width and scroll sideways with a
+  shadow at the right edge (`--tabelle-bg`), columns with class `nur-breit` are hidden (deck table: Prüfungsbereich, Quelle; Übersicht:
+  Lernziele, Fehlerjournal), „Wie sicher bist du?“ and the rating buttons as three equal columns, rows that only contain buttons as a
+  two-column grid (main button full width), flashcard padding 20 px, cards inside cards are flat, compact exam bar. The flashcard filters are a
+  `<details class="filter-box">` – open on desktop (summary hidden), closed on phones unless the URL has filter parameters.
 - **Touch targets** (7.3, below 600 px): buttons, `.button` links, selects and inputs at least 44 px high (except the small helper buttons
   `.small`, schema browser and query history; table inputs of Rechenübungen 36 px), larger checkboxes/radios, more padding for choices, tabs and
   `<summary>`. Filters wrap into two columns instead of overflowing, theory pages no longer overflow horizontally, and filter checkboxes are no
@@ -644,7 +670,7 @@ print CSS, responsive layout below 900 px (sidebar becomes a wrapped row at the 
   (`server/pwaPlugin.ts`, `PWA_OPTIONS`). `npm run dev`, `npm start` and `npm run build` never produce or register a service worker
   (`dist/` of `npm run build` has no `sw.js` and no manifest; only an unused 6 kB `workbox-window` chunk is emitted there).
 - **Manifest** `manifest.webmanifest`: name "AP2 Lern-App", short name "AP2 Lernen", `id`/`start_url`/`scope` `./` (relative, works under
-  `/ap2_learning_app/` with the HashRouter), `display: standalone`, theme colour = `--accent`. Icons in `public/icons/`: `icon-192.png`,
+  `/ap2_learning_app/` with the HashRouter), `display: standalone`, theme colour `#f2f2f7` (light grouped background). Icons in `public/icons/`: `icon-192.png`,
   `icon-512.png`, `icon-maskable-512.png` (icon at 80 % on a blue gradient, inside the maskable safe zone) and `apple-touch-icon.png` (180 px,
   linked in `index.html`). They were generated once from the icon of the former desktop build (512 × 512) with Windows System.Drawing
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
@@ -804,7 +830,7 @@ hidden in task texts and exams (`source={false}`), so the editor doesn't reveal 
 
 ## 8. AI (local app only)
 
-- **Pages has no AI** (owner decision Q3, roadmap 7.4): no "KI-Aufgaben" nav item (sidebar and Mehr menu), `/generator` redirects to `/`,
+- **Pages has no AI** (owner decision Q3, roadmap 7.4): no "KI-Aufgaben" nav item (sub-target of Einstellungen, `nurLokal`), `/generator` redirects to `/`,
   no "🤖 KI-Bewertung" button in `GradePanel`, no "Quelle" filter on Einzelaufgaben (`?quelle=` is ignored), no KI section or KI task count
   on Daten & Import, and the Klausur hint doesn't mention AI grading. Tested in `tests/pagesOhneKi.test.ts` (MODE stubbed to `pages`).
   AI with a per-user API key in the browser (roadmap 7.5) is **not** implemented.

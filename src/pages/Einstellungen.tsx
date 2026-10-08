@@ -7,11 +7,14 @@ import { withSettings } from '../lib/settings';
 import { daysUntilExam, formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
 import { Icon } from '../components/Icon';
+import { useTheme } from '../hooks/useTheme';
+import { THEMES } from '../lib/theme';
 
 export function Einstellungen() {
   const { progress, update } = useStore();
   const { settings } = progress;
   const days = daysUntilExam(settings.examDate);
+  const [theme, setTheme] = useTheme();
 
   return (
     <div className="page narrow">
@@ -19,6 +22,22 @@ export function Einstellungen() {
         <Icon name="settings" /> Einstellungen
       </h1>
       <p className="lead">Passe die App an dich an. Alles gilt nur für dich.</p>
+
+      <section className="card">
+        <h2>
+          <Icon name="sun" /> Design
+        </h2>
+        <div className="mode-switch" role="group" aria-label="Farbschema">
+          {THEMES.map((t) => (
+            <button key={t.id} type="button" aria-pressed={theme === t.id} onClick={() => setTheme(t.id)}>
+              <Icon name={t.id === 'system' ? 'monitor' : t.id === 'light' ? 'sun' : 'moon'} /> {t.label}
+            </button>
+          ))}
+        </div>
+        <p className="hint">
+          „System“ folgt der Einstellung deines Geräts (hell oder dunkel). Das Farbschema merkt sich jedes Gerät selbst.
+        </p>
+      </section>
 
       <section className="card">
         <h2>
@@ -149,8 +168,7 @@ export function Einstellungen() {
       <p className="hint">
         <Icon name="save" /> Deine Einstellungen stehen in deinem Fortschritt (
         {IS_STATIC ? 'in diesem Browser' : 'lokal auf diesem Rechner'}) und ziehen mit jeder Sicherung um. Sichern und Einspielen:{' '}
-        <Link to="/daten">Daten &amp; Import</Link>. Das Farbschema (System / Dunkel / Hell, unten in der Navigation) merkt sich jedes Gerät
-        selbst.
+        <Link to="/daten">Daten &amp; Import</Link>. Nur das Farbschema (oben unter „Design“) merkt sich jedes Gerät selbst.
       </p>
 
       <Datenschutz />

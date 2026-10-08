@@ -28,9 +28,6 @@ export function Glossar() {
 
   return (
     <div className="page glossar">
-      <p className="crumbs">
-        <Link to="/material">Material</Link> / Glossar
-      </p>
       <h1>
         <Icon name="library" /> Glossar
       </h1>

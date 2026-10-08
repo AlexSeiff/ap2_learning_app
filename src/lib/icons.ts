@@ -45,6 +45,7 @@ export const ICONS = {
     ['path', { d: 'M3 9h18' }],
   ],
   check: [['path', { d: 'M20 6 9 17l-5-5' }]],
+  'chevron-right': [['path', { d: 'm9 18 6-6-6-6' }]],
   'circle-check': [
     ['circle', { cx: '12', cy: '12', r: '10' }],
     ['path', { d: 'm16 9-5.5 5.5L8 12' }],
@@ -149,11 +150,6 @@ export const ICONS = {
   lock: [
     ['rect', { width: '18', height: '11', x: '3', y: '11', rx: '2', ry: '2' }],
     ['path', { d: 'M7 11V7a5 5 0 0 1 10 0v4' }],
-  ],
-  menu: [
-    ['path', { d: 'M4 5h16' }],
-    ['path', { d: 'M4 12h16' }],
-    ['path', { d: 'M4 19h16' }],
   ],
   'message-square-quote': [
     ['path', { d: 'M14 14a2 2 0 0 0 2-2V8h-2' }],

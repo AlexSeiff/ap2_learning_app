@@ -36,6 +36,11 @@ export function Karteikarten() {
   const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next, eigeneAntwort, setEigeneAntwort } =
     useCardSession();
   const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
+  // Filter: auf dem Desktop offen, auf dem Handy zugeklappt (spart einen ganzen Bildschirm), mit aktiven Filtern immer offen.
+  const [filterOffen, setFilterOffen] = useState(
+    () =>
+      typeof window === 'undefined' || window.matchMedia?.('(min-width: 600px)').matches !== false || window.location.hash.includes('?'),
+  );
   // ?blaettern=1: Durchblättern der gefilterten Karten (ohne Bewertung). `alle`, weil die Antwort ohnehin sichtbar ist.
   const [params, setParams] = useSearchParams();
   const blaettern = params.get('blaettern') === '1';
@@ -216,6 +221,7 @@ export function Karteikarten() {
   const typLeicht = (typ: string) => pool.filter((c) => c.typ === typ && leicht.has(c.id)).length;
   const setMode = (an: boolean) => update((p) => withSettings(p, { leichtModus: an }));
   const known = (ids: Flashcard[]) => ids.filter((c) => (progress.cards[c.id]?.box ?? 0) >= 3).length;
+  const aktiveFilter = [f.thema, f.deck, f.art, f.typ, f.stufe].filter((x) => x !== 'alle').length;
 
   return (
     <div className="page">
@@ -258,79 +264,84 @@ export function Karteikarten() {
           die Prüfung frei antworten: Mit 4 Antworten kommt eine Karte höchstens in Fach {LEICHT_MAX_BOX}.
         </p>
       )}
-      <div className="filters">
-        <label>
-          Deep Dive
-          <select value={f.thema} onChange={(e) => set({ thema: e.target.value, deck: 'alle' })}>
-            <option value="alle">Alle Themen</option>
-            {content.topics.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Deck
-          <select value={f.deck} onChange={(e) => set({ deck: e.target.value, thema: 'alle' })}>
-            <option value="alle">Alle Decks</option>
-            {content.decks.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.title}
-                {d.status === 'offen' ? ' (ohne Deep Dive)' : ''}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Kartenart
-          <select value={f.art} onChange={(e) => set({ art: e.target.value })}>
-            <option value="alle">Alle</option>
-            <option value="lernkarte">Lernkarten</option>
-            {settings.prueferfragen && <option value="prueferfrage">Prüferfragen</option>}
-            {settings.fachgespraech && !leichtModus && <option value="fachgespraech">Fachgespräch-Fragen</option>}
-          </select>
-        </label>
-        <label>
-          Typ
-          <select value={f.typ} onChange={(e) => set({ typ: e.target.value })}>
-            <option value="alle">Alle</option>
-            {Object.entries(CARD_TYPE_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-                {leichtModus ? ` (${typLeicht(k)} mit 4 Antworten)` : ''}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Schwierigkeit
-          <select value={f.stufe} onChange={(e) => set({ stufe: e.target.value })}>
-            <option value="alle">Alle</option>
-            {Object.entries(LEVEL_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {k} – {v}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
-          <input
-            type="checkbox"
-            checked={settings.prueferfragen}
-            onChange={(e) => update((p) => withSettings(p, { prueferfragen: e.target.checked }))}
-          />
-          <Icon name="circle-question-mark" /> Prüferfragen einbeziehen
-        </label>
-        <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
-          <input
-            type="checkbox"
-            checked={settings.fachgespraech}
-            onChange={(e) => update((p) => withSettings(p, { fachgespraech: e.target.checked }))}
-          />
-          <Icon name="mic" /> Fachgespräch einbeziehen
-        </label>
-      </div>
+      <details className="filter-box" open={filterOffen} onToggle={(e) => setFilterOffen(e.currentTarget.open)}>
+        <summary>
+          <Icon name="chevron-right" /> Filter{aktiveFilter > 0 && ` (${aktiveFilter} aktiv)`}
+        </summary>
+        <div className="filters">
+          <label>
+            Deep Dive
+            <select value={f.thema} onChange={(e) => set({ thema: e.target.value, deck: 'alle' })}>
+              <option value="alle">Alle Themen</option>
+              {content.topics.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.title}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Deck
+            <select value={f.deck} onChange={(e) => set({ deck: e.target.value, thema: 'alle' })}>
+              <option value="alle">Alle Decks</option>
+              {content.decks.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.title}
+                  {d.status === 'offen' ? ' (ohne Deep Dive)' : ''}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Kartenart
+            <select value={f.art} onChange={(e) => set({ art: e.target.value })}>
+              <option value="alle">Alle</option>
+              <option value="lernkarte">Lernkarten</option>
+              {settings.prueferfragen && <option value="prueferfrage">Prüferfragen</option>}
+              {settings.fachgespraech && !leichtModus && <option value="fachgespraech">Fachgespräch-Fragen</option>}
+            </select>
+          </label>
+          <label>
+            Typ
+            <select value={f.typ} onChange={(e) => set({ typ: e.target.value })}>
+              <option value="alle">Alle</option>
+              {Object.entries(CARD_TYPE_LABELS).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {v}
+                  {leichtModus ? ` (${typLeicht(k)} mit 4 Antworten)` : ''}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Schwierigkeit
+            <select value={f.stufe} onChange={(e) => set({ stufe: e.target.value })}>
+              <option value="alle">Alle</option>
+              {Object.entries(LEVEL_LABELS).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {k} – {v}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
+            <input
+              type="checkbox"
+              checked={settings.prueferfragen}
+              onChange={(e) => update((p) => withSettings(p, { prueferfragen: e.target.checked }))}
+            />
+            <Icon name="circle-question-mark" /> Prüferfragen einbeziehen
+          </label>
+          <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
+            <input
+              type="checkbox"
+              checked={settings.fachgespraech}
+              onChange={(e) => update((p) => withSettings(p, { fachgespraech: e.target.checked }))}
+            />
+            <Icon name="mic" /> Fachgespräch einbeziehen
+          </label>
+        </div>
+      </details>
       <div className="kpis">
         <div className="kpi">
           <span className="kpi-value">{due.length}</span>
@@ -395,8 +406,8 @@ export function Karteikarten() {
               <thead>
                 <tr>
                   <th>Deck</th>
-                  <th>Prüfungsbereich</th>
-                  <th>Quelle</th>
+                  <th className="nur-breit">Prüfungsbereich</th>
+                  <th className="nur-breit">Quelle</th>
                   <th>Karten</th>
                   <th>sicher</th>
                   <th>fällig</th>
@@ -420,8 +431,8 @@ export function Karteikarten() {
                         </a>
                         {d.status === 'offen' && <span className="badge muted"> ohne Deep Dive</span>}
                       </td>
-                      <td className="small">{d.area}</td>
-                      <td className="small muted">{d.source}</td>
+                      <td className="small nur-breit">{d.area}</td>
+                      <td className="small muted nur-breit">{d.source}</td>
                       <td>{cards.length}</td>
                       <td>{known(cards)}</td>
                       <td>{dueCount || ''}</td>
