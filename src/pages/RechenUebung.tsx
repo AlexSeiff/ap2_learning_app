@@ -15,6 +15,7 @@ import { LEVEL_LABELS, stars, STATUS_LABELS } from '../lib/uebungLabels';
 import { type EingabeErgebnis, formatWert } from '../rechnen/checker';
 import type { AufgeloesteEingabe } from '../rechnen/instanz';
 import type { EingabeLayout, Tabelle } from '../rechnen/typen';
+import { Icon } from '../components/Icon';
 
 // KaTeX erst laden, wenn jemand die Lösung ansieht.
 const Rechenweg = lazy(() => import('../components/Rechenweg').then((m) => ({ default: m.Rechenweg })));
@@ -52,7 +53,7 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
     const ok = await confirm({
       title: 'Lösung zeigen?',
       message: 'Die Übung zählt dann als „mit Lösung“ statt „gelöst“ und kommt morgen zur Wiederholung.',
-      confirmLabel: '👁 Lösung zeigen',
+      confirmLabel: 'Lösung zeigen',
     });
     if (ok) r.zeigeLoesung();
   };
@@ -87,7 +88,11 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
           </span>
           <span className="badge muted">{u.thema}</span>
           {status !== 'offen' && <span className="badge">{STATUS_LABELS[status]}</span>}
-          {r.zufall && <span className="badge ai">🎲 neue Zahlen</span>}
+          {r.zufall && (
+            <span className="badge ai">
+              <Icon name="dices" /> neue Zahlen
+            </span>
+          )}
           {u.quelleAufgabe && <span className="muted small">{u.quelleAufgabe}</span>}
         </div>
         {inst ? (
@@ -99,7 +104,7 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
           <Markdown source={false}>{u.aufgabe}</Markdown>
         )}
         <p className="hint">
-          ✏️ Rechne auf Papier, trage nur Ergebnisse ein.
+          <Icon name="pencil" /> Rechne auf Papier, trage nur Ergebnisse ein.
           {r.state && r.state.attempts > 0 && ` · ${r.state.attempts} ${r.state.attempts === 1 ? 'Versuch' : 'Versuche'}`}
         </p>
       </div>
@@ -109,10 +114,10 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
       {inst && !r.error && (
         <div className="mode-switch" role="group" aria-label="Modus">
           <button type="button" aria-pressed={!r.leichtModus} onClick={() => r.setLeichtModus(false)}>
-            ✏️ Eintippen
+            <Icon name="pencil" /> Eintippen
           </button>
           <button type="button" aria-pressed={r.leichtModus} onClick={() => r.setLeichtModus(true)}>
-            🟢 Ergebnis auswählen
+            <Icon name="list-checks" /> Ergebnis auswählen
           </button>
         </div>
       )}
@@ -120,7 +125,8 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
 
       {r.error || !inst ? (
         <p className="card warn">
-          ⚠ Diese Übung passt nicht zu ihrer Vorlage: {r.error}. Das ist ein Fehler in den Übungsdaten, nicht bei dir.
+          <Icon name="triangle-alert" /> Diese Übung passt nicht zu ihrer Vorlage: {r.error}. Das ist ein Fehler in den Übungsdaten, nicht
+          bei dir.
         </p>
       ) : r.leicht && r.auswahl ? (
         <div className="card re-eingaben">
@@ -145,7 +151,7 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
                 {gewaehlt && !gewaehlt.richtig && (
                   <div className="re-meldung small">
                     {gewaehlt.erklaerung ? (
-                      <Markdown source={false}>{'🔎 ' + gewaehlt.erklaerung}</Markdown>
+                      <Markdown source={false}>{gewaehlt.erklaerung}</Markdown>
                     ) : (
                       <span className="muted">Kein typischer Fehler bekannt – rechne noch einmal nach.</span>
                     )}
@@ -169,11 +175,11 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
           <div className="actions">
             {r.hinweiseGesamt > 0 && (
               <button type="button" className="secondary" onClick={r.hinweis} disabled={r.hinweise.length >= r.hinweiseGesamt}>
-                💡 Hinweis {Math.min(r.hinweise.length + 1, r.hinweiseGesamt)}/{r.hinweiseGesamt}
+                <Icon name="lightbulb" /> Hinweis {Math.min(r.hinweise.length + 1, r.hinweiseGesamt)}/{r.hinweiseGesamt}
               </button>
             )}
             <button type="button" className="secondary" onClick={() => void showSolution()} disabled={r.loesungOffen}>
-              👁 Lösung zeigen
+              <Icon name="eye" /> Lösung zeigen
             </button>
           </div>
         </div>
@@ -192,21 +198,21 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
             <button type="submit">✓ Prüfen</button>
             {r.hinweiseGesamt > 0 && (
               <button type="button" className="secondary" onClick={r.hinweis} disabled={r.hinweise.length >= r.hinweiseGesamt}>
-                💡 Hinweis {Math.min(r.hinweise.length + 1, r.hinweiseGesamt)}/{r.hinweiseGesamt}
+                <Icon name="lightbulb" /> Hinweis {Math.min(r.hinweise.length + 1, r.hinweiseGesamt)}/{r.hinweiseGesamt}
               </button>
             )}
             {u.neueZahlen && (
               <button type="button" className="secondary" onClick={r.neueZahlen} title="Gleiche Aufgabe mit anderen Zahlen">
-                🎲 Neue Zahlen
+                <Icon name="dices" /> Neue Zahlen
               </button>
             )}
             {r.zufall && (
               <button type="button" className="ghost" onClick={r.originalZahlen}>
-                ↩ Originalzahlen
+                <Icon name="undo-2" /> Originalzahlen
               </button>
             )}
             <button type="button" className="secondary" onClick={() => void showSolution()} disabled={r.loesungOffen}>
-              👁 Lösung zeigen
+              <Icon name="eye" /> Lösung zeigen
             </button>
           </div>
           <p className="hint">
@@ -217,7 +223,9 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
 
       {r.hinweise.length > 0 && (
         <div className="card info">
-          <b>💡 Hinweise</b>
+          <b>
+            <Icon name="lightbulb" /> Hinweise
+          </b>
           <ol className="hints">
             {r.hinweise.map((h, i) => (
               <li key={i}>
@@ -233,19 +241,21 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
       {r.leicht && r.leichtFertig && (
         <div className={`card ${r.leichtOk ? 'success' : 'verdict-fail'}`} role="status">
           <p className={`verdict ${r.leichtOk ? 'ok' : 'bad'}`}>
-            {r.leichtOk ? '✅ Alles richtig ausgewählt!' : '❌ Nicht alles richtig – die Übung kommt morgen zur Wiederholung.'}
+            <Icon name={r.leichtOk ? 'circle-check' : 'circle-x'} />{' '}
+            {r.leichtOk ? 'Alles richtig ausgewählt!' : 'Nicht alles richtig – die Übung kommt morgen zur Wiederholung.'}
           </p>
           <p className="hint">
-            🟢 Auswählen ist zum Einstieg. Als „gelöst“ zählt die Übung erst, wenn du die Ergebnisse selbst eintippst
+            <Icon name="list-checks" /> Auswählen ist zum Einstieg. Als „gelöst“ zählt die Übung erst, wenn du die Ergebnisse selbst
+            eintippst
             {u.neueZahlen ? ' – am besten mit neuen Zahlen.' : '.'}
           </p>
           <div className="actions">
             <button type="button" className="secondary" onClick={r.leichtNochmal}>
-              🔀 Nochmal auswählen
+              <Icon name="shuffle" /> Nochmal auswählen
             </button>
             {u.neueZahlen && (
               <button type="button" className="secondary" onClick={r.neueZahlen}>
-                🎲 Neue Zahlen
+                <Icon name="dices" /> Neue Zahlen
               </button>
             )}
             {u.neueZahlen && (
@@ -256,7 +266,7 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
                   r.neueZahlen();
                 }}
               >
-                ✏️ Mit neuen Zahlen eintippen
+                <Icon name="pencil" /> Mit neuen Zahlen eintippen
               </button>
             )}
             {next && (
@@ -273,13 +283,14 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
         <div className={`card ${ergebnis.ok ? 'success' : 'verdict-fail'}`} role="status">
           <div className="verdict-row">
             <p className={`verdict ${ergebnis.ok ? 'ok' : 'bad'}`}>
+              <Icon name={ergebnis.ok ? 'circle-check' : 'circle-x'} />{' '}
               {ergebnis.ok
-                ? '✅ Alles richtig!'
-                : `❌ Noch nicht: ${ergebnis.richtig} von ${ergebnis.gesamt} ${ergebnis.gesamt === 1 ? 'Ergebnis' : 'Ergebnissen'} richtig.`}
+                ? 'Alles richtig!'
+                : `Noch nicht: ${ergebnis.richtig} von ${ergebnis.gesamt} ${ergebnis.gesamt === 1 ? 'Ergebnis' : 'Ergebnissen'} richtig.`}
             </p>
             {ergebnis.ok && u.neueZahlen && (
               <button type="button" className="secondary" onClick={r.neueZahlen}>
-                🎲 Nochmal mit neuen Zahlen
+                <Icon name="dices" /> Nochmal mit neuen Zahlen
               </button>
             )}
             {ergebnis.ok && next && (
@@ -342,7 +353,7 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
           <div className="actions">
             {u.neueZahlen && (
               <button type="button" className="secondary" onClick={r.neueZahlen}>
-                🎲 Mit neuen Zahlen üben
+                <Icon name="dices" /> Mit neuen Zahlen üben
               </button>
             )}
             {next && (
@@ -358,8 +369,8 @@ function RechenUebungView({ u }: { u: RechenUebungTyp }) {
 }
 
 const BEISPIEL_TITEL: Record<Beispiel['stufe'], string> = {
-  voll: '📘 Beispiel: so rechnest du das',
-  luecke: '📘 Beispiel mit Lücke – den letzten Schritt rechnest du selbst',
+  voll: 'Beispiel: so rechnest du das',
+  luecke: 'Beispiel mit Lücke – den letzten Schritt rechnest du selbst',
   ergebnis: '',
 };
 
@@ -367,7 +378,9 @@ const BEISPIEL_TITEL: Record<Beispiel['stufe'], string> = {
 function BeispielKarte({ b, rechenweg }: { b: Beispiel; rechenweg: boolean }) {
   if (b.stufe === 'ergebnis') {
     return rechenweg ? (
-      <p className="hint beispiel-fertig">🎯 Ohne Beispiel: Du hast die Übung schon gelöst – jetzt zählt nur dein Ergebnis.</p>
+      <p className="hint beispiel-fertig">
+        <Icon name="target" /> Ohne Beispiel: Du hast die Übung schon gelöst – jetzt zählt nur dein Ergebnis.
+      </p>
     ) : null;
   }
   if (b.quelle === 'keins' || !b.inst) return null;
@@ -375,7 +388,8 @@ function BeispielKarte({ b, rechenweg }: { b: Beispiel; rechenweg: boolean }) {
   return (
     <details className="card beispiel" open={b.stufe === 'voll'}>
       <summary>
-        {BEISPIEL_TITEL[b.stufe]} <span className="muted small">{andere ? '(andere Zahlen)' : '(nur Schritte und Formeln)'}</span>
+        <Icon name="book-bookmark" /> {BEISPIEL_TITEL[b.stufe]}{' '}
+        <span className="muted small">{andere ? '(andere Zahlen)' : '(nur Schritte und Formeln)'}</span>
       </summary>
       {andere ? (
         <div className="beispiel-aufgabe small">
@@ -477,7 +491,7 @@ function Rueckmeldung({ r }: { r: EingabeErgebnis }) {
   return (
     <div className="re-meldung small">
       {r.status === 'leer' && <span className="muted">Noch leer.</span>}
-      {r.meldung && <Markdown source={false}>{(r.fehlerbild ? '🔎 ' : '') + r.meldung}</Markdown>}
+      {r.meldung && <Markdown source={false}>{r.meldung}</Markdown>}
       {r.einheitHinweis && <span className="muted">{r.einheitHinweis}</span>}
     </div>
   );

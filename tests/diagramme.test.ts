@@ -136,7 +136,7 @@ describe('Begriffe A–Z', () => {
         id: 'x',
         begriff: 'X',
         definition: 'Erste **fette**\nZeile',
-        quellen: [{ titel: '📖 Deep Dive 3 · 2.1', link: '' }],
+        quellen: [{ art: 'abschnitt', titel: 'Deep Dive 3 · 2.1', link: '' }],
         buchstabe: 'X',
       }),
     ).toBe('- X – Erste fette Zeile *(DD 3)*');

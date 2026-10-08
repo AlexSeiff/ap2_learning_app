@@ -17,6 +17,7 @@ import { sqlSummary } from '../lib/sql';
 import { daysUntilExam, examTrends, formatIsoDate, studyStreak, topicStats } from '../lib/stats';
 import { useStore } from '../lib/store';
 import { HEUTE_MINUTEN, SICHER_RICHTIG_AB } from '../../shared/config';
+import { Icon } from '../components/Icon';
 
 const pct = (v?: number) => (v === undefined ? '–' : `${Math.round(v)} %`);
 
@@ -59,14 +60,16 @@ function Uebersicht() {
       <HeuteStart />
       {progress.settings.leichtModus && (
         <p className="card info" role="note">
-          🟢 Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten. Karten kommen mit 4 Antworten höchstens bis Fach 2; Fach 3–5
-          erreichst du nur mit „Aufdecken“.
+          <Icon name="list-checks" /> Leicht-Modus ist zum Einstieg – für die Prüfung frei antworten. Karten kommen mit 4 Antworten
+          höchstens bis Fach 2; Fach 3–5 erreichst du nur mit „Aufdecken“.
         </p>
       )}
       <div className="kpis">
         {days === undefined || !examDate ? (
           <Link to="/einstellungen" className="kpi">
-            <span className="kpi-value">📅</span>
+            <span className="kpi-value">
+              <Icon name="calendar" />
+            </span>
             <span className="kpi-label">Prüfungstermin eintragen →</span>
           </Link>
         ) : (
@@ -78,7 +81,7 @@ function Uebersicht() {
                 : days === 1
                   ? `Tag bis zur Prüfung (${formatIsoDate(examDate)})`
                   : days === 0
-                    ? 'Prüfungstag – viel Erfolg! 🍀'
+                    ? 'Prüfungstag – viel Erfolg!'
                     : `Prüfung am ${formatIsoDate(examDate)} vorbei · neuen Termin eintragen →`}
             </span>
           </Link>
@@ -119,7 +122,7 @@ function Uebersicht() {
         </div>
         <div className="kpi" title="Tage in Folge mit Aufgaben, Klausuren, Karteikarten, SQL- oder Rechenübungen">
           <span className="kpi-value">
-            {streak.current > 0 ? '🔥 ' : ''}
+            {streak.current > 0 && <Icon name="flame" />}
             {streak.current} {streak.current === 1 ? 'Tag' : 'Tage'}
           </span>
           <span className="kpi-label">
@@ -310,7 +313,9 @@ function KalibrierungKarte() {
   const ab = Math.round(SICHER_RICHTIG_AB * 100);
   return (
     <section className="card">
-      <h2>🎯 Selbsteinschätzung</h2>
+      <h2>
+        <Icon name="target" /> Selbsteinschätzung
+      </h2>
       <ul className="plain">
         {k.stufen
           .filter((s) => s.anzahl > 0)
@@ -326,13 +331,20 @@ function KalibrierungKarte() {
       </ul>
       {k.hinweis === 'zu-sicher' && (
         <p className="bad">
-          ⚠️ Vorsicht, falsche Sicherheit: Prüf bei „sicher“ genauer, ob du den Operator und alle Teilfragen beantwortet hast.
+          <Icon name="triangle-alert" /> Vorsicht, falsche Sicherheit: Prüf bei „sicher“ genauer, ob du den Operator und alle Teilfragen
+          beantwortet hast.
         </p>
       )}
       {k.hinweis === 'unterschaetzt' && (
-        <p className="ok">💡 Du kannst mehr, als du denkst – auch bei „unsicher“ lagst du meist richtig.</p>
+        <p className="ok">
+          <Icon name="lightbulb" /> Du kannst mehr, als du denkst – auch bei „unsicher“ lagst du meist richtig.
+        </p>
       )}
-      {k.hinweis === 'passt' && <p className="ok">👍 Deine Einschätzung passt gut zu deinen Ergebnissen.</p>}
+      {k.hinweis === 'passt' && (
+        <p className="ok">
+          <Icon name="thumbs-up" /> Deine Einschätzung passt gut zu deinen Ergebnissen.
+        </p>
+      )}
       <p className="hint">
         „Richtig“ heißt mindestens {ab} % der Punkte. Gezählt werden Aufgaben, bei denen du vor dem Abgeben „Wie sicher bist du?“
         beantwortet hast.
@@ -348,7 +360,7 @@ function HeuteStart() {
   return (
     <div className="actions heute-start">
       <Link className="button" to="/heute">
-        {laeuft ? `▶ Heute lernen fortsetzen (${sitzung.index + 1}/${sitzung.items.length})` : '▶ Heute lernen'}
+        <Icon name="play" /> {laeuft ? `Heute lernen fortsetzen (${sitzung.index + 1}/${sitzung.items.length})` : 'Heute lernen'}
       </Link>
       <span className="muted">
         {sitzung && !laeuft
@@ -369,11 +381,12 @@ function BackupBanner() {
   return (
     <div className="card warn actions" role="status">
       <span>
-        💾 {reminder.lastDownload ? `Letzte Sicherung vor ${reminder.daysSince} Tagen` : 'Du hast noch keine Sicherung heruntergeladen'} –
-        dein Fortschritt liegt nur in diesem Browser.
+        <Icon name="save" />{' '}
+        {reminder.lastDownload ? `Letzte Sicherung vor ${reminder.daysSince} Tagen` : 'Du hast noch keine Sicherung heruntergeladen'} – dein
+        Fortschritt liegt nur in diesem Browser.
       </span>
       <button type="button" onClick={downloadBackup}>
-        ⬇ jetzt herunterladen
+        <Icon name="download" /> jetzt herunterladen
       </button>
       <button type="button" className="ghost" onClick={() => setLater(true)}>
         Später

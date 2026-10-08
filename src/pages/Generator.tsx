@@ -5,6 +5,7 @@ import { useConfirm } from '../hooks/useConfirm';
 import { api } from '../lib/api';
 import { formatPoints } from '../lib/grading';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 const TYPES: { id: TaskType; label: string }[] = [
   { id: 'offen', label: 'Offene Aufgabe / Fachgespräch' },
@@ -67,7 +68,7 @@ export function Generator() {
   };
 
   const remove = async (id: string) => {
-    const ok = await confirm({ message: 'Diese KI-Aufgabe löschen?', confirmLabel: '🗑️ Löschen', danger: true });
+    const ok = await confirm({ message: 'Diese KI-Aufgabe löschen?', confirmLabel: 'Löschen', danger: true });
     if (!ok) return;
     await api.deleteGenerated(id);
     await reload();
@@ -110,7 +111,7 @@ export function Generator() {
           ))}
         </div>
         <button type="button" onClick={run} disabled={state.loading || !types.length}>
-          {state.loading ? 'Claude erstellt Aufgaben … (bis ca. 1 Minute)' : '✨ Aufgaben erstellen'}
+          {state.loading ? 'Claude erstellt Aufgaben … (bis ca. 1 Minute)' : 'Aufgaben erstellen'}
         </button>
         {state.error && <p className="error">{state.error}</p>}
         {state.created && (
@@ -147,7 +148,7 @@ export function Generator() {
               <span className="badge">{TYPES.find((x) => x.id === t.type)?.label}</span>
               <span className="badge">{formatPoints(t.points)} P</span>
               <button type="button" className="ghost danger" onClick={() => remove(t.id)} aria-label="Löschen">
-                🗑
+                <Icon name="trash" />
               </button>
             </li>
           ))}

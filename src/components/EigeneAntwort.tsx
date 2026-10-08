@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from 'react';
+import { Icon } from './Icon';
 
 // „Deine Antwort“ auf Karteikarten (ROADMAP 8.2): erst aufschreiben, dann umdrehen. Aufschreiben prüft das Erinnern ehrlicher
 // als „wusste ich doch“. Nicht gespeichert – der Text gilt nur für die aktuelle Karte.
@@ -8,7 +9,9 @@ export function EigeneAntwortFeld({ value, onChange, onFertig }: { value: string
   const id = useId();
   return (
     <div className="eigene-antwort">
-      <label htmlFor={id}>✍️ Deine Antwort (optional)</label>
+      <label htmlFor={id}>
+        <Icon name="pen-line" /> Deine Antwort (optional)
+      </label>
       <textarea
         id={id}
         rows={3}
@@ -36,11 +39,15 @@ export function AntwortVergleich({ eigene, muster }: { eigene: string; muster: R
   return (
     <div className="antwort-vergleich">
       <div>
-        <h4>✍️ Deine Antwort</h4>
+        <h4>
+          <Icon name="pen-line" /> Deine Antwort
+        </h4>
         <p className="eigene-text">{eigene}</p>
       </div>
       <div>
-        <h4>📘 Musterantwort</h4>
+        <h4>
+          <Icon name="book-bookmark" /> Musterantwort
+        </h4>
         {muster}
       </div>
     </div>

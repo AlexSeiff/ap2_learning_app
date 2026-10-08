@@ -7,6 +7,7 @@ import { Tex } from '../components/Rechenweg';
 import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
 import { type Formel, formelnNachThema, THEMA_NAMEN, uebungenLink } from '../rechnen/formeln';
+import { Icon } from '../components/Icon';
 
 /** Überschrift der Themengruppe: Titel des Lernblatts, sonst Kurzname. */
 function themaTitel(thema: string, topics: { id: string; title: string }[]): string {
@@ -35,7 +36,7 @@ function FormelKarte({ formel, anzahl }: { formel: Formel; anzahl: number }) {
       )}
       {anzahl > 0 && (
         <Link className="formel-link no-print" to={uebungenLink(formel)}>
-          📐 {anzahl} {anzahl === 1 ? 'Rechenübung' : 'Rechenübungen'} →
+          <Icon name="calculator" /> {anzahl} {anzahl === 1 ? 'Rechenübung' : 'Rechenübungen'} →
         </Link>
       )}
     </article>
@@ -54,14 +55,16 @@ export function Formelsammlung() {
       <p className="crumbs no-print">
         <Link to="/material">Material</Link> / Formelsammlung
       </p>
-      <h1>📏 Formelsammlung</h1>
+      <h1>
+        <Icon name="sigma" /> Formelsammlung
+      </h1>
       <p className="lead">
         {gesamt} Formeln aus den Lernblättern, nach Thema. Dieselben Formeln stehen im Rechenweg der Rechenübungen – über den Link übst du
         sie direkt.
       </p>
       <div className="no-print formel-aktionen">
         <button type="button" onClick={() => window.print()}>
-          🖨️ Drucken / Als PDF speichern
+          <Icon name="printer" /> Drucken / Als PDF speichern
         </button>
       </div>
       <nav className="formel-inhalt no-print" aria-label="Themen">

@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useHeuteSitzung } from '../hooks/useHeute';
 import { HEUTE_ICONS } from '../lib/heute';
 import { aktuellerSchritt, istFertig, setzeSitzung, weiter } from '../lib/heuteSitzung';
+import { Icon } from './Icon';
 
 /**
  * Leiste über jeder Seite, solange eine „Heute lernen“-Runde läuft (ROADMAP 8.1): zeigt den aktuellen Schritt und führt mit
@@ -22,9 +23,12 @@ export function HeuteLeiste() {
   return (
     <div className="heute-leiste no-print" role="region" aria-label="Heute lernen">
       <span>
-        <Link to="/heute">▶ Heute lernen</Link> · Schritt {sitzung.index + 1}/{sitzung.items.length}:{' '}
+        <Link to="/heute">
+          <Icon name="play" /> Heute lernen
+        </Link>{' '}
+        · Schritt {sitzung.index + 1}/{sitzung.items.length}:{' '}
         <Link to={schritt.link}>
-          {HEUTE_ICONS[schritt.art]} {schritt.titel}
+          <Icon name={HEUTE_ICONS[schritt.art]} /> {schritt.titel}
         </Link>
       </span>
       <button type="button" onClick={naechster}>

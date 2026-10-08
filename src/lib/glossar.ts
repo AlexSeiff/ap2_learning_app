@@ -18,6 +18,8 @@ import { normalisiere } from './normalisiere';
 export interface GlossarQuelle {
   titel: string;
   link: string;
+  /** Karteikarte oder Abschnitt eines Lernblatts (bestimmt das Icon). */
+  art: 'karte' | 'abschnitt';
 }
 
 export interface GlossarEintrag {
@@ -242,7 +244,8 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
       aus: 'karte',
       ...(c.typ === 'begriff' ? { begriffskarte: true } : {}),
       quelle: {
-        titel: `🃏 ${c.typ === 'begriff' ? 'Begriffskarte' : 'Karte'}${t ? ` · ${topicLabel(t)}` : deck ? ` · ${deck.title}` : ''}`,
+        art: 'karte',
+        titel: `${c.typ === 'begriff' ? 'Begriffskarte' : 'Karte'}${t ? ` · ${topicLabel(t)}` : deck ? ` · ${deck.title}` : ''}`,
         link: `/karteikarten?karten=${encodeURIComponent(c.id)}&von=suche`,
       },
     });
@@ -250,7 +253,11 @@ export function baueGlossar(content: Content): GlossarEintrag[] {
 
   for (const t of content.topics) {
     for (const s of t.sections) {
-      const quelle = { titel: `📖 ${topicLabel(t)} · ${s.title}`, link: `/lernen/${t.id}?stelle=${encodeURIComponent(s.id)}` };
+      const quelle: GlossarQuelle = {
+        art: 'abschnitt',
+        titel: `${topicLabel(t)} · ${s.title}`,
+        link: `/lernen/${t.id}?stelle=${encodeURIComponent(s.id)}`,
+      };
       let imCode = false;
       for (const zeile of stripPrueferfragen(s.markdown).split('\n')) {
         if (/^\s*```/.test(zeile)) imCode = !imCode;
@@ -347,7 +354,7 @@ export function glossarThema(e: GlossarEintrag, content?: Content): string | und
     }
     if (beginnt) return beginnt;
   }
-  return e.quellen.find((q) => q.titel.startsWith('📖'))?.titel.replace(/^📖\s*/, '');
+  return e.quellen.find((q) => q.art === 'abschnitt')?.titel;
 }
 
 /** Einträge für die globale Suche (ROADMAP 8.8): Begriff + Definition, Ziel ist der Eintrag im Glossar; im Kontext das Thema des Begriffs. */

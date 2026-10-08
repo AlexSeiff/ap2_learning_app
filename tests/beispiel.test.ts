@@ -121,7 +121,7 @@ describe('Anzeige', () => {
     const html = renderToString(createElement(Rechenweg, { schritte, sicht: ['ganz', 'formel', 'verdeckt'] }));
     expect(html.match(/<dt>Einsetzen<\/dt>/g)).toHaveLength(1);
     expect(html.match(/<dt>Formel<\/dt>/g)).toHaveLength(2);
-    expect(html).toContain('✏️ Diesen Schritt rechnest du selbst.');
+    expect(html).toContain('Diesen Schritt rechnest du selbst.');
     expect(html).not.toContain('>9<');
   });
 
@@ -130,18 +130,18 @@ describe('Anzeige', () => {
     progress = emptyProgress();
     const voll = render(`/rechnen/${u.id}`);
     expect(voll).toContain('<details class="card beispiel" open="">');
-    expect(voll).toContain('📘 Beispiel: so rechnest du das');
+    expect(voll).toContain('Beispiel: so rechnest du das');
     expect(voll).toContain('(andere Zahlen)');
 
     progress = { ...emptyProgress(), rechnen: { [u.id]: st({ attempts: 1 }) } };
     const luecke = render(`/rechnen/${u.id}`);
-    expect(luecke).toContain('📘 Beispiel mit Lücke');
+    expect(luecke).toContain('Beispiel mit Lücke');
     expect(luecke).not.toContain('open=""');
 
     progress = { ...emptyProgress(), rechnen: { [u.id]: st({ attempts: 1, solvedAt: '2026-10-01' }) } };
     const fertig = render(`/rechnen/${u.id}`);
     expect(fertig).not.toContain('class="card beispiel"');
-    expect(fertig).toContain('🎯 Ohne Beispiel');
+    expect(fertig).toContain('Ohne Beispiel');
   });
 
   it('feste Übung ohne neue Zahlen: nur Schritte und Formeln', () => {

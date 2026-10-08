@@ -190,7 +190,7 @@ describe('Glossar aus content/', () => {
     const g = baueGlossar(mini);
     expect(g.map((e) => e.begriff)).toEqual(['ETL', 'OLAP']);
     expect(g[1]).toMatchObject({ definition: 'Erklärung der Begriffskarte.', definitionAus: 'karte' });
-    expect(g[1].quellen.map((q) => q.titel)).toContain('🃏 Begriffskarte');
+    expect(g[1].quellen.map((q) => q.titel)).toContain('Begriffskarte');
     expect(g[1].quellen.map((q) => q.link)).toContain('/lernen/99?stelle=99-a');
   });
 
@@ -240,7 +240,7 @@ describe('Suche und Seiten', () => {
 
   it('Seite mit Sprungleiste, Ankern und Fundstellen; Kachel unter Material', () => {
     const html = render('/material/glossar');
-    expect(html).toContain('📚 Glossar');
+    expect(html).toContain('Glossar');
     expect(html).toContain('aria-label="Buchstaben"');
     expect(html).toContain('id="buchstabe-A"');
     for (const e of glossar.slice(0, 20)) expect(html).toContain(`id="g-${e.id}"`);

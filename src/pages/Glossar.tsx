@@ -8,6 +8,7 @@ import { useStelle } from '../hooks/useStelle';
 import { baueGlossar, glossarBuchstaben, type GlossarEintrag } from '../lib/glossar';
 import { normalisiere } from '../lib/normalisiere';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 function springeZu(e: MouseEvent, id: string) {
   e.preventDefault();
@@ -30,15 +31,22 @@ export function Glossar() {
       <p className="crumbs">
         <Link to="/material">Material</Link> / Glossar
       </p>
-      <h1>📚 Glossar</h1>
+      <h1>
+        <Icon name="library" /> Glossar
+      </h1>
       <p className="lead">
         {eintraege.length} Fachbegriffe aus den Begriffs- und Wissenskarten und den fett gedruckten Begriffen der Lernblätter,{' '}
         {mitDefinition} davon mit Erklärung. Jeder Begriff führt zur Stelle im Lernblatt oder zur Karte.
       </p>
       {begriffskarten > 0 && (
         <p>
-          <Link to="/karteikarten?typ=begriff">🃏 {begriffskarten} Begriffskarten lernen</Link> ·{' '}
-          <Link to="/karteikarten?typ=begriff&blaettern=1">📖 durchblättern</Link>
+          <Link to="/karteikarten?typ=begriff">
+            <Icon name="layers" /> {begriffskarten} Begriffskarten lernen
+          </Link>{' '}
+          ·{' '}
+          <Link to="/karteikarten?typ=begriff&blaettern=1">
+            <Icon name="book-open" /> durchblättern
+          </Link>
           <span className="muted small"> – Vorderseite Begriff, Rückseite Erklärung, mit Wiederholung wie alle Karteikarten.</span>
         </p>
       )}
@@ -104,7 +112,9 @@ function GlossarZeile({ e }: { e: GlossarEintrag }) {
           {e.quellen.map((q, i) => (
             <span key={q.link}>
               {i > 0 && ' · '}
-              <Link to={q.link}>{q.titel}</Link>
+              <Link to={q.link}>
+                <Icon name={q.art === 'karte' ? 'layers' : 'book-open'} /> {q.titel}
+              </Link>
             </span>
           ))}
         </p>

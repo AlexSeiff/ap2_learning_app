@@ -136,6 +136,6 @@ describe('Dialog und Ziele', () => {
     progress = emptyProgress();
     const card = content.flashcards.find((c) => c.kind === 'lernkarte')!;
     const html = render(`/karteikarten?karten=${card.id}&von=suche`, createElement(Karteikarten), '/karteikarten');
-    expect(html).toContain('🔎 Aus der Suche: 1 Karte.');
+    expect(html).toContain('Aus der Suche: 1 Karte.');
   });
 });

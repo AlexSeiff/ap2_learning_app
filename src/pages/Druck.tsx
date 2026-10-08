@@ -14,6 +14,7 @@ import {
   type SheetKind,
 } from '../lib/sheets';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 /** Druckansicht: Aufgaben- und Lösungsblatt sind getrennte Seiten mit identischer Nummerierung. */
 export function Druck() {
@@ -53,10 +54,10 @@ export function Druck() {
           ← Zurück
         </button>
         <button type="button" onClick={() => window.print()}>
-          🖨️ Drucken / Als PDF speichern
+          <Icon name="printer" /> Drucken / Als PDF speichern
         </button>
         <button type="button" className="secondary" onClick={() => downloadText(`${sheet.fileBase}.md`, sheetToMarkdown(sheet, kind))}>
-          ⬇ Markdown
+          <Icon name="download" /> Markdown
         </button>
         <Link className="button secondary" to={`/druck?${other}`}>
           → {kind === 'aufgaben' ? 'Lösungsblatt' : 'Aufgabenblatt'}

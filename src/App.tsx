@@ -2,6 +2,7 @@ import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react';
 import { HashRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { CONFLICT_MESSAGE } from '../shared/progress';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { Icon, type IconName } from './components/Icon';
 import { HeuteLeiste } from './components/HeuteLeiste';
 import { MobileNav } from './components/MobileNav';
 import { UpdateHinweis } from './components/UpdateHinweis';
@@ -86,7 +87,7 @@ function useTheme() {
     }
   }, [theme]);
   const next = theme === 'system' ? 'dark' : theme === 'dark' ? 'light' : 'system';
-  const icon = theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🖥️';
+  const icon: IconName = theme === 'dark' ? 'moon' : theme === 'light' ? 'sun' : 'monitor';
   return { icon, toggle: () => setTheme(next), label: `Design: ${theme === 'system' ? 'System' : theme === 'dark' ? 'Dunkel' : 'Hell'}` };
 }
 
@@ -105,46 +106,52 @@ function Nav({ onSuche }: { onSuche: () => void }) {
   ).due;
   // „Lernen“ ist nicht zusätzlich hervorgehoben, wenn das Glossar-Thema (eigener Eintrag) offen ist.
   const imGlossar = passtZuZiel(GLOSSAR_PFAD, pathname);
-  const link = (to: string, label: string, badge?: number) => (
+  const link = (to: string, icon: IconName, label: string, badge?: number) => (
     <NavLink to={to} end={to === '/'} className={({ isActive }) => (isActive && !(to === '/lernen' && imGlossar) ? 'active' : '')}>
-      {label}
+      <span className="nav-label">
+        <Icon name={icon} /> {label}
+      </span>
       {!!badge && <span className="nav-badge">{badge}</span>}
     </NavLink>
   );
   const saveText =
     saveState === 'gespeichert'
-      ? '✓ gespeichert'
+      ? 'Gespeichert'
       : saveState === 'speichert'
-        ? '… speichert'
+        ? 'Speichert …'
         : saveState === 'konflikt'
-          ? '⚠ nicht gespeichert – neu laden'
-          : '⚠ Speichern fehlgeschlagen';
+          ? 'Nicht gespeichert – neu laden'
+          : 'Speichern fehlgeschlagen';
   return (
     <>
       <nav className="sidebar">
-        <div className="brand">🎓 AP2 Lern-App</div>
+        <div className="brand">
+          <Icon name="graduation-cap" /> AP2 Lern-App
+        </div>
         <button type="button" className="suche-knopf" onClick={onSuche} title="Suchen (Strg+K)">
-          <span>🔎 Suchen</span>
+          <span>
+            <Icon name="search" /> Suchen
+          </span>
           <kbd>Strg K</kbd>
         </button>
-        {link('/', 'Übersicht')}
-        {link('/heute', '▶ Heute lernen')}
-        {link('/lernen', 'Lernen')}
-        {content.topics.some((t) => GLOSSAR_PFAD === `/lernen/${t.id}`) && link(GLOSSAR_PFAD, '📘 Glossar & Diagramme')}
-        {link('/karteikarten', 'Karteikarten')}
-        {link('/klausur', 'Übungsklausur')}
-        {link('/aufgaben', 'Einzelaufgaben')}
-        {link('/sql', '🧮 SQL-Editor', dueSql)}
-        {link('/rechnen', '📐 Rechenübungen', dueRechnen)}
-        {link('/fehlerjournal', 'Fehlerjournal', dueJournal)}
+        {link('/', 'house', 'Übersicht')}
+        {link('/heute', 'play', 'Heute lernen')}
+        {link('/lernen', 'book-open', 'Lernen')}
+        {content.topics.some((t) => GLOSSAR_PFAD === `/lernen/${t.id}`) && link(GLOSSAR_PFAD, 'book-bookmark', 'Glossar & Diagramme')}
+        {link('/karteikarten', 'layers', 'Karteikarten')}
+        {link('/klausur', 'timer', 'Übungsklausur')}
+        {link('/aufgaben', 'file-pen-line', 'Einzelaufgaben')}
+        {link('/sql', 'database', 'SQL-Editor', dueSql)}
+        {link('/rechnen', 'calculator', 'Rechenübungen', dueRechnen)}
+        {link('/fehlerjournal', 'notebook-pen', 'Fehlerjournal', dueJournal)}
         {/* Pages hat keine KI (Roadmap 7.4, Entscheidung Q3) */}
-        {!IS_STATIC && link('/generator', 'KI-Aufgaben')}
-        {link('/material', 'Material')}
-        {link('/einstellungen', '⚙️ Einstellungen')}
-        {link('/daten', 'Daten & Import')}
+        {!IS_STATIC && link('/generator', 'sparkles', 'KI-Aufgaben')}
+        {link('/material', 'library', 'Material')}
+        {link('/einstellungen', 'settings', 'Einstellungen')}
+        {link('/daten', 'save', 'Daten & Import')}
         <div className="sidebar-foot">
           <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>
-            {theme.icon} {theme.label}
+            <Icon name={theme.icon} /> {theme.label}
           </button>
           <span className={`save-state ${saveState}`}>{saveText}</span>
         </div>
@@ -166,16 +173,18 @@ function SaveErrorBanner() {
     // Dieser Tab speichert nicht mehr, sonst würde er den Fortschritt aus dem anderen Tab überschreiben.
     return (
       <div className="card warn" role="alert">
-        <p>⚠ {CONFLICT_MESSAGE}. Änderungen in diesem Tab werden nicht mehr gespeichert.</p>
+        <p>
+          <Icon name="triangle-alert" /> {CONFLICT_MESSAGE}. Änderungen in diesem Tab werden nicht mehr gespeichert.
+        </p>
         <button type="button" onClick={() => window.location.reload()}>
-          ↻ Neu laden
+          <Icon name="rotate-cw" /> Neu laden
         </button>
       </div>
     );
   }
   return saveError ? (
     <p className="card warn" role="alert">
-      ⚠ {saveError}
+      <Icon name="triangle-alert" /> {saveError}
     </p>
   ) : null;
 }

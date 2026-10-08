@@ -25,12 +25,12 @@ describe('Karteikarten durchblättern', () => {
   const begriffe = content.flashcards.filter((c) => c.typ === 'begriff');
 
   it('Knopf auf der Übersicht zählt die gefilterten Karten', () => {
-    expect(render('/karteikarten?typ=begriff')).toContain(`📖 Durchblättern (${begriffe.length})`);
+    expect(render('/karteikarten?typ=begriff')).toContain(`Durchblättern (${begriffe.length})`);
   });
 
   it('?blaettern=1 zeigt die erste Karte der Auswahl, ohne Bewertungsknöpfe', () => {
     const html = render('/karteikarten?typ=begriff&blaettern=1');
-    expect(html).toContain(`📖 Karte 1 / ${begriffe.length}`);
+    expect(html).toContain(`Karte 1 / ${begriffe.length}`);
     expect(html).toContain(begriffe[0].question);
     expect(html).toContain('Weiter →');
     expect(html).toContain('aria-label="Zu Karte springen"');
@@ -39,6 +39,6 @@ describe('Karteikarten durchblättern', () => {
 
   it('mit einem Deck: nur dessen Karten', () => {
     const fb01 = begriffe.filter((c) => c.deckId === 'fb01');
-    expect(render('/karteikarten?deck=fb01&blaettern=1')).toContain(`📖 Karte 1 / ${fb01.length}`);
+    expect(render('/karteikarten?deck=fb01&blaettern=1')).toContain(`Karte 1 / ${fb01.length}`);
   });
 });

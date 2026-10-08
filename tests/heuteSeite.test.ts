@@ -35,21 +35,21 @@ describe('Heute lernen – Seiten', () => {
   it('zeigt den Plan mit Start-Knopf', () => {
     const plan = planeHeute(content, progress, { today: localDate() });
     const html = render('/heute');
-    expect(html).toContain('▶ Heute lernen');
+    expect(html).toContain('Heute lernen');
     expect(html).toContain('Los geht&#x27;s');
     for (const it of plan.items) expect(html).toContain(it.titel.replace(/&/g, '&amp;'));
   });
 
-  it('Übersicht hat den Knopf „▶ Heute lernen“', () => {
+  it('Übersicht hat den Knopf „Heute lernen“', () => {
     const html = render('/');
     expect(html).toContain('href="/heute"');
-    expect(html).toContain('▶ Heute lernen');
+    expect(html).toContain('Heute lernen');
   });
 
   it('Karteikarten mit ?karten=: genau diese Karten', () => {
     const ids = content.flashcards.slice(0, 3).map((c) => c.id);
     const html = render(`/karteikarten?karten=${ids.join(',')}`);
-    expect(html).toContain('▶ Heute lernen: 3 Karten für diesen Schritt.');
+    expect(html).toContain('Heute lernen: 3 Karten für diesen Schritt.');
     expect(html).toContain('Alle 3 durchgehen');
   });
 });

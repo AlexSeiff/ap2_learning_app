@@ -11,7 +11,8 @@
 //   ohne KaTeX (normales Markdown, Markdown-Download) lesbar und die Zahl steht im Lernblatt wie bisher.
 // - Absatz `*Prüferkommentar: …*` (auch als Zitat, wie im Lösungsblatt) → Kasten „🧑‍🏫 Prüferkommentar“.
 //
-// rehypeTabellen (überall): Zahlenspalten rechtsbündig mit gleich breiten Ziffern, Summenzeilen fett mit Linie.
+// rehypeTabellen (überall): Zahlenspalten rechtsbündig mit gleich breiten Ziffern, Summenzeilen fett mit Linie, bei leerer Ecke oben links
+// ist die erste Spalte Zeilenkopf (<th scope="row">).
 
 import type { Element, ElementContent, Root, RootContent } from 'hast';
 
@@ -93,7 +94,7 @@ function kommentarBox(p: Element): Element | null {
   if (head?.type === 'text') inner[0] = { ...head, value: head.value.replace(KOMMENTAR, '') };
   else return null;
   return el('aside', 'pk-box', [
-    el('div', 'pk-label', [{ type: 'text', value: '🧑‍🏫 Prüferkommentar' }]),
+    el('div', 'pk-label', [{ type: 'text', value: 'Prüferkommentar' }]),
     el('p', undefined, [...inner, ...p.children.slice(first + 1)]),
   ]);
 }
@@ -200,6 +201,17 @@ function styleTable(table: Element) {
   for (const tr of body) {
     const first = cells(tr)[0];
     if (first && istSummenZeile(textOf(first))) addClass(tr, 'sum-row');
+  }
+  // Leere Ecke oben links (| | A | B |): Die erste Spalte benennt die Zeilen – als Zeilenkopf auszeichnen (Screenreader, Barrierefreiheit).
+  const ecke = head.length ? cells(head[0])[0] : undefined;
+  if (ecke && LEER.test(textOf(ecke).trim()) && body.length) {
+    for (const tr of body) {
+      const first = cells(tr)[0];
+      if (first?.tagName === 'td' && !LEER.test(textOf(first).trim())) {
+        first.tagName = 'th';
+        first.properties.scope = 'row';
+      }
+    }
   }
 }
 

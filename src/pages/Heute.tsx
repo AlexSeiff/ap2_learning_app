@@ -6,6 +6,7 @@ import { aktuellerSchritt, istFertig, setzeSitzung, starteSitzung, weiter } from
 import { localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
 import { HEUTE_MINUTEN } from '../../shared/config';
+import { Icon } from '../components/Icon';
 
 const ART_TEXT: Record<HeuteItem['art'], string> = {
   wiederholung: 'Fehlerjournal',
@@ -35,16 +36,18 @@ export function Heute() {
     const minuten = sitzung.items.slice(sitzung.index).reduce((s, it) => s + it.minuten, 0);
     return (
       <div className="page narrow">
-        <h1>▶ Heute lernen</h1>
+        <h1>
+          <Icon name="play" /> Heute lernen
+        </h1>
         <p className="lead">
           Schritt {sitzung.index + 1} von {sitzung.items.length} · noch etwa {Math.round(minuten)} min
         </p>
         <div className="actions">
           <Link className="button" to={schritt.link}>
-            {HEUTE_ICONS[schritt.art]} {schritt.titel} →
+            <Icon name={HEUTE_ICONS[schritt.art]} /> {schritt.titel} →
           </Link>
           <button type="button" className="secondary" onClick={() => setzeSitzung(weiter(sitzung, true))}>
-            ⏭ Überspringen
+            <Icon name="skip-forward" /> Überspringen
           </button>
           <button type="button" className="ghost" onClick={() => setzeSitzung(undefined)}>
             Runde beenden
@@ -59,10 +62,13 @@ export function Heute() {
   const fertig = sitzung && istFertig(sitzung);
   return (
     <div className="page narrow">
-      <h1>▶ Heute lernen</h1>
+      <h1>
+        <Icon name="play" /> Heute lernen
+      </h1>
       {fertig && (
         <p className="card success" role="status">
-          🎉 Runde geschafft: {sitzung.erledigt.length} {sitzung.erledigt.length === 1 ? 'Schritt' : 'Schritte'} erledigt
+          <Icon name="party-popper" /> Runde geschafft: {sitzung.erledigt.length} {sitzung.erledigt.length === 1 ? 'Schritt' : 'Schritte'}{' '}
+          erledigt
           {sitzung.uebersprungen.length > 0 && `, ${sitzung.uebersprungen.length} übersprungen`}. Gut gemacht!
         </p>
       )}
@@ -74,7 +80,7 @@ export function Heute() {
         <>
           <div className="actions">
             <button type="button" onClick={() => starte(plan.items)}>
-              ▶ {fertig ? 'Noch eine Runde' : "Los geht's"} (~{Math.round(plan.minuten)} min)
+              <Icon name="play" /> {fertig ? 'Noch eine Runde' : "Los geht's"} (~{Math.round(plan.minuten)} min)
             </button>
           </div>
           <Schritte items={plan.items} />
@@ -104,15 +110,21 @@ function Schritte({
   return (
     <ol className="heute-liste">
       {items.map((it, i) => {
-        const status = erledigt.includes(it.key) ? '✓' : uebersprungen.includes(it.key) ? '⏭' : i === index ? '▶' : '';
+        const status = erledigt.includes(it.key)
+          ? 'erledigt'
+          : uebersprungen.includes(it.key)
+            ? 'übersprungen'
+            : i === index
+              ? 'aktuell'
+              : '';
         return (
-          <li key={it.key} className={i === index ? 'aktuell' : status ? 'erledigt' : ''}>
+          <li key={it.key} className={status === 'aktuell' ? 'aktuell' : status ? 'erledigt' : ''}>
             <span className="heute-status" aria-hidden="true">
-              {status}
+              {status && <Icon name={status === 'erledigt' ? 'check' : status === 'übersprungen' ? 'skip-forward' : 'play'} />}
             </span>
-            {status && <span className="sr-only">{status === '✓' ? 'erledigt: ' : status === '⏭' ? 'übersprungen: ' : 'aktuell: '}</span>}
+            {status && <span className="sr-only">{status}: </span>}
             <span>
-              {HEUTE_ICONS[it.art]} {it.titel}
+              <Icon name={HEUTE_ICONS[it.art]} /> {it.titel}
               <span className="muted small">
                 {' '}
                 · {ART_TEXT[it.art]} · ~{Math.round(it.minuten)} min

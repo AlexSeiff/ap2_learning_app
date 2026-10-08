@@ -1,10 +1,13 @@
 import { IS_STATIC } from '../lib/api';
+import { Icon } from './Icon';
 
 /** Kurzer Datenschutz-Hinweis (Einstellungen). Bewusst ohne Lizenzangabe – die legt der Betreiber fest. */
 export function Datenschutz() {
   return (
     <section className="card" id="datenschutz">
-      <h2>🔒 Datenschutz</h2>
+      <h2>
+        <Icon name="lock" /> Datenschutz
+      </h2>
       <ul>
         <li>Kein Konto, keine Anmeldung.</li>
         <li>Kein Tracking, keine Statistik-Tools, keine Cookies, keine Werbung.</li>

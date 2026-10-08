@@ -17,7 +17,16 @@ with auto-checked exercises, auto-checked calculation exercises (Rechenübungen)
 (local app only). The Pages version is an installable PWA that works offline.
 
 **Conventions**
-- All UI text is German, informal *du*, short sentences, emoji in nav and buttons.
+- All UI text is German, informal *du*, short sentences.
+- **Look:** Apple-like (iOS/macOS). Colours, radii and shadows are tokens on `:root` in `styles.css` (light + dark): grouped background
+  `--bg`, cards `--surface` without borders (`--card-border`), `--fill` for segmented controls and search, `--accent` for links/text,
+  `--accent-fill` for filled buttons (white text, contrast ≥ 4.5 : 1 in both themes), `--glas` for translucent bars (`backdrop-filter`).
+  Secondary buttons are "tinted" (`--accent-soft`), mode switches are segmented controls (`.mode-switch`), tables only have row lines.
+- **Icons, not emoji:** UI symbols are line icons from `src/lib/icons.ts` (paths copied from Lucide, ISC licence – only the icons in use),
+  rendered by `<Icon name="…" />` (`src/components/Icon.tsx`; decorative = `aria-hidden`, with `label` = `role="img"`). Data in `src/lib`
+  carries an `icon: IconName` field instead of an emoji in the label. Plain text glyphs (✓ ✗ ✕ → ★ ☆ ☐) are fine. Learning content
+  (Markdown/JSON) keeps its emoji (e.g. „> ❓ **Prüferfrage:**“ is part of the sheet format). `tests/icons.test.ts` fails on colourful emoji
+  in `src/` and on unused icons. New icon: copy its elements from lucide.dev into `ICONS`.
 - Code identifiers are mixed German/English; don't rename public identifiers just to change the language.
 - Content files (Markdown sheets, JSON) are **read only** by the app.
 - No heavy dependencies (no state library, no CSS framework, no backend framework). `zod` is used for validation.

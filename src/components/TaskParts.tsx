@@ -6,6 +6,7 @@ import { numberBlanks, solutionMarkdown } from '../lib/sheets';
 import { useStore } from '../lib/store';
 import { decodeAnswer } from './AnswerInput';
 import { Markdown } from './Markdown';
+import { Icon } from './Icon';
 
 export function TaskText({ task, showMeta }: { task: Task; showMeta?: boolean }) {
   const { content } = useStore();
@@ -32,7 +33,9 @@ export function Attachments({ items, open }: { items: Section[]; open?: boolean 
     <div className="attachments">
       {items.map((a) => (
         <details key={a.id} open={open}>
-          <summary>📎 {a.title}</summary>
+          <summary>
+            <Icon name="paperclip" /> {a.title}
+          </summary>
           <Markdown source={false}>{a.markdown}</Markdown>
         </details>
       ))}
@@ -92,7 +95,7 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
         </Markdown>
         {task.solution?.kommentar && (
           <aside className="pk-box">
-            <div className="pk-label">🧑‍🏫 Prüferkommentar</div>
+            <div className="pk-label">Prüferkommentar</div>
             <Markdown math>{task.solution.kommentar}</Markdown>
           </aside>
         )}
@@ -145,7 +148,13 @@ export function GradePanel({ task, answer, points, onPoints }: GradeProps) {
               <span>/ {formatPoints(task.points)} P</span>
               {aiEnabled && (
                 <button type="button" className="secondary" onClick={runAi} disabled={ai.loading}>
-                  {ai.loading ? 'KI bewertet …' : '🤖 KI-Bewertung'}
+                  {ai.loading ? (
+                    'KI bewertet …'
+                  ) : (
+                    <>
+                      <Icon name="sparkles" /> KI-Bewertung
+                    </>
+                  )}
                 </button>
               )}
             </div>

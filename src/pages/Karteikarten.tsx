@@ -11,6 +11,7 @@ import { isDue, LEICHT_MAX_BOX } from '../lib/progress';
 import { withSettings } from '../lib/settings';
 import { useStore } from '../lib/store';
 import { NEW_PER_SESSION } from '../../shared/config';
+import { Icon, type IconName } from '../components/Icon';
 
 export const CARD_TYPE_LABELS: Record<CardType, string> = {
   wissen: 'Wissen',
@@ -21,10 +22,11 @@ export const CARD_TYPE_LABELS: Record<CardType, string> = {
   begriff: 'Fachbegriff',
 };
 const LEVEL_LABELS: Record<number, string> = { 1: 'Basis', 2: 'Standard', 3: 'Transfer' };
+const KIND_ICONS: Record<Flashcard['kind'], IconName> = { lernkarte: 'layers', prueferfrage: 'circle-question-mark', fachgespraech: 'mic' };
 const KIND_LABELS: Record<Flashcard['kind'], string> = {
-  lernkarte: '🗂️ Lernkarte',
-  prueferfrage: '❓ Prüferfrage',
-  fachgespraech: '🎤 Fachgespräch',
+  lernkarte: 'Lernkarte',
+  prueferfrage: 'Prüferfrage',
+  fachgespraech: 'Fachgespräch',
 };
 
 export function Karteikarten() {
@@ -61,13 +63,13 @@ export function Karteikarten() {
             ← Beenden
           </button>
           <span>
-            🟢 Leicht · Karte {index + 1} / {session.length}
+            <Icon name="list-checks" /> Leicht · Karte {index + 1} / {session.length}
           </span>
         </div>
         <div className={`flashcard leicht ${card.typ === 'falle' ? 'trap' : ''}`}>
           <div className="fc-meta">
             <span>
-              {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
+              <Icon name={KIND_ICONS[card.kind]} /> {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
             </span>
             {card.typ && <span className={`badge typ-${card.typ}`}>{CARD_TYPE_LABELS[card.typ]}</span>}
             {runde.karte.art === 'automatisch' && (
@@ -75,7 +77,7 @@ export function Karteikarten() {
                 className="badge auto"
                 title="Die falschen Antworten stammen von anderen Karten dieses Decks – nicht von Hand geschrieben."
               >
-                🤖 automatisch
+                <Icon name="sparkles" /> automatisch
               </span>
             )}
             <span className="muted small">{card.id}</span>
@@ -85,9 +87,10 @@ export function Karteikarten() {
           {fertig && (
             <div className="fc-answer leicht-feedback" role="status">
               <p className={`verdict ${richtig ? 'ok' : 'bad'}`}>
+                <Icon name={richtig ? 'circle-check' : 'circle-x'} />{' '}
                 {richtig
-                  ? `✅ Richtig! Die Karte kommt höchstens in Fach ${LEICHT_MAX_BOX}.`
-                  : '❌ Leider falsch – die Karte kommt in dieser Runde noch einmal.'}
+                  ? `Richtig! Die Karte kommt höchstens in Fach ${LEICHT_MAX_BOX}.`
+                  : 'Leider falsch – die Karte kommt in dieser Runde noch einmal.'}
               </p>
               {card.answer && (
                 <>
@@ -147,14 +150,18 @@ export function Karteikarten() {
         >
           <div className="fc-meta">
             <span>
-              {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
+              <Icon name={KIND_ICONS[card.kind]} /> {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
             </span>
             {card.typ && <span className={`badge typ-${card.typ}`}>{CARD_TYPE_LABELS[card.typ]}</span>}
             {card.schwierigkeit && <span className="badge muted">{LEVEL_LABELS[card.schwierigkeit] ?? card.schwierigkeit}</span>}
             <span className="muted small">{card.id}</span>
           </div>
           <Markdown className="fc-question">{card.question}</Markdown>
-          {card.typ === 'rechnung' && !flipped && <p className="hint">✏️ Erst auf Papier rechnen, dann umdrehen.</p>}
+          {card.typ === 'rechnung' && !flipped && (
+            <p className="hint">
+              <Icon name="pencil" /> Erst auf Papier rechnen, dann umdrehen.
+            </p>
+          )}
           {flipped && (
             <div className="fc-answer">
               <AntwortVergleich
@@ -221,13 +228,14 @@ export function Karteikarten() {
       {auswahl && (
         <div className="card info actions">
           <span>
+            <Icon name={ausSuche ? 'search' : 'play'} />{' '}
             {ausSuche
-              ? `🔎 Aus der Suche: ${deck.length} ${deck.length === 1 ? 'Karte' : 'Karten'}.`
-              : `▶ Heute lernen: ${deck.length} ${deck.length === 1 ? 'Karte' : 'Karten'} für diesen Schritt.`}
+              ? `Aus der Suche: ${deck.length} ${deck.length === 1 ? 'Karte' : 'Karten'}.`
+              : `Heute lernen: ${deck.length} ${deck.length === 1 ? 'Karte' : 'Karten'} für diesen Schritt.`}
           </span>
           {deck.length > 0 && (
             <button type="button" onClick={() => startRunde(deck)} autoFocus={!session}>
-              🃏 {session ? 'Noch einmal' : 'Diese Karten lernen'}
+              <Icon name="layers" /> {session ? 'Noch einmal' : 'Diese Karten lernen'}
             </button>
           )}
           <Link to="/karteikarten" className="small">
@@ -237,17 +245,17 @@ export function Karteikarten() {
       )}
       <div className="mode-switch" role="group" aria-label="Modus">
         <button type="button" aria-pressed={!leichtModus} onClick={() => setMode(false)}>
-          🃏 Aufdecken
+          <Icon name="layers" /> Aufdecken
         </button>
         <button type="button" aria-pressed={leichtModus} onClick={() => setMode(true)}>
-          🟢 Leicht (4 Antworten)
+          <Icon name="list-checks" /> Leicht (4 Antworten)
         </button>
       </div>
       {leichtModus && (
         <p className="hint">
-          🟢 {lz.mc + lz.automatisch} von {lz.gesamt} Karten dieser Auswahl haben 4 Antworten
-          {lz.automatisch > 0 && ` (${lz.automatisch} davon 🤖 automatisch aus anderen Karten des Decks)`}. Leicht-Modus ist zum Einstieg –
-          für die Prüfung frei antworten: Mit 4 Antworten kommt eine Karte höchstens in Fach {LEICHT_MAX_BOX}.
+          <Icon name="list-checks" /> {lz.mc + lz.automatisch} von {lz.gesamt} Karten dieser Auswahl haben 4 Antworten
+          {lz.automatisch > 0 && ` (${lz.automatisch} davon automatisch aus anderen Karten des Decks)`}. Leicht-Modus ist zum Einstieg – für
+          die Prüfung frei antworten: Mit 4 Antworten kommt eine Karte höchstens in Fach {LEICHT_MAX_BOX}.
         </p>
       )}
       <div className="filters">
@@ -306,21 +314,21 @@ export function Karteikarten() {
             ))}
           </select>
         </label>
-        <label className="check" title="Auch unter ⚙️ Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
+        <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
           <input
             type="checkbox"
             checked={settings.prueferfragen}
             onChange={(e) => update((p) => withSettings(p, { prueferfragen: e.target.checked }))}
           />
-          ❓ Prüferfragen einbeziehen
+          <Icon name="circle-question-mark" /> Prüferfragen einbeziehen
         </label>
-        <label className="check" title="Auch unter ⚙️ Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
+        <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
           <input
             type="checkbox"
             checked={settings.fachgespraech}
             onChange={(e) => update((p) => withSettings(p, { fachgespraech: e.target.checked }))}
           />
-          🎤 Fachgespräch einbeziehen
+          <Icon name="mic" /> Fachgespräch einbeziehen
         </label>
       </div>
       <div className="kpis">
@@ -357,7 +365,7 @@ export function Karteikarten() {
           onClick={() => setBlaettern(true)}
           title="Karten nur ansehen und weiterblättern – ohne Bewertung, der Lernstand bleibt unverändert"
         >
-          📖 Durchblättern ({alle.length})
+          <Icon name="book-open" /> Durchblättern ({alle.length})
         </button>
         {traps.length > 0 && (
           <button
@@ -366,7 +374,7 @@ export function Karteikarten() {
             onClick={() => startRunde(traps)}
             title="Typische Prüfungsfehler – vor jeder Übungsklausur wiederholen"
           >
-            ⚠️ Fallen wiederholen ({traps.length})
+            <Icon name="triangle-alert" /> Fallen wiederholen ({traps.length})
           </button>
         )}
       </div>
@@ -429,7 +437,8 @@ export function Karteikarten() {
       <p className="hint">
         Leitner-System mit 5 Fächern: „Gewusst" schiebt die Karte ein Fach weiter (Abstände 1 · 3 · 7 · 14 · 30 Tage), „Nicht gewusst"
         zurück in Fach 1. Tastatur: <kbd>Leertaste</kbd> umdrehen, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> bewerten. Im Leicht-Modus wählst
-        du mit <kbd>1</kbd>–<kbd>4</kbd>; richtig bringt die Karte höchstens in Fach {LEICHT_MAX_BOX}, falsch zurück in Fach 1. 📖
+        du mit <kbd>1</kbd>–<kbd>4</kbd>; richtig bringt die Karte höchstens in Fach {LEICHT_MAX_BOX}, falsch zurück in Fach 1.{' '}
+        <Icon name="book-open" />
         Durchblättern zeigt die Karten nur an (<kbd>←</kbd> <kbd>→</kbd> blättern, auf dem Handy wischen) und ändert den Lernstand nicht.
       </p>
     </div>
@@ -482,7 +491,7 @@ export function KartenBlaettern({ cards, onEnde }: { cards: Flashcard[]; onEnde:
           ← Beenden
         </button>
         <span>
-          📖 Karte {i + 1} / {reihe.length}
+          <Icon name="book-open" /> Karte {i + 1} / {reihe.length}
         </span>
       </div>
       <div className="blaettern-optionen">
@@ -533,7 +542,7 @@ export function KartenBlaettern({ cards, onEnde }: { cards: Flashcard[]; onEnde:
       >
         <div className="fc-meta">
           <span>
-            {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
+            <Icon name={KIND_ICONS[card.kind]} /> {KIND_LABELS[card.kind]} · {cardDeck?.title ?? topic?.title}
           </span>
           {card.typ && <span className={`badge typ-${card.typ}`}>{CARD_TYPE_LABELS[card.typ]}</span>}
         </div>

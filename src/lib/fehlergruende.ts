@@ -2,6 +2,7 @@
 // Gespeichert wird der Grund am Versuch (Attempt.fehlergrund) bzw. während einer Klausur in ExamRun.fehlergrund.
 
 import { FEHLERGRUENDE, type Attempt, type Fehlergrund } from '../../shared/progress';
+import type { IconName } from './icons';
 
 export interface FehlergrundInfo {
   id: Fehlergrund;
@@ -10,38 +11,44 @@ export interface FehlergrundInfo {
   /** Was dagegen hilft (ein Satz) und wohin. */
   tipp: string;
   link: { to: string; text: string };
+  icon: IconName;
 }
 
 export const FEHLERGRUND_INFO: Record<Fehlergrund, FehlergrundInfo> = {
   begriff: {
     id: 'begriff',
-    label: '🔀 Begriff verwechselt',
+    label: 'Begriff verwechselt',
+    icon: 'shuffle',
     tipp: 'Übe die Abgrenzungen und Fallen – dort stehen genau die Begriffe, die man leicht verwechselt.',
-    link: { to: '/karteikarten?typ=abgrenzung', text: '🃏 Abgrenzungs-Karten' },
+    link: { to: '/karteikarten?typ=abgrenzung', text: 'Abgrenzungs-Karten' },
   },
   formel: {
     id: 'formel',
-    label: '📐 Formel falsch',
+    label: 'Formel falsch',
+    icon: 'sigma',
     tipp: 'Schau dir die Formeln noch einmal an und schreib sie auswendig auf.',
-    link: { to: '/material/formeln', text: '📏 Formelsammlung' },
+    link: { to: '/material/formeln', text: 'Formelsammlung' },
   },
   rechenfehler: {
     id: 'rechenfehler',
-    label: '🧮 Rechenfehler',
+    label: 'Rechenfehler',
+    icon: 'calculator',
     tipp: 'Rechne in Ruhe nach und runde erst am Ende – die Rechenübungen zeigen typische Fehler.',
-    link: { to: '/rechnen', text: '📐 Rechenübungen' },
+    link: { to: '/rechnen', text: 'Rechenübungen' },
   },
   operator: {
     id: 'operator',
-    label: '🗣️ Operator nicht beachtet',
+    label: 'Operator nicht beachtet',
+    icon: 'message-square-quote',
     tipp: 'Lies zuerst den Operator: „nennen“ heißt Stichpunkte, „erläutern“ Zusammenhänge, „beurteilen“ ein Urteil mit Kriterien.',
-    link: { to: '/material/operatoren', text: '🗣️ Operatoren-Trainer' },
+    link: { to: '/material/operatoren', text: 'Operatoren-Trainer' },
   },
   zeit: {
     id: 'zeit',
-    label: '⏱️ Zeit',
+    label: 'Zeit',
+    icon: 'timer',
     tipp: 'Plane etwa 0,9 Minuten je Punkt und übe ganze Klausuren unter Zeit.',
-    link: { to: '/klausur', text: '⏱️ Übungsklausur' },
+    link: { to: '/klausur', text: 'Übungsklausur' },
   },
 };
 

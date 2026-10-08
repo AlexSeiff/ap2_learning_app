@@ -5,9 +5,9 @@ import { SICHER_RICHTIG_AB } from '../../shared/config';
 import type { Attempt, Sicherheit } from '../../shared/progress';
 
 export const SICHERHEIT_STUFEN: { wert: Sicherheit; label: string; kurz: string }[] = [
-  { wert: 1, label: '😟 unsicher', kurz: 'unsicher' },
-  { wert: 2, label: '🤔 teils', kurz: 'teils' },
-  { wert: 3, label: '💪 sicher', kurz: 'sicher' },
+  { wert: 1, label: 'unsicher', kurz: 'unsicher' },
+  { wert: 2, label: 'teils', kurz: 'teils' },
+  { wert: 3, label: 'sicher', kurz: 'sicher' },
 ];
 
 export const sicherheitLabel = (s: Sicherheit) => SICHERHEIT_STUFEN.find((x) => x.wert === s)!.label;

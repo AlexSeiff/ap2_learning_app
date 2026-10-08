@@ -1,5 +1,6 @@
 import { splitPrueferfragen, stripPrueferfragen, type TheorySegment } from '../../shared/prueferfragen';
 import { Markdown } from './Markdown';
+import { Icon } from './Icon';
 
 type Prueferfrage = Extract<TheorySegment, { type: 'prueferfrage' }>;
 
@@ -33,14 +34,16 @@ function PrueferfrageBox({ pf }: { pf: Prueferfrage }) {
   return (
     <aside className="pf-box">
       <div className="pf-label">
-        ❓ {pf.label} – <span className="muted">erst selbst überlegen</span>
+        <Icon name="circle-question-mark" /> {pf.label} – <span className="muted">erst selbst überlegen</span>
       </div>
       <Markdown math className="pf-question">
         {pf.question}
       </Markdown>
       {pf.answer ? (
         <details className="pf-answer">
-          <summary>👁 Antwort zeigen</summary>
+          <summary>
+            <Icon name="eye" /> Antwort zeigen
+          </summary>
           <Markdown math>{pf.answer}</Markdown>
         </details>
       ) : (

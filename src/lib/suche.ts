@@ -14,6 +14,7 @@ import type { Content } from '../../shared/types';
 import { FORMELN, THEMA_NAMEN } from '../rechnen/formeln';
 import { cardPool } from './cards';
 import { ueberschriftKern } from './glossar';
+import type { IconName } from './icons';
 import { normalisiere } from './normalisiere';
 import { OPERATOREN } from './operatoren';
 
@@ -21,17 +22,17 @@ export { normalisiere };
 
 export type SuchArt = 'glossar' | 'abschnitt' | 'formel' | 'operator' | 'material' | 'karte' | 'aufgabe' | 'loesung' | 'sql' | 'rechnen';
 
-export const SUCH_ART: Record<SuchArt, { icon: string; name: string; bonus: number }> = {
-  glossar: { icon: '📚', name: 'Glossar', bonus: 3 },
-  abschnitt: { icon: '📖', name: 'Lernblatt', bonus: 2 },
-  formel: { icon: '📏', name: 'Formel', bonus: 2 },
-  operator: { icon: '🗣️', name: 'Operator', bonus: 2 },
-  material: { icon: '📄', name: 'Material', bonus: 1 },
-  karte: { icon: '🃏', name: 'Karteikarte', bonus: 1 },
-  aufgabe: { icon: '📝', name: 'Aufgabe', bonus: 0 },
-  loesung: { icon: '✅', name: 'Musterlösung', bonus: 0 },
-  sql: { icon: '🧮', name: 'SQL-Übung', bonus: 0 },
-  rechnen: { icon: '📐', name: 'Rechenübung', bonus: 0 },
+export const SUCH_ART: Record<SuchArt, { icon: IconName; name: string; bonus: number }> = {
+  glossar: { icon: 'library', name: 'Glossar', bonus: 3 },
+  abschnitt: { icon: 'book-open', name: 'Lernblatt', bonus: 2 },
+  formel: { icon: 'sigma', name: 'Formel', bonus: 2 },
+  operator: { icon: 'message-square-quote', name: 'Operator', bonus: 2 },
+  material: { icon: 'file-text', name: 'Material', bonus: 1 },
+  karte: { icon: 'layers', name: 'Karteikarte', bonus: 1 },
+  aufgabe: { icon: 'file-pen-line', name: 'Aufgabe', bonus: 0 },
+  loesung: { icon: 'circle-check', name: 'Musterlösung', bonus: 0 },
+  sql: { icon: 'database', name: 'SQL-Übung', bonus: 0 },
+  rechnen: { icon: 'calculator', name: 'Rechenübung', bonus: 0 },
 };
 
 export interface SuchEintrag {

@@ -4,6 +4,7 @@
 import type { ReactNode } from 'react';
 import { translateError, type ErrorSchema } from '../sql/errors';
 import type { ExecResult, LintWarning, SqlValue, StatementResult } from '../sql/types';
+import { Icon } from './Icon';
 
 /** Höchstens so viele Zeilen anzeigen (verglichen wird immer mit allen). */
 export const MAX_ROWS = 500;
@@ -84,7 +85,9 @@ export function LintWarnings({ warnings, exercise }: { warnings: LintWarning[]; 
   if (!warnings.length) return null;
   return (
     <div className="card warn sql-warnings">
-      <b>⚠ Dialekt-Hinweis{warnings.length > 1 ? 'e' : ''}</b>
+      <b>
+        <Icon name="triangle-alert" /> Dialekt-Hinweis{warnings.length > 1 ? 'e' : ''}
+      </b>
       <ul>
         {warnings.map((w, i) => (
           <li key={i}>
@@ -101,9 +104,14 @@ export function SqlError({ error, schema }: { error: string; schema?: ErrorSchem
   return (
     <div className="card sql-error" role="alert">
       <p className="bad">
-        <b>❌ Fehler:</b> <span className="mono error-text">{error}</span>
+        <b>
+          <Icon name="circle-x" /> Fehler:
+        </b>{' '}
+        <span className="mono error-text">{error}</span>
       </p>
-      <p>💡 {withCode(translateError(error, schema))}</p>
+      <p>
+        <Icon name="lightbulb" /> {withCode(translateError(error, schema))}
+      </p>
     </div>
   );
 }

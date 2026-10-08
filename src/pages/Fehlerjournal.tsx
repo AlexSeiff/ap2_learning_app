@@ -5,6 +5,7 @@ import { FEHLERGRUND_INFO, letzterFehlergrund } from '../lib/fehlergruende';
 import { formatPoints } from '../lib/grading';
 import { isDue, localDate } from '../lib/progress';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 export function Fehlerjournal() {
   const { content, progress } = useStore();
@@ -27,12 +28,14 @@ export function Fehlerjournal() {
         {due.length ? (
           <>
             <Link className="button" to={`/aufgabe/${due[0].taskId}?modus=wiederholung`}>
-              ▶ Wiederholung starten
+              <Icon name="play" /> Wiederholung starten
             </Link>
             <EntryList entries={due} />
           </>
         ) : (
-          <p className="muted">Nichts fällig – stark! 🎉</p>
+          <p className="muted">
+            Nichts fällig – stark! <Icon name="party-popper" />
+          </p>
         )}
       </section>
       {upcoming.length > 0 && (
@@ -73,7 +76,11 @@ function EntryList({ entries }: { entries: JournalEntry[] }) {
             </Link>
             <span className="muted small">
               {topic?.title}
-              {grund && <span className="badge fehlergrund-badge">{FEHLERGRUND_INFO[grund].label}</span>}
+              {grund && (
+                <span className="badge fehlergrund-badge">
+                  <Icon name={FEHLERGRUND_INFO[grund].icon} /> {FEHLERGRUND_INFO[grund].label}
+                </span>
+              )}
             </span>
             <span className="small">
               {formatPoints(j.lastPoints)}/{formatPoints(j.max)} P

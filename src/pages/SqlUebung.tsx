@@ -18,6 +18,7 @@ import { compareResults, lastResultSet } from '../sql/checker';
 import { getSqlEngine } from '../sql/engine';
 import { hasBlockingWarning, lintSql } from '../sql/lint';
 import type { CompareVerdict, ExecResult, LintWarning, StatementResult } from '../sql/types';
+import { Icon } from '../components/Icon';
 
 /** Verzögerung, bevor die Abfrage im Fortschritt gespeichert wird. */
 const SAVE_DELAY_MS = 800;
@@ -191,7 +192,7 @@ function SqlUebungView({ id }: { id: string }) {
     const ok = await confirm({
       title: 'Lösung zeigen?',
       message: 'Die Übung zählt dann als „mit Lösung“ statt „gelöst“ und kommt morgen zur Wiederholung.',
-      confirmLabel: '👁 Lösung zeigen',
+      confirmLabel: 'Lösung zeigen',
     });
     if (!ok) return;
     update((p) => recordSolutionShown(p, id));
@@ -203,7 +204,7 @@ function SqlUebungView({ id }: { id: string }) {
     if (outcome.kind === 'data-error') {
       return (
         <div className="card warn">
-          ⚠ Die Musterlösung lief nicht – das ist ein Fehler in den Übungsdaten, nicht bei dir.
+          <Icon name="triangle-alert" /> Die Musterlösung lief nicht – das ist ein Fehler in den Übungsdaten, nicht bei dir.
           <div className="mono small error-text">{outcome.error}</div>
         </div>
       );
@@ -211,24 +212,28 @@ function SqlUebungView({ id }: { id: string }) {
     if (outcome.kind === 'error') {
       return (
         <>
-          <p className="verdict bad">❌ Noch nicht: Deine Abfrage bricht mit einem Fehler ab.</p>
+          <p className="verdict bad">
+            <Icon name="circle-x" /> Noch nicht: Deine Abfrage bricht mit einem Fehler ab.
+          </p>
           <SqlError error={outcome.error} schema={session.errorSchema} />
         </>
       );
     }
     const { verdict } = outcome;
     const message = outcome.ok
-      ? `✅ ${verdict.message}`
+      ? verdict.message
       : outcome.blocked
-        ? '❌ Noch nicht: Das Ergebnis stimmt, aber in der Prüfung wäre das ein Fehler (siehe Dialekt-Hinweis).'
+        ? 'Noch nicht: Das Ergebnis stimmt, aber in der Prüfung wäre das ein Fehler (siehe Dialekt-Hinweis).'
         : outcome.variantFailed
-          ? `❌ Noch nicht: ${VARIANT_MESSAGE}`
-          : `❌ Noch nicht: ${verdict.message}`;
+          ? `Noch nicht: ${VARIANT_MESSAGE}`
+          : `Noch nicht: ${verdict.message}`;
     const hasDiff = !outcome.ok && (verdict.missing.length > 0 || verdict.extra.length > 0);
     return (
       <div className={`card ${outcome.ok ? 'success' : 'verdict-fail'}`}>
         <div className="verdict-row">
-          <p className={`verdict ${outcome.ok ? 'ok' : 'bad'}`}>{withCode(message)}</p>
+          <p className={`verdict ${outcome.ok ? 'ok' : 'bad'}`}>
+            <Icon name={outcome.ok ? 'circle-check' : 'circle-x'} /> {withCode(message)}
+          </p>
           {outcome.ok && next && (
             <Link className="button" to={`/sql/uebung/${next.id}`}>
               Weiter →
@@ -275,7 +280,11 @@ function SqlUebungView({ id }: { id: string }) {
         </p>
       </div>
 
-      {session.error && <p className="card warn">⚠ {session.error}</p>}
+      {session.error && (
+        <p className="card warn">
+          <Icon name="triangle-alert" /> {session.error}
+        </p>
+      )}
 
       <SchemaBrowser
         tables={session.schema}
@@ -298,18 +307,18 @@ function SqlUebungView({ id }: { id: string }) {
       />
       <div className="actions">
         <button type="button" className="secondary" onClick={() => void tryIt()} disabled={!!busy || !session.ready || !query.trim()}>
-          ▶ Ausprobieren
+          <Icon name="play" /> Ausprobieren
         </button>
         <button type="button" onClick={() => void check()} disabled={!!busy || !query.trim()}>
           ✓ Prüfen
         </button>
         {ex.hinweise.length > 0 && (
           <button type="button" className="secondary" onClick={showHint} disabled={hintsShown >= ex.hinweise.length}>
-            💡 Hinweis {Math.min(hintsShown + 1, ex.hinweise.length)}/{ex.hinweise.length}
+            <Icon name="lightbulb" /> Hinweis {Math.min(hintsShown + 1, ex.hinweise.length)}/{ex.hinweise.length}
           </button>
         )}
         <button type="button" className="secondary" onClick={() => void showSolution()} disabled={solutionOpen}>
-          👁 Lösung zeigen
+          <Icon name="eye" /> Lösung zeigen
         </button>
         {busy && <span className="muted small">{busy === 'check' ? 'prüft …' : 'läuft …'}</span>}
       </div>
@@ -320,7 +329,9 @@ function SqlUebungView({ id }: { id: string }) {
 
       {hintsShown > 0 && (
         <div className="card info">
-          <b>💡 Hinweise</b>
+          <b>
+            <Icon name="lightbulb" /> Hinweise
+          </b>
           <ol className="hints">
             {ex.hinweise.slice(0, hintsShown).map((h, i) => (
               <li key={i}>{withCode(h)}</li>
@@ -370,7 +381,7 @@ function SqlUebungView({ id }: { id: string }) {
                 void session.execFresh(ex.loesung).then(setTryResult);
               }}
             >
-              ▶ Musterlösung ausführen
+              <Icon name="play" /> Musterlösung ausführen
             </button>
             {next && (
               <Link className="button" to={`/sql/uebung/${next.id}`}>

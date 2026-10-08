@@ -1,30 +1,32 @@
 // Untere Navigation für schmale Bildschirme (Roadmap 7.2, unter 600 px): fünf Plätze, „Üben“ und „Mehr“ öffnen ein Menü.
 // Rein, ohne React – die Komponente steht in components/MobileNav.tsx.
 
+import type { IconName } from './icons';
+
 export type NavBadge = 'sql' | 'rechnen' | 'journal';
 
-export type NavZiel = { to: string; label: string; badge?: NavBadge; nurLokal?: boolean };
+export type NavZiel = { to: string; icon: IconName; label: string; badge?: NavBadge; nurLokal?: boolean };
 
 export type NavGruppe = 'uebersicht' | 'lernen' | 'karteikarten' | 'ueben' | 'mehr';
 
 export const UEBEN_ZIELE: NavZiel[] = [
-  { to: '/heute', label: '▶ Heute lernen' },
-  { to: '/klausur', label: '⏱️ Übungsklausur' },
-  { to: '/aufgaben', label: '📝 Einzelaufgaben' },
-  { to: '/sql', label: '🧮 SQL-Editor', badge: 'sql' },
-  { to: '/rechnen', label: '📐 Rechenübungen', badge: 'rechnen' },
+  { to: '/heute', icon: 'play', label: 'Heute lernen' },
+  { to: '/klausur', icon: 'timer', label: 'Übungsklausur' },
+  { to: '/aufgaben', icon: 'file-pen-line', label: 'Einzelaufgaben' },
+  { to: '/sql', icon: 'database', label: 'SQL-Editor', badge: 'sql' },
+  { to: '/rechnen', icon: 'calculator', label: 'Rechenübungen', badge: 'rechnen' },
 ];
 
 /** Thema „Glossar & Diagramme“ (Deep Dive 17): eigener Eintrag in der Navigation, damit Begriffe und Diagramme mit einem Klick erreichbar sind. */
 export const GLOSSAR_PFAD = '/lernen/17';
 
 export const MEHR_ZIELE: NavZiel[] = [
-  { to: '/fehlerjournal', label: '📓 Fehlerjournal', badge: 'journal' },
-  { to: '/generator', label: '🤖 KI-Aufgaben', nurLokal: true },
-  { to: '/material', label: '📚 Material' },
-  { to: GLOSSAR_PFAD, label: '📘 Glossar & Diagramme' },
-  { to: '/einstellungen', label: '⚙️ Einstellungen' },
-  { to: '/daten', label: '💾 Daten & Import' },
+  { to: '/fehlerjournal', icon: 'notebook-pen', label: 'Fehlerjournal', badge: 'journal' },
+  { to: '/generator', icon: 'sparkles', label: 'KI-Aufgaben', nurLokal: true },
+  { to: '/material', icon: 'library', label: 'Material' },
+  { to: GLOSSAR_PFAD, icon: 'book-bookmark', label: 'Glossar & Diagramme' },
+  { to: '/einstellungen', icon: 'settings', label: 'Einstellungen' },
+  { to: '/daten', icon: 'save', label: 'Daten & Import' },
 ];
 
 /** Gehört der Pfad zu diesem Ziel? `/aufgaben` umfasst auch `/aufgabe/:id`, `/sql` auch `/sql/uebungen` usw. */

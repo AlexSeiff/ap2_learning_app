@@ -34,7 +34,7 @@ describe('Rechenübungen-Seiten', () => {
   it('Liste zeigt alle Übungen, Fortschritt und Filter aus der URL', () => {
     progress = emptyProgress();
     const html = render('/rechnen');
-    expect(html).toContain('📐 Rechenübungen');
+    expect(html).toContain('Rechenübungen');
     expect(html).toContain(`0 / ${content.rechenUebungen.length} gelöst`);
     for (const u of content.rechenUebungen) expect(html).toContain(u.id);
     const gefiltert = render('/rechnen?stufe=3');
@@ -52,7 +52,7 @@ describe('Rechenübungen-Seiten', () => {
       expect(html, u.id).not.toMatch(/\{\{\s*[\w.-]+\s*\}\}/);
       expect(html, u.id).toContain('Rechne auf Papier, trage nur Ergebnisse ein.');
       expect((html.match(/<input /g) ?? []).length, u.id).toBeGreaterThanOrEqual(Math.max(1, u.eingaben.length));
-      expect(html.includes('🎲 Neue Zahlen'), u.id).toBe(u.neueZahlen);
+      expect(html.includes('Neue Zahlen'), u.id).toBe(u.neueZahlen);
     }
   });
 
@@ -61,11 +61,11 @@ describe('Rechenübungen-Seiten', () => {
     progress = { ...emptyProgress(), rechnen: { [u.id]: { attempts: 1, hintsUsed: 1, antworten: { mittel: '70,00' } } } };
     let html = render(`/rechnen/${u.id}`);
     expect(html).toContain('value="70,00"');
-    expect(html).toContain('💡 Hinweise');
-    expect(html).not.toContain('↩ Originalzahlen');
+    expect(html).toContain('Hinweise');
+    expect(html).not.toContain('Originalzahlen');
     progress = { ...emptyProgress(), rechnen: { [u.id]: { attempts: 0, hintsUsed: 0, lastSeed: 42 } } };
     html = render(`/rechnen/${u.id}`);
-    expect(html).toContain('↩ Originalzahlen');
+    expect(html).toContain('Originalzahlen');
     expect(html).not.toContain('60, 40, 220, 45');
   });
 

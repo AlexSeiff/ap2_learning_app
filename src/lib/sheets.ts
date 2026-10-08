@@ -41,7 +41,7 @@ export function examSheet(content: Content, topicId: string, kind: SheetKind): S
   if (misch) {
     const exam = misch.exam as MischKlausur;
     return {
-      title: exam.title.replace(/^🎲\s*/, ''),
+      title: exam.title,
       subtitle: misch.untertitel,
       fileBase: `${kind === 'aufgaben' ? 'Aufgabenblatt' : 'Loesungsblatt'}_Probeklausur_${exam.bereich}_${exam.seed}_${localDate()}`,
       attachments: exam.attachments,

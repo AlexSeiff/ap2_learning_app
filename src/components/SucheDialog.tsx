@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { baueGlossar, glossarSuchEintraege } from '../lib/glossar';
 import { useStore } from '../lib/store';
 import { baueSuchIndex, suche, SUCH_ART } from '../lib/suche';
+import { Icon } from './Icon';
 
 export function SucheDialog({ onClose }: { onClose: () => void }) {
   const { content, progress } = useStore();
@@ -61,7 +62,9 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
     <div className="suche-overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="suche-dialog" role="dialog" aria-modal="true" aria-label="Suche">
         <div className="suche-kopf">
-          <span aria-hidden="true">🔎</span>
+          <span aria-hidden="true">
+            <Icon name="search" />
+          </span>
           <input
             ref={inputRef}
             type="search"
@@ -107,7 +110,7 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
                 onClick={() => oeffne(i)}
               >
                 <span className="suche-art" title={art.name}>
-                  {art.icon}
+                  <Icon name={art.icon} />
                 </span>
                 <span className="suche-inhalt">
                   <span className="suche-titel">{t.eintrag.titel}</span>

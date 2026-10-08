@@ -342,7 +342,7 @@ function stelleZusammen(content: Content, bereich: MischBereich, seed: number, z
 
   const totalPoints = blocks.reduce((s, b) => s + b.points, 0);
   return {
-    title: `🎲 Gemischte Probeklausur – ${bereichTitel(bereich)}`,
+    title: `Gemischte Probeklausur – ${bereichTitel(bereich)}`,
     intro:
       `Zusammengestellt aus den Übungsklausuren von ${themen.length} Deep Dives, gewichtet wie die Themenliste ` +
       `(Nr. ${seed}). 90 Minuten, ohne Unterlagen. Die Anlagen stehen beim jeweiligen Deep Dive.`,
@@ -382,7 +382,7 @@ export function klausurFuer(content: Content, id: string | undefined): KlausurQu
 /** Anzeigename einer Klausur aus der Historie (ExamRun.topicId) – ohne die gemischte Klausur aufzubauen. */
 export function klausurName(content: Content, id: string): string {
   const m = parseMischId(id);
-  if (m) return `🎲 Gemischt (${MISCH_BEREICHE.find((b) => b.id === m.bereich)!.kurz})`;
+  if (m) return `Gemischt (${MISCH_BEREICHE.find((b) => b.id === m.bereich)!.kurz})`;
   return content.topics.find((t) => t.id === id)?.title ?? id;
 }
 

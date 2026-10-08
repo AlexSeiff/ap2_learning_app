@@ -3,6 +3,7 @@ import katex from 'katex';
 import { useMemo } from 'react';
 import { formatErgebnis, type RechenSchritt, rundungsHinweis } from '../../shared/rechenweg';
 import type { SchrittSicht } from '../rechnen/beispiel';
+import { Icon } from './Icon';
 
 // Zieht KaTeX nach: nur in lazy geladenen Seiten verwenden (z. B. Rechenübungen, ROADMAP Phase 5), nicht im Hauptbundle.
 
@@ -26,7 +27,9 @@ export function Rechenweg({ schritte, sicht }: { schritte: RechenSchritt[]; sich
           return (
             <li key={i} className="rw-schritt rw-verdeckt">
               <div className="rw-titel">{s.titel}</div>
-              <p className="hint">✏️ Diesen Schritt rechnest du selbst.</p>
+              <p className="hint">
+                <Icon name="pencil" /> Diesen Schritt rechnest du selbst.
+              </p>
             </li>
           );
         }

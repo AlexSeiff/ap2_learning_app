@@ -7,6 +7,7 @@ import { rechenStatus, rechenSummary } from '../lib/rechnen';
 import { useStore } from '../lib/store';
 import { findeVorlage } from '../rechnen/vorlagen/index';
 import { LEVEL_LABELS, stars, STATUS_CLASS, STATUS_LABELS } from '../lib/uebungLabels';
+import { Icon } from '../components/Icon';
 
 type Filter = { thema: string; stufe: string; tag: string; status: string; vorlage: string };
 const KEYS: (keyof Filter)[] = ['thema', 'stufe', 'tag', 'status', 'vorlage'];
@@ -53,9 +54,12 @@ export function RechenUebungen() {
 
   return (
     <div className="page">
-      <h1>📐 Rechenübungen</h1>
+      <h1>
+        <Icon name="calculator" /> Rechenübungen
+      </h1>
       <p className="lead">
-        Rechne wie in der Prüfung – auf Papier – und trag nur die Ergebnisse ein. Bei Übungen mit 🎲 bekommst du beliebig oft neue Zahlen.
+        Rechne wie in der Prüfung – auf Papier – und trag nur die Ergebnisse ein. Bei Übungen mit <Icon name="dices" /> bekommst du beliebig
+        oft neue Zahlen.
       </p>
 
       {!all.length ? (
@@ -71,7 +75,7 @@ export function RechenUebungen() {
             </b>
             {summary.due > 0 && (
               <button type="button" className="ghost small" onClick={() => set({ status: 'faellig' })}>
-                ↻ {summary.due} {summary.due === 1 ? 'Wiederholung' : 'Wiederholungen'} fällig
+                <Icon name="rotate-cw" /> {summary.due} {summary.due === 1 ? 'Wiederholung' : 'Wiederholungen'} fällig
               </button>
             )}
           </div>
@@ -125,7 +129,7 @@ export function RechenUebungen() {
 
           {vorlagen.length > 0 && (
             <p className="hint">
-              📏 Nur Übungen zu: {vorlagen.map((id) => findeVorlage(id)?.titel ?? id).join(' · ')}{' '}
+              <Icon name="sigma" /> Nur Übungen zu: {vorlagen.map((id) => findeVorlage(id)?.titel ?? id).join(' · ')}{' '}
               <button type="button" className="ghost small" onClick={() => set({ vorlage: 'alle' })}>
                 ✕ alle Vorlagen
               </button>
@@ -143,7 +147,7 @@ export function RechenUebungen() {
             )}
             {nextOpen && (
               <Link className="button" to={`/rechnen/${nextOpen.id}`}>
-                ▶ {status(nextOpen) === 'faellig' ? 'Wiederholen' : 'Nächste offene'}
+                <Icon name="play" /> {status(nextOpen) === 'faellig' ? 'Wiederholen' : 'Nächste offene'}
               </Link>
             )}
           </div>
@@ -162,7 +166,12 @@ export function RechenUebungen() {
                         {u.titel}{' '}
                         <span className="muted small">
                           · {stars(u.schwierigkeit)} · {u.thema}
-                          {u.neueZahlen && ' · 🎲'}
+                          {u.neueZahlen && (
+                            <>
+                              {' · '}
+                              <Icon name="dices" label="neue Zahlen möglich" />
+                            </>
+                          )}
                         </span>
                       </span>
                     </Link>

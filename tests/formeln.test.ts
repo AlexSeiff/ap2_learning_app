@@ -90,13 +90,13 @@ describe('Formeln (src/rechnen/formeln.ts)', () => {
 describe('Seite /material/formeln', () => {
   it('zeigt alle Formeln mit KaTeX, gruppiert nach Lernblatt, mit Links zu den Rechenübungen', () => {
     const html = render('/material/formeln');
-    expect(html).toContain('📏 Formelsammlung');
+    expect(html).toContain('Formelsammlung');
     expect(html).not.toContain('katex-error');
     for (const f of FORMELN) expect(html, f.id).toContain(`id="formel-${f.id}"`);
     expect((html.match(/class="katex"/g) ?? []).length).toBeGreaterThanOrEqual(FORMELN.length);
     for (const t of ['03', '07', '12']) expect(html).toContain(content.topics.find((x) => x.id === t)!.title.replace(/&/g, '&amp;'));
     expect(html).toContain('href="/rechnen?vorlage=lagemasse,varianz"');
-    expect(html).toContain('🖨️ Drucken');
+    expect(html).toContain('Drucken');
   });
 
   it('Material verlinkt die Formelsammlung', () => {

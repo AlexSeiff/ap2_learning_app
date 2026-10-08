@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Icon } from './Icon';
 
 type Props = { children: ReactNode };
 type State = { error: Error | null };
@@ -22,14 +23,16 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="page narrow">
         <div className="card warn" role="alert">
-          <h2>⚠ Hier ist etwas schiefgelaufen</h2>
+          <h2>
+            <Icon name="triangle-alert" /> Hier ist etwas schiefgelaufen
+          </h2>
           <p>
             Diese Seite konnte nicht angezeigt werden. Dein gespeicherter Fortschritt bleibt erhalten. Lade die Seite neu oder wähle links
             eine andere Seite.
           </p>
           <pre className="error-text">{error.message || String(error)}</pre>
           <button type="button" onClick={() => window.location.reload()}>
-            ↻ Neu laden
+            <Icon name="rotate-cw" /> Neu laden
           </button>
         </div>
       </div>

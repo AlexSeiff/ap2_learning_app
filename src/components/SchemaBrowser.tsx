@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import type { SchemaTable } from '../sql/types';
+import { Icon } from './Icon';
 
 type Props = {
   tables: SchemaTable[];
@@ -19,7 +20,9 @@ export function SchemaBrowser({ tables, onInsert, onShowTable, defaultOpen }: Pr
   const [open] = useState(() => defaultOpen ?? wide());
   return (
     <details className="schema" open={open}>
-      <summary>🗂️ Schema</summary>
+      <summary>
+        <Icon name="layers" /> Schema
+      </summary>
       {!tables.length && <p className="muted small">Lade Datenbank …</p>}
       {tables.map((table) => (
         <details key={table.name} className="schema-table">

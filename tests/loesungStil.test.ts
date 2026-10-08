@@ -116,7 +116,7 @@ describe('rehypeLoesung (gerendert)', () => {
 
   it('Prüferkommentar als Absatz und als Zitat (Lösungsblatt) wird ein Kasten', () => {
     const box =
-      '<aside class="pk-box"><div class="pk-label">🧑‍🏫 Prüferkommentar</div><p>2 P Ansatz, 2 P Ergebnis. Nicht <strong>(45+70)/2</strong>.</p></aside>';
+      '<aside class="pk-box"><div class="pk-label">Prüferkommentar</div><p>2 P Ansatz, 2 P Ergebnis. Nicht <strong>(45+70)/2</strong>.</p></aside>';
     expect(loesung('Text\n\n*Prüferkommentar: 2 P Ansatz, 2 P Ergebnis. Nicht **(45+70)/2**.*')).toContain(box);
     expect(loesung('> *Prüferkommentar: 2 P Ansatz, 2 P Ergebnis. Nicht **(45+70)/2**.*')).toBe(`<div class="md ">${box}</div>`);
     // Ergebnisse im Kommentar (oft falsche Werte) werden nicht hervorgehoben.
@@ -149,6 +149,12 @@ describe('rehypeTabellen (überall)', () => {
     expect(html).toContain('<tr class="sum-row"><td><strong>Summe</strong></td><td class="num"><strong>33</strong></td>');
     expect(html).toContain('<tr><td>Transport</td><td class="num">18</td>');
   });
+
+  it('leere Ecke oben links: erste Spalte wird Zeilenkopf', () => {
+    const html = plain(['| | Klassifikation | Regression |', '|---|---|---|', '| Zielvariable | Kategorie | Zahl |'].join('\n'));
+    expect(html).toContain('<tr><th scope="row">Zielvariable</th><td>Kategorie</td><td>Zahl</td></tr>');
+    expect(plain(['| A | B |', '|---|---|', '| x | y |'].join('\n'))).toContain('<tr><td>x</td><td>y</td></tr>');
+  });
 });
 
 describe('Echte Musterlösungen in content/', () => {
@@ -159,7 +165,7 @@ describe('Echte Musterlösungen in content/', () => {
     const c1 = render('03-C1');
     expect(ergebnisse(c1)).toEqual(['70,00 Minuten', '55 Minuten', '40 Minuten']);
     expect(c1.match(/class="punkte rechts"/g)).toHaveLength(4);
-    expect(c1).toContain('<div class="pk-label">🧑‍🏫 Prüferkommentar</div><p>Wer nicht sortiert');
+    expect(c1).toContain('<div class="pk-label">Prüferkommentar</div><p>Wer nicht sortiert');
     expect(ergebnisse(render('07-B2'))).toEqual(['93,00 %', '60,00 %', '90,00 %', '72,00 %', '93,33 %']);
   });
 

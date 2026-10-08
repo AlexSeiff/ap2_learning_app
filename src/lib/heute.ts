@@ -12,6 +12,7 @@ import { isDue, localDate } from './progress';
 import { rechenStatus } from './rechnen';
 import { sqlStatus } from './sql';
 import { topicStats } from './stats';
+import type { IconName } from './icons';
 
 export type HeuteArt = 'wiederholung' | 'aufgabe' | 'sql' | 'rechnen' | 'karten';
 
@@ -36,12 +37,12 @@ export interface HeutePlan {
   schwaechstesThema?: string;
 }
 
-export const HEUTE_ICONS: Record<HeuteArt, string> = {
-  wiederholung: '📓',
-  aufgabe: '📝',
-  sql: '🧮',
-  rechnen: '📐',
-  karten: '🃏',
+export const HEUTE_ICONS: Record<HeuteArt, IconName> = {
+  wiederholung: 'notebook-pen',
+  aufgabe: 'file-pen-line',
+  sql: 'database',
+  rechnen: 'calculator',
+  karten: 'layers',
 };
 
 /** Geschätzte Minuten für eine Aufgabe mit `punkte` Punkten (wie in der Prüfung, mindestens HEUTE_ZEITEN.aufgabeMin). */

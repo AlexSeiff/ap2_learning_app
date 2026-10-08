@@ -74,7 +74,7 @@ function ConfirmDialog({ options, onClose }: { options: ConfirmOptions; onClose:
       }}
     >
       <div className="confirm-body">
-        <h2 id={titleId}>{options.title ?? (options.danger ? '⚠️ Bist du sicher?' : 'Bitte bestätigen')}</h2>
+        <h2 id={titleId}>{options.title ?? (options.danger ? 'Bist du sicher?' : 'Bitte bestätigen')}</h2>
         <p id={messageId}>{options.message}</p>
         <div className="actions">
           <button type="button" className={options.danger ? 'low' : ''} onClick={() => onClose(true)}>

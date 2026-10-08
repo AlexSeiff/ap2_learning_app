@@ -6,6 +6,7 @@ import { SqlTabs } from '../components/SqlTabs';
 import { sqlStatus, sqlSummary } from '../lib/sql';
 import { useStore } from '../lib/store';
 import { LEVEL_LABELS, stars, STATUS_CLASS, STATUS_LABELS } from '../lib/uebungLabels';
+import { Icon } from '../components/Icon';
 
 type Filter = { thema: string; stufe: string; tag: string; status: string };
 const KEYS: (keyof Filter)[] = ['thema', 'stufe', 'tag', 'status'];
@@ -52,7 +53,9 @@ export function SqlUebungen() {
   return (
     <div className="page">
       <SqlTabs />
-      <h1>🎯 SQL-Übungen</h1>
+      <h1>
+        <Icon name="target" /> SQL-Übungen
+      </h1>
       <p className="lead">Schreib die Abfrage – die App vergleicht dein Ergebnis mit dem der Musterlösung.</p>
 
       <div className="sql-progress">
@@ -64,7 +67,7 @@ export function SqlUebungen() {
         </b>
         {summary.due > 0 && (
           <button type="button" className="ghost small" onClick={() => set({ status: 'faellig' })}>
-            ↻ {summary.due} {summary.due === 1 ? 'Wiederholung' : 'Wiederholungen'} fällig
+            <Icon name="rotate-cw" /> {summary.due} {summary.due === 1 ? 'Wiederholung' : 'Wiederholungen'} fällig
           </button>
         )}
       </div>
@@ -127,7 +130,7 @@ export function SqlUebungen() {
         )}
         {nextOpen && (
           <Link className="button" to={`/sql/uebung/${nextOpen.id}`}>
-            ▶ {sqlStatus(progress.sql[nextOpen.id]) === 'faellig' ? 'Wiederholen' : 'Nächste offene'}
+            <Icon name="play" /> {sqlStatus(progress.sql[nextOpen.id]) === 'faellig' ? 'Wiederholen' : 'Nächste offene'}
           </Link>
         )}
       </div>

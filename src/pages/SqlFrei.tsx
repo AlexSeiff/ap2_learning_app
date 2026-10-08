@@ -13,6 +13,7 @@ import { decodeQuery } from '../lib/sqlLinks';
 import { useStore } from '../lib/store';
 import { lintSql } from '../sql/lint';
 import type { ExecResult, LintWarning } from '../sql/types';
+import { Icon } from '../components/Icon';
 
 const HISTORY_KEY = 'sql-verlauf';
 const HISTORY_MAX = 30;
@@ -154,7 +155,7 @@ export function SqlFrei() {
     await session.reset();
     setResult(null);
     setWarnings([]);
-    setNotice('↺ Datenbank ist wieder im Ausgangszustand.');
+    setNotice('Datenbank ist wieder im Ausgangszustand.');
   };
 
   const examples = content.sqlExercises.filter((e) => e.datensatz === ds).slice(0, EXAMPLES_MAX);
@@ -186,7 +187,9 @@ export function SqlFrei() {
     return (
       <div className="page">
         <SqlTabs />
-        <h1>🧮 SQL-Editor</h1>
+        <h1>
+          <Icon name="database" /> SQL-Editor
+        </h1>
         <p className="card warn">Keine Übungsdatenbank gefunden. Liegt AP2_SQL_Uebungen.json im Inhaltsordner?</p>
       </div>
     );
@@ -195,7 +198,9 @@ export function SqlFrei() {
   return (
     <div className="page sql-page">
       <SqlTabs />
-      <h1>🧮 SQL-Editor</h1>
+      <h1>
+        <Icon name="database" /> SQL-Editor
+      </h1>
       <p className="lead">Schreib SQL gegen die Übungsdatenbank und sieh sofort das Ergebnis. Alles läuft in deinem Browser.</p>
 
       <div className="sql-toolbar">
@@ -210,13 +215,15 @@ export function SqlFrei() {
           </select>
         </label>
         <button type="button" className="secondary" onClick={() => void reset()} title="Alle Änderungen an der Datenbank verwerfen">
-          ↺ Zurücksetzen
+          <Icon name="rotate-ccw" /> Zurücksetzen
         </button>
         {!!examples.length && (
           <label>
             Beispiele
             <select value="" onChange={(e) => void loadExample(e.target.value)}>
-              <option value="">📋 Beispiel laden …</option>
+              <option value="">
+                <Icon name="file-text" /> Beispiel laden …
+              </option>
               {examples.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.titel}
@@ -231,7 +238,11 @@ export function SqlFrei() {
           {dataset.quelle} · {dataset.beschreibung}
         </p>
       )}
-      {session.error && <p className="card warn">⚠ {session.error}</p>}
+      {session.error && (
+        <p className="card warn">
+          <Icon name="triangle-alert" /> {session.error}
+        </p>
+      )}
 
       <div className="sql-layout">
         <aside>
@@ -245,7 +256,7 @@ export function SqlFrei() {
           <SqlEditor ref={editor} value={query} onChange={setQuery} onRun={run} schema={session.schema} />
           <div className="actions">
             <button type="button" onClick={run} disabled={busy || !session.ready || !query.trim()}>
-              ▶ Ausführen
+              <Icon name="play" /> Ausführen
             </button>
             <span className="hint">
               <kbd>Strg</kbd> + <kbd>Enter</kbd> · mehrere Anweisungen mit <code>;</code> trennen
@@ -259,7 +270,9 @@ export function SqlFrei() {
       </div>
 
       <details className="card sql-history" onToggle={() => setNow(Date.now())}>
-        <summary>🕘 Verlauf ({history.length})</summary>
+        <summary>
+          <Icon name="rotate-ccw-clock" /> Verlauf ({history.length})
+        </summary>
         {!history.length ? (
           <p className="muted small">Noch nichts ausgeführt. Die letzten {HISTORY_MAX} Abfragen erscheinen hier (nur auf diesem Gerät).</p>
         ) : (

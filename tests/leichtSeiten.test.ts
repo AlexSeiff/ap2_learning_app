@@ -39,8 +39,8 @@ describe('Karteikarten im Leicht-Modus', () => {
   it('Aufdecken: Moduswahl sichtbar, alle Karten zählen', () => {
     progress = emptyProgress();
     const html = render('/karteikarten');
-    expect(html).toContain('🃏 Aufdecken');
-    expect(html).toContain('🟢 Leicht (4 Antworten)');
+    expect(html).toContain('Aufdecken');
+    expect(html).toContain('Leicht (4 Antworten)');
     expect(html).not.toContain('Karten dieser Auswahl haben 4 Antworten');
     expect(html).toContain(`Alle ${content.flashcards.length} durchgehen`);
   });
@@ -49,7 +49,7 @@ describe('Karteikarten im Leicht-Modus', () => {
     progress = mitSettings({ leichtModus: true });
     const n = leichtKarten(content.flashcards, { automatisch: true }).size;
     const html = render('/karteikarten');
-    expect(html).toContain(`🟢 ${n} von ${content.flashcards.length} Karten dieser Auswahl haben 4 Antworten`);
+    expect(html).toContain(`${n} von ${content.flashcards.length} Karten dieser Auswahl haben 4 Antworten`);
     expect(html).toContain(`Alle ${n} durchgehen`);
     expect(html).not.toContain('<option value="fachgespraech">');
     expect(html).toMatch(/Wissen \(\d+ mit 4 Antworten\)/);
@@ -59,7 +59,7 @@ describe('Karteikarten im Leicht-Modus', () => {
     progress = mitSettings({ leichtModus: true, leichtAutomatisch: false });
     const html = render('/karteikarten');
     const mc = content.flashcards.filter((c) => c.mc && c.kind !== 'fachgespraech').length;
-    expect(html).toContain(`🟢 ${mc} von ${content.flashcards.length} Karten`);
+    expect(html).toContain(`${mc} von ${content.flashcards.length} Karten`);
     expect(html).toContain(`Alle ${mc} durchgehen`);
   });
 
@@ -68,7 +68,7 @@ describe('Karteikarten im Leicht-Modus', () => {
     const m = leichtKarten(content.flashcards, { automatisch: true });
     const falle = content.flashcards.filter((c) => c.typ === 'falle');
     const html = render('/karteikarten?typ=falle');
-    expect(html).toContain(`🟢 ${falle.filter((c) => m.has(c.id)).length} von ${falle.length} Karten`);
+    expect(html).toContain(`${falle.filter((c) => m.has(c.id)).length} von ${falle.length} Karten`);
   });
 });
 
@@ -76,8 +76,8 @@ describe('Rechenübungen: Ergebnis auswählen', () => {
   it('Eintippen: Moduswahl und Eingabefelder', () => {
     progress = emptyProgress();
     const html = render('/rechnen/RE-ST1-001');
-    expect(html).toContain('✏️ Eintippen');
-    expect(html).toContain('🟢 Ergebnis auswählen');
+    expect(html).toContain('Eintippen');
+    expect(html).toContain('Ergebnis auswählen');
     expect(html).toContain('✓ Prüfen');
     expect(html).not.toContain('leicht-option');
   });

@@ -202,7 +202,7 @@ describe('IDs und Klausurquelle', () => {
 
   it('klausurName für die Historie', () => {
     expect(klausurName(content, '03')).toBe(content.topics.find((t) => t.id === '03')!.title);
-    expect(klausurName(content, 'mix-prozess-1')).toBe('🎲 Gemischt (Prozessanalyse)');
+    expect(klausurName(content, 'mix-prozess-1')).toBe('Gemischt (Prozessanalyse)');
   });
 });
 
@@ -246,13 +246,13 @@ describe('Historie und Statistik mit einer gemischten Klausur', () => {
   it('Seiten: Auswahl, Startseite, laufende Klausur, Druck und Übersicht', () => {
     progress = emptyProgress();
     const auswahl = render('/klausur');
-    expect(auswahl).toContain('🎲 Gemischte Probeklausur');
+    expect(auswahl).toContain('Gemischte Probeklausur');
     expect(auswahl).toContain('Prozessanalyse');
 
     const start = render(`/klausur/${id}`);
     expect(start).toContain('Gemischte Probeklausur');
     expect(start).toContain('Nr. 42');
-    expect(start).toContain('🎲 Neu mischen');
+    expect(start).toContain('Neu mischen');
     expect(start).toContain(`/druck?art=aufgaben&amp;thema=${id}`);
     expect(start).not.toContain('Fallen-Karten');
 
@@ -260,11 +260,11 @@ describe('Historie und Statistik mit einer gemischten Klausur', () => {
     const laufend = render(`/klausur/${id}`);
     expect(laufend.match(/>Wie sicher bist du\?</g)).toHaveLength(tasks.length);
     expect(laufend).toContain('class="exam-quelle"');
-    expect(render('/klausur')).toContain('Laufende Klausur: <b>🎲 Gemischt (gemischt)</b>');
+    expect(render('/klausur')).toContain('Laufende Klausur: <b>Gemischt (gemischt)</b>');
 
     expect(render(`/druck?art=aufgaben&thema=${id}`)).toContain('Aufgabenblatt: Gemischte Probeklausur');
 
     progress = p;
-    expect(render('/')).toContain('🎲 Gemischt (gemischt)');
+    expect(render('/')).toContain('Gemischt (gemischt)');
   });
 });

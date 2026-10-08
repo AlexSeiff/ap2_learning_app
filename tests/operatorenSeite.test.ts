@@ -35,7 +35,7 @@ function render(path: string): string {
 describe('Operatoren-Trainer – Seiten', () => {
   it('Trainer: Quizfrage mit 4 Antworten und Tabelle aller Operatoren', () => {
     const html = render('/material/operatoren');
-    expect(html).toContain('🗣️ Operatoren-Trainer');
+    expect(html).toContain('Operatoren-Trainer');
     expect(html).toMatch(/Was verlangt der Operator „[^“]+“ hier\?/);
     expect(html.match(/class="leicht-option /g)).toHaveLength(4);
     for (const o of OPERATOREN) expect(html).toContain(`id="op-${o.id}"`);

@@ -6,6 +6,7 @@ import { leichtAutomatischAn } from '../lib/leicht';
 import { withSettings } from '../lib/settings';
 import { daysUntilExam, formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 export function Einstellungen() {
   const { progress, update } = useStore();
@@ -14,11 +15,15 @@ export function Einstellungen() {
 
   return (
     <div className="page narrow">
-      <h1>⚙️ Einstellungen</h1>
+      <h1>
+        <Icon name="settings" /> Einstellungen
+      </h1>
       <p className="lead">Passe die App an dich an. Alles gilt nur für dich.</p>
 
       <section className="card">
-        <h2>📅 Mein Prüfungstermin</h2>
+        <h2>
+          <Icon name="calendar" /> Mein Prüfungstermin
+        </h2>
         <p>Trag den Tag deiner schriftlichen Prüfung ein – die Übersicht zählt dann die Tage herunter.</p>
         <div className="actions">
           <label className="field">
@@ -45,14 +50,16 @@ export function Einstellungen() {
               : days === 1
                 ? 'Morgen ist es so weit.'
                 : days === 0
-                  ? 'Heute ist Prüfungstag – viel Erfolg! 🍀'
+                  ? 'Heute ist Prüfungstag – viel Erfolg!'
                   : 'Der Termin liegt in der Vergangenheit.'}
           </p>
         )}
       </section>
 
       <section className="card">
-        <h2>❓ Fragen aus den Lernblättern</h2>
+        <h2>
+          <Icon name="circle-question-mark" /> Fragen aus den Lernblättern
+        </h2>
         <label className="choice">
           <input
             type="checkbox"
@@ -60,7 +67,9 @@ export function Einstellungen() {
             onChange={(e) => update((p) => withSettings(p, { prueferfragen: e.target.checked }))}
           />
           <span>
-            <b>❓ Prüferfragen einbeziehen</b>
+            <b>
+              <Icon name="circle-question-mark" /> Prüferfragen einbeziehen
+            </b>
             <br />
             <span className="hint">Die Prüferfragen aus der Theorie – im Lernen-Teil und als Karteikarten.</span>
           </span>
@@ -72,7 +81,9 @@ export function Einstellungen() {
             onChange={(e) => update((p) => withSettings(p, { fachgespraech: e.target.checked }))}
           />
           <span>
-            <b>🎤 Fachgespräch-Fragen einbeziehen</b>
+            <b>
+              <Icon name="mic" /> Fachgespräch-Fragen einbeziehen
+            </b>
             <br />
             <span className="hint">Die Fragen für das Fachgespräch am Ende jedes Lernblatts – als Karteikarten.</span>
           </span>
@@ -84,7 +95,9 @@ export function Einstellungen() {
       </section>
 
       <section className="card">
-        <h2>🟢 Leicht-Modus (4 Antworten)</h2>
+        <h2>
+          <Icon name="list-checks" /> Leicht-Modus (4 Antworten)
+        </h2>
         <p>
           Im Leicht-Modus wählst du bei Karteikarten und Rechenübungen aus 4 Antworten die richtige. Das ist zum Einstieg gedacht – für die
           Prüfung frei antworten.
@@ -96,7 +109,9 @@ export function Einstellungen() {
             onChange={(e) => update((p) => withSettings(p, { leichtAutomatisch: e.target.checked }))}
           />
           <span>
-            <b>🤖 Automatische Antworten erlauben</b>
+            <b>
+              <Icon name="sparkles" /> Automatische Antworten erlauben
+            </b>
             <br />
             <span className="hint">
               Karten ohne eigene Auswahlantworten bekommen Antworten anderer Karten desselben Decks als falsche Antworten (markiert mit
@@ -108,7 +123,9 @@ export function Einstellungen() {
 
       {IS_STATIC && (
         <section className="card">
-          <h2>💾 Erinnerung an die Sicherung</h2>
+          <h2>
+            <Icon name="save" /> Erinnerung an die Sicherung
+          </h2>
           <p>Die Übersicht erinnert dich, eine Sicherung herunterzuladen, wenn die letzte so alt ist und du seitdem gelernt hast.</p>
           <label className="field">
             Erinnern nach … Tagen
@@ -130,9 +147,10 @@ export function Einstellungen() {
       )}
 
       <p className="hint">
-        💾 Deine Einstellungen stehen in deinem Fortschritt ({IS_STATIC ? 'in diesem Browser' : 'lokal auf diesem Rechner'}) und ziehen mit
-        jeder Sicherung um. Sichern und Einspielen: <Link to="/daten">Daten &amp; Import</Link>. Das Farbschema (🖥️ / 🌙 / ☀️ unten in der
-        Navigation) merkt sich jedes Gerät selbst.
+        <Icon name="save" /> Deine Einstellungen stehen in deinem Fortschritt (
+        {IS_STATIC ? 'in diesem Browser' : 'lokal auf diesem Rechner'}) und ziehen mit jeder Sicherung um. Sichern und Einspielen:{' '}
+        <Link to="/daten">Daten &amp; Import</Link>. Das Farbschema (System / Dunkel / Hell, unten in der Navigation) merkt sich jedes Gerät
+        selbst.
       </p>
 
       <Datenschutz />

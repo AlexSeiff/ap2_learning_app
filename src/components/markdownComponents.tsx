@@ -6,6 +6,7 @@ import { rehypeOperatoren } from '../lib/operatorStil';
 import { OperatorTipp } from './OperatorTipp';
 import { datasetForSource, sqlEditorLink } from '../lib/sqlLinks';
 import { pruefeSvg } from '../../shared/svgDiagramm';
+import { Icon } from './Icon';
 
 // Gemeinsame Bausteine für <Markdown> und die Formel-Variante (MathMarkdown, eigener Chunk).
 
@@ -58,7 +59,7 @@ function makeComponents(source?: string | false): Components {
         <div className="sql-block">
           <pre>{children}</pre>
           <Link className="sql-open no-print" to={sqlEditorLink(sql, dataset)}>
-            🧮 Im SQL-Editor öffnen
+            <Icon name="database" /> Im SQL-Editor öffnen
           </Link>
         </div>
       );

@@ -5,6 +5,7 @@ import { Markdown } from '../components/Markdown';
 import { BEREICH_TEXT, OPERATOREN, OPERATOR_NACH_ID, operatorFrage, operatorHaeufigkeit, type OperatorFrage } from '../lib/operatoren';
 import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 /** Operatoren-Trainer (ROADMAP 8.4): Quiz „Was verlangt dieser Operator?“ mit echten Aufgaben und eine Übersicht aller Operatoren. */
 export function Operatoren() {
@@ -44,7 +45,9 @@ export function Operatoren() {
       <p className="crumbs">
         <Link to="/material">Material</Link> / Operatoren
       </p>
-      <h1>🗣️ Operatoren-Trainer</h1>
+      <h1>
+        <Icon name="message-square-quote" /> Operatoren-Trainer
+      </h1>
       <p className="lead">
         Der Operator („nennen“, „erläutern“, „beurteilen“ …) sagt, wie ausführlich du antworten musst. Wer „erläutern“ mit Stichpunkten
         beantwortet oder bei „beurteilen“ kein Urteil fällt, verschenkt Punkte. In Aufgaben und Klausuren sind die Operatoren unterstrichen
@@ -80,12 +83,15 @@ export function Operatoren() {
           {gewaehlt !== null && (
             <div className="leicht-feedback" role="status">
               <p className={`verdict ${optionen[gewaehlt].richtig ? 'ok' : 'bad'}`}>
-                {optionen[gewaehlt].richtig ? '✅ Richtig!' : `❌ Nicht ganz – „${frage.wort}“ heißt „${op.name}“.`}
+                <Icon name={optionen[gewaehlt].richtig ? 'circle-check' : 'circle-x'} />{' '}
+                {optionen[gewaehlt].richtig ? 'Richtig!' : `Nicht ganz – „${frage.wort}“ heißt „${op.name}“.`}
               </p>
               <p>
                 <b>{op.name}</b> ({BEREICH_TEXT[op.bereich]}): {op.verlangt} <i>Punkte: {op.punkte}.</i>
               </p>
-              <p>💡 {op.tipp}</p>
+              <p>
+                <Icon name="lightbulb" /> {op.tipp}
+              </p>
             </div>
           )}
           <div className="actions">
@@ -124,7 +130,9 @@ export function Operatoren() {
                   <td>
                     {o.verlangt}
                     <br />
-                    <span className="muted small">💡 {o.tipp}</span>
+                    <span className="muted small">
+                      <Icon name="lightbulb" /> {o.tipp}
+                    </span>
                   </td>
                   <td className="small">{o.punkte}</td>
                   <td className="num">{haeufigkeit[o.id] ?? 0}</td>

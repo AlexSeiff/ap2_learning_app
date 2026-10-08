@@ -59,7 +59,7 @@ describe('Selbsteinschätzung in den Seiten', () => {
 
   it('Übersicht zeigt die Kalibrierung erst mit Einschätzungen', () => {
     progress = emptyProgress();
-    expect(render('/')).not.toContain('🎯 Selbsteinschätzung');
+    expect(render('/')).not.toContain('Selbsteinschätzung');
     progress = {
       ...emptyProgress(),
       attempts: [
@@ -68,7 +68,7 @@ describe('Selbsteinschätzung in den Seiten', () => {
       ],
     };
     const html = render('/');
-    expect(html).toContain('🎯 Selbsteinschätzung');
+    expect(html).toContain('Selbsteinschätzung');
     expect(html).toContain('Bei „sicher“ lagst du in <b>50 %</b> richtig');
   });
 });

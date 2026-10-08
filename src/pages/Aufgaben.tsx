@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { IS_STATIC } from '../lib/api';
 import { difficulty, formatPoints, percent } from '../lib/grading';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 export function Aufgaben() {
   const { content, progress } = useStore();
@@ -141,17 +142,17 @@ export function Aufgaben() {
         {selected.size > 0 && (
           <>
             <Link className="button secondary" to={`/druck?art=aufgaben&ids=${ids}`}>
-              🖨️ Aufgabenblatt
+              <Icon name="printer" /> Aufgabenblatt
             </Link>
             <Link className="button secondary" to={`/druck?art=loesungen&ids=${ids}`}>
-              🖨️ Lösungsblatt
+              <Icon name="printer" /> Lösungsblatt
             </Link>
           </>
         )}
         {tasks.length > 0 && (
           // Zufall erst beim Klick ziehen – beim Rendern wäre er unrein und bei jedem Neurendern anders.
           <button type="button" onClick={() => navigate(`/aufgabe/${tasks[Math.floor(Math.random() * tasks.length)].id}`)}>
-            🎲 Zufallsaufgabe
+            <Icon name="dices" /> Zufallsaufgabe
           </button>
         )}
       </div>

@@ -5,6 +5,7 @@ import { useStore } from '../lib/store';
 import { cardPool } from '../lib/cards';
 import { TheoryMarkdown } from '../components/TheoryMarkdown';
 import type { Topic } from '../../shared/types';
+import { Icon } from '../components/Icon';
 
 /** „Deep Dive 3“ oder „Zusatz“ für das ältere SQL-Blatt. */
 const topicLabel = (t: Topic) => (t.id === '00' ? 'Zusatz' : `Deep Dive ${t.number}`);
@@ -86,7 +87,7 @@ export function Thema() {
           {topic.exam && (
             <>
               <Link className="button" to={`/klausur/${topic.id}`}>
-                📝 Übungsklausur
+                <Icon name="file-pen-line" /> Übungsklausur
               </Link>
               <Link className="button secondary" to={`/aufgaben?thema=${topic.id}`}>
                 Einzelaufgaben
@@ -95,7 +96,7 @@ export function Thema() {
           )}
           {cards > 0 && (
             <Link className="button secondary" to={`/karteikarten?thema=${topic.id}`}>
-              🗂️ {cards} Karteikarten
+              <Icon name="layers" /> {cards} Karteikarten
             </Link>
           )}
         </div>

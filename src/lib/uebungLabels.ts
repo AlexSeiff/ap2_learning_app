@@ -12,7 +12,7 @@ export const STATUS_LABELS: Record<UebungStatus, string> = {
   offen: 'offen',
   geloest: '✓ gelöst',
   faellig: '↻ Wiederholung fällig',
-  'mit-loesung': '👁 mit Lösung',
+  'mit-loesung': 'mit Lösung',
 };
 
 export const STATUS_CLASS: Record<UebungStatus, string> = { offen: '', geloest: 'good', faellig: 'low', 'mit-loesung': 'mid' };

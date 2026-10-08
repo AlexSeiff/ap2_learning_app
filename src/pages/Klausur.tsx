@@ -14,6 +14,7 @@ import { blockGruppen, istMischId, klausurName, MISCH_BEREICHE, type MischBereic
 import { useStore } from '../lib/store';
 import { neuerSeed } from '../rechnen/zufall';
 import { EXAM_MINUTES } from '../../shared/config';
+import { Icon } from '../components/Icon';
 
 /** Link zu einer neu gemischten Probeklausur (neuer Seed bei jedem Klick). */
 export function useNeueMischKlausur() {
@@ -42,7 +43,9 @@ export function KlausurAuswahl() {
         </div>
       )}
       <section className="card misch-start">
-        <h2>🎲 Gemischte Probeklausur</h2>
+        <h2>
+          <Icon name="dices" /> Gemischte Probeklausur
+        </h2>
         <p>
           Wie die echte AP2: Aufgaben aus mehreren Deep Dives, gewichtet nach der Themenliste – 90 Minuten, 100 Punkte. Jedes Mal neu
           gemischt.
@@ -52,7 +55,7 @@ export function KlausurAuswahl() {
         <div className="actions">
           {MISCH_BEREICHE.map((b) => (
             <button key={b.id} type="button" className={b.id === 'gemischt' ? '' : 'secondary'} onClick={() => neueMisch(b.id)}>
-              🎲 {b.id === 'gemischt' ? 'Gemischte Probeklausur' : b.kurz}
+              <Icon name="dices" /> {b.id === 'gemischt' ? 'Gemischte Probeklausur' : b.kurz}
             </button>
           ))}
         </div>
@@ -177,11 +180,11 @@ export function Klausur() {
               start();
             }}
           >
-            ▶ Klausur starten ({EXAM_MINUTES} min)
+            <Icon name="play" /> Klausur starten ({EXAM_MINUTES} min)
           </button>
           {misch && (
             <button type="button" className="secondary" onClick={() => neueMisch(misch.bereich)}>
-              🎲 Neu mischen
+              <Icon name="dices" /> Neu mischen
             </button>
           )}
           {topic && traps > 0 && (
@@ -190,14 +193,14 @@ export function Klausur() {
               to={`/karteikarten?thema=${topic.id}&typ=falle`}
               title="Typische Prüfungsfehler vor der Klausur wiederholen"
             >
-              ⚠️ {traps} Fallen-Karten vorher
+              <Icon name="triangle-alert" /> {traps} Fallen-Karten vorher
             </Link>
           )}
           <Link className="button secondary" to={`/druck?art=aufgaben&thema=${quelle.id}`}>
-            🖨️ Aufgabenblatt (PDF)
+            <Icon name="printer" /> Aufgabenblatt (PDF)
           </Link>
           <Link className="button secondary" to={`/druck?art=loesungen&thema=${quelle.id}`}>
-            🖨️ Lösungsblatt (PDF)
+            <Icon name="printer" /> Lösungsblatt (PDF)
           </Link>
         </div>
         <p className="hint">
@@ -216,7 +219,7 @@ export function Klausur() {
           <>
             {/* Sichtbarer Timer tickt jede Sekunde, ist aber keine Live-Region; angesagt wird nur alle 5 Minuten (sr-only). */}
             <span role="timer" aria-label="Restzeit" className={`timer ${remaining < 10 * 60_000 ? 'low' : ''}`}>
-              ⏱ {formatRemaining(remaining)}
+              <Icon name="timer" /> {formatRemaining(remaining)}
             </span>
             <span className="sr-only" aria-live="polite">
               {timerAnnouncement(remaining)}
@@ -233,7 +236,7 @@ export function Klausur() {
                   message: empty
                     ? `${empty} Aufgaben sind noch leer. Nach der Abgabe kannst du nichts mehr ändern.`
                     : 'Nach der Abgabe kannst du nichts mehr ändern.',
-                  confirmLabel: '📝 Abgeben',
+                  confirmLabel: 'Abgeben',
                   cancelLabel: 'Weiterschreiben',
                 });
                 if (!ok) return;
@@ -278,7 +281,7 @@ export function Klausur() {
             const ok = await confirm({
               title: 'Klausur abbrechen?',
               message: 'Alle Antworten und Punkte dieser Klausur werden verworfen.',
-              confirmLabel: '🗑️ Klausur verwerfen',
+              confirmLabel: 'Klausur verwerfen',
               cancelLabel: submitted ? 'Weiter bewerten' : 'Weiterschreiben',
               danger: true,
             });

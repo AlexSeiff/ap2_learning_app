@@ -1,5 +1,6 @@
 import type { Fehlergrund } from '../../shared/progress';
 import { FEHLERGRUND_LISTE } from '../lib/fehlergruende';
+import { Icon } from './Icon';
 
 /** „Woran lag's?“ nach der Selbstbewertung unter voller Punktzahl (ROADMAP 8.7). Freiwillig; zweiter Klick hebt die Wahl auf. */
 export function FehlergrundWahl({ value, onChange }: { value: Fehlergrund | undefined; onChange: (g: Fehlergrund | undefined) => void }) {
@@ -14,7 +15,7 @@ export function FehlergrundWahl({ value, onChange }: { value: Fehlergrund | unde
           aria-pressed={value === g.id}
           onClick={() => onChange(value === g.id ? undefined : g.id)}
         >
-          {g.label}
+          <Icon name={g.icon} /> {g.label}
         </button>
       ))}
     </div>

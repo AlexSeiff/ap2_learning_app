@@ -9,6 +9,7 @@ import { parseBackup } from '../lib/backup';
 import { isStoragePersisted } from '../lib/persistentStorage';
 import { formatIsoDate } from '../lib/stats';
 import { useStore } from '../lib/store';
+import { Icon } from '../components/Icon';
 
 export function Daten() {
   const { content, progress, reload, update, replaceProgress, aiEnabled, aiModel } = useStore();
@@ -52,7 +53,7 @@ export function Daten() {
           message:
             `Die Sicherung „${file.name}“ wird mit deinem Fortschritt zusammengeführt – nichts geht verloren. ` +
             `Neu dazu: ${added}. Bei Karten, Übungen und dem Fehlerjournal gilt jeweils der neuere Stand. Deine Einstellungen bleiben.`,
-          confirmLabel: '🔀 Zusammenführen',
+          confirmLabel: 'Zusammenführen',
         });
         if (!ok) return;
         update((p) => mergeProgress(p, backup));
@@ -62,7 +63,7 @@ export function Daten() {
       const ok = await confirm({
         title: 'Sicherung einspielen?',
         message: `Dein aktueller Fortschritt wird komplett durch die Sicherung „${file.name}“ ersetzt (auch die Einstellungen).`,
-        confirmLabel: '⬆ Ersetzen',
+        confirmLabel: 'Ersetzen',
         danger: true,
       });
       if (!ok) return;
@@ -84,7 +85,7 @@ export function Daten() {
       const ok = await confirm({
         title: 'Tagessicherung wiederherstellen?',
         message: `Dein aktueller Fortschritt wird komplett durch den Stand vom ${formatIsoDate(date)} ersetzt. Lade den jetzigen Stand zur Sicherheit vorher herunter.`,
-        confirmLabel: '↩ Wiederherstellen',
+        confirmLabel: 'Wiederherstellen',
         danger: true,
       });
       if (!ok) return;
@@ -116,7 +117,7 @@ export function Daten() {
         ) : (
           <>
             <button type="button" onClick={reimport}>
-              ↻ Lernblätter neu importieren
+              <Icon name="rotate-cw" /> Lernblätter neu importieren
             </button>
             <p className="hint">Änderungen an den .md-Dateien werden auch automatisch erkannt – die Seite lädt dann neu.</p>
           </>
@@ -186,7 +187,7 @@ export function Daten() {
         </p>
         {IS_STATIC && persisted !== null && (
           <p className="hint">
-            💽 Speicher dauerhaft:{' '}
+            <Icon name="hard-drive" /> Speicher dauerhaft:{' '}
             {persisted === true ? (
               <b>ja</b>
             ) : persisted === false ? (
@@ -203,9 +204,9 @@ export function Daten() {
         {IS_STATIC && (
           <>
             <p className="hint">
-              🗄 Automatische Tagessicherung im Browser (IndexedDB): beim ersten Speichern eines Tages wird der Stand vom Tagesbeginn
-              gesichert, die letzten 7 Tage bleiben. Sie liegt im selben Browser – gegen „Browserdaten löschen“ hilft nur eine
-              heruntergeladene Sicherung. Umziehen aus der lokalen App oder zwischen Handy und PC: dort „Sicherung herunterladen“, hier
+              <Icon name="archive" /> Automatische Tagessicherung im Browser (IndexedDB): beim ersten Speichern eines Tages wird der Stand
+              vom Tagesbeginn gesichert, die letzten 7 Tage bleiben. Sie liegt im selben Browser – gegen „Browserdaten löschen“ hilft nur
+              eine heruntergeladene Sicherung. Umziehen aus der lokalen App oder zwischen Handy und PC: dort „Sicherung herunterladen“, hier
               „Sicherung zusammenführen“ (beide Stände bleiben) oder „einspielen“ (ersetzt).
             </p>
             {backups?.items?.length ? (
@@ -227,7 +228,7 @@ export function Daten() {
                         <td>{b.cards}</td>
                         <td>
                           <button type="button" className="secondary small" onClick={() => restoreBrowserBackup(b.date)}>
-                            ↩ Wiederherstellen
+                            <Icon name="undo-2" /> Wiederherstellen
                           </button>
                         </td>
                       </tr>
@@ -246,12 +247,13 @@ export function Daten() {
           <p className="hint">
             {backups.newest ? (
               <>
-                🗄 Automatische Tagessicherung: zuletzt vom {new Date(`${backups.newest}T00:00:00`).toLocaleDateString('de-DE')} (
-                {backups.count} in <code>lern-app/data/backups/</code>, die letzten 14 Tage werden aufbewahrt).
+                <Icon name="archive" /> Automatische Tagessicherung: zuletzt vom{' '}
+                {new Date(`${backups.newest}T00:00:00`).toLocaleDateString('de-DE')} ({backups.count} in <code>lern-app/data/backups/</code>
+                , die letzten 14 Tage werden aufbewahrt).
               </>
             ) : (
               <>
-                🗄 Noch keine automatische Tagessicherung – sie entsteht beim ersten Speichern eines Tages in{' '}
+                <Icon name="archive" /> Noch keine automatische Tagessicherung – sie entsteht beim ersten Speichern eines Tages in{' '}
                 <code>lern-app/data/backups/</code>.
               </>
             )}
@@ -259,7 +261,7 @@ export function Daten() {
         )}
         <div className="actions">
           <button type="button" className="secondary" onClick={downloadBackup}>
-            ⬇ Sicherung herunterladen
+            <Icon name="download" /> Sicherung herunterladen
           </button>
           <button
             type="button"
@@ -267,7 +269,7 @@ export function Daten() {
             onClick={() => pickFile('merge')}
             title="Sicherung mit dem Fortschritt hier vereinen – z. B. zwischen Handy und PC"
           >
-            🔀 Sicherung zusammenführen
+            <Icon name="shuffle" /> Sicherung zusammenführen
           </button>
           <button
             type="button"
@@ -275,7 +277,7 @@ export function Daten() {
             onClick={() => pickFile('replace')}
             title="Fortschritt komplett durch die Sicherung ersetzen"
           >
-            ⬆ Sicherung einspielen (ersetzen)
+            <Icon name="upload" /> Sicherung einspielen (ersetzen)
           </button>
           <input
             ref={fileRef}
@@ -296,7 +298,7 @@ export function Daten() {
                 title: 'Fortschritt zurücksetzen?',
                 message:
                   'Wirklich den GESAMTEN Lernfortschritt löschen? Deine Einstellungen bleiben erhalten. Lade vorher am besten eine Sicherung herunter.',
-                confirmLabel: '🗑️ Alles löschen',
+                confirmLabel: 'Alles löschen',
                 danger: true,
               });
               if (!ok) return;

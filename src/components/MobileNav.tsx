@@ -2,12 +2,13 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { IS_STATIC } from '../lib/api';
 import { aktiveGruppe, badgeSumme, MEHR_ZIELE, type NavBadge, type NavGruppe, type NavZiel, UEBEN_ZIELE } from '../lib/navigation';
+import { Icon, type IconName } from './Icon';
 
 type Props = {
   /** Öffnet die globale Suche (ROADMAP 8.8) – erster Eintrag im Menü „Mehr“. */
   onSuche: () => void;
   badges: Record<NavBadge, number>;
-  theme: { icon: string; label: string; toggle: () => void };
+  theme: { icon: IconName; label: string; toggle: () => void };
   saveText: string;
   saveState: string;
 };
@@ -52,16 +53,16 @@ export function MobileNav({ onSuche, badges, theme, saveText, saveState }: Props
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offen]);
 
-  const platz = (to: string, gruppe: NavGruppe, icon: string, label: string) => (
+  const platz = (to: string, gruppe: NavGruppe, icon: IconName, label: string) => (
     <NavLink to={to} end={to === '/'} className={aktiv === gruppe ? 'active' : ''} aria-current={aktiv === gruppe ? 'page' : undefined}>
       <span className="bn-icon" aria-hidden="true">
-        {icon}
+        <Icon name={icon} />
       </span>
       <span className="bn-label">{label}</span>
     </NavLink>
   );
 
-  const menueKnopf = (menue: Menue, icon: string, label: string, badge: number) => (
+  const menueKnopf = (menue: Menue, icon: IconName, label: string, badge: number) => (
     <button
       ref={knoepfe[menue]}
       type="button"
@@ -71,7 +72,7 @@ export function MobileNav({ onSuche, badges, theme, saveText, saveState }: Props
       onClick={() => setOffen(offen === menue ? null : menue)}
     >
       <span className="bn-icon" aria-hidden="true">
-        {icon}
+        <Icon name={icon} />
         <Badge n={badge} />
       </span>
       <span className="bn-label">{label}</span>
@@ -84,7 +85,9 @@ export function MobileNav({ onSuche, badges, theme, saveText, saveState }: Props
       {ziele.map((z) => (
         <li key={z.to}>
           <NavLink to={z.to} className={({ isActive }) => (isActive ? 'active' : '')} onClick={() => setGeoeffnet(null)}>
-            {z.label}
+            <span className="nav-label">
+              <Icon name={z.icon} /> {z.label}
+            </span>
             {z.badge && <Badge n={badges[z.badge]} />}
           </NavLink>
         </li>
@@ -108,12 +111,12 @@ export function MobileNav({ onSuche, badges, theme, saveText, saveState }: Props
                   onSuche();
                 }}
               >
-                🔎 Suchen
+                <Icon name="search" /> Suchen
               </button>
               {liste(mehrZiele)}
               <div className="bn-foot">
                 <button type="button" className="ghost" onClick={theme.toggle} title={theme.label}>
-                  {theme.icon} {theme.label}
+                  <Icon name={theme.icon} /> {theme.label}
                 </button>
                 <span className={`save-state ${saveState}`}>{saveText}</span>
               </div>
@@ -122,11 +125,11 @@ export function MobileNav({ onSuche, badges, theme, saveText, saveState }: Props
         </div>
       )}
       <div className="bn-bar">
-        {platz('/', 'uebersicht', '🏠', 'Übersicht')}
-        {platz('/lernen', 'lernen', '📖', 'Lernen')}
-        {platz('/karteikarten', 'karteikarten', '🃏', 'Karteikarten')}
-        {menueKnopf('ueben', '✏️', 'Üben', badgeSumme(UEBEN_ZIELE, badges))}
-        {menueKnopf('mehr', '☰', 'Mehr', badgeSumme(mehrZiele, badges))}
+        {platz('/', 'uebersicht', 'house', 'Übersicht')}
+        {platz('/lernen', 'lernen', 'book-open', 'Lernen')}
+        {platz('/karteikarten', 'karteikarten', 'layers', 'Karteikarten')}
+        {menueKnopf('ueben', 'pencil', 'Üben', badgeSumme(UEBEN_ZIELE, badges))}
+        {menueKnopf('mehr', 'menu', 'Mehr', badgeSumme(mehrZiele, badges))}
       </div>
     </nav>
   );

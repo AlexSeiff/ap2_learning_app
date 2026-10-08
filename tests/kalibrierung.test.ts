@@ -78,8 +78,8 @@ describe('SicherheitWahl', () => {
     const html = renderToString(createElement(SicherheitWahl, { value: 2, onChange: () => {} }));
     expect(html).toContain('Wie sicher bist du?');
     expect(html.match(/aria-pressed="true"/g)).toHaveLength(1);
-    expect(html).toMatch(/aria-pressed="true"[^>]*>🤔 teils/);
-    expect(html).toContain('😟 unsicher');
-    expect(html).toContain('💪 sicher');
+    expect(html).toMatch(/aria-pressed="true"[^>]*>teils/);
+    expect(html).toContain('unsicher');
+    expect(html).toContain('sicher');
   });
 });

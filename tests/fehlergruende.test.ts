@@ -137,7 +137,7 @@ describe('Seiten', () => {
     };
     const html = render('/klausur/03');
     expect(html.match(/Woran lag&#x27;s\? \(optional\)/g)).toHaveLength(1);
-    expect(html).toMatch(/aria-pressed="true"[^>]*>🔀 Begriff verwechselt/);
+    expect(html).toMatch(/aria-pressed="true"[^>]*><svg.*?<\/svg> (<!-- -->)?Begriff verwechselt/);
   });
 
   it('Fehlerjournal und Übersicht zeigen den häufigsten Grund, das Journal den Grund je Eintrag', () => {
@@ -148,13 +148,13 @@ describe('Seiten', () => {
       versuch('04-A1', d(3), 0, { fehlergrund: 'formel' }),
     ].reduce((p, a) => recordAttempt(p, a, a.date.slice(0, 10)), emptyProgress());
     const journal = render('/fehlerjournal');
-    expect(journal).toContain('🧩 Woran es meistens liegt');
-    expect(journal).toContain('Häufigster Grund: <b>🗣️ Operator nicht beachtet</b> (2 von 3)');
+    expect(journal).toContain('Woran es meistens liegt');
+    expect(journal).toMatch(/Häufigster Grund: <b><svg.*?<\/svg> (<!-- -->)?Operator nicht beachtet<\/b> \(2 von 3\)/);
     expect(journal).toContain('href="/material/operatoren"');
     expect(journal.match(/class="badge fehlergrund-badge"/g)).toHaveLength(3);
-    expect(render('/')).toContain('🧩 Woran es meistens liegt');
+    expect(render('/')).toContain('Woran es meistens liegt');
 
     progress = emptyProgress();
-    expect(render('/fehlerjournal')).not.toContain('🧩 Woran es meistens liegt');
+    expect(render('/fehlerjournal')).not.toContain('Woran es meistens liegt');
   });
 });
