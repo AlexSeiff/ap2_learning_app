@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ExecOutput, LintWarnings } from '../components/ResultTable';
+import { BelegsatzPanel } from '../components/Belegsatz';
 import { SchemaBrowser } from '../components/SchemaBrowser';
 import { SqlEditor, type SqlEditorHandle } from '../components/SqlEditor';
 import { SqlTabs } from '../components/SqlTabs';
@@ -217,6 +218,7 @@ export function SqlFrei() {
         <button type="button" className="secondary" onClick={() => void reset()} title="Alle Änderungen an der Datenbank verwerfen">
           <Icon name="rotate-ccw" /> Zurücksetzen
         </button>
+        <BelegsatzPanel />
         {!!examples.length && (
           <label>
             Beispiele

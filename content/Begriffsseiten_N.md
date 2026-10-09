@@ -279,6 +279,29 @@ Vorwärts das Maximum, rückwärts das Minimum – kritisch ist, was keinen Puff
 Siehe auch: Kritischer Pfad · Gesamtpuffer · Freier Puffer · Gantt-Diagramm · Vorwärtsrechnung
 Mehr: Deep Dive 12, 3.2 · Deep Dive 17, 5.1
 
+## Neuron
+<!-- id: neuron · quellen: Karte DD6, DD6 9.1 · stand: 2026-10 -->
+
+Grundbaustein eines neuronalen Netzes: bildet die gewichtete Summe seiner Eingaben plus Bias und gibt sie über eine Aktivierungsfunktion als Ausgabe weiter.
+
+### Erklärung
+Das künstliche Neuron ist dem Nervensystem grob nachempfunden: Eingaben entsprechen den Signalen anderer Zellen, Gewichte den Synapsen, die gewichtete Summe dem Zellkörper und die Aktivierungsfunktion dem „Feuern“ ab einer Schwelle. Gerechnet wird z = Σ wᵢ · xᵢ + b und dann y = f(z). Das erste Modell stammt von McCulloch und Pitts (1943). In einem Netz sind Neuronen in Eingabe-, verdeckten und Ausgabeschichten angeordnet; die Ausgabe einer Schicht ist die Eingabe der nächsten.
+
+### Beispiel
+x = (0,8; 0,5; 1), w = (1,5; −0,5; 0,8), b = −1: z = 1,2 − 0,25 + 0,8 − 1 = 0,75. Mit der Sigmoid-Funktion ergibt sich y ≈ 0,68.
+
+### Abgrenzung
+Ein einzelnes Neuron mit Stufenfunktion und eigener Lernregel heißt Perzeptron. Ein neuronales Netz besteht aus vielen verbundenen Neuronen.
+
+### Prüfungsfalle
+Den Bias bei der gewichteten Summe vergessen.
+
+### Merksatz
+Gewichten, summieren, Bias dazu, aktivieren.
+
+Siehe auch: Gewicht · Bias · Aktivierungsfunktion · Perzeptron · Neuronale Netze
+Mehr: Deep Dive 6, 9.1 · Deep Dive 6, 9.2
+
 ## Neuronale Netze
 <!-- id: neuronale-netze · quellen: Karte DD6, DD6 2.4, DD6 8.2 · stand: 2026-10 -->
 
@@ -302,8 +325,8 @@ Ein neuronales Netz für einen kleinen Datensatz mit Erklärungspflicht empfehle
 ### Merksatz
 Je mehr Daten und je weniger Erklärungsbedarf, desto eher ein neuronales Netz.
 
-Siehe auch: Deep Learning · Machine Learning · Entscheidungsbaum · Overfitting
-Mehr: Deep Dive 6, 2.4 · Deep Dive 6, 8.2
+Siehe auch: Neuron · Perzeptron · Mehrschichtiges Perzeptron · Deep Learning · Entscheidungsbaum
+Mehr: Deep Dive 6, 2.4 · Deep Dive 6, 8.2 · Deep Dive 6, Teil 9
 
 ## Nichtige Vereinbarungen
 <!-- id: nichtige-vereinbarungen · quellen: Karte DD13, DD13 1.2 · stand: 2026-10 -->

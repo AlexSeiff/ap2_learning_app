@@ -53,7 +53,7 @@ describe('Echte Lernblätter in content/', () => {
     expect(content.decks.length).toBeGreaterThan(0);
     expect(cards.length).toBeGreaterThan(0);
     expect(new Set(content.flashcards.map((c) => c.id)).size).toBe(content.flashcards.length);
-    expect(content.materials.map((m) => m.id)).toEqual(['lernzettel-kernthemen', 'themenliste-beispielfragen']);
+    expect(content.materials.map((m) => m.id)).toEqual(['lernzettel-kernthemen', 'themenliste-beispielfragen', 'sql-belegsatz']);
     for (const t of content.topics) expect(t.title, t.file).not.toMatch(/\bKW\b/);
   });
 });

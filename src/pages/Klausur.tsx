@@ -25,6 +25,9 @@ export function useNeueMischKlausur() {
 export function KlausurAuswahl() {
   const { content, progress } = useStore();
   const neueMisch = useNeueMischKlausur();
+  const navigate = useNavigate();
+  // Neu gemischt zum Ausdrucken (Umsetzungsplan Phase 6): gleicher Seed → Aufgaben- und Lösungsblatt passen zusammen.
+  const druckeMisch = () => navigate(`/druck?misch=${mischId('gemischt', neuerSeed())}&art=aufgaben`);
   const active = progress.activeExam;
   const activeKnown = active && (istMischId(active.topicId) || content.topics.some((t) => t.id === active.topicId));
   const mischRuns = progress.exams.filter((e) => istMischId(e.topicId) && e.total !== undefined && e.max > 0);
@@ -58,6 +61,14 @@ export function KlausurAuswahl() {
               <Icon name="dices" /> {b.id === 'gemischt' ? 'Gemischte Probeklausur' : b.kurz}
             </button>
           ))}
+          <button
+            type="button"
+            className="secondary"
+            onClick={druckeMisch}
+            title="Neu gemischte Probeklausur mit Deckblatt zum Ausdrucken; das passende Lösungsblatt ist einen Klick entfernt"
+          >
+            <Icon name="printer" /> Drucken
+          </button>
         </div>
       </section>
       <h2>Je Deep Dive</h2>

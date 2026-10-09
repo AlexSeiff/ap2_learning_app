@@ -38,6 +38,7 @@ const Heute = lazy(() => import('./pages/Heute').then((m) => ({ default: m.Heute
 // Operatoren-Trainer lazy: Quiz und Tabelle braucht nur diese Seite.
 const Operatoren = lazy(() => import('./pages/Operatoren').then((m) => ({ default: m.Operatoren })));
 // Formelsammlung lazy: zieht KaTeX nach.
+const SqlBelegsatz = lazy(() => import('./pages/SqlBelegsatz').then((m) => ({ default: m.SqlBelegsatz })));
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
 // Glossar lazy: baut den Index der Begriffe erst beim Öffnen.
 const Glossar = lazy(() => import('./pages/Glossar').then((m) => ({ default: m.Glossar })));
@@ -193,6 +194,7 @@ function Layout() {
                       <Route path="/generator" element={IS_STATIC ? <Navigate to="/" replace /> : <Generator />} />
                       <Route path="/material" element={<Material />} />
                       <Route path="/material/formeln" element={<Formelsammlung />} />
+                      <Route path="/material/sql-belegsatz" element={<SqlBelegsatz />} />
                       <Route path="/material/operatoren" element={<Operatoren />} />
                       <Route path="/glossar" element={<Glossar />} />
                       <Route path="/glossar/:id" element={<Begriff />} />

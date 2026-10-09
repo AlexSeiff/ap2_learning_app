@@ -723,6 +723,29 @@ Mehrere Chefs, kurze Wege – aber wer hat recht?
 Siehe auch: Einliniensystem · Stabliniensystem · Matrixorganisation · Organigramm
 Mehr: Deep Dive 5, 6.1
 
+## Mehrschichtiges Perzeptron
+<!-- id: mehrschichtiges-perzeptron · quellen: Karte DD6, DD6 9.6 · stand: 2026-10 -->
+
+Neuronales Netz mit mindestens einer verdeckten Schicht zwischen Eingabe- und Ausgabeschicht (englisch Multilayer Perceptron, MLP).
+
+### Erklärung
+Jedes Neuron einer Schicht ist mit den Neuronen der nächsten Schicht verbunden. Die verdeckten Neuronen bilden Zwischenmerkmale, die Ausgabeschicht verknüpft sie. Dadurch lernt ein MLP auch Muster, die nicht linear trennbar sind, etwa XOR. Trainiert wird es mit Backpropagation; dafür braucht es ableitbare Aktivierungsfunktionen wie Sigmoid oder ReLU. Viele verdeckte Schichten führen zum Deep Learning.
+
+### Beispiel
+XOR mit zwei verdeckten Neuronen: h₁ rechnet OR (Gewichte 1 und 1, Bias −0,5), h₂ rechnet NAND (Gewichte −1 und −1, Bias 1,5), das Ausgabeneuron verknüpft beide mit AND (Gewichte 1 und 1, Bias −1,5). Für (1|1): h₁ = 1, h₂ = 0, Ausgabe 1 + 0 − 1,5 = −0,5 → 0.
+
+### Abgrenzung
+Das einfache Perzeptron hat nur ein Neuron ohne verdeckte Schicht und trennt mit einer Geraden. Deep Learning bezeichnet Netze mit vielen Schichten, die Merkmale selbst aus Rohdaten bilden.
+
+### Prüfungsfalle
+Behaupten, ein neuronales Netz könne XOR grundsätzlich nicht lernen – das gilt nur für ein einzelnes Perzeptron.
+
+### Merksatz
+Eine verdeckte Schicht macht aus einer Geraden beliebige Grenzen.
+
+Siehe auch: Perzeptron · Lineare Trennbarkeit · Backpropagation · Deep Learning
+Mehr: Deep Dive 6, 9.6
+
 ## Meilenstein
 <!-- id: meilenstein · quellen: Karte DD12, DD17 5.2 · stand: 2026-10 -->
 

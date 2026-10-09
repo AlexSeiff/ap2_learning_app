@@ -5,6 +5,7 @@ import { assoziation, kmeans } from './crispdm';
 import { qualitaetsgrad } from './datenqualitaet';
 import { id3, knn } from './klassifikation';
 import { konfusionsmatrix, regressionsguete } from './modellguete';
+import { neuron, perzeptron } from './neuronal';
 import { breakEven, netzplan, nutzwert, pert, risiko } from './projekt';
 import { amortisation, durchlaufzeit, fehlerquote, fmea } from './prozess';
 import { datensicherung, rpo } from './sicherung';
@@ -30,6 +31,8 @@ const alle = [
   kmeans,
   knn,
   id3,
+  neuron,
+  perzeptron,
   durchlaufzeit,
   fehlerquote,
   amortisation,

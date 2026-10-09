@@ -441,6 +441,31 @@ Wer mit vertretbarem Aufwand auf einen Menschen schließen kann, hat personenbez
 Siehe auch: DSGVO · Pseudonymisierung · Anonymisierung · Betroffene Person
 Mehr: Deep Dive 10, Teil 1
 
+## Perzeptron
+<!-- id: perzeptron · quellen: Karte DD6, DD6 9.1, DD6 9.4, DD6 9.5 · stand: 2026-10 -->
+
+Einzelnes künstliches Neuron mit Stufenfunktion, das seine Gewichte mit der Perzeptron-Lernregel aus gelabelten Beispielen lernt (Rosenblatt 1958).
+
+### Erklärung
+Das Perzeptron berechnet z = Σ wᵢ · xᵢ + b und gibt 1 aus, wenn z ≥ 0 ist, sonst 0. Es lernt überwacht: Ist die Ausgabe falsch, werden Gewichte und Bias nach der Regel wᵢ neu = wᵢ + η · (t − y) · xᵢ angepasst. Ein Durchlauf durch alle Fälle ist eine Epoche; gelernt wird, bis eine Epoche fehlerfrei bleibt. Weil es nur eine Trenngerade zieht, lernt es nur linear trennbare Klassen – AND und OR, aber nicht XOR.
+
+### Beispiel
+AND mit Start w₁ = w₂ = 0,5, b = −0,1 und η = 0,2: Der Fall (0|1) ergibt z = 0,4 und y = 1, verlangt ist 0. Also w₂ = 0,3 und b = −0,3. Nach einem weiteren Fehler bei (1|0) ist w₁ = 0,3, b = −0,5, und die zweite Epoche bleibt fehlerfrei.
+
+### Abgrenzung
+| | Perzeptron | Mehrschichtiges Perzeptron |
+|---|---|---|
+| Aufbau | ein Neuron | mindestens eine verdeckte Schicht |
+| Aktivierung | Stufenfunktion | meist Sigmoid oder ReLU |
+| Training | Perzeptron-Lernregel | Backpropagation |
+| lernt XOR | nein | ja |
+
+### Merksatz
+Ein Perzeptron zieht genau eine Gerade.
+
+Siehe auch: Neuron · Perzeptron-Lernregel · Lineare Trennbarkeit · Mehrschichtiges Perzeptron
+Mehr: Deep Dive 6, 9.4 · Deep Dive 6, 9.5
+
 ## Pessimistisches Sperren
 <!-- id: pessimistisches-sperren · quellen: Karte DD15, DD15 4.2 · stand: 2026-10 -->
 

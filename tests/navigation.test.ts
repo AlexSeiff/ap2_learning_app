@@ -40,6 +40,7 @@ describe('Bereiche', () => {
       '/glossar': 'glossar',
       '/glossar/sequnzdiagramm': 'glossar',
       '/material/formeln': 'glossar',
+      '/material/sql-belegsatz': 'glossar',
       '/material/operatoren': 'glossar',
       '/sql': 'sql',
       '/sql/uebungen': 'sql',

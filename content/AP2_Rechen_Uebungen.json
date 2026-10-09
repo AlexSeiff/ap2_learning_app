@@ -844,6 +844,64 @@
       "erklaerung": "ID3 wählt gierig an jedem Knoten das Merkmal mit dem größten Informationsgewinn und rechnet in jedem Ast mit den verbliebenen Fällen weiter. Schwäche: Merkmale mit vielen Ausprägungen werden bevorzugt (Abhilfe: Gain Ratio in C4.5)."
     },
     {
+      "id": "RE-ML-013",
+      "thema": "Deep Dive 6",
+      "titel": "Neuron: Reklamationsrisiko mit Sigmoid",
+      "schwierigkeit": 1,
+      "tags": ["neuronales-netz", "neuron", "aktivierungsfunktion"],
+      "vorlage": "neuron",
+      "daten": { "x": [0.8, 0.5, 1], "w": [1.5, -0.5, 0.8], "b": -1, "f": "sigmoid" },
+      "aufgabe": "Ein Neuron schätzt das Reklamationsrisiko eines Auftrags. Eingaben (skaliert): Lieferdauer, Packstücke, Neukunde – {{eingaben}}. Gewichte: {{gewichte}}, Bias b = {{bias}}.\n\nBerechne die gewichtete Summe z und die Ausgabe y mit der {{funktion}} (zwei Nachkommastellen).",
+      "hinweise": [
+        "z = w₁ · x₁ + w₂ · x₂ + w₃ · x₃ + b – negative Gewichte in Klammern einsetzen.",
+        "σ(z) = 1 / (1 + e^(−z)); e^(−0,75) ≈ 0,47."
+      ],
+      "erklaerung": "Die Sigmoid-Funktion macht aus z eine Zahl zwischen 0 und 1, die sich als Wahrscheinlichkeit lesen lässt: rund 68 % Reklamationsrisiko. Mit der Stufenfunktion wäre die Ausgabe 1 (z ≥ 0), mit ReLU 0,75.",
+      "quelleAufgabe": "DD6 Teil 9.2 und 9.3"
+    },
+    {
+      "id": "RE-ML-014",
+      "thema": "Deep Dive 6",
+      "titel": "Neuron mit Zufallszahlen",
+      "schwierigkeit": 1,
+      "tags": ["neuronales-netz", "neuron", "aktivierungsfunktion"],
+      "vorlage": "neuron",
+      "aufgabe": "Ein Neuron hat {{n}} Eingaben: {{eingaben}}. Gewichte: {{gewichte}}, Bias b = {{bias}}.\n\nBerechne die gewichtete Summe z und die Ausgabe y mit der Aktivierungsfunktion **{{funktion}}**.",
+      "erklaerung": "Stufenfunktion: Ja/Nein ab z ≥ 0 (Perzeptron). Sigmoid: Wert zwischen 0 und 1, deutbar als Wahrscheinlichkeit. ReLU: negative Summen werden 0 – der Standard in den verdeckten Schichten tiefer Netze."
+    },
+    {
+      "id": "RE-ML-015",
+      "thema": "Deep Dive 6",
+      "titel": "Perzeptron lernt AND: ein Lernschritt",
+      "schwierigkeit": 2,
+      "tags": ["neuronales-netz", "perzeptron", "lernregel"],
+      "vorlage": "perzeptron",
+      "daten": { "x": [0, 1], "w": [0.5, 0.5], "b": -0.1, "t": 0, "eta": 0.2 },
+      "aufgabe": "Ein Perzeptron (Stufenfunktion: y = 1 ab z ≥ 0) soll die AND-Funktion lernen. Aktuell gilt {{gewichte}}, Bias b = {{bias}}, Lernrate η = {{eta}}.\n\nTrainingsfall: {{eingaben}} mit Sollwert t = {{soll}}. Berechne z, die Ausgabe y, den Fehler e und die neuen Gewichte und den neuen Bias.",
+      "eingaben": ["z", "y", "e", "w1", "w2", "bNeu"],
+      "hinweise": [
+        "z = w₁ · x₁ + w₂ · x₂ + b, dann y = 1 ab z ≥ 0.",
+        "e = t − y (Soll minus Ist).",
+        "wᵢ neu = wᵢ + η · e · xᵢ – bei xᵢ = 0 bleibt das Gewicht. b neu = b + η · e."
+      ],
+      "erklaerung": "Das Perzeptron feuert für (0|1), obwohl AND hier 0 verlangt. Deshalb sinken w₂ und der Bias; w₁ bleibt, weil x₁ = 0 nichts zum Fehler beigetragen hat. Nach einem weiteren Schritt für (1|0) ist das Training fertig (DD6 Teil 9.5).",
+      "quelleAufgabe": "DD6 Teil 9.5"
+    },
+    {
+      "id": "RE-ML-016",
+      "thema": "Deep Dive 6",
+      "titel": "Perzeptron-Lernschritt mit Zufallszahlen",
+      "schwierigkeit": 2,
+      "tags": ["neuronales-netz", "perzeptron", "lernregel"],
+      "vorlage": "perzeptron",
+      "aufgabe": "Ein Perzeptron (Stufenfunktion: y = 1 ab z ≥ 0) mit {{gewichte}} und Bias b = {{bias}} bekommt den Trainingsfall {{eingaben}} mit Sollwert t = {{soll}}. Lernrate η = {{eta}}.\n\nBerechne die Ausgabe y, den Fehler e und die neuen Gewichte und den neuen Bias nach der Perzeptron-Lernregel.",
+      "hinweise": [
+        "Erst z = Σ wᵢ · xᵢ + b, dann y = 1 ab z ≥ 0.",
+        "e = t − y; wᵢ neu = wᵢ + η · e · xᵢ; b neu = b + η · e."
+      ],
+      "erklaerung": "Gelernt wird nur aus Fehlern: Ist e = 0, bleibt alles gleich. Gewichte von Eingaben mit x = 0 ändern sich nie. Sind die Daten linear trennbar, findet das Perzeptron nach endlich vielen Schritten fehlerfreie Gewichte."
+    },
+    {
       "id": "RE-PA-001",
       "thema": "Deep Dive 5",
       "titel": "Durchlaufzeit und Wertschöpfungsanteil",

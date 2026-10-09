@@ -348,6 +348,10 @@ export const ICONS = {
     ['path', { d: 'm17 8-5-5-5 5' }],
     ['path', { d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' }],
   ],
+  x: [
+    ['path', { d: 'M18 6 6 18' }],
+    ['path', { d: 'm6 6 12 12' }],
+  ],
 } as const satisfies Record<string, readonly IconElement[]>;
 
 export type IconName = keyof typeof ICONS;

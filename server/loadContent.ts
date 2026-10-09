@@ -27,6 +27,7 @@ const INHALT_MD = [
   /^Deep_Dive_SQL.*\.md$/,
   /^Lernzettel_Kernthemen\.md$/,
   /^AP2_Themenliste.*\.md$/,
+  /^AP2_SQL_Belegsatz\.md$/,
   /^Begriffsseiten_(?:[A-Z]|0-9)\.md$/,
 ];
 

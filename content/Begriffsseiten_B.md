@@ -1,4 +1,24 @@
 <!-- Begriffsseiten B · Stand 2026-10 -->
+## Backpropagation
+<!-- id: backpropagation · quellen: Karte DD6, DD6 8.2, DD6 9.6 · stand: 2026-10 -->
+
+Trainingsverfahren für mehrschichtige neuronale Netze: Der Fehler an der Ausgabe wird Schicht für Schicht zurückgerechnet, und jedes Gewicht wird ein Stück in die Richtung verändert, die den Fehler verringert.
+
+### Erklärung
+Ein Trainingsfall läuft zuerst vorwärts durch das Netz. Die Ausgabe wird mit dem richtigen Label verglichen. Dann wird mit der Kettenregel berechnet, wie stark jedes Gewicht zum Fehler beigetragen hat, beginnend bei der letzten Schicht. Jedes Gewicht wird entgegen diesem Beitrag angepasst (Gradientenabstieg), die Schrittweite gibt die Lernrate vor. Das wird über viele Epochen wiederholt. Dafür müssen die Aktivierungsfunktionen ableitbar sein – deshalb Sigmoid oder ReLU statt der Stufenfunktion.
+
+### Beispiel
+Ein Netz soll aus Fotos von Rücksendungen erkennen, ob ein Möbelstück beschädigt ist. Sagt es bei einem beschädigten Tisch „unbeschädigt“, verteilt Backpropagation diesen Fehler zurück auf alle Gewichte, die zur falschen Ausgabe beigetragen haben.
+
+### Abgrenzung
+Die Perzeptron-Lernregel trainiert nur ein einzelnes Neuron mit Stufenfunktion und kennt keine verdeckten Schichten. Backpropagation ist das Verfahren für mehrschichtige Netze und damit für Deep Learning.
+
+### Merksatz
+Vorwärts rechnen, Fehler rückwärts verteilen, Gewichte anpassen.
+
+Siehe auch: Mehrschichtiges Perzeptron · Perzeptron-Lernregel · Lernrate · Neuronale Netze
+Mehr: Deep Dive 6, 8.2 · Deep Dive 6, 9.6
+
 ## Bagging
 <!-- id: bagging · quellen: Karte DD6, DD6 8.3 · stand: 2026-10 -->
 
@@ -911,14 +931,16 @@ Ein Bonitätsmodell für Ratenkäufe lehnt Kunden aus bestimmten Stadtteilen üb
 ### Abgrenzung
 In der Statistik bezeichnet „Bias“ auch den systematischen Fehler eines Schätzers bzw. die Verzerrung durch zu einfache Modelle (Underfitting); im Prüfungskontext DSGVO und Ethik ist die Benachteiligung von Gruppen gemeint.
 
+In einem neuronalen Netz ist der Bias dagegen eine lernbare Zahl jedes Neurons, die zur gewichteten Summe addiert wird (z = Σ wᵢ · xᵢ + b). Er verschiebt die Schwelle, ab der das Neuron feuert, und hat mit Benachteiligung nichts zu tun. Gelernt wird er wie ein Gewicht: b neu = b + η · (t − y).
+
 ### Prüfungsfalle
 „Wir haben das Merkmal Geschlecht gelöscht, also ist das Modell fair.“
 
 ### Merksatz
 Wer verzerrte Daten füttert, erntet verzerrte Entscheidungen.
 
-Siehe auch: Transparenz und Erklärbarkeit · Stichprobe · Trainingsdaten · KI-Verordnung
-Mehr: Deep Dive 6, 6.2
+Siehe auch: Transparenz und Erklärbarkeit · Stichprobe · Trainingsdaten · KI-Verordnung · Neuron
+Mehr: Deep Dive 6, 6.2 · Deep Dive 6, 9.2
 
 ## Big Data
 <!-- id: big-data · quellen: Karte DD8, DD8 5.2 · stand: 2026-10 -->

@@ -440,6 +440,26 @@ Zins rauf, Inflation runter – Zins runter, Wirtschaft rauf.
 Siehe auch: Geldpolitik · Fiskalpolitik · Inflation · Magisches Viereck
 Mehr: Deep Dive 14, 4.4
 
+## Lernrate
+<!-- id: lernrate · quellen: Karte DD6, DD6 9.4 · stand: 2026-10 -->
+
+Schrittweite η (eta), mit der die Gewichte eines Modells bei jedem Lernschritt angepasst werden.
+
+### Erklärung
+In der Perzeptron-Lernregel steht die Lernrate als Faktor vor der Korrektur: wᵢ neu = wᵢ + η · (t − y) · xᵢ. Bei Backpropagation bestimmt sie, wie weit jedes Gewicht in Richtung des kleineren Fehlers geht. Eine zu große Lernrate lässt die Gewichte über eine gute Lösung hinausspringen; das Training pendelt oder kommt nicht zur Ruhe. Eine zu kleine Lernrate macht winzige Schritte, das Training braucht sehr viele Epochen. Die Lernrate ist ein Hyperparameter: Sie wird nicht gelernt, sondern vorher festgelegt und mit Validierungsdaten abgestimmt.
+
+### Beispiel
+Perzeptron mit w₂ = 0,5, Fehler e = −1 und x₂ = 1: Mit η = 0,2 wird w₂ = 0,5 − 0,2 = 0,3, mit η = 1 dagegen −0,5 – ein großer Sprung.
+
+### Prüfungsfalle
+Die Lernrate in der Lernregel weglassen und nur w + (t − y) · x rechnen.
+
+### Merksatz
+Zu groß springt, zu klein schleicht.
+
+Siehe auch: Perzeptron-Lernregel · Backpropagation · Epoche · Validierungsdaten
+Mehr: Deep Dive 6, 9.4
+
 ## Lessons Learned
 <!-- id: lessons-learned · quellen: Karte DD12, DD12 Teil 5 · stand: 2026-10 -->
 
@@ -647,6 +667,29 @@ Linear geht immer, aber nie schnell.
 
 Siehe auch: Binäre Suche · O-Notation · Index
 Mehr: Deep Dive 11, B7
+
+## Lineare Trennbarkeit
+<!-- id: lineare-trennbarkeit · quellen: Karte DD6, DD6 9.6 · stand: 2026-10 -->
+
+Eigenschaft zweier Klassen, sich im Merkmalsraum durch eine Gerade (bei mehr Merkmalen eine Ebene) vollständig trennen zu lassen.
+
+### Erklärung
+Ein einzelnes Perzeptron zieht genau eine solche Trenngerade: Auf der einen Seite ist die gewichtete Summe mindestens 0, auf der anderen negativ. Es kann deshalb nur linear trennbare Klassen fehlerfrei lernen – dann aber sicher nach endlich vielen Schritten (Konvergenzsatz). AND und OR sind linear trennbar, XOR nicht: Dort liegen die Fälle mit Ausgabe 1, (0|1) und (1|0), diagonal gegenüber. Minsky und Papert zeigten 1969, dass ein einzelnes Perzeptron daran scheitert. Ein Netz mit verdeckter Schicht löst das Problem.
+
+### Beispiel
+Das AND-Perzeptron mit w₁ = w₂ = 0,3 und b = −0,5 trennt mit der Geraden 0,3 x₁ + 0,3 x₂ − 0,5 = 0 den Fall (1|1) von den drei anderen.
+
+### Abgrenzung
+| Funktion | linear trennbar | lernbar mit einem Perzeptron |
+|---|---|---|
+| AND, OR | ja | ja |
+| XOR | nein | nein, erst mit verdeckter Schicht |
+
+### Merksatz
+Eine Gerade, ein Perzeptron – für XOR braucht es mehr.
+
+Siehe auch: Perzeptron · Mehrschichtiges Perzeptron · Neuron
+Mehr: Deep Dive 6, 9.6
 
 ## Liniendiagramm
 <!-- id: liniendiagramm · quellen: Karte DD11, DD17 6.3 · stand: 2026-10 -->

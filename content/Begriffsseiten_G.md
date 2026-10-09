@@ -580,6 +580,26 @@ Erst nacherfüllen, dann zurücktreten oder mindern.
 Siehe auch: Garantie · Mangelhafte Lieferung · Sachmangel · Beweislastumkehr beim Verbrauchsgüterkauf · Verjährung
 Mehr: Deep Dive 14, 2.5
 
+## Gewicht
+<!-- id: gewicht · quellen: Karte DD6, DD6 8.2, DD6 9.2 · stand: 2026-10 -->
+
+Zahl an einer Eingabe bzw. Verbindung im neuronalen Netz, die bestimmt, wie stark diese Eingabe das Neuron beeinflusst.
+
+### Erklärung
+Jede Eingabe eines Neurons wird mit ihrem Gewicht multipliziert, bevor alles addiert wird: z = w₁ · x₁ + w₂ · x₂ + … + b. Ein positives Gewicht verstärkt die Eingabe, ein negatives hemmt sie, ein Gewicht nahe 0 lässt sie fast unbeachtet. Die Gewichte sind das, was ein Netz beim Training lernt; vorher stehen sie auf kleinen Zufalls- oder Startwerten. Damit kein Merkmal nur wegen seiner großen Zahlen dominiert, werden die Eingaben vorher skaliert.
+
+### Beispiel
+Neuron zum Reklamationsrisiko: Die Lieferdauer (skaliert 0,8) hat das Gewicht 1,5 und trägt 1,2 zur Summe bei. Die Zahl der Packstücke (0,5) hat das Gewicht −0,5 und senkt die Summe um 0,25.
+
+### Abgrenzung
+Das Gewicht gehört zu einer Eingabe, der Bias zum Neuron selbst. Mit dem gewichteten arithmetischen Mittel der Statistik hat es nur den Namen gemeinsam.
+
+### Merksatz
+Gewichte sind das Gedächtnis eines neuronalen Netzes.
+
+Siehe auch: Neuron · Bias · Perzeptron-Lernregel · Skalieren
+Mehr: Deep Dive 6, 9.2
+
 ## Gewichtetes arithmetisches Mittel
 <!-- id: gewichtetes-arithmetisches-mittel · quellen: Karte DD3, DD3 Teil 3 · stand: 2026-10 -->
 

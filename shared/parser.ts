@@ -485,6 +485,7 @@ export function buildContent(files: SourceFile[], options: BuildOptions = {}): C
   const materialFiles: [RegExp, string][] = [
     [/^Lernzettel_Kernthemen\.md$/, 'Lernzettel Kernthemen'],
     [/^AP2_Themenliste.*\.md$/, 'Themenliste & Beispielfragen'],
+    [/^AP2_SQL_Belegsatz\.md$/, 'SQL-Belegsatz'],
   ];
   for (const [re, title] of materialFiles) {
     const f = files.find((x) => re.test(x.name));

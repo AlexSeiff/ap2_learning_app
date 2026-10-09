@@ -37,10 +37,20 @@ const OHNE_ALLGEMEINE_FORMEL_IM_RECHENWEG = ['gleitender-durchschnitt', 'minijob
 describe('Formeln (src/rechnen/formeln.ts)', () => {
   it('jede Vorlage hat mindestens eine Formel, keine Formel verweist auf eine unbekannte Vorlage', () => {
     for (const id of Object.keys(VORLAGEN)) expect(formelnDerVorlage(id).length, id).toBeGreaterThan(0);
-    for (const f of FORMELN) {
-      expect(f.vorlagen.length, f.id).toBeGreaterThan(0);
-      for (const v of f.vorlagen) expect(Object.keys(VORLAGEN), `${f.id} → ${v}`).toContain(v);
-    }
+    for (const f of FORMELN) for (const v of f.vorlagen) expect(Object.keys(VORLAGEN), `${f.id} → ${v}`).toContain(v);
+    // Formeln nur aus den Lernblättern (Umsetzungsplan Phase 6) haben keine Rechenübung – die Seite zeigt dann keinen Link.
+    expect(FORMELN.filter((f) => !f.vorlagen.length).map((f) => f.id)).toEqual([
+      'laplace',
+      'gegenereignis',
+      'mindestensEinmal',
+      'erwartungswert',
+      'zWert',
+      'spearman',
+      'wachstumsrate',
+      'falschPositivRate',
+      'kostenSchwelle',
+      'mape',
+    ]);
   });
 
   it('IDs eindeutig, Pflichtangaben gefüllt, Thema bekannt und als Lernblatt vorhanden', () => {

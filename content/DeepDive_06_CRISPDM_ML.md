@@ -7,7 +7,7 @@
 
 CRISP-DM ist das **Vorgehensmodell deiner Fachrichtung** – und damit gleich doppelt wichtig: Es kommt im Prüfungsbereich „Sicherstellen der Datenqualität" vor **und** es ist die natürliche Gliederung für deine **Projektdokumentation** (die betriebliche Projektarbeit – Dokumentation, Präsentation und Fachgespräch zusammen – zählt 50 % der Gesamtnote). Wer im Fachgespräch sein Projekt sauber entlang der sechs Phasen erzählen kann, wirkt sofort strukturiert.
 
-Der Machine-Learning-Teil wird auf **Verständnisebene** geprüft, nicht auf Programmierebene: Verfahren zuordnen, Auswahl begründen, kleine Rechnungen von Hand durchführen (k-Means, Assoziationsanalyse, k-NN, Entropie und Informationsgewinn bei ID3), Grenzen und rechtliche Anforderungen benennen. Niemand verlangt Python-Code auf dem Papier.
+Der Machine-Learning-Teil wird auf **Verständnisebene** geprüft, nicht auf Programmierebene: Verfahren zuordnen, Auswahl begründen, kleine Rechnungen von Hand durchführen (k-Means, Assoziationsanalyse, k-NN, Entropie und Informationsgewinn bei ID3, Ausgabe und Lernschritt eines Perzeptrons), Grenzen und rechtliche Anforderungen benennen. Niemand verlangt Python-Code auf dem Papier.
 
 Szenario: **Möbelhaus Nordholz GmbH**.
 
@@ -463,6 +463,190 @@ Die drei Begriffe sind ineinander verschachtelt – jede Ebene ist ein Teil der 
 
 ---
 
+# Teil 9 – Neuronale Netze: Perzeptron und Neuron
+
+Teil 8.2 beschreibt neuronale Netze im Überblick. Hier rechnest du ein **einzelnes Neuron** von Hand – genau das verlangen Prüfungsaufgaben: die Ausgabe berechnen, einen Lernschritt ausführen und begründen, warum ein einzelnes Neuron XOR nicht lernen kann.
+
+## 9.1 Vom biologischen zum künstlichen Neuron
+
+Das künstliche **Neuron** ist dem Nervensystem nur grob nachempfunden:
+
+| Biologisches Neuron | Künstliches Neuron |
+|---|---|
+| Dendriten empfangen Signale anderer Zellen | Eingaben $x_1, x_2, …, x_n$ (die Merkmale eines Falls) |
+| Synapsen verstärken oder hemmen ein Signal | Gewichte $w_1, w_2, …, w_n$ |
+| Der Zellkörper sammelt die Signale | gewichtete Summe plus Bias: $z$ |
+| Das Axon „feuert“ erst ab einer Schwelle | Aktivierungsfunktion $f(z)$ liefert die Ausgabe $y$ |
+
+Das erste mathematische Neuronenmodell stammt von McCulloch und Pitts (1943). Frank Rosenblatt stellte 1958 das **Perzeptron** vor: ein einzelnes Neuron mit Stufenfunktion, das seine Gewichte selbst aus Beispielen lernt.
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 270" width="660" height="270" role="img" aria-label="Aufbau eines künstlichen Neurons: drei Eingaben mit Gewichten, Bias, gewichtete Summe, Aktivierungsfunktion, Ausgabe">
+<defs><marker id="nn-pfeil" viewBox="0 0 10 10" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" class="dg-voll"/></marker></defs>
+<circle cx="60" cy="60" r="24" class="dg-form"/>
+<text x="60" y="60" text-anchor="middle" dominant-baseline="middle">x₁</text>
+<circle cx="60" cy="140" r="24" class="dg-form"/>
+<text x="60" y="140" text-anchor="middle" dominant-baseline="middle">x₂</text>
+<circle cx="60" cy="220" r="24" class="dg-form"/>
+<text x="60" y="220" text-anchor="middle" dominant-baseline="middle">x₃</text>
+<line x1="84" y1="66" x2="296" y2="132" class="dg-linie" marker-end="url(#nn-pfeil)"/>
+<line x1="84" y1="140" x2="294" y2="140" class="dg-linie" marker-end="url(#nn-pfeil)"/>
+<line x1="84" y1="214" x2="296" y2="148" class="dg-linie" marker-end="url(#nn-pfeil)"/>
+<text x="180" y="82" text-anchor="middle" class="dg-akzent-text dg-fett">w₁</text>
+<text x="180" y="132" text-anchor="middle" class="dg-akzent-text dg-fett">w₂</text>
+<text x="180" y="200" text-anchor="middle" class="dg-akzent-text dg-fett">w₃</text>
+<rect x="290" y="14" width="80" height="30" rx="6" class="dg-mittel"/>
+<text x="330" y="29" text-anchor="middle" dominant-baseline="middle">Bias b</text>
+<line x1="330" y1="44" x2="330" y2="104" class="dg-linie" marker-end="url(#nn-pfeil)"/>
+<circle cx="330" cy="140" r="36" class="dg-akzent"/>
+<text x="330" y="140" text-anchor="middle" dominant-baseline="middle" class="dg-gross dg-fett">Σ</text>
+<line x1="366" y1="140" x2="424" y2="140" class="dg-linie" marker-end="url(#nn-pfeil)"/>
+<text x="395" y="128" text-anchor="middle" class="dg-klein">z</text>
+<rect x="424" y="110" width="100" height="60" rx="8" class="dg-akzent"/>
+<polyline points="444,156 474,156 474,124 504,124" class="dg-linie-akzent dg-dick"/>
+<line x1="524" y1="140" x2="574" y2="140" class="dg-linie" marker-end="url(#nn-pfeil)"/>
+<circle cx="598" cy="140" r="24" class="dg-gut"/>
+<text x="598" y="140" text-anchor="middle" dominant-baseline="middle">y</text>
+<text x="60" y="262" text-anchor="middle" class="dg-klein dg-leise">Eingaben</text>
+<text x="180" y="262" text-anchor="middle" class="dg-klein dg-leise">Gewichte</text>
+<text x="330" y="200" text-anchor="middle" class="dg-klein dg-leise">z = Σ wᵢ·xᵢ + b</text>
+<text x="474" y="190" text-anchor="middle" class="dg-klein dg-leise">Aktivierung f(z)</text>
+<text x="598" y="190" text-anchor="middle" class="dg-klein dg-leise">Ausgabe</text>
+</svg>
+```
+
+## 9.2 Gewichtete Summe und Bias
+
+Jede Eingabe wird mit ihrem **Gewicht** multipliziert, die Produkte werden addiert und der **Bias** kommt hinzu:
+
+$$z = w_1 \cdot x_1 + w_2 \cdot x_2 + … + w_n \cdot x_n + b$$
+
+- **Gewicht:** Ein positives Gewicht verstärkt eine Eingabe, ein negatives hemmt sie, ein Gewicht nahe 0 lässt sie fast unbeachtet. Gelernt werden genau diese Zahlen.
+- **Bias:** verschiebt die Schwelle, ab der das Neuron „feuert“. Ohne Bias müsste die Trenngerade des Neurons immer durch den Nullpunkt gehen – ein Fall mit lauter Nullen könnte dann nie die Ausgabe 1 bekommen.
+- Wie bei k-Means und k-NN gilt: Die Merkmale werden vorher **skaliert**, sonst bestimmt das Merkmal mit den größten Zahlen das Ergebnis.
+
+*Beispiel Reklamationsrisiko eines Auftrags:* $x_1 = 0{,}8$ (Lieferdauer, skaliert), $x_2 = 0{,}5$ (Packstücke, skaliert), $x_3 = 1$ (Neukunde: ja). Gewichte $w_1 = 1{,}5$, $w_2 = -0{,}5$, $w_3 = 0{,}8$, Bias $b = -1{,}0$:
+
+$$z = 1{,}5 \cdot 0{,}8 + (-0{,}5) \cdot 0{,}5 + 0{,}8 \cdot 1 + (-1{,}0) = 1{,}2 - 0{,}25 + 0{,}8 - 1{,}0 = 0{,}75$$
+
+## 9.3 Aktivierungsfunktionen
+
+Die **Aktivierungsfunktion** macht aus der Summe $z$ die Ausgabe $y$:
+
+| Funktion | Formel | Wertebereich | Einsatz |
+|---|---|---|---|
+| **Stufenfunktion** (Schwellenwertfunktion) | $y = 1$, wenn $z \ge 0$, sonst $y = 0$ | 0 oder 1 | klassisches Perzeptron, Ja/Nein-Entscheidung |
+| **Sigmoid-Funktion** | $\sigma(z) = \dfrac{1}{1 + e^{-z}}$ | zwischen 0 und 1 | Ausgabe als Wahrscheinlichkeit (wie bei der logistischen Regression) |
+| **ReLU** | $y = \max(0,\ z)$ | 0 bis unendlich | Standard in den verdeckten Schichten tiefer Netze, schnell zu berechnen |
+
+Für das Beispiel aus 9.2 mit $z = 0{,}75$:
+- Stufenfunktion: $z \ge 0$ → $y = 1$ (Reklamation erwartet)
+- Sigmoid: $\sigma(0{,}75) = \dfrac{1}{1 + e^{-0{,}75}} = \dfrac{1}{1 + 0{,}4724} \approx 0{,}68$ → Reklamationswahrscheinlichkeit rund 68 %
+- ReLU: $\max(0;\ 0{,}75) = 0{,}75$
+
+⚠️ **Achtung:** Bei der Sigmoid-Funktion steht im Exponenten **minus z**. Wer $e^{+z}$ rechnet, erhält $1 - \sigma(z)$ – hier 0,32 statt 0,68.
+
+*Warum überhaupt eine nichtlineare Aktivierung?* Ohne sie wäre jedes Neuron nur eine gewichtete Summe. Viele Schichten hintereinander ergäben dann wieder nur eine einzige lineare Funktion – das Netz könnte nichts lernen, was nicht auch ein einzelnes Neuron kann.
+
+## 9.4 Die Perzeptron-Lernregel
+
+Das Perzeptron lernt überwacht (Teil 2.2): Für jeden Trainingsfall mit dem Sollwert $t$ (Label 0 oder 1) wird die Ausgabe $y$ berechnet und mit $t$ verglichen.
+
+1. Fehler bestimmen: $e = t - y$ (beim Perzeptron −1, 0 oder +1)
+2. Gewichte anpassen: $w_i^{neu} = w_i + \eta \cdot e \cdot x_i$
+3. Bias anpassen: $b^{neu} = b + \eta \cdot e$
+
+- Ist die Ausgabe richtig ($e = 0$), ändert sich nichts.
+- Nur die Gewichte von Eingaben mit $x_i \neq 0$ ändern sich – eine Eingabe von 0 hat zum Fehler nichts beigetragen.
+- Die **Lernrate** $\eta$ (eta, z. B. 0,1) bestimmt die Schrittweite. Zu groß: Die Gewichte springen über das Ziel hinaus und pendeln. Zu klein: Das Lernen dauert sehr viele Durchläufe.
+- Ein Durchlauf durch alle Trainingsfälle heißt **Epoche**. Gelernt wird, bis eine Epoche ohne Fehler bleibt (oder eine Höchstzahl erreicht ist).
+- Sind die Daten **linear trennbar**, findet das Perzeptron nach endlich vielen Schritten eine fehlerfreie Lösung (Konvergenzsatz). Sind sie es nicht, hört es nie auf, die Gewichte zu ändern.
+
+⚠️ **Achtung:** Das Vorzeichen des Fehlers ist **Soll minus Ist** ($t - y$). Andersherum gerechnet laufen die Gewichte in die falsche Richtung.
+
+## 9.5 Durchgerechnetes Beispiel: Ein Perzeptron lernt AND
+
+Ziel: $y = 1$ nur, wenn beide Eingaben 1 sind. Start mit $w_1 = 0{,}5$, $w_2 = 0{,}5$, $b = -0{,}1$, Lernrate $\eta = 0{,}2$, Stufenfunktion ($y = 1$ ab $z \ge 0$).
+
+*Epoche 1*
+
+| $x_1$ | $x_2$ | $t$ | $z = w_1 x_1 + w_2 x_2 + b$ | $y$ | $e = t - y$ | $w_1$ | $w_2$ | $b$ (danach) |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 0 | −0,1 | 0 | 0 | 0,5 | 0,5 | −0,1 |
+| 0 | 1 | 0 | 0,5 − 0,1 = 0,4 | 1 | −1 | 0,5 | 0,5 − 0,2 = **0,3** | −0,1 − 0,2 = **−0,3** |
+| 1 | 0 | 0 | 0,5 − 0,3 = 0,2 | 1 | −1 | 0,5 − 0,2 = **0,3** | 0,3 | −0,3 − 0,2 = **−0,5** |
+| 1 | 1 | 1 | 0,3 + 0,3 − 0,5 = 0,1 | 1 | 0 | 0,3 | 0,3 | −0,5 |
+
+Rechenweg für die zweite Zeile: $w_2^{neu} = 0{,}5 + 0{,}2 \cdot (-1) \cdot 1 = 0{,}3$; $w_1$ bleibt, weil $x_1 = 0$; $b^{neu} = -0{,}1 + 0{,}2 \cdot (-1) = -0{,}3$.
+
+*Epoche 2* mit $w_1 = 0{,}3$, $w_2 = 0{,}3$, $b = -0{,}5$: Die vier Fälle ergeben $z$ = −0,5; −0,2; −0,2; 0,1 und damit die Ausgaben 0; 0; 0; 1. Alle stimmen mit $t$ überein → keine Änderung, das Training ist fertig.
+
+Das gelernte Perzeptron feuert, wenn $0{,}3 \cdot x_1 + 0{,}3 \cdot x_2 - 0{,}5 \ge 0$ ist – also nur bei $x_1 = x_2 = 1$. Die Gleichung $0{,}3 x_1 + 0{,}3 x_2 - 0{,}5 = 0$ ist seine Trenngerade.
+
+## 9.6 AND und OR – aber nicht XOR: lineare Trennbarkeit
+
+Ein einzelnes Perzeptron zieht im Merkmalsraum genau **eine Gerade** (bei mehr Merkmalen eine Ebene). Es kann nur Klassen trennen, die sich so trennen lassen. Diese Eigenschaft heißt **lineare Trennbarkeit**.
+
+| $x_1$ | $x_2$ | AND | OR | XOR |
+|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 1 | 0 | 1 | 1 |
+| 1 | 0 | 0 | 1 | 1 |
+| 1 | 1 | 1 | 1 | 0 |
+
+- AND und OR sind linear trennbar – ein Perzeptron lernt sie (AND siehe 9.5).
+- XOR ist es nicht: Die beiden Einsen liegen sich diagonal gegenüber, ebenso die beiden Nullen. Keine Gerade trennt sie. Minsky und Papert zeigten das 1969 („Perceptrons“); das Interesse an neuronalen Netzen brach danach für Jahre ein.
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 250" width="580" height="250" role="img" aria-label="Lineare Trennbarkeit: Bei AND trennt eine Gerade die Eins von den Nullen, bei XOR gibt es keine solche Gerade">
+<line x1="60" y1="190" x2="250" y2="190" class="dg-linie dg-duenn"/>
+<line x1="60" y1="190" x2="60" y2="20" class="dg-linie dg-duenn"/>
+<text x="250" y="208" text-anchor="end" class="dg-klein dg-leise">x₁</text>
+<text x="48" y="28" text-anchor="end" class="dg-klein dg-leise">x₂</text>
+<circle cx="80" cy="170" r="11" class="dg-form"/>
+<circle cx="200" cy="170" r="11" class="dg-form"/>
+<circle cx="80" cy="50" r="11" class="dg-form"/>
+<circle cx="200" cy="50" r="11" class="dg-voll-akzent"/>
+<line x1="110" y1="20" x2="240" y2="150" class="dg-linie-akzent dg-strich dg-dick"/>
+<text x="155" y="236" text-anchor="middle" class="dg-fett">AND: eine Gerade trennt</text>
+<line x1="340" y1="190" x2="530" y2="190" class="dg-linie dg-duenn"/>
+<line x1="340" y1="190" x2="340" y2="20" class="dg-linie dg-duenn"/>
+<text x="530" y="208" text-anchor="end" class="dg-klein dg-leise">x₁</text>
+<text x="328" y="28" text-anchor="end" class="dg-klein dg-leise">x₂</text>
+<circle cx="360" cy="170" r="11" class="dg-form"/>
+<circle cx="480" cy="170" r="11" class="dg-voll-akzent"/>
+<circle cx="360" cy="50" r="11" class="dg-voll-akzent"/>
+<circle cx="480" cy="50" r="11" class="dg-form"/>
+<text x="420" y="112" text-anchor="middle" class="dg-gross dg-fett dg-leise">?</text>
+<text x="435" y="236" text-anchor="middle" class="dg-fett">XOR: keine Gerade trennt</text>
+</svg>
+```
+
+Gefüllte Punkte: Ausgabe 1, leere Punkte: Ausgabe 0.
+
+Die Lösung ist ein mehrschichtiges Netz. Ein **mehrschichtiges Perzeptron** (MLP) hat zwischen Eingabe und Ausgabe mindestens eine verdeckte Schicht. Schon zwei verdeckte Neuronen reichen für XOR, denn XOR = (x₁ OR x₂) AND NOT (x₁ AND x₂):
+
+| Neuron | Gewichte | Bias | rechnet |
+|---|---|---|---|
+| verdeckt $h_1$ | 1 und 1 | −0,5 | OR |
+| verdeckt $h_2$ | −1 und −1 | 1,5 | NAND (NOT AND) |
+| Ausgabe | 1 und 1 (auf $h_1$, $h_2$) | −1,5 | AND von $h_1$ und $h_2$ |
+
+Probe für $x_1 = x_2 = 1$: $h_1$: 1 + 1 − 0,5 = 1,5 → 1; $h_2$: −1 − 1 + 1,5 = −0,5 → 0; Ausgabe: 1 + 0 − 1,5 = −0,5 → 0. ✓
+
+Solche Gewichte findet man in der Praxis nicht von Hand. Mehrschichtige Netze werden mit **Backpropagation** trainiert: Der Fehler an der Ausgabe wird Schicht für Schicht zurückgerechnet, und jedes Gewicht wird ein kleines Stück in die Richtung verändert, die den Fehler verringert (Gradientenabstieg). Dafür muss die Aktivierungsfunktion ableitbar sein – deshalb Sigmoid oder ReLU statt der Stufenfunktion. Netze mit vielen verdeckten Schichten sind **Deep Learning** (Teil 8.1).
+
+> ❓ **Prüferfrage:** Warum kann ein einzelnes Perzeptron die XOR-Funktion nicht lernen?
+> *Ein Perzeptron trennt die Klassen mit genau einer Geraden. Bei XOR liegen die Fälle mit Ausgabe 1, also (0|1) und (1|0), diagonal gegenüber, ebenso die Fälle mit Ausgabe 0. Keine Gerade trennt sie, XOR ist nicht linear trennbar. Ein Netz mit einer verdeckten Schicht löst das Problem, zum Beispiel mit einem OR- und einem NAND-Neuron, deren Ausgaben ein AND-Neuron verknüpft.*
+
+> ❓ **Prüferfrage:** Wozu dient der Bias in einem Neuron?
+> *Der Bias verschiebt die Schwelle, ab der das Neuron aktiv wird, unabhängig von den Eingaben. Geometrisch verschiebt er die Trenngerade, sodass sie nicht durch den Nullpunkt gehen muss. Ohne Bias könnte ein Fall mit lauter Nullen als Eingabe nie die Ausgabe 1 bekommen. Der Bias wird wie ein Gewicht gelernt: b neu = b + η · (t − y).*
+
+> ❓ **Prüferfrage:** Was passiert, wenn die Lernrate zu groß oder zu klein gewählt wird?
+> *Bei zu großer Lernrate ändern sich die Gewichte in großen Sprüngen; das Training schießt über eine gute Lösung hinaus und pendelt oder kommt nicht zur Ruhe. Bei zu kleiner Lernrate sind die Schritte winzig, das Training braucht sehr viele Epochen. Die Lernrate ist ein Hyperparameter und wird wie k bei k-NN mit Validierungsdaten abgestimmt.*
+
+---
+
 ## Die 8 häufigsten Fehler aus Prüfersicht
 
 1. CRISP-DM als linearen Ablauf dargestellt, ohne Rücksprünge zu erwähnen.
@@ -568,3 +752,5 @@ Zehn Warenkörbe (S = Schreibtisch, B = Bürostuhl, M = Monitor, L = Lampe):
 - [ ] Ich grenze KI, Machine Learning und Deep Learning ab und erkläre Aufbau und Grenzen neuronaler Netze, Random Forest und SVM.
 - [ ] Ich ordne ein KI-System einer Risikoklasse der KI-Verordnung zu und kenne die Anwendungstermine (Stand 2026).
 - [ ] Ich skaliere einen Wert per Min-Max-Normalisierung und Standardisierung von Hand.
+- [ ] Ich berechne die Ausgabe eines Neurons (gewichtete Summe plus Bias, dann Stufe, Sigmoid oder ReLU) und führe einen Lernschritt der Perzeptron-Lernregel aus.
+- [ ] Ich begründe mit der linearen Trennbarkeit, warum ein Perzeptron AND und OR, aber nicht XOR lernt, und was eine verdeckte Schicht daran ändert.

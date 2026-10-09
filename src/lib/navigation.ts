@@ -61,6 +61,7 @@ export const BEREICHE: Bereich[] = [
       { to: '/glossar', icon: 'library', label: 'Begriffe A–Z' },
       { to: GLOSSAR_PFAD, icon: 'book-bookmark', label: 'Diagramme' },
       { to: '/material/formeln', icon: 'sigma', label: 'Formelsammlung' },
+      { to: '/material/sql-belegsatz', icon: 'database', label: 'SQL-Belegsatz' },
       { to: '/material/operatoren', icon: 'message-square-quote', label: 'Operatoren' },
     ],
   },
@@ -99,7 +100,7 @@ export function passtZuZiel(to: string, pathname: string): boolean {
 }
 
 /** Seiten unter /material, die zum Glossar gehören (Nachschlagen); alles andere unter /material gehört zu den Einstellungen. */
-const GLOSSAR_MATERIAL = ['/material/glossar', '/material/formeln', '/material/operatoren'];
+const GLOSSAR_MATERIAL = ['/material/glossar', '/material/formeln', '/material/sql-belegsatz', '/material/operatoren'];
 const LERNEN = ['/heute', '/lernen', '/karteikarten', '/aufgaben', '/rechnen', '/klausur', '/fehlerjournal'];
 const EINSTELLUNGEN = ['/material', '/einstellungen', '/daten', '/generator'];
 

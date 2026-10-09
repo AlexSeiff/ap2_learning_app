@@ -7,22 +7,22 @@
     "version": "1.1",
     "sprache": "de",
     "anzahl_decks": 25,
-    "anzahl_karten": 539,
+    "anzahl_karten": 547,
     "karten_nach_typ": {
-      "abgrenzung": 80,
+      "abgrenzung": 82,
       "anwendung": 62,
-      "falle": 94,
-      "rechnung": 44,
-      "wissen": 259
+      "falle": 95,
+      "rechnung": 46,
+      "wissen": 262
     },
     "karten_nach_status": {
-      "behandelt": 525,
+      "behandelt": 533,
       "offen": 14
     },
     "karten_nach_schwierigkeit": {
-      "1": 210,
-      "2": 295,
-      "3": 34
+      "1": 211,
+      "2": 301,
+      "3": 35
     },
     "felder": {
       "id": "Eindeutige Karten-ID aus Deck-Kürzel und laufender Nummer",
@@ -1753,7 +1753,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 6",
       "status": "behandelt",
-      "anzahl_karten": 42,
+      "anzahl_karten": 50,
       "karten": [
         {
           "id": "ML-001",
@@ -2190,6 +2190,94 @@
           "schwierigkeit": 2,
           "tags": [
             "crisp-dm"
+          ]
+        },
+        {
+          "id": "ML-043",
+          "frage": "Wie berechnet ein künstliches Neuron seine Ausgabe?",
+          "antwort": "Gewichtete Summe der Eingaben plus Bias: z = Σ wᵢ · xᵢ + b. Eine Aktivierungsfunktion macht daraus die Ausgabe, z. B. Stufe (1 ab z ≥ 0), Sigmoid (zwischen 0 und 1) oder ReLU (max(0, z)).",
+          "typ": "wissen",
+          "schwierigkeit": 1,
+          "tags": [
+            "neuronales-netz",
+            "neuron"
+          ]
+        },
+        {
+          "id": "ML-044",
+          "frage": "Neuron mit x = (0,8; 0,5; 1), w = (1,5; −0,5; 0,8) und Bias −1. Wie groß sind z und die Sigmoid-Ausgabe?",
+          "antwort": "z = 1,2 − 0,25 + 0,8 − 1 = 0,75. σ(0,75) = 1 / (1 + e^(−0,75)) = 1 / 1,4724 ≈ 0,68 – rund 68 % Reklamationsrisiko.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronales-netz",
+            "neuron"
+          ]
+        },
+        {
+          "id": "ML-045",
+          "frage": "Wie lautet die Perzeptron-Lernregel?",
+          "antwort": "Fehler e = t − y (Soll minus Ist). Neue Gewichte wᵢ + η · e · xᵢ, neuer Bias b + η · e. Bei richtiger Ausgabe (e = 0) und für Eingaben xᵢ = 0 ändert sich nichts.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronales-netz",
+            "perzeptron"
+          ]
+        },
+        {
+          "id": "ML-046",
+          "frage": "Perzeptron mit w = (0,5; 0,5), Bias −0,1, η = 0,2 bekommt den Fall (0|1) mit t = 0. Wie lauten Gewichte und Bias danach?",
+          "antwort": "z = 0,5 − 0,1 = 0,4 → y = 1, e = 0 − 1 = −1. w₁ bleibt 0,5 (x₁ = 0), w₂ = 0,5 + 0,2 · (−1) · 1 = 0,3, Bias = −0,1 − 0,2 = −0,3.",
+          "typ": "rechnung",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronales-netz",
+            "perzeptron"
+          ]
+        },
+        {
+          "id": "ML-047",
+          "frage": "Warum lernt ein einzelnes Perzeptron AND, aber nicht XOR?",
+          "antwort": "Ein Perzeptron trennt mit genau einer Geraden. AND ist linear trennbar, XOR nicht: Die Einsen (0|1) und (1|0) liegen sich diagonal gegenüber. Abhilfe: ein Netz mit verdeckter Schicht.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronales-netz",
+            "perzeptron"
+          ]
+        },
+        {
+          "id": "ML-048",
+          "frage": "Ein Prüfling rechnet die Sigmoid-Funktion als σ(z) = 1 / (1 + e^z). Was ist falsch?",
+          "antwort": "Im Exponenten fehlt das Minus: σ(z) = 1 / (1 + e^(−z)). Mit e^(+z) kommt 1 − σ(z) heraus – bei z = 0,75 also 0,32 statt 0,68.",
+          "typ": "falle",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronales-netz",
+            "aktivierungsfunktion"
+          ]
+        },
+        {
+          "id": "ML-049",
+          "frage": "Wozu braucht ein mehrschichtiges Netz eine nichtlineare Aktivierungsfunktion?",
+          "antwort": "Ohne sie wäre jede Schicht nur eine gewichtete Summe; mehrere Schichten ergäben zusammen wieder eine lineare Funktion. Erst Sigmoid oder ReLU machen Muster wie XOR lernbar.",
+          "typ": "wissen",
+          "schwierigkeit": 2,
+          "tags": [
+            "neuronales-netz",
+            "aktivierungsfunktion"
+          ]
+        },
+        {
+          "id": "ML-050",
+          "frage": "Perzeptron-Lernregel oder Backpropagation – was gilt wann?",
+          "antwort": "Die Perzeptron-Lernregel trainiert ein einzelnes Neuron mit Stufenfunktion. Backpropagation trainiert mehrschichtige Netze: Der Fehler wird rückwärts verteilt, die Gewichte per Gradientenabstieg angepasst.",
+          "typ": "abgrenzung",
+          "schwierigkeit": 3,
+          "tags": [
+            "neuronales-netz",
+            "backpropagation"
           ]
         }
       ]

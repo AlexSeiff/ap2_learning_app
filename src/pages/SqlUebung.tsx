@@ -6,6 +6,7 @@ import { Link, useParams } from 'react-router-dom';
 import type { SqlDataset, SqlExercise } from '../../shared/types';
 import { Markdown } from '../components/Markdown';
 import { Cell, ExecOutput, LintWarnings, ResultTable, SqlError, withCode } from '../components/ResultTable';
+import { BelegsatzPanel } from '../components/Belegsatz';
 import { SchemaBrowser } from '../components/SchemaBrowser';
 import { SqlEditor, type SqlEditorHandle } from '../components/SqlEditor';
 import { SqlTabs } from '../components/SqlTabs';
@@ -286,6 +287,9 @@ function SqlUebungView({ id }: { id: string }) {
         </p>
       )}
 
+      <div className="sql-toolbar">
+        <BelegsatzPanel />
+      </div>
       <SchemaBrowser
         tables={session.schema}
         defaultOpen={false}

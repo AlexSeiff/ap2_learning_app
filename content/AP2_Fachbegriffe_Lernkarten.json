@@ -7,7 +7,7 @@
     "version": "1.0",
     "sprache": "de",
     "anzahl_decks": 16,
-    "anzahl_karten": 789,
+    "anzahl_karten": 802,
     "felder": {
       "id": "FB- + Begriff als Kürzel (stabil, unabhängig von der Reihenfolge)",
       "frage": "der Fachbegriff (Vorderseite)",
@@ -1863,7 +1863,7 @@
       "pruefungsbereich": "Sicherstellen der Datenqualität",
       "quelle": "Deep Dive 6",
       "status": "behandelt",
-      "anzahl_karten": 44,
+      "anzahl_karten": 57,
       "karten": [
         {
           "id": "FB-crisp-dm",
@@ -2299,6 +2299,136 @@
           "id": "FB-k-means-plus-plus",
           "frage": "k-Means++",
           "antwort": "Startwertverfahren für k-Means, das die Startzentren möglichst weit auseinander legt und so schlechte lokale Optima seltener macht.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-neuron",
+          "frage": "Neuron",
+          "antwort": "Grundbaustein eines neuronalen Netzes: bildet die gewichtete Summe seiner Eingaben plus Bias und gibt sie über eine Aktivierungsfunktion als Ausgabe weiter.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-perzeptron",
+          "frage": "Perzeptron",
+          "antwort": "Einzelnes künstliches Neuron mit Stufenfunktion (Rosenblatt 1958), das seine Gewichte mit der Perzeptron-Lernregel aus Beispielen lernt; trennt nur linear trennbare Klassen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-gewicht",
+          "frage": "Gewicht",
+          "antwort": "Zahl an einer Eingabe bzw. Verbindung im neuronalen Netz, die deren Einfluss bestimmt: positiv verstärkt, negativ hemmt. Beim Training werden die Gewichte gelernt.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-aktivierungsfunktion",
+          "frage": "Aktivierungsfunktion",
+          "antwort": "Funktion, die aus der gewichteten Summe eines Neurons die Ausgabe macht, z. B. Stufenfunktion, Sigmoid oder ReLU; sie bringt die Nichtlinearität ins Netz.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-stufenfunktion",
+          "frage": "Stufenfunktion",
+          "antwort": "Aktivierungsfunktion des Perzeptrons: Ausgabe 1, sobald die gewichtete Summe die Schwelle erreicht (z ≥ 0), sonst 0.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-sigmoid-funktion",
+          "frage": "Sigmoid-Funktion",
+          "antwort": "Aktivierungsfunktion σ(z) = 1 / (1 + e^(−z)) mit Werten zwischen 0 und 1; die Ausgabe lässt sich als Wahrscheinlichkeit lesen.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-relu",
+          "frage": "ReLU",
+          "antwort": "Rectified Linear Unit: Aktivierungsfunktion max(0, z) – negative Summen werden 0, positive bleiben. Standard in den verdeckten Schichten tiefer Netze.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-lernrate",
+          "frage": "Lernrate",
+          "antwort": "Schrittweite η, mit der die Gewichte beim Training angepasst werden. Zu groß: Das Training pendelt; zu klein: Es dauert sehr lange.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-perzeptron-lernregel",
+          "frage": "Perzeptron-Lernregel",
+          "antwort": "wᵢ neu = wᵢ + η · (t − y) · xᵢ, der Bias genauso: Gewichte ändern sich nur bei falscher Ausgabe und nur für Eingaben ungleich 0.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-epoche",
+          "frage": "Epoche",
+          "antwort": "Ein vollständiger Durchlauf durch alle Trainingsdaten beim Training eines Modells; neuronale Netze werden meist über viele Epochen trainiert.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-lineare-trennbarkeit",
+          "frage": "Lineare Trennbarkeit",
+          "antwort": "Zwei Klassen lassen sich durch eine Gerade (bei mehr Merkmalen eine Ebene) trennen. Nur dann lernt ein einzelnes Perzeptron sie – AND und OR ja, XOR nicht.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-mehrschichtiges-perzeptron",
+          "frage": "Mehrschichtiges Perzeptron",
+          "antwort": "Neuronales Netz mit mindestens einer verdeckten Schicht zwischen Eingabe und Ausgabe (MLP); lernt auch nicht linear trennbare Muster wie XOR und wird per Backpropagation trainiert.",
+          "typ": "begriff",
+          "schwierigkeit": 1,
+          "tags": [
+            "fachbegriff"
+          ]
+        },
+        {
+          "id": "FB-backpropagation",
+          "frage": "Backpropagation",
+          "antwort": "Trainingsverfahren für mehrschichtige Netze: Der Fehler an der Ausgabe wird Schicht für Schicht zurückgerechnet und jedes Gewicht per Gradientenabstieg ein Stück verbessert.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [

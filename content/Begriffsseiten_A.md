@@ -601,6 +601,33 @@ Lebenslinie = da sein, Balken = arbeiten.
 Siehe auch: Sequenzdiagramm · Lebenslinie · Synchrone Nachricht · Antwortnachricht
 Mehr: Deep Dive 17, 2.5 · Deep Dive 15, 5.4
 
+## Aktivierungsfunktion
+<!-- id: aktivierungsfunktion · quellen: Karte DD6, DD6 8.2, DD6 9.3 · stand: 2026-10 -->
+
+Funktion, die aus der gewichteten Summe z eines Neurons die Ausgabe y macht, z. B. Stufenfunktion, Sigmoid oder ReLU.
+
+### Erklärung
+Ein Neuron addiert zuerst seine gewichteten Eingaben und den Bias. Erst die Aktivierungsfunktion entscheidet, was weitergegeben wird. Die Stufenfunktion liefert 0 oder 1 (klassisches Perzeptron), die Sigmoid-Funktion einen Wert zwischen 0 und 1, ReLU schneidet negative Summen auf 0 ab. Wichtig ist die Nichtlinearität: Ohne sie ergäben viele Schichten zusammen nur eine einzige lineare Funktion, und das Netz könnte nicht mehr lernen als ein einzelnes Neuron.
+
+### Beispiel
+Ein Neuron zum Reklamationsrisiko hat z = 0,75. Stufenfunktion: y = 1. Sigmoid: σ(0,75) = 1 / (1 + e^(−0,75)) ≈ 0,68. ReLU: max(0; 0,75) = 0,75.
+
+### Abgrenzung
+| Funktion | Ausgabe | typischer Einsatz |
+|---|---|---|
+| Stufenfunktion | 0 oder 1 | Perzeptron |
+| Sigmoid-Funktion | zwischen 0 und 1 | Ausgabe als Wahrscheinlichkeit |
+| ReLU | 0 bis unendlich | verdeckte Schichten tiefer Netze |
+
+### Prüfungsfalle
+Bei der Sigmoid-Funktion e^(+z) statt e^(−z) rechnen – dann kommt 1 − σ(z) heraus.
+
+### Merksatz
+Erst summieren, dann aktivieren.
+
+Siehe auch: Neuron · Stufenfunktion · Sigmoid-Funktion · ReLU
+Mehr: Deep Dive 6, 9.3
+
 ## Aktivitäten (abgerundetes Rechteck)
 <!-- id: aktivitaten · quellen: DD5 2.1 · stand: 2026-10 -->
 

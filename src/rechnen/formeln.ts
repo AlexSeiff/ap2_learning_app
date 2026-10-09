@@ -20,7 +20,7 @@ export interface FormelDef {
   /** Kurze Erklärung (ein, zwei Sätze, Markdown-frei). */
   erklaerung: string;
   variablen: Variable[];
-  /** IDs der Rechenvorlagen, deren Übungen diese Formel üben (Link zu /rechnen?vorlage=…). */
+  /** IDs der Rechenvorlagen, deren Übungen diese Formel üben (Link zu /rechnen?vorlage=…); leer = nur im Lernblatt, ohne Rechenübung. */
   vorlagen: string[];
 }
 
@@ -154,6 +154,48 @@ export const F = {
     variablen: [v(L`h_i`, 'absolute Häufigkeit'), v(L`n`, 'Summe aller Häufigkeiten'), v(L`F_i`, 'kumulierter Anteil bis Kategorie i')],
     vorlagen: ['haeufigkeiten'],
   },
+  laplace: {
+    name: 'Laplace-Wahrscheinlichkeit',
+    thema: '03',
+    latex: L`P(A) = \frac{\text{günstige Fälle}}{\text{mögliche Fälle}}`,
+    erklaerung: 'Gilt, wenn alle Ergebnisse gleich wahrscheinlich sind. In der Praxis schätzt man P(A) über die relative Häufigkeit.',
+    variablen: [v(L`P(A)`, 'Wahrscheinlichkeit des Ereignisses A, zwischen 0 und 1')],
+    vorlagen: [],
+  },
+  gegenereignis: {
+    name: 'Gegenereignis',
+    thema: '03',
+    latex: L`P(\text{nicht } A) = 1 - P(A)`,
+    erklaerung: 'Ereignis und Gegenereignis ergeben zusammen 1 (100 %).',
+    variablen: [v(L`P(A)`, 'Wahrscheinlichkeit von A')],
+    vorlagen: [],
+  },
+  mindestensEinmal: {
+    name: 'Mindestens einmal (unabhängige Ereignisse)',
+    thema: '03',
+    latex: L`P(\text{mind. einmal}) = 1 - (1 - p)^n`,
+    erklaerung:
+      'Über das Gegenereignis „keinmal“: Unabhängige Ereignisse, die alle eintreten, werden multipliziert. Falsch wäre n · p (Addieren gilt nur bei sich ausschließenden Ereignissen).',
+    variablen: [v(L`p`, 'Wahrscheinlichkeit je Versuch'), v(L`n`, 'Anzahl unabhängiger Versuche')],
+    vorlagen: [],
+  },
+  erwartungswert: {
+    name: 'Erwartungswert',
+    thema: '03',
+    latex: L`E(X) = \sum x_i \cdot p_i`,
+    erklaerung: 'Der Wert, der sich im Durchschnitt vieler Wiederholungen einstellt – nicht der Wert im Einzelfall.',
+    variablen: [v(L`x_i`, 'möglicher Wert'), v(L`p_i`, 'seine Wahrscheinlichkeit')],
+    vorlagen: [],
+  },
+  zWert: {
+    name: 'z-Wert (Standardisierung)',
+    thema: '03',
+    latex: L`z = \frac{x - \mu}{\sigma}`,
+    erklaerung:
+      'Wie viele Standardabweichungen ein Wert vom Mittelwert entfernt liegt. Bei der Normalverteilung: 68 % innerhalb ±1σ, 95 % innerhalb ±2σ, 99,7 % innerhalb ±3σ.',
+    variablen: [v(L`\mu`, 'Mittelwert'), v(L`\sigma`, 'Standardabweichung')],
+    vorlagen: [],
+  },
 
   // ---------- Statistik II (DD4) ----------
   sxy: {
@@ -187,6 +229,15 @@ export const F = {
     erklaerung: 'Stärke und Richtung eines linearen Zusammenhangs zwischen −1 und +1. Korrelation ist keine Kausalität.',
     variablen: [v(L`S_{xy},\ S_{xx},\ S_{yy}`, 'Abweichungsprodukt- und Quadratsummen')],
     vorlagen: ['korrelation'],
+  },
+  spearman: {
+    name: 'Rangkorrelation nach Spearman',
+    thema: '04',
+    latex: L`r_s = 1 - \frac{6 \cdot \sum d^2}{n \cdot (n^2 - 1)}`,
+    erklaerung:
+      'Für ordinale Daten und monotone Zusammenhänge; gerechnet mit Rangplätzen (Formel gilt ohne gleiche Ränge). Wertebereich wie Pearson.',
+    variablen: [v(L`d`, 'Rangdifferenz je Merkmalsträger'), v(L`n`, 'Anzahl Merkmalsträger')],
+    vorlagen: [],
   },
   bestimmtheitsmass: {
     name: 'Bestimmtheitsmaß (einfache Regression)',
@@ -243,6 +294,14 @@ export const F = {
     erklaerung: 'Veränderung bezogen auf den Ausgangswert. Bei Quoten von Prozentpunkten (Differenz) unterscheiden.',
     variablen: [v(L`x_{alt},\ x_{neu}`, 'Ausgangs- und neuer Wert')],
     vorlagen: ['prozent-veraenderung'],
+  },
+  wachstumsrate: {
+    name: 'Durchschnittliche Wachstumsrate',
+    thema: '04',
+    latex: L`\bar{r} = \sqrt[n]{\frac{\text{Endwert}}{\text{Anfangswert}}} - 1`,
+    erklaerung: 'Geometrisches Mittel über n Perioden. Das arithmetische Mittel der Einzelraten wäre zu hoch.',
+    variablen: [v(L`n`, 'Anzahl der Perioden (Schritte), nicht der Werte')],
+    vorlagen: [],
   },
   differenz: {
     name: 'Absolute Veränderung (Prozentpunkte)',
@@ -375,6 +434,47 @@ export const F = {
     variablen: [v(L`S_v`, 'Teilmenge mit Ausprägung v von A'), v(L`|S_v| / |S|`, 'Anteil der Teilmenge')],
     vorlagen: ['id3'],
   },
+  neuronSumme: {
+    name: 'Gewichtete Summe eines Neurons',
+    thema: '06',
+    latex: L`z = \sum_i w_i \cdot x_i + b`,
+    erklaerung: 'Jede Eingabe mal ihr Gewicht, alles addiert, dazu der Bias. Der Bias verschiebt die Schwelle, ab der das Neuron feuert.',
+    variablen: [v(L`x_i`, 'Eingabe i (Merkmal, skaliert)'), v(L`w_i`, 'Gewicht der Eingabe i'), v(L`b`, 'Bias')],
+    vorlagen: ['neuron', 'perzeptron'],
+  },
+  stufenfunktion: {
+    name: 'Stufenfunktion',
+    thema: '06',
+    latex: L`y = \begin{cases} 1 & \text{wenn } z \ge 0 \ 0 & \text{sonst} \end{cases}`,
+    erklaerung: 'Aktivierung des klassischen Perzeptrons: Ja/Nein-Entscheidung ab der Schwelle 0.',
+    variablen: [v(L`z`, 'gewichtete Summe')],
+    vorlagen: ['neuron', 'perzeptron'],
+  },
+  sigmoid: {
+    name: 'Sigmoid-Funktion',
+    thema: '06',
+    latex: L`\sigma(z) = \frac{1}{1 + e^{-z}}`,
+    erklaerung: 'Glatte Aktivierung mit Werten zwischen 0 und 1 – deutbar als Wahrscheinlichkeit. Im Exponenten steht minus z.',
+    variablen: [v(L`e`, 'Eulersche Zahl ≈ 2{,}718')],
+    vorlagen: ['neuron'],
+  },
+  relu: {
+    name: 'ReLU',
+    thema: '06',
+    latex: L`y = \max(0,\ z)`,
+    erklaerung: 'Rectified Linear Unit: negative Summen werden 0, positive bleiben. Standard in den verdeckten Schichten tiefer Netze.',
+    variablen: [v(L`z`, 'gewichtete Summe')],
+    vorlagen: ['neuron'],
+  },
+  perzeptronLernregel: {
+    name: 'Perzeptron-Lernregel',
+    thema: '06',
+    latex: L`w_i^{neu} = w_i + \eta \cdot (t - y) \cdot x_i`,
+    erklaerung:
+      'Nur bei falscher Ausgabe ändern sich die Gewichte, und zwar nur die von Eingaben ungleich 0. Fehler = Soll minus Ist. Der Bias lernt genauso: b neu = b + η · (t − y).',
+    variablen: [v(L`\eta`, 'Lernrate (z. B. 0{,}1)'), v(L`t`, 'Sollwert (Label 0 oder 1)'), v(L`y`, 'berechnete Ausgabe')],
+    vorlagen: ['perzeptron'],
+  },
 
   // ---------- Modellgüte (DD7) ----------
   accuracy: {
@@ -417,6 +517,14 @@ export const F = {
     variablen: [v(L`TN,\ FP`, 'richtig negativ, falsch positiv')],
     vorlagen: ['konfusionsmatrix'],
   },
+  falschPositivRate: {
+    name: 'Falsch-Positiv-Rate',
+    thema: '07',
+    latex: L`\text{FPR} = \frac{FP}{FP + TN} = 1 - \text{Spezifität}`,
+    erklaerung: 'Anteil der tatsächlich negativen Fälle, die fälschlich als positiv eingestuft werden (Fehlalarme).',
+    variablen: [v(L`FP,\ TN`, 'falsch positiv, richtig negativ')],
+    vorlagen: [],
+  },
   fehlerkosten: {
     name: 'Fehlerkosten',
     thema: '07',
@@ -424,6 +532,18 @@ export const F = {
     erklaerung: 'Bewertet die Fehlerarten mit ihren Kosten; oft ist ein übersehener Fall (FN) teurer als ein Fehlalarm (FP).',
     variablen: [v(L`k_{FN},\ k_{FP}`, 'Kosten je falsch negativem bzw. falsch positivem Fall')],
     vorlagen: ['konfusionsmatrix'],
+  },
+  kostenSchwelle: {
+    name: 'Kostenoptimale Schwelle',
+    thema: '07',
+    latex: L`p > \frac{K_{FP}}{K_{FP} + K_{FN}}`,
+    erklaerung:
+      'Ab dieser Wahrscheinlichkeit lohnt es, einen Fall als positiv zu behandeln. 50 % passt nur bei gleich teuren Fehlern; je teurer ein übersehener Fall, desto niedriger die Schwelle.',
+    variablen: [
+      v(L`p`, 'vorhergesagte Wahrscheinlichkeit des Falls'),
+      v(L`K_{FP},\ K_{FN}`, 'Kosten je falsch positivem bzw. falsch negativem Fall'),
+    ],
+    vorlagen: [],
   },
   mae: {
     name: 'Mittlerer absoluter Fehler (MAE)',
@@ -456,6 +576,15 @@ export const F = {
     erklaerung: 'Vergleich mit dem Mittelwertmodell: 1 = perfekt, 0 = nicht besser als immer den Mittelwert vorherzusagen.',
     variablen: [v(L`SS_{res}`, 'Summe der quadrierten Fehler'), v(L`SS_{tot}`, 'Summe der quadrierten Abweichungen vom Mittelwert')],
     vorlagen: ['regressionsguete'],
+  },
+  mape: {
+    name: 'Mittlerer absoluter prozentualer Fehler (MAPE)',
+    thema: '07',
+    latex: L`\text{MAPE} = \frac{1}{n} \sum \frac{|y_i - \hat{y}_i|}{|y_i|} \cdot 100\,\%`,
+    erklaerung:
+      'Mittlere Abweichung in Prozent des tatsächlichen Werts – gut vergleichbar, aber unbrauchbar, wenn tatsächliche Werte nahe 0 liegen.',
+    variablen: [v(L`y_i,\ \hat{y}_i`, 'tatsächlicher und vorhergesagter Wert')],
+    vorlagen: [],
   },
 
   // ---------- Datenqualität (DD9) ----------

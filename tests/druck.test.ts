@@ -46,4 +46,37 @@ describe('Druckansicht /druck', () => {
   it('Aufgabenblatt rendert', () => {
     expect(render('/druck?thema=03&art=aufgaben')).toContain('Aufgabenblatt');
   });
+
+  it('gemischte Probeklausur (Umsetzungsplan Phase 6): ?misch= wie ?thema=, Deckblatt mit Punkten je Block, Blöcke auf neuen Seiten', () => {
+    const id = 'mix-gemischt-4711';
+    const html = render(`/druck?misch=${id}&art=aufgaben`);
+    // gleich bis auf den Link zum Lösungsblatt, der den Parameter übernimmt
+    const ohneLink = (h: string) => h.replace(/href="\/druck\?[^"]*"/g, '');
+    expect(ohneLink(html)).toBe(ohneLink(render(`/druck?thema=${id}&art=aufgaben`)));
+    expect(html).toContain(`href="/druck?misch=${id}&amp;art=loesungen"`);
+    expect(html).toContain('class="deckblatt"');
+    expect(html).toContain('Bearbeitungszeit');
+    expect(html).toMatch(/<tr class="summe"><th scope="row" colSpan="2">Summe<\/th><td class="num">100<\/td>/);
+    expect(html).toContain('sheet-group neuer-block');
+    expect(html).toContain('@page :first');
+    expect(html).toContain('counter(pages)');
+    expect(html).toContain(`href="/klausur/${id}"`);
+  });
+
+  it('Lösungsblatt einer Klausur: Bewertungsbogen mit jeder Aufgabe und dem Notenschlüssel', () => {
+    const html = render('/druck?thema=06&art=loesungen');
+    expect(html).toContain('Bewertungsbogen');
+    for (const id of content.topics.find((t) => t.id === '06')!.exam!.blocks.flatMap((b) => b.taskIds)) {
+      expect(html, id).toContain(`<th scope="row">${content.tasks[id].code}</th>`);
+    }
+    expect(html).toContain('100–92 = 1 · 91–81 = 2 · 80–67 = 3 · 66–50 = 4 · 49–30 = 5 · 29–0 = 6');
+    expect(html).not.toContain('class="deckblatt"');
+  });
+
+  it('freie Auswahl: kein Deckblatt, kein Bewertungsbogen', () => {
+    const id = Object.keys(content.tasks)[0];
+    const html = render(`/druck?ids=${id}&art=aufgaben`);
+    expect(html).not.toContain('deckblatt');
+    expect(html).not.toContain('neuer-block');
+  });
 });

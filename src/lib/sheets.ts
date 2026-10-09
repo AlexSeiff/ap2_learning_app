@@ -11,6 +11,16 @@ export interface SheetGroup {
   heading?: string;
   intro?: string;
   tasks: Task[];
+  /** Erste Gruppe eines Klausurblocks – im Druck beginnt hier eine neue Seite (Umsetzungsplan Phase 6). */
+  neuerBlock?: boolean;
+}
+
+/** Block einer Übungsklausur für Deckblatt und Bewertungsbogen. */
+export interface SheetBlock {
+  label: string;
+  titel: string;
+  punkte: number;
+  tasks: Task[];
 }
 
 export interface Sheet {
@@ -20,6 +30,8 @@ export interface Sheet {
   attachments: Section[];
   groups: SheetGroup[];
   totalPoints: number;
+  /** Nur bei ganzen Klausuren (Deep Dive oder gemischt): die Blöcke – dann gibt es Deckblatt und Bewertungsbogen. */
+  bloecke?: SheetBlock[];
 }
 
 function safeName(s: string): string {
@@ -50,9 +62,16 @@ export function examSheet(content: Content, topicId: string, kind: SheetKind): S
           heading: `${i === 0 ? `Block ${b.letter} – ${b.title} (${formatPoints(b.points)} P) · ` : ''}${g.quelle}`,
           intro: g.intro,
           tasks: g.taskIds.map((id) => content.tasks[id]).filter(Boolean),
+          ...(i === 0 ? { neuerBlock: true } : {}),
         })),
       ),
       totalPoints: exam.totalPoints,
+      bloecke: exam.blocks.map((b) => ({
+        label: `Block ${b.letter}`,
+        titel: b.title,
+        punkte: b.points,
+        tasks: b.gruppen.flatMap((g) => g.taskIds.map((id) => content.tasks[id]).filter(Boolean)),
+      })),
     };
   }
   const topic = content.topics.find((t) => t.id === topicId);
@@ -61,6 +80,7 @@ export function examSheet(content: Content, topicId: string, kind: SheetKind): S
     heading: `Block ${b.letter} – ${b.title} (${formatPoints(b.points)} P)`,
     intro: b.intro,
     tasks: b.taskIds.map((id) => content.tasks[id]).filter(Boolean),
+    neuerBlock: true,
   }));
   return {
     title: topic.exam.title,
@@ -69,6 +89,7 @@ export function examSheet(content: Content, topicId: string, kind: SheetKind): S
     attachments: topic.exam.attachments,
     groups,
     totalPoints: topic.exam.totalPoints,
+    bloecke: topic.exam.blocks.map((b, i) => ({ label: `Block ${b.letter}`, titel: b.title, punkte: b.points, tasks: groups[i].tasks })),
   };
 }
 
