@@ -2,6 +2,7 @@
 // eines Begriffs finden. Rein bis auf ladeBegriffe(); getestet in tests/begriffe.test.ts.
 
 import { namensSchluessel, seitenNachName } from '../../shared/begriffsseiten';
+import { DIAGRAMM_TYP_NAMEN, type DiagrammTyp, type DiagrammUebung } from '../../shared/diagrammUebungen';
 import type { BegriffKurz, BegriffsSeite, Content, Flashcard, RechenUebung, SqlExercise, Task } from '../../shared/types';
 import { api } from './api';
 import { glossarSchluessel, ueberschriftKern, type GlossarEintrag } from './glossar';
@@ -84,7 +85,18 @@ export interface Uebungen {
   aufgaben: Task[];
   rechnen: RechenUebung[];
   sql: SqlExercise[];
+  /** Diagramm-Übungen (Umsetzungsplan Phase 7): alle des Diagrammtyps, wenn der Begriff der Typ ist, sonst über den Text. */
+  diagramme: DiagrammUebung[];
 }
+
+/** Begriffe, die einen Diagrammtyp bezeichnen (normalisiert) – ihre Seite zeigt alle Übungen dieses Typs. */
+const TYP_BEGRIFFE: [DiagrammTyp, string[]][] = [
+  ['epk', ['epk', 'eepk', 'ereignisgesteuerte prozesskette', 'erweiterte ereignisgesteuerte prozesskette']],
+  ['bpmn', ['bpmn', 'bpmn 2 0', 'business process model and notation']],
+  ['aktivitaet', ['aktivitatsdiagramm', 'uml aktivitatsdiagramm']],
+  ['sequenz', ['sequenzdiagramm', 'uml sequenzdiagramm']],
+  ['zustand', ['zustandsdiagramm', 'uml zustandsdiagramm', 'zustandsautomat']],
+];
 
 /**
  * Übungen zu einem Begriff (für „Üben“ auf der Begriffsseite): Karten, deren Frage den Begriff nennt (die Begriffskarte zuerst), dann
@@ -104,5 +116,11 @@ export function uebungenZuBegriff(b: Pick<BegriffKurz, 'begriff' | 'auch'>, cont
     aufgaben: Object.values(content.tasks).filter((t) => !t.generated && enthaelt(normalisiere(t.markdown), woerter)),
     rechnen: content.rechenUebungen.filter((u) => enthaelt(normalisiere(`${u.titel} ${u.aufgabe}`), woerter)),
     sql: content.sqlExercises.filter((u) => enthaelt(normalisiere(`${u.titel} ${u.aufgabe}`), woerter)),
+    diagramme: (content.diagrammUebungen ?? []).filter((u) => {
+      const typ = (TYP_BEGRIFFE.find(([t]) => t === u.typ)?.[1] ?? []).map(normalisiere);
+      if (woerter.some((w) => typ.includes(w))) return true;
+      const text = `${u.titel} ${DIAGRAMM_TYP_NAMEN[u.typ]} ${u.szenario} ${u.palette.map((p) => p.text).join(' ')}`;
+      return enthaelt(normalisiere(text), woerter);
+    }),
   };
 }

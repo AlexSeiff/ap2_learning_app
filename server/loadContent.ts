@@ -37,7 +37,8 @@ export function isContentFile(name: string): boolean {
     INHALT_MD.some((re) => re.test(name)) ||
     /Lernkarten.*\.json$/i.test(name) ||
     /SQL_Uebungen.*\.json$/i.test(name) ||
-    /Rechen_Uebungen.*\.json$/i.test(name)
+    /Rechen_Uebungen.*\.json$/i.test(name) ||
+    /Diagramm_Uebungen.*\.json$/i.test(name)
   );
 }
 

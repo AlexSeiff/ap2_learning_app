@@ -5,7 +5,7 @@
 
 import type { IconName } from './icons';
 
-export type NavBadge = 'sql' | 'rechnen' | 'journal';
+export type NavBadge = 'sql' | 'rechnen' | 'diagramme' | 'journal';
 
 export type NavZiel = {
   to: string;
@@ -47,6 +47,7 @@ export const BEREICHE: Bereich[] = [
       { to: '/karteikarten', icon: 'layers', label: 'Karteikarten' },
       { to: '/aufgaben', icon: 'file-pen-line', label: 'Einzelaufgaben' },
       { to: '/rechnen', icon: 'calculator', label: 'Rechenübungen', badge: 'rechnen' },
+      { to: '/diagramme', icon: 'workflow', label: 'Diagramm-Übungen', badge: 'diagramme' },
       { to: '/klausur', icon: 'timer', label: 'Übungsklausur' },
       { to: '/fehlerjournal', icon: 'notebook-pen', label: 'Fehlerjournal', badge: 'journal' },
     ],
@@ -101,7 +102,7 @@ export function passtZuZiel(to: string, pathname: string): boolean {
 
 /** Seiten unter /material, die zum Glossar gehören (Nachschlagen); alles andere unter /material gehört zu den Einstellungen. */
 const GLOSSAR_MATERIAL = ['/material/glossar', '/material/formeln', '/material/sql-belegsatz', '/material/operatoren'];
-const LERNEN = ['/heute', '/lernen', '/karteikarten', '/aufgaben', '/rechnen', '/klausur', '/fehlerjournal'];
+const LERNEN = ['/heute', '/lernen', '/karteikarten', '/aufgaben', '/rechnen', '/diagramme', '/klausur', '/fehlerjournal'];
 const EINSTELLUNGEN = ['/material', '/einstellungen', '/daten', '/generator'];
 
 /** Zu welchem Bereich gehört der Pfad? Die Übersicht (`/`) und unbekannte Pfade gehören zu keinem. */

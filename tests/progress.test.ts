@@ -141,6 +141,8 @@ describe('migrateProgress', () => {
       rechnen: {},
       rechnenDays: {},
       markiert: {},
+      diagramme: {},
+      diagrammDays: {},
     });
     expect(migrated.attempts).toHaveLength(16);
     expect(migrated.exams).toHaveLength(1);
@@ -187,6 +189,8 @@ describe('migrateProgress', () => {
       rechnen: {},
       rechnenDays: {},
       markiert: {},
+      diagramme: {},
+      diagrammDays: {},
     });
     expect(migrated.revision).toBe(7);
     expect(migrated.cardReviewDays).toEqual({ '2026-09-26': 4, '2026-09-27': 2 });
@@ -203,6 +207,8 @@ describe('migrateProgress', () => {
       rechnen: {},
       rechnenDays: {},
       markiert: {},
+      diagramme: {},
+      diagrammDays: {},
     });
     expect(migrated.settings).toEqual({ prueferfragen: true, fachgespraech: true, leichtModus: false, backupReminderDays: 7 });
     expect(migrated.settings).not.toHaveProperty('examDate');
@@ -217,7 +223,15 @@ describe('migrateProgress', () => {
   it('Version 5 → 6: ergänzt leere Rechenübungen und Rechen-Lerntage, Einstellungen und alles andere bleiben', () => {
     const raw = fixture('fortschritt-v5-2026-09-30.json');
     const migrated = migrateProgress(raw);
-    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, rechnen: {}, rechnenDays: {}, markiert: {} });
+    expect(migrated).toEqual({
+      ...raw,
+      version: PROGRESS_VERSION,
+      rechnen: {},
+      rechnenDays: {},
+      markiert: {},
+      diagramme: {},
+      diagrammDays: {},
+    });
     expect(migrated.settings).toEqual(raw.settings);
     expect(migrated.revision).toBe(21);
     expect(ProgressSchema.safeParse(migrated).success).toBe(true);
@@ -228,13 +242,13 @@ describe('migrateProgress', () => {
     expect(migrateProgress(migrated)).toEqual(migrated);
   });
 
-  it('Version 6 (vor der Selbsteinschätzung): lädt bis auf Version 7 und leere Markierungen unverändert, Versuche ohne sicherheit bleiben gültig', () => {
+  it('Version 6 (vor der Selbsteinschätzung): lädt bis auf die Version und leere neue Sammlungen unverändert, Versuche ohne sicherheit bleiben gültig', () => {
     const raw = fixture('fortschritt-v6-2026-10-01.json');
     const migrated = migrateProgress(raw);
-    expect(migrated).toEqual({ ...raw, version: 7, markiert: {} });
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, markiert: {}, diagramme: {}, diagrammDays: {} });
     expect(ProgressSchema.safeParse(raw).success).toBe(true);
     const r = checkProgressPut(migrated, raw);
-    expect(r).toMatchObject({ ok: true, progress: { version: 7, revision: 35, markiert: {} } });
+    expect(r).toMatchObject({ ok: true, progress: { version: PROGRESS_VERSION, revision: 35, markiert: {} } });
   });
 
   it('Selbsteinschätzung (ROADMAP 8.3): optional ohne neue Version; gültige Werte bleiben, ungültige fallen weg', () => {

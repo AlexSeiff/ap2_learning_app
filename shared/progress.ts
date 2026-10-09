@@ -120,6 +120,21 @@ export type RechenState = {
   antworten?: Record<string, string>;
 };
 
+/** Stand einer Diagramm-Übung (seit Version 8, Umsetzungsplan Phase 7). Wiederholung wie bei den Rechenübungen. */
+export type DiagrammState = {
+  /** Gezählte „Prüfen“-Klicks. */
+  attempts: number;
+  /** Erste fehlerfreie Prüfung, ohne vorher die Lösung angesehen zu haben. */
+  solvedAt?: string;
+  lastCheckedAt?: string;
+  hintsUsed: number;
+  solutionShown?: boolean;
+  stage?: number;
+  due?: string;
+  /** Zuletzt geprüfte Belegung (Slot-ID → Paletten-ID), zum Wiederherstellen beim erneuten Öffnen. */
+  belegung?: Record<string, string>;
+};
+
 /**
  * Persönliche Einstellungen (seit Version 5). Sie stehen im Fortschritt, damit sie mit der Sicherung umziehen.
  * Das Farbschema bleibt im localStorage (gilt nur für das Gerät).
@@ -180,10 +195,14 @@ export type Progress = {
   rechnenDays: Record<string, number>;
   /** Markierte (und wieder entmarkierte) Karteikarten je Karten-ID (seit Version 7, ältere Dateien: leer). */
   markiert: Record<string, Markierung>;
+  /** Stand der Diagramm-Übungen je Übungs-ID (seit Version 8, ältere Dateien: leer). */
+  diagramme: Record<string, DiagrammState>;
+  /** Anzahl geprüfter Diagramm-Übungen je lokalem Datum, für die Lernserie (seit Version 8, ältere Dateien: leer). */
+  diagrammDays: Record<string, number>;
 };
 
 /** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
-export const PROGRESS_VERSION = 7;
+export const PROGRESS_VERSION = 8;
 
 export const emptyProgress = (): Progress => ({
   version: PROGRESS_VERSION,
@@ -200,6 +219,8 @@ export const emptyProgress = (): Progress => ({
   rechnen: {},
   rechnenDays: {},
   markiert: {},
+  diagramme: {},
+  diagrammDays: {},
 });
 
 type Raw = Record<string, unknown>;
@@ -322,6 +343,26 @@ function migrateRechenState(v: unknown): RechenState | undefined {
   };
 }
 
+/** Zeichen je gespeicherter ID in einer Belegung (Slot- und Paletten-IDs sind kurz). */
+const BELEGUNG_MAX = 80;
+
+function migrateDiagrammState(v: unknown): DiagrammState | undefined {
+  if (!isObject(v)) return undefined;
+  const { solvedAt, lastCheckedAt, solutionShown, stage, due, belegung, ...rest } = v;
+  const b = filterRecord(belegung, (x, k) => (typeof x === 'string' && k.length <= BELEGUNG_MAX ? x.slice(0, BELEGUNG_MAX) : undefined));
+  return {
+    ...rest,
+    ...opt('solvedAt', solvedAt, typeof solvedAt === 'string'),
+    ...opt('lastCheckedAt', lastCheckedAt, typeof lastCheckedAt === 'string'),
+    ...opt('solutionShown', solutionShown, typeof solutionShown === 'boolean'),
+    ...opt('stage', stage, typeof stage === 'number'),
+    ...opt('due', due, typeof due === 'string'),
+    ...opt('belegung', b, isObject(belegung)),
+    attempts: num(v.attempts),
+    hintsUsed: num(v.hintsUsed),
+  };
+}
+
 function migrateMarkierung(v: unknown): Markierung | undefined {
   if (!isObject(v) || typeof v.an !== 'boolean' || typeof v.am !== 'string') return undefined;
   return { ...v, an: v.an, am: v.am };
@@ -374,6 +415,8 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   5: (raw) => ({ ...raw, version: 6 }),
   // 6 → 7: markierte Karteikarten (markiert); starten leer, aufgefüllt wird unten in migrateProgress.
   6: (raw) => ({ ...raw, version: 7 }),
+  // 7 → 8: Diagramm-Übungen (diagramme) und ihre Lerntage (diagrammDays); starten leer, aufgefüllt wird unten in migrateProgress.
+  7: (raw) => ({ ...raw, version: 8 }),
 };
 
 /**
@@ -405,6 +448,8 @@ export function migrateProgress(raw: unknown): Progress {
     rechnen: filterRecord(data.rechnen, migrateRechenState),
     rechnenDays: filterRecord(data.rechnenDays, dayCount),
     markiert: filterRecord(data.markiert, migrateMarkierung),
+    diagramme: filterRecord(data.diagramme, migrateDiagrammState),
+    diagrammDays: filterRecord(data.diagrammDays, dayCount),
   };
 }
 
@@ -478,6 +523,17 @@ export const RechenStateSchema = z.looseObject({
   antworten: z.record(z.string(), z.string()).optional(),
 });
 
+export const DiagrammStateSchema = z.looseObject({
+  attempts: z.number(),
+  solvedAt: z.string().optional(),
+  lastCheckedAt: z.string().optional(),
+  hintsUsed: z.number(),
+  solutionShown: z.boolean().optional(),
+  stage: z.number().optional(),
+  due: z.string().optional(),
+  belegung: z.record(z.string(), z.string()).optional(),
+});
+
 export const SettingsSchema = z.looseObject({
   examDate: z.string().optional(),
   prueferfragen: z.boolean().optional(),
@@ -505,6 +561,8 @@ export const ProgressSchema = z.looseObject({
   rechnen: z.record(z.string(), RechenStateSchema).default({}),
   rechnenDays: z.record(z.string(), z.number()).default({}),
   markiert: z.record(z.string(), MarkierungSchema).default({}),
+  diagramme: z.record(z.string(), DiagrammStateSchema).default({}),
+  diagrammDays: z.record(z.string(), z.number()).default({}),
 });
 
 export type ProgressData = z.infer<typeof ProgressSchema>;

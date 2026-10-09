@@ -1,5 +1,7 @@
 // Datenmodell der Lern-App – wird von Server, Client und Tests gemeinsam genutzt.
 
+import type { DiagrammUebung } from './diagrammUebungen';
+
 export interface Section {
   id: string;
   title: string;
@@ -274,6 +276,8 @@ export interface Content {
   sqlExercises: SqlExercise[];
   /** Rechenübungen (AP2_Rechen_Uebungen.json). */
   rechenUebungen: RechenUebung[];
+  /** Diagramm-Übungen (AP2_Diagramm_Uebungen.json, Umsetzungsplan Phase 7); fehlt in älteren Ständen. */
+  diagrammUebungen?: DiagrammUebung[];
   /** Verzeichnis der Begriffsseiten (ohne Seitentext); fehlt in älteren Ständen. */
   begriffe?: BegriffKurz[];
   issues: ImportIssue[];

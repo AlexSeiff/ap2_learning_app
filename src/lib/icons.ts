@@ -348,6 +348,11 @@ export const ICONS = {
     ['path', { d: 'm17 8-5-5-5 5' }],
     ['path', { d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' }],
   ],
+  workflow: [
+    ['rect', { width: '8', height: '8', x: '3', y: '3', rx: '2' }],
+    ['path', { d: 'M7 11v4a2 2 0 0 0 2 2h4' }],
+    ['rect', { width: '8', height: '8', x: '13', y: '13', rx: '2' }],
+  ],
   x: [
     ['path', { d: 'M18 6 6 18' }],
     ['path', { d: 'm6 6 12 12' }],

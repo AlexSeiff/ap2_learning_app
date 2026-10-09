@@ -1,0 +1,3524 @@
+{
+ "meta": {},
+ "uebungen": [
+  {
+   "id": "DG-EPK-001",
+   "typ": "epk",
+   "stufe": 1,
+   "titel": "eEPK: Bestellung prüfen",
+   "szenario": "Bei der Möbelhaus Nordholz GmbH geht eine Bestellung ein. Der **Vertrieb** prüft sie anhand der Kundenstammdaten. Ist sie in Ordnung, wird ein Auftrag angelegt, sonst erhält der Kunde eine Absage.\n\nVervollständige die eEPK.",
+   "breite": 600,
+   "hoehe": 470,
+   "knoten": [
+    {
+     "id": "e1",
+     "x": 142,
+     "y": 19,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Bestellung ist eingegangen"
+    },
+    {
+     "id": "i1",
+     "x": 405,
+     "y": 23,
+     "w": 150,
+     "h": 38,
+     "form": "info",
+     "text": "Kundenstammdaten"
+    },
+    {
+     "id": "f1",
+     "x": 142,
+     "y": 99,
+     "w": 176,
+     "h": 46,
+     "slot": "s1"
+    },
+    {
+     "id": "o1",
+     "x": 405,
+     "y": 101,
+     "w": 150,
+     "h": 42,
+     "slot": "s2"
+    },
+    {
+     "id": "x1",
+     "x": 212,
+     "y": 178,
+     "w": 36,
+     "h": 36,
+     "slot": "s3"
+    },
+    {
+     "id": "e2",
+     "x": 32,
+     "y": 247,
+     "w": 176,
+     "h": 46,
+     "slot": "s4"
+    },
+    {
+     "id": "e3",
+     "x": 252,
+     "y": 247,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Bestellung ist abgelehnt"
+    },
+    {
+     "id": "f2",
+     "x": 32,
+     "y": 327,
+     "w": 176,
+     "h": 46,
+     "form": "funktion",
+     "text": "Auftrag anlegen"
+    },
+    {
+     "id": "f3",
+     "x": 252,
+     "y": 327,
+     "w": 176,
+     "h": 46,
+     "slot": "s5"
+    },
+    {
+     "id": "e4",
+     "x": 32,
+     "y": 407,
+     "w": 176,
+     "h": 46,
+     "slot": "s6"
+    },
+    {
+     "id": "e5",
+     "x": 252,
+     "y": 407,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Absage ist versendet"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "e1",
+     "nach": "f1",
+     "art": "fluss"
+    },
+    {
+     "von": "i1",
+     "nach": "f1",
+     "art": "zuordnung"
+    },
+    {
+     "von": "o1",
+     "nach": "f1",
+     "art": "zuordnung"
+    },
+    {
+     "von": "f1",
+     "nach": "x1",
+     "art": "fluss"
+    },
+    {
+     "von": "x1",
+     "nach": "e2",
+     "art": "fluss",
+     "punkte": [
+      [
+       230,
+       230
+      ],
+      [
+       120,
+       230
+      ]
+     ]
+    },
+    {
+     "von": "x1",
+     "nach": "e3",
+     "art": "fluss",
+     "punkte": [
+      [
+       230,
+       230
+      ],
+      [
+       340,
+       230
+      ]
+     ]
+    },
+    {
+     "von": "e2",
+     "nach": "f2",
+     "art": "fluss"
+    },
+    {
+     "von": "f2",
+     "nach": "e4",
+     "art": "fluss"
+    },
+    {
+     "von": "e3",
+     "nach": "f3",
+     "art": "fluss"
+    },
+    {
+     "von": "f3",
+     "nach": "e5",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "funktion",
+     "text": "Bestellung prüfen"
+    },
+    {
+     "id": "p2",
+     "form": "org",
+     "text": "Vertrieb"
+    },
+    {
+     "id": "p3",
+     "form": "xor",
+     "text": "XOR"
+    },
+    {
+     "id": "p4",
+     "form": "ereignis",
+     "text": "Bestellung ist freigegeben"
+    },
+    {
+     "id": "p5",
+     "form": "funktion",
+     "text": "Absage senden"
+    },
+    {
+     "id": "p6",
+     "form": "ereignis",
+     "text": "Auftrag ist angelegt"
+    },
+    {
+     "id": "d1",
+     "form": "ereignis",
+     "text": "Bestellung ist geprüft"
+    },
+    {
+     "id": "d2",
+     "form": "and",
+     "text": "AND"
+    },
+    {
+     "id": "d3",
+     "form": "org",
+     "text": "Buchhaltung"
+    },
+    {
+     "id": "d4",
+     "form": "info",
+     "text": "Rechnung"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4",
+    "s5": "p5",
+    "s6": "p6"
+   },
+   "hinweise": [
+    "Ereignisse (Sechseck) sind Zustände im Partizip, Funktionen (abgerundetes Rechteck) Tätigkeiten mit Verb.",
+    "Nach „Bestellung prüfen“ geht es entweder links oder rechts weiter – genau ein Weg: Welcher Konnektor passt?",
+    "Die Organisationseinheit (Ellipse) sagt, wer die Funktion ausführt – hier laut Text der Vertrieb."
+   ],
+   "erklaerung": "Die Funktion „Bestellung prüfen“ trifft die Entscheidung, deshalb verzweigt **nach der Funktion** ein XOR (genau ein Weg). Ein AND würde beide Wege gleichzeitig starten – eine Bestellung kann aber nicht zugleich freigegeben und abgelehnt sein. Die eEPK ergänzt die Organisationseinheit (wer?) und das Informationsobjekt (welche Daten?).",
+   "quelle": "DD5 2.3 · DD17 1.2",
+   "tags": [
+    "epk",
+    "eepk",
+    "xor"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-EPK-002",
+   "typ": "epk",
+   "stufe": 1,
+   "titel": "EPK: Reparatur mit paralleler Vorbereitung",
+   "szenario": "Reparaturservice (DD5, Anlage 1): Hat der Kunde den Kostenvoranschlag angenommen, werden **gleichzeitig** das Ersatzteil bestellt und ein Techniker eingeplant. Sobald beides erledigt ist, führt die Werkstatt die Reparatur durch.\n\nSetze die fehlenden Elemente ein.",
+   "breite": 600,
+   "hoehe": 560,
+   "knoten": [
+    {
+     "id": "e1",
+     "x": 212,
+     "y": 7,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Kostenvoranschlag ist angenommen"
+    },
+    {
+     "id": "k1",
+     "x": 282,
+     "y": 78,
+     "w": 36,
+     "h": 36,
+     "slot": "s1"
+    },
+    {
+     "id": "f1",
+     "x": 82,
+     "y": 143,
+     "w": 176,
+     "h": 46,
+     "slot": "s2"
+    },
+    {
+     "id": "f2",
+     "x": 342,
+     "y": 143,
+     "w": 176,
+     "h": 46,
+     "form": "funktion",
+     "text": "Techniker einplanen"
+    },
+    {
+     "id": "e2",
+     "x": 82,
+     "y": 223,
+     "w": 176,
+     "h": 46,
+     "slot": "s3"
+    },
+    {
+     "id": "e3",
+     "x": 342,
+     "y": 223,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Techniker ist eingeplant"
+    },
+    {
+     "id": "k2",
+     "x": 282,
+     "y": 298,
+     "w": 36,
+     "h": 36,
+     "slot": "s4"
+    },
+    {
+     "id": "f3",
+     "x": 212,
+     "y": 363,
+     "w": 176,
+     "h": 46,
+     "slot": "s5"
+    },
+    {
+     "id": "e4",
+     "x": 212,
+     "y": 443,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Reparatur ist durchgeführt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "e1",
+     "nach": "k1",
+     "art": "fluss"
+    },
+    {
+     "von": "k1",
+     "nach": "f1",
+     "art": "fluss",
+     "punkte": [
+      [
+       300,
+       128
+      ],
+      [
+       170,
+       128
+      ]
+     ]
+    },
+    {
+     "von": "k1",
+     "nach": "f2",
+     "art": "fluss",
+     "punkte": [
+      [
+       300,
+       128
+      ],
+      [
+       430,
+       128
+      ]
+     ]
+    },
+    {
+     "von": "f1",
+     "nach": "e2",
+     "art": "fluss"
+    },
+    {
+     "von": "f2",
+     "nach": "e3",
+     "art": "fluss"
+    },
+    {
+     "von": "e2",
+     "nach": "k2",
+     "art": "fluss",
+     "punkte": [
+      [
+       170,
+       284
+      ],
+      [
+       300,
+       284
+      ]
+     ]
+    },
+    {
+     "von": "e3",
+     "nach": "k2",
+     "art": "fluss",
+     "punkte": [
+      [
+       430,
+       284
+      ],
+      [
+       300,
+       284
+      ]
+     ]
+    },
+    {
+     "von": "k2",
+     "nach": "f3",
+     "art": "fluss"
+    },
+    {
+     "von": "f3",
+     "nach": "e4",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "and",
+     "text": "AND",
+     "mehrfach": true
+    },
+    {
+     "id": "p2",
+     "form": "funktion",
+     "text": "Ersatzteil bestellen"
+    },
+    {
+     "id": "p3",
+     "form": "ereignis",
+     "text": "Ersatzteil ist bestellt"
+    },
+    {
+     "id": "p5",
+     "form": "funktion",
+     "text": "Reparatur durchführen"
+    },
+    {
+     "id": "d1",
+     "form": "xor",
+     "text": "XOR",
+     "mehrfach": true
+    },
+    {
+     "id": "d2",
+     "form": "or",
+     "text": "OR",
+     "mehrfach": true
+    },
+    {
+     "id": "d3",
+     "form": "ereignis",
+     "text": "Reparatur durchführen"
+    },
+    {
+     "id": "d4",
+     "form": "funktion",
+     "text": "Ersatzteil ist bestellt"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p1",
+    "s5": "p5"
+   },
+   "hinweise": [
+    "„Gleichzeitig“ heißt: beide Wege laufen – welcher Konnektor ist das?",
+    "Der Konnektor, der zusammenführt, hat denselben Typ wie der, der verzweigt.",
+    "Achte auf die Form: „Ersatzteil ist bestellt“ ist ein Zustand, „Ersatzteil bestellen“ eine Tätigkeit."
+   ],
+   "erklaerung": "Parallele Arbeit modelliert die EPK mit einem **AND-Split**; die Reparatur darf erst beginnen, wenn **beide** Ereignisse eingetreten sind – das leistet der **AND-Join**. Mit einem XOR-Join würde die Reparatur schon nach dem ersten Ereignis starten. Ein Konnektor wird mit demselben Typ geschlossen, mit dem er geöffnet wurde.",
+   "quelle": "DD5 Übungsklausur, Anlage 1 · DD17 1.2",
+   "tags": [
+    "epk",
+    "and"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-EPK-003",
+   "typ": "epk",
+   "stufe": 1,
+   "titel": "eEPK: Wer macht was mit welchen Daten?",
+   "szenario": "Ausschnitt aus dem Versandprozess: Das **Lager** kommissioniert die Ware anhand des Lieferscheins und meldet den Versand. Die **Buchhaltung** erstellt danach die Rechnung und speichert sie im ERP-System.\n\nOrdne Organisationseinheiten und Informationsobjekte den Funktionen zu.",
+   "breite": 620,
+   "hoehe": 400,
+   "knoten": [
+    {
+     "id": "e1",
+     "x": 132,
+     "y": 7,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Auftrag ist freigegeben"
+    },
+    {
+     "id": "f1",
+     "x": 132,
+     "y": 87,
+     "w": 176,
+     "h": 46,
+     "form": "funktion",
+     "text": "Ware kommissionieren"
+    },
+    {
+     "id": "o1",
+     "x": 395,
+     "y": 70,
+     "w": 150,
+     "h": 40,
+     "slot": "s1"
+    },
+    {
+     "id": "i1",
+     "x": 395,
+     "y": 122,
+     "w": 150,
+     "h": 36,
+     "slot": "s2"
+    },
+    {
+     "id": "e2",
+     "x": 132,
+     "y": 167,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Ware ist versandbereit"
+    },
+    {
+     "id": "f2",
+     "x": 132,
+     "y": 247,
+     "w": 176,
+     "h": 46,
+     "form": "funktion",
+     "text": "Rechnung erstellen"
+    },
+    {
+     "id": "o2",
+     "x": 395,
+     "y": 230,
+     "w": 150,
+     "h": 40,
+     "slot": "s3"
+    },
+    {
+     "id": "i2",
+     "x": 395,
+     "y": 282,
+     "w": 150,
+     "h": 36,
+     "slot": "s4"
+    },
+    {
+     "id": "e3",
+     "x": 132,
+     "y": 337,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Rechnung ist erstellt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "e1",
+     "nach": "f1",
+     "art": "fluss"
+    },
+    {
+     "von": "f1",
+     "nach": "e2",
+     "art": "fluss"
+    },
+    {
+     "von": "e2",
+     "nach": "f2",
+     "art": "fluss"
+    },
+    {
+     "von": "f2",
+     "nach": "e3",
+     "art": "fluss"
+    },
+    {
+     "von": "o1",
+     "nach": "f1",
+     "art": "zuordnung"
+    },
+    {
+     "von": "i1",
+     "nach": "f1",
+     "art": "zuordnung"
+    },
+    {
+     "von": "o2",
+     "nach": "f2",
+     "art": "zuordnung"
+    },
+    {
+     "von": "i2",
+     "nach": "f2",
+     "art": "zuordnung"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "org",
+     "text": "Lager"
+    },
+    {
+     "id": "p2",
+     "form": "info",
+     "text": "Lieferschein"
+    },
+    {
+     "id": "p3",
+     "form": "org",
+     "text": "Buchhaltung"
+    },
+    {
+     "id": "p4",
+     "form": "info",
+     "text": "Rechnung"
+    },
+    {
+     "id": "d1",
+     "form": "org",
+     "text": "Vertrieb"
+    },
+    {
+     "id": "d2",
+     "form": "info",
+     "text": "Kundenstammdaten"
+    },
+    {
+     "id": "d3",
+     "form": "funktion",
+     "text": "Lieferschein"
+    },
+    {
+     "id": "d4",
+     "form": "ereignis",
+     "text": "Lager"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Organisationseinheiten sind Ellipsen, Informationsobjekte Rechtecke.",
+    "Welche Daten braucht das Lager, welche entstehen in der Buchhaltung?"
+   ],
+   "erklaerung": "Die **eEPK** erweitert die EPK um Organisationseinheiten (Ellipse, in ARIS mit senkrechtem Strich) und Informationsobjekte (Rechteck). Sie hängen ohne Pfeilfluss an der Funktion: Sie beschreiben, **wer** sie ausführt und **welche Daten** gelesen oder geschrieben werden – den Ablauf selbst ändern sie nicht.",
+   "quelle": "DD5 2.3 · DD17 1.2",
+   "tags": [
+    "eepk"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-EPK-004",
+   "typ": "epk",
+   "stufe": 2,
+   "titel": "EPK ordnen: Rücksendung bearbeiten",
+   "szenario": "Ein Kunde schickt einen Stuhl zurück. Die Rücksendung trifft ein, das Lager prüft die Ware, danach wird die Gutschrift erstellt und dem Kunden zugeschickt.\n\nBringe Ereignisse und Funktionen in die richtige Reihenfolge – sie wechseln sich ab.",
+   "breite": 420,
+   "hoehe": 470,
+   "knoten": [
+    {
+     "id": "n1",
+     "x": 122,
+     "y": 7,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Rücksendung ist eingetroffen"
+    },
+    {
+     "id": "n2",
+     "x": 122,
+     "y": 77,
+     "w": 176,
+     "h": 46,
+     "slot": "s1"
+    },
+    {
+     "id": "n3",
+     "x": 122,
+     "y": 147,
+     "w": 176,
+     "h": 46,
+     "slot": "s2"
+    },
+    {
+     "id": "n4",
+     "x": 122,
+     "y": 217,
+     "w": 176,
+     "h": 46,
+     "slot": "s3"
+    },
+    {
+     "id": "n5",
+     "x": 122,
+     "y": 287,
+     "w": 176,
+     "h": 46,
+     "slot": "s4"
+    },
+    {
+     "id": "n6",
+     "x": 122,
+     "y": 357,
+     "w": 176,
+     "h": 46,
+     "slot": "s5"
+    },
+    {
+     "id": "n7",
+     "x": 122,
+     "y": 424,
+     "w": 176,
+     "h": 40,
+     "form": "ereignis",
+     "text": "Kunde ist informiert"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "n1",
+     "nach": "n2",
+     "art": "fluss"
+    },
+    {
+     "von": "n2",
+     "nach": "n3",
+     "art": "fluss"
+    },
+    {
+     "von": "n3",
+     "nach": "n4",
+     "art": "fluss"
+    },
+    {
+     "von": "n4",
+     "nach": "n5",
+     "art": "fluss"
+    },
+    {
+     "von": "n5",
+     "nach": "n6",
+     "art": "fluss"
+    },
+    {
+     "von": "n6",
+     "nach": "n7",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "funktion",
+     "text": "Ware prüfen"
+    },
+    {
+     "id": "p2",
+     "form": "ereignis",
+     "text": "Ware ist geprüft"
+    },
+    {
+     "id": "p3",
+     "form": "funktion",
+     "text": "Gutschrift erstellen"
+    },
+    {
+     "id": "p4",
+     "form": "ereignis",
+     "text": "Gutschrift ist erstellt"
+    },
+    {
+     "id": "p5",
+     "form": "funktion",
+     "text": "Gutschrift zusenden"
+    },
+    {
+     "id": "d1",
+     "form": "ereignis",
+     "text": "Gutschrift erstellen"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4",
+    "s5": "p5"
+   },
+   "hinweise": [
+    "Auf ein Ereignis folgt immer eine Funktion und umgekehrt.",
+    "Ereignisse stehen im Partizip („… ist …“)."
+   ],
+   "erklaerung": "Eine EPK beginnt und endet mit einem Ereignis; dazwischen wechseln sich Ereignis und Funktion ab. Jede Funktion wird durch ein Ereignis ausgelöst und erzeugt wieder eines. Ein „Ereignis“ mit Verb („Gutschrift erstellen“) ist ein typischer Formfehler.",
+   "quelle": "DD17 1.2",
+   "tags": [
+    "epk",
+    "reihenfolge"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-EPK-005",
+   "typ": "epk",
+   "stufe": 2,
+   "titel": "EPK ordnen: Kauf auf Rechnung",
+   "szenario": "Ein Neukunde möchte auf Rechnung kaufen. Nach dem Eingang des Antrags wird die Bonität geprüft. Ist sie ausreichend, wird der Rechnungskauf freigeschaltet; sonst bietet das Möbelhaus Vorkasse an.\n\nSetze die Elemente so ein, dass eine korrekte EPK entsteht.",
+   "breite": 600,
+   "hoehe": 480,
+   "knoten": [
+    {
+     "id": "e1",
+     "x": 212,
+     "y": 7,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Antrag ist eingegangen"
+    },
+    {
+     "id": "f1",
+     "x": 212,
+     "y": 77,
+     "w": 176,
+     "h": 46,
+     "slot": "s1"
+    },
+    {
+     "id": "x1",
+     "x": 282,
+     "y": 150,
+     "w": 36,
+     "h": 36,
+     "slot": "s2"
+    },
+    {
+     "id": "e2",
+     "x": 82,
+     "y": 213,
+     "w": 176,
+     "h": 46,
+     "slot": "s3"
+    },
+    {
+     "id": "e3",
+     "x": 342,
+     "y": 213,
+     "w": 176,
+     "h": 46,
+     "slot": "s4"
+    },
+    {
+     "id": "f2",
+     "x": 82,
+     "y": 289,
+     "w": 176,
+     "h": 46,
+     "slot": "s5"
+    },
+    {
+     "id": "f3",
+     "x": 342,
+     "y": 289,
+     "w": 176,
+     "h": 46,
+     "slot": "s6"
+    },
+    {
+     "id": "x2",
+     "x": 282,
+     "y": 362,
+     "w": 36,
+     "h": 36,
+     "form": "xor"
+    },
+    {
+     "id": "e4",
+     "x": 212,
+     "y": 423,
+     "w": 176,
+     "h": 46,
+     "form": "ereignis",
+     "text": "Zahlungsart ist festgelegt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "e1",
+     "nach": "f1",
+     "art": "fluss"
+    },
+    {
+     "von": "f1",
+     "nach": "x1",
+     "art": "fluss"
+    },
+    {
+     "von": "x1",
+     "nach": "e2",
+     "art": "fluss",
+     "punkte": [
+      [
+       300,
+       200
+      ],
+      [
+       170,
+       200
+      ]
+     ]
+    },
+    {
+     "von": "x1",
+     "nach": "e3",
+     "art": "fluss",
+     "punkte": [
+      [
+       300,
+       200
+      ],
+      [
+       430,
+       200
+      ]
+     ]
+    },
+    {
+     "von": "e2",
+     "nach": "f2",
+     "art": "fluss"
+    },
+    {
+     "von": "e3",
+     "nach": "f3",
+     "art": "fluss"
+    },
+    {
+     "von": "f2",
+     "nach": "x2",
+     "art": "fluss",
+     "punkte": [
+      [
+       170,
+       348
+      ],
+      [
+       300,
+       348
+      ]
+     ]
+    },
+    {
+     "von": "f3",
+     "nach": "x2",
+     "art": "fluss",
+     "punkte": [
+      [
+       430,
+       348
+      ],
+      [
+       300,
+       348
+      ]
+     ]
+    },
+    {
+     "von": "x2",
+     "nach": "e4",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "funktion",
+     "text": "Bonität prüfen"
+    },
+    {
+     "id": "p2",
+     "form": "xor",
+     "text": "XOR"
+    },
+    {
+     "id": "p3",
+     "form": "ereignis",
+     "text": "Bonität ist ausreichend"
+    },
+    {
+     "id": "p4",
+     "form": "ereignis",
+     "text": "Bonität ist nicht ausreichend"
+    },
+    {
+     "id": "p5",
+     "form": "funktion",
+     "text": "Rechnungskauf freischalten"
+    },
+    {
+     "id": "p6",
+     "form": "funktion",
+     "text": "Vorkasse anbieten"
+    },
+    {
+     "id": "d1",
+     "form": "and",
+     "text": "AND"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4",
+    "s5": "p5",
+    "s6": "p6"
+   },
+   "varianten": [
+    {
+     "s1": "p1",
+     "s2": "p2",
+     "s3": "p4",
+     "s4": "p3",
+     "s5": "p6",
+     "s6": "p5"
+    }
+   ],
+   "hinweise": [
+    "Die Entscheidung trifft eine Funktion – also steht sie vor dem Konnektor.",
+    "Der untere Konnektor ist ein XOR – welcher Typ muss oben verzweigen?"
+   ],
+   "erklaerung": "Ein Ereignis kann nicht entscheiden; deshalb folgt der XOR-Split auf die **Funktion** „Bonität prüfen“. Aus dem Split gehen zwei sich ausschließende Ereignisse hervor, auf die je eine Funktion folgt. Welcher Zweig links oder rechts steht, ist egal – beide Anordnungen zählen.",
+   "quelle": "DD17 1.2",
+   "tags": [
+    "epk",
+    "xor",
+    "reihenfolge"
+   ]
+  },
+  {
+   "id": "DG-BPMN-001",
+   "typ": "bpmn",
+   "stufe": 1,
+   "titel": "BPMN: Bestellung bearbeiten",
+   "szenario": "Der Vertrieb erhält eine Bestellung per Nachricht und prüft, ob die Ware lieferbar ist. Ist sie lieferbar, wird sie versendet; sonst wird der Kunde informiert. Jeder Pfad endet mit einem Endereignis.\n\nVervollständige das BPMN-Diagramm.",
+   "breite": 760,
+   "hoehe": 300,
+   "knoten": [
+    {
+     "id": "pool",
+     "x": 10,
+     "y": 10,
+     "w": 740,
+     "h": 280,
+     "form": "pool",
+     "text": "Möbelhaus – Vertrieb"
+    },
+    {
+     "id": "st",
+     "x": 62,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "slot": "s1"
+    },
+    {
+     "id": "t1",
+     "x": 125,
+     "y": 75,
+     "w": 130,
+     "h": 50,
+     "form": "task",
+     "text": "Bestellung prüfen"
+    },
+    {
+     "id": "g1",
+     "x": 297,
+     "y": 77,
+     "w": 46,
+     "h": 46,
+     "slot": "s2"
+    },
+    {
+     "id": "t2",
+     "x": 405,
+     "y": 75,
+     "w": 130,
+     "h": 50,
+     "slot": "s3"
+    },
+    {
+     "id": "t3",
+     "x": 405,
+     "y": 185,
+     "w": 130,
+     "h": 50,
+     "form": "task",
+     "text": "Kunde informieren"
+    },
+    {
+     "id": "en1",
+     "x": 622,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "slot": "s4"
+    },
+    {
+     "id": "en2",
+     "x": 622,
+     "y": 192,
+     "w": 36,
+     "h": 36,
+     "form": "ende"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "t1",
+     "art": "fluss"
+    },
+    {
+     "von": "t1",
+     "nach": "g1",
+     "art": "fluss"
+    },
+    {
+     "von": "g1",
+     "nach": "t2",
+     "art": "fluss",
+     "text": "lieferbar"
+    },
+    {
+     "von": "g1",
+     "nach": "t3",
+     "art": "fluss",
+     "text": "nicht lieferbar",
+     "punkte": [
+      [
+       320,
+       210
+      ]
+     ]
+    },
+    {
+     "von": "t2",
+     "nach": "en1",
+     "art": "fluss"
+    },
+    {
+     "von": "t3",
+     "nach": "en2",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "start",
+     "text": "Bestellung eingegangen"
+    },
+    {
+     "id": "p2",
+     "form": "gw-xor",
+     "text": "Ware lieferbar?"
+    },
+    {
+     "id": "p3",
+     "form": "task",
+     "text": "Ware versenden"
+    },
+    {
+     "id": "p4",
+     "form": "ende",
+     "text": "Ware versendet"
+    },
+    {
+     "id": "d1",
+     "form": "gw-and",
+     "text": "parallel"
+    },
+    {
+     "id": "d2",
+     "form": "zwischen",
+     "text": "Ware versendet"
+    },
+    {
+     "id": "d3",
+     "form": "ende",
+     "text": "Bestellung eingegangen"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Start: dünner Kreis, Ende: dicker Kreis, Zwischenereignis: doppelter Rand.",
+    "Genau einer der beiden Wege wird genommen."
+   ],
+   "erklaerung": "Ein **XOR-Gateway** (Raute mit X) wählt genau einen Pfad; die ausgehenden Pfade werden beschriftet. Jeder Pfad endet in einem **Endereignis** (dicker Rand). Ein Zwischenereignis (doppelter Rand) tritt während des Ablaufs ein und beendet nichts.",
+   "quelle": "DD5 2.1 · DD17 1.1",
+   "tags": [
+    "bpmn",
+    "xor"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-BPMN-002",
+   "typ": "bpmn",
+   "stufe": 1,
+   "titel": "BPMN: Reparatur vorbereiten",
+   "szenario": "Nach der Auftragsannahme werden **parallel** das Ersatzteil bestellt und ein Techniker eingeplant. Erst wenn beides erledigt ist, wird repariert.\n\nSetze die Gateways und Tasks ein.",
+   "breite": 760,
+   "hoehe": 290,
+   "knoten": [
+    {
+     "id": "pool",
+     "x": 10,
+     "y": 10,
+     "w": 740,
+     "h": 270,
+     "form": "pool",
+     "text": "Möbelhaus – Werkstatt"
+    },
+    {
+     "id": "st",
+     "x": 62,
+     "y": 127,
+     "w": 36,
+     "h": 36,
+     "form": "start",
+     "text": "Auftrag angenommen"
+    },
+    {
+     "id": "g1",
+     "x": 147,
+     "y": 122,
+     "w": 46,
+     "h": 46,
+     "slot": "s1"
+    },
+    {
+     "id": "t1",
+     "x": 235,
+     "y": 55,
+     "w": 130,
+     "h": 50,
+     "slot": "s2"
+    },
+    {
+     "id": "t2",
+     "x": 235,
+     "y": 185,
+     "w": 130,
+     "h": 50,
+     "form": "task",
+     "text": "Techniker einplanen"
+    },
+    {
+     "id": "g2",
+     "x": 407,
+     "y": 122,
+     "w": 46,
+     "h": 46,
+     "slot": "s3"
+    },
+    {
+     "id": "t3",
+     "x": 495,
+     "y": 120,
+     "w": 130,
+     "h": 50,
+     "slot": "s4"
+    },
+    {
+     "id": "en",
+     "x": 672,
+     "y": 127,
+     "w": 36,
+     "h": 36,
+     "form": "ende",
+     "text": "Reparatur erledigt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "g1",
+     "art": "fluss"
+    },
+    {
+     "von": "g1",
+     "nach": "t1",
+     "art": "fluss",
+     "punkte": [
+      [
+       170,
+       80
+      ]
+     ]
+    },
+    {
+     "von": "g1",
+     "nach": "t2",
+     "art": "fluss",
+     "punkte": [
+      [
+       170,
+       210
+      ]
+     ]
+    },
+    {
+     "von": "t1",
+     "nach": "g2",
+     "art": "fluss",
+     "punkte": [
+      [
+       430,
+       80
+      ]
+     ]
+    },
+    {
+     "von": "t2",
+     "nach": "g2",
+     "art": "fluss",
+     "punkte": [
+      [
+       430,
+       210
+      ]
+     ]
+    },
+    {
+     "von": "g2",
+     "nach": "t3",
+     "art": "fluss"
+    },
+    {
+     "von": "t3",
+     "nach": "en",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "gw-and",
+     "text": "parallel",
+     "mehrfach": true
+    },
+    {
+     "id": "p2",
+     "form": "task",
+     "text": "Ersatzteil bestellen"
+    },
+    {
+     "id": "p4",
+     "form": "task",
+     "text": "Reparatur durchführen"
+    },
+    {
+     "id": "d1",
+     "form": "gw-xor",
+     "text": "entweder – oder",
+     "mehrfach": true
+    },
+    {
+     "id": "d2",
+     "form": "gw-or",
+     "text": "ein oder mehrere",
+     "mehrfach": true
+    },
+    {
+     "id": "d3",
+     "form": "start",
+     "text": "Ersatzteil bestellen"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p1",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "„Parallel“ – Raute mit Plus.",
+    "Das zusammenführende Gateway hat denselben Typ wie das öffnende."
+   ],
+   "erklaerung": "Das **AND-Gateway** (Raute mit +) startet alle Pfade gleichzeitig und wartet beim Zusammenführen auf alle. Wer mit XOR öffnet und mit AND schließt, baut einen **Deadlock**: Das AND wartet auf einen Pfad, der nie kommt.",
+   "quelle": "DD17 1.1",
+   "tags": [
+    "bpmn",
+    "and"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-BPMN-003",
+   "typ": "bpmn",
+   "stufe": 1,
+   "titel": "BPMN: Zahlungserinnerung",
+   "szenario": "Die Buchhaltung versendet eine Rechnung. Dann wird **14 Tage gewartet**. Danach wird geprüft, ob bezahlt wurde: Wenn ja, ist der Vorgang abgeschlossen, wenn nein, wird eine Zahlungserinnerung versendet.\n\nSetze die Ereignisse und das Gateway ein.",
+   "breite": 760,
+   "hoehe": 300,
+   "knoten": [
+    {
+     "id": "pool",
+     "x": 10,
+     "y": 10,
+     "w": 740,
+     "h": 280,
+     "form": "pool",
+     "text": "Möbelhaus – Buchhaltung"
+    },
+    {
+     "id": "st",
+     "x": 62,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "form": "start",
+     "text": "Ware geliefert"
+    },
+    {
+     "id": "t1",
+     "x": 125,
+     "y": 75,
+     "w": 130,
+     "h": 50,
+     "form": "task",
+     "text": "Rechnung versenden"
+    },
+    {
+     "id": "z1",
+     "x": 292,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "slot": "s1"
+    },
+    {
+     "id": "g1",
+     "x": 387,
+     "y": 77,
+     "w": 46,
+     "h": 46,
+     "slot": "s2"
+    },
+    {
+     "id": "en1",
+     "x": 642,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "slot": "s3"
+    },
+    {
+     "id": "t2",
+     "x": 475,
+     "y": 185,
+     "w": 130,
+     "h": 50,
+     "form": "task",
+     "text": "Zahlungserinnerung versenden"
+    },
+    {
+     "id": "en2",
+     "x": 642,
+     "y": 192,
+     "w": 36,
+     "h": 36,
+     "form": "ende",
+     "text": "Erinnerung versendet"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "t1",
+     "art": "fluss"
+    },
+    {
+     "von": "t1",
+     "nach": "z1",
+     "art": "fluss"
+    },
+    {
+     "von": "z1",
+     "nach": "g1",
+     "art": "fluss"
+    },
+    {
+     "von": "g1",
+     "nach": "en1",
+     "art": "fluss",
+     "text": "bezahlt"
+    },
+    {
+     "von": "g1",
+     "nach": "t2",
+     "art": "fluss",
+     "text": "nicht bezahlt",
+     "punkte": [
+      [
+       410,
+       210
+      ]
+     ]
+    },
+    {
+     "von": "t2",
+     "nach": "en2",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "zwischen",
+     "text": "14 Tage warten"
+    },
+    {
+     "id": "p2",
+     "form": "gw-xor",
+     "text": "Zahlung eingegangen?"
+    },
+    {
+     "id": "p3",
+     "form": "ende",
+     "text": "Vorgang abgeschlossen"
+    },
+    {
+     "id": "d1",
+     "form": "start",
+     "text": "14 Tage warten"
+    },
+    {
+     "id": "d2",
+     "form": "task",
+     "text": "14 Tage warten"
+    },
+    {
+     "id": "d3",
+     "form": "gw-and",
+     "text": "parallel"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3"
+   },
+   "hinweise": [
+    "Warten ist keine Tätigkeit, sondern ein Ereignis während des Ablaufs.",
+    "Nach der Prüfung gibt es genau einen Weg."
+   ],
+   "erklaerung": "Eine Wartezeit modelliert BPMN als **Zwischenereignis** (Kreis mit doppeltem Rand, hier ein Timer), nicht als Task – niemand „arbeitet“ in den 14 Tagen. Startereignisse stehen nur am Anfang. Die Entscheidung bezahlt / nicht bezahlt ist ein **XOR-Gateway** mit beschrifteten Pfaden.",
+   "quelle": "DD17 1.1",
+   "tags": [
+    "bpmn",
+    "zwischenereignis"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-BPMN-004",
+   "typ": "bpmn",
+   "stufe": 2,
+   "titel": "BPMN ordnen: Retoure",
+   "szenario": "Eine Retoure trifft im Lager ein. Das Lager erfasst sie, prüft den Zustand der Ware, bucht sie wieder in den Bestand ein und veranlasst die Erstattung.\n\nBringe die Tasks in die richtige Reihenfolge.",
+   "breite": 780,
+   "hoehe": 200,
+   "knoten": [
+    {
+     "id": "pool",
+     "x": 10,
+     "y": 10,
+     "w": 760,
+     "h": 180,
+     "form": "pool",
+     "text": "Möbelhaus – Lager"
+    },
+    {
+     "id": "st",
+     "x": 52,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "form": "start",
+     "text": "Retoure eingetroffen"
+    },
+    {
+     "id": "t1",
+     "x": 115,
+     "y": 75,
+     "w": 120,
+     "h": 50,
+     "slot": "s1"
+    },
+    {
+     "id": "t2",
+     "x": 255,
+     "y": 75,
+     "w": 120,
+     "h": 50,
+     "slot": "s2"
+    },
+    {
+     "id": "t3",
+     "x": 395,
+     "y": 75,
+     "w": 120,
+     "h": 50,
+     "slot": "s3"
+    },
+    {
+     "id": "t4",
+     "x": 535,
+     "y": 75,
+     "w": 120,
+     "h": 50,
+     "slot": "s4"
+    },
+    {
+     "id": "en",
+     "x": 697,
+     "y": 82,
+     "w": 36,
+     "h": 36,
+     "form": "ende",
+     "text": "Retoure erledigt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "t1",
+     "art": "fluss"
+    },
+    {
+     "von": "t1",
+     "nach": "t2",
+     "art": "fluss"
+    },
+    {
+     "von": "t2",
+     "nach": "t3",
+     "art": "fluss"
+    },
+    {
+     "von": "t3",
+     "nach": "t4",
+     "art": "fluss"
+    },
+    {
+     "von": "t4",
+     "nach": "en",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "task",
+     "text": "Retoure erfassen"
+    },
+    {
+     "id": "p2",
+     "form": "task",
+     "text": "Zustand prüfen"
+    },
+    {
+     "id": "p3",
+     "form": "task",
+     "text": "Ware einbuchen"
+    },
+    {
+     "id": "p4",
+     "form": "task",
+     "text": "Erstattung veranlassen"
+    },
+    {
+     "id": "d1",
+     "form": "task",
+     "text": "Rechnung versenden"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Erst wird erfasst, was angekommen ist – geprüft wird danach.",
+    "Erstattet wird erst, wenn klar ist, dass die Ware in Ordnung ist."
+   ],
+   "erklaerung": "Tasks werden mit **Verb + Objekt** benannt und über Sequenzflüsse verbunden. Die Reihenfolge folgt der fachlichen Abhängigkeit: Ohne Erfassung keine Prüfung, ohne Prüfung keine Einbuchung und keine Erstattung.",
+   "quelle": "DD5 2.2",
+   "tags": [
+    "bpmn",
+    "reihenfolge"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-AKT-001",
+   "typ": "aktivitaet",
+   "stufe": 1,
+   "titel": "Aktivitätsdiagramm: Bestellung freigeben",
+   "szenario": "Im Webshop wird eine Bestellung geprüft. Liegt der Bestellwert **über 1.000 €**, gibt die Teamleitung sie frei; sonst geht sie direkt an den Versand. Danach wird die Bestellung versendet.\n\nSetze Start, Entscheidung, Bedingungen und Ende ein.",
+   "breite": 560,
+   "hoehe": 470,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 267,
+     "y": 11,
+     "w": 26,
+     "h": 26,
+     "slot": "s1"
+    },
+    {
+     "id": "a1",
+     "x": 195,
+     "y": 70,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Bestellung prüfen"
+    },
+    {
+     "id": "d1",
+     "x": 257,
+     "y": 145,
+     "w": 46,
+     "h": 46,
+     "slot": "s2"
+    },
+    {
+     "id": "a2",
+     "x": 385,
+     "y": 216,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Freigabe einholen"
+    },
+    {
+     "id": "m1",
+     "x": 257,
+     "y": 289,
+     "w": 46,
+     "h": 46,
+     "form": "entscheidung"
+    },
+    {
+     "id": "a3",
+     "x": 195,
+     "y": 360,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Bestellung versenden"
+    },
+    {
+     "id": "en",
+     "x": 265,
+     "y": 431,
+     "w": 30,
+     "h": 30,
+     "slot": "s5"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "a1",
+     "art": "fluss"
+    },
+    {
+     "von": "a1",
+     "nach": "d1",
+     "art": "fluss"
+    },
+    {
+     "von": "d1",
+     "nach": "a2",
+     "art": "fluss",
+     "label": [
+      395,
+      138
+     ],
+     "slot": "s3",
+     "punkte": [
+      [
+       470,
+       168
+      ]
+     ]
+    },
+    {
+     "von": "d1",
+     "nach": "m1",
+     "art": "fluss",
+     "label": [
+      280,
+      240
+     ],
+     "slot": "s4"
+    },
+    {
+     "von": "a2",
+     "nach": "m1",
+     "art": "fluss",
+     "punkte": [
+      [
+       470,
+       312
+      ]
+     ]
+    },
+    {
+     "von": "m1",
+     "nach": "a3",
+     "art": "fluss"
+    },
+    {
+     "von": "a3",
+     "nach": "en",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "startpunkt",
+     "text": "Start"
+    },
+    {
+     "id": "p2",
+     "form": "entscheidung",
+     "text": "Entscheidung"
+    },
+    {
+     "id": "p3",
+     "form": "beschriftung",
+     "text": "[Wert > 1.000 €]"
+    },
+    {
+     "id": "p4",
+     "form": "beschriftung",
+     "text": "[sonst]"
+    },
+    {
+     "id": "p5",
+     "form": "endpunkt",
+     "text": "Ende"
+    },
+    {
+     "id": "d1",
+     "form": "gabel",
+     "text": "Gabelung"
+    },
+    {
+     "id": "d2",
+     "form": "beschriftung",
+     "text": "Wert > 1.000 € / freigeben"
+    },
+    {
+     "id": "d3",
+     "form": "endpunkt",
+     "text": "Start"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4",
+    "s5": "p5"
+   },
+   "hinweise": [
+    "Bedingungen (Guards) stehen in eckigen Klammern an den ausgehenden Kanten.",
+    "Startknoten: gefüllter Kreis; Endknoten: Kreis mit Punkt."
+   ],
+   "erklaerung": "Die **Entscheidung** (Raute) hat einen Eingang und mehrere Ausgänge mit **Guards in eckigen Klammern** – sie müssen sich ausschließen und zusammen alle Fälle abdecken, daher „[sonst]“. Die zweite Raute führt die Zweige wieder zusammen (Merge). Der Schrägstrich gehört zur Notation von Transitionen im Zustandsdiagramm, nicht hierher.",
+   "quelle": "DD17 2.4",
+   "tags": [
+    "uml",
+    "aktivitaetsdiagramm",
+    "entscheidung"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-AKT-002",
+   "typ": "aktivitaet",
+   "stufe": 1,
+   "titel": "Aktivitätsdiagramm: Versand vorbereiten",
+   "szenario": "Ist der Auftrag bestätigt, laufen zwei Tätigkeiten **nebenläufig**: Die Ware wird kommissioniert und die Rechnung erstellt. Erst wenn beides fertig ist, wird das Paket übergeben.\n\nSetze die passenden Knoten ein.",
+   "breite": 560,
+   "hoehe": 430,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 267,
+     "y": 9,
+     "w": 26,
+     "h": 26,
+     "form": "startpunkt"
+    },
+    {
+     "id": "a1",
+     "x": 195,
+     "y": 64,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Auftrag bestätigen"
+    },
+    {
+     "id": "f1",
+     "x": 130,
+     "y": 145,
+     "w": 300,
+     "h": 10,
+     "slot": "s1"
+    },
+    {
+     "id": "a2",
+     "x": 75,
+     "y": 192,
+     "w": 170,
+     "h": 44,
+     "slot": "s2"
+    },
+    {
+     "id": "a3",
+     "x": 315,
+     "y": 192,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Rechnung erstellen"
+    },
+    {
+     "id": "j1",
+     "x": 130,
+     "y": 273,
+     "w": 300,
+     "h": 10,
+     "slot": "s3"
+    },
+    {
+     "id": "a4",
+     "x": 195,
+     "y": 318,
+     "w": 170,
+     "h": 44,
+     "slot": "s4"
+    },
+    {
+     "id": "en",
+     "x": 265,
+     "y": 387,
+     "w": 30,
+     "h": 30,
+     "form": "endpunkt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "a1",
+     "art": "fluss"
+    },
+    {
+     "von": "a1",
+     "nach": "f1",
+     "art": "fluss"
+    },
+    {
+     "von": "f1",
+     "nach": "a2",
+     "art": "fluss",
+     "punkte": [
+      [
+       160,
+       172
+      ]
+     ]
+    },
+    {
+     "von": "f1",
+     "nach": "a3",
+     "art": "fluss",
+     "punkte": [
+      [
+       400,
+       172
+      ]
+     ]
+    },
+    {
+     "von": "a2",
+     "nach": "j1",
+     "art": "fluss",
+     "punkte": [
+      [
+       160,
+       255
+      ]
+     ]
+    },
+    {
+     "von": "a3",
+     "nach": "j1",
+     "art": "fluss",
+     "punkte": [
+      [
+       400,
+       255
+      ]
+     ]
+    },
+    {
+     "von": "j1",
+     "nach": "a4",
+     "art": "fluss"
+    },
+    {
+     "von": "a4",
+     "nach": "en",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "gabel",
+     "text": "Gabelung / Vereinigung",
+     "mehrfach": true
+    },
+    {
+     "id": "p2",
+     "form": "aktion",
+     "text": "Ware kommissionieren"
+    },
+    {
+     "id": "p4",
+     "form": "aktion",
+     "text": "Paket übergeben"
+    },
+    {
+     "id": "d1",
+     "form": "entscheidung",
+     "text": "Entscheidung / Merge",
+     "mehrfach": true
+    },
+    {
+     "id": "d2",
+     "form": "aktion",
+     "text": "Rechnung erstellen"
+    },
+    {
+     "id": "d3",
+     "form": "endpunkt",
+     "text": "Paket übergeben"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p1",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Nebenläufigkeit zeigt ein dicker Balken.",
+    "Was öffnet, muss vom gleichen Typ geschlossen werden."
+   ],
+   "erklaerung": "**Gabelung** (Fork) und **Vereinigung** (Join) sind dicke Balken: Die Gabelung startet alle ausgehenden Abläufe, die Vereinigung wartet auf alle eingehenden. Eine Raute wäre eine Entscheidung – dann liefe nur **ein** Zweig, und die Rechnung fehlte womöglich.",
+   "quelle": "DD17 2.4",
+   "tags": [
+    "uml",
+    "aktivitaetsdiagramm",
+    "fork"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-AKT-003",
+   "typ": "aktivitaet",
+   "stufe": 2,
+   "titel": "Aktivitätsdiagramm ordnen: Anmeldung im Kundenkonto",
+   "szenario": "Ein Kunde meldet sich im Kundenkonto an: Er gibt E-Mail und Passwort ein, das System prüft die Daten, erzeugt bei Erfolg eine Sitzung und zeigt die Startseite an.\n\nBringe die Aktionen in die richtige Reihenfolge.",
+   "breite": 420,
+   "hoehe": 400,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 197,
+     "y": 9,
+     "w": 26,
+     "h": 26,
+     "form": "startpunkt"
+    },
+    {
+     "id": "a1",
+     "x": 125,
+     "y": 64,
+     "w": 170,
+     "h": 44,
+     "slot": "s1"
+    },
+    {
+     "id": "a2",
+     "x": 125,
+     "y": 136,
+     "w": 170,
+     "h": 44,
+     "slot": "s2"
+    },
+    {
+     "id": "a3",
+     "x": 125,
+     "y": 208,
+     "w": 170,
+     "h": 44,
+     "slot": "s3"
+    },
+    {
+     "id": "a4",
+     "x": 125,
+     "y": 280,
+     "w": 170,
+     "h": 44,
+     "slot": "s4"
+    },
+    {
+     "id": "en",
+     "x": 195,
+     "y": 355,
+     "w": 30,
+     "h": 30,
+     "form": "endpunkt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "a1",
+     "art": "fluss"
+    },
+    {
+     "von": "a1",
+     "nach": "a2",
+     "art": "fluss"
+    },
+    {
+     "von": "a2",
+     "nach": "a3",
+     "art": "fluss"
+    },
+    {
+     "von": "a3",
+     "nach": "a4",
+     "art": "fluss"
+    },
+    {
+     "von": "a4",
+     "nach": "en",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "aktion",
+     "text": "Zugangsdaten eingeben"
+    },
+    {
+     "id": "p2",
+     "form": "aktion",
+     "text": "Zugangsdaten prüfen"
+    },
+    {
+     "id": "p3",
+     "form": "aktion",
+     "text": "Sitzung erzeugen"
+    },
+    {
+     "id": "p4",
+     "form": "aktion",
+     "text": "Startseite anzeigen"
+    },
+    {
+     "id": "d1",
+     "form": "aktion",
+     "text": "Passwort zurücksetzen"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Geprüft werden kann erst, was eingegeben wurde."
+   ],
+   "erklaerung": "Ein Aktivitätsdiagramm zeigt den Ablauf von Aktionen vom Start- bis zum Endknoten. Der Sonderfall „falsches Passwort“ wäre eine Entscheidung nach „Zugangsdaten prüfen“ – im Gutfall läuft der Ablauf geradeaus.",
+   "quelle": "DD17 2.4",
+   "tags": [
+    "uml",
+    "aktivitaetsdiagramm",
+    "reihenfolge"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-AKT-004",
+   "typ": "aktivitaet",
+   "stufe": 1,
+   "titel": "Aktivitätsdiagramm: Datensätze bereinigen",
+   "szenario": "Ein ETL-Job liest Kundendatensätze ein und prüft jeden auf Pflichtfelder. Fehlerhafte Datensätze werden in eine Fehlertabelle geschrieben, gültige geladen. Solange noch Datensätze da sind, geht es mit dem nächsten weiter.\n\nSetze die Knoten und Bedingungen ein.",
+   "breite": 680,
+   "hoehe": 470,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 217,
+     "y": 9,
+     "w": 26,
+     "h": 26,
+     "form": "startpunkt"
+    },
+    {
+     "id": "a1",
+     "x": 145,
+     "y": 62,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Datensatz lesen"
+    },
+    {
+     "id": "d1",
+     "x": 207,
+     "y": 137,
+     "w": 46,
+     "h": 46,
+     "slot": "s1"
+    },
+    {
+     "id": "a2",
+     "x": 35,
+     "y": 214,
+     "w": 170,
+     "h": 44,
+     "form": "aktion",
+     "text": "Datensatz laden"
+    },
+    {
+     "id": "a3",
+     "x": 275,
+     "y": 214,
+     "w": 170,
+     "h": 44,
+     "slot": "s4"
+    },
+    {
+     "id": "m1",
+     "x": 207,
+     "y": 287,
+     "w": 46,
+     "h": 46,
+     "form": "entscheidung"
+    },
+    {
+     "id": "d2",
+     "x": 207,
+     "y": 359,
+     "w": 46,
+     "h": 46,
+     "form": "entscheidung"
+    },
+    {
+     "id": "en",
+     "x": 215,
+     "y": 431,
+     "w": 30,
+     "h": 30,
+     "form": "endpunkt"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "a1",
+     "art": "fluss"
+    },
+    {
+     "von": "a1",
+     "nach": "d1",
+     "art": "fluss"
+    },
+    {
+     "von": "d1",
+     "nach": "a2",
+     "art": "fluss",
+     "label": [
+      110,
+      128
+     ],
+     "slot": "s2",
+     "punkte": [
+      [
+       120,
+       160
+      ]
+     ]
+    },
+    {
+     "von": "d1",
+     "nach": "a3",
+     "art": "fluss",
+     "label": [
+      370,
+      128
+     ],
+     "slot": "s3",
+     "punkte": [
+      [
+       360,
+       160
+      ]
+     ]
+    },
+    {
+     "von": "a2",
+     "nach": "m1",
+     "art": "fluss",
+     "punkte": [
+      [
+       120,
+       310
+      ]
+     ]
+    },
+    {
+     "von": "a3",
+     "nach": "m1",
+     "art": "fluss",
+     "punkte": [
+      [
+       360,
+       310
+      ]
+     ]
+    },
+    {
+     "von": "m1",
+     "nach": "d2",
+     "art": "fluss"
+    },
+    {
+     "von": "d2",
+     "nach": "a1",
+     "art": "fluss",
+     "label": [
+      575,
+      300
+     ],
+     "text": "[weitere Datensätze]",
+     "punkte": [
+      [
+       600,
+       382
+      ],
+      [
+       600,
+       84
+      ]
+     ]
+    },
+    {
+     "von": "d2",
+     "nach": "en",
+     "art": "fluss",
+     "label": [
+      350,
+      430
+     ],
+     "slot": "s5"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "entscheidung",
+     "text": "Entscheidung"
+    },
+    {
+     "id": "p2",
+     "form": "beschriftung",
+     "text": "[Pflichtfelder vollständig]"
+    },
+    {
+     "id": "p3",
+     "form": "beschriftung",
+     "text": "[Pflichtfeld fehlt]"
+    },
+    {
+     "id": "p4",
+     "form": "aktion",
+     "text": "In Fehlertabelle schreiben"
+    },
+    {
+     "id": "p5",
+     "form": "beschriftung",
+     "text": "[keine weiteren]"
+    },
+    {
+     "id": "d1",
+     "form": "gabel",
+     "text": "Gabelung"
+    },
+    {
+     "id": "d2",
+     "form": "aktion",
+     "text": "Datensatz löschen"
+    },
+    {
+     "id": "d3",
+     "form": "beschriftung",
+     "text": "[weitere Datensätze]"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4",
+    "s5": "p5"
+   },
+   "hinweise": [
+    "Links wird geladen – welcher Fall ist das?",
+    "Die untere Raute entscheidet, ob die Schleife weiterläuft."
+   ],
+   "erklaerung": "Schleifen entstehen im Aktivitätsdiagramm durch eine **Entscheidung mit Rückkante**. Die Guards beider Ausgänge schließen sich aus: „[weitere Datensätze]“ führt zurück, „[keine weiteren]“ zum Ende. Fehlerhafte Datensätze werden nicht gelöscht, sondern protokolliert – sonst gingen Informationen für die Datenqualitätsprüfung verloren.",
+   "quelle": "DD17 2.4 · DD9",
+   "tags": [
+    "uml",
+    "aktivitaetsdiagramm",
+    "schleife"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-SEQ-001",
+   "typ": "sequenz",
+   "stufe": 1,
+   "titel": "Sequenzdiagramm: Bestellung im Webshop",
+   "szenario": "Ein Kunde bestellt im Webshop. Der Webshop fragt beim Lager **synchron** den Bestand ab und wartet auf die Antwort. Danach bestätigt er die Bestellung und stößt die Versandmeldung **asynchron** an – ohne auf eine Antwort zu warten.\n\nSetze die passenden Nachrichten ein.",
+   "breite": 640,
+   "hoehe": 340,
+   "knoten": [
+    {
+     "id": "k",
+     "x": 20,
+     "y": 10,
+     "w": 150,
+     "h": 320,
+     "form": "lebenslinie",
+     "text": "Kunde"
+    },
+    {
+     "id": "w",
+     "x": 245,
+     "y": 10,
+     "w": 150,
+     "h": 320,
+     "form": "lebenslinie",
+     "text": "Webshop"
+    },
+    {
+     "id": "l",
+     "x": 470,
+     "y": 10,
+     "w": 150,
+     "h": 320,
+     "form": "lebenslinie",
+     "text": "Lager"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "k",
+     "nach": "w",
+     "art": "sync",
+     "text": "bestellen()",
+     "y": 90
+    },
+    {
+     "von": "w",
+     "nach": "l",
+     "art": "sync",
+     "slot": "s1",
+     "y": 140
+    },
+    {
+     "von": "l",
+     "nach": "w",
+     "art": "antwort",
+     "slot": "s2",
+     "y": 190
+    },
+    {
+     "von": "w",
+     "nach": "k",
+     "art": "antwort",
+     "text": "Bestellbestätigung",
+     "y": 240
+    },
+    {
+     "von": "w",
+     "nach": "l",
+     "art": "async",
+     "slot": "s3",
+     "y": 290
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "sync",
+     "text": "bestandPruefen(artikel)"
+    },
+    {
+     "id": "p2",
+     "form": "antwort",
+     "text": "Bestand: 12 Stück"
+    },
+    {
+     "id": "p3",
+     "form": "async",
+     "text": "versandVormerken(auftrag)"
+    },
+    {
+     "id": "d1",
+     "form": "async",
+     "text": "bestandPruefen(artikel)"
+    },
+    {
+     "id": "d2",
+     "form": "sync",
+     "text": "Bestand: 12 Stück"
+    },
+    {
+     "id": "d3",
+     "form": "sync",
+     "text": "versandVormerken(auftrag)"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3"
+   },
+   "hinweise": [
+    "Synchron: gefüllte Pfeilspitze, der Sender wartet. Asynchron: offene Pfeilspitze, der Sender macht weiter.",
+    "Antworten sind gestrichelt mit offener Spitze."
+   ],
+   "erklaerung": "Im Sequenzdiagramm läuft die Zeit von oben nach unten. Eine **synchrone Nachricht** (gefüllte Spitze) blockiert den Sender bis zur **Antwort** (gestrichelt). Eine **asynchrone Nachricht** (offene Spitze) wird nur abgeschickt – auf die Versandmeldung muss der Webshop nicht warten.",
+   "quelle": "DD17 2.5",
+   "tags": [
+    "uml",
+    "sequenzdiagramm"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-SEQ-002",
+   "typ": "sequenz",
+   "stufe": 1,
+   "titel": "Sequenzdiagramm: Zahlung freigeben",
+   "szenario": "Beim Bezahlen schickt der **Webshop** die Zahlungsdaten an den **Zahlungsdienstleister**. Dieser lässt die Zahlung von der **Bank des Kunden** autorisieren und meldet das Ergebnis an den Webshop zurück.\n\nBenenne die Lebenslinien.",
+   "breite": 640,
+   "hoehe": 300,
+   "knoten": [
+    {
+     "id": "a",
+     "x": 20,
+     "y": 10,
+     "w": 150,
+     "h": 280,
+     "slot": "s1"
+    },
+    {
+     "id": "b",
+     "x": 245,
+     "y": 10,
+     "w": 150,
+     "h": 280,
+     "slot": "s2"
+    },
+    {
+     "id": "c",
+     "x": 470,
+     "y": 10,
+     "w": 150,
+     "h": 280,
+     "slot": "s3"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "a",
+     "nach": "b",
+     "art": "sync",
+     "text": "zahlungAnfordern(betrag)",
+     "y": 100
+    },
+    {
+     "von": "b",
+     "nach": "c",
+     "art": "sync",
+     "text": "autorisieren(karte, betrag)",
+     "y": 150
+    },
+    {
+     "von": "c",
+     "nach": "b",
+     "art": "antwort",
+     "text": "autorisiert",
+     "y": 200
+    },
+    {
+     "von": "b",
+     "nach": "a",
+     "art": "antwort",
+     "text": "Zahlung bestätigt",
+     "y": 250
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "lebenslinie",
+     "text": "Webshop"
+    },
+    {
+     "id": "p2",
+     "form": "lebenslinie",
+     "text": "Zahlungsdienstleister"
+    },
+    {
+     "id": "p3",
+     "form": "lebenslinie",
+     "text": "Bank des Kunden"
+    },
+    {
+     "id": "d1",
+     "form": "lebenslinie",
+     "text": "Lager"
+    },
+    {
+     "id": "d2",
+     "form": "aktion",
+     "text": "Zahlung autorisieren"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3"
+   },
+   "hinweise": [
+    "Wer schickt die erste Nachricht?",
+    "Die Bank spricht nur mit dem Zahlungsdienstleister."
+   ],
+   "erklaerung": "Jede **Lebenslinie** steht für einen Beteiligten (Objekt oder System), die gestrichelte Linie für seine Lebensdauer im Ablauf. Die Reihenfolge der Nachrichten von oben nach unten verrät, wer wen aufruft: Der Webshop beginnt, die Bank antwortet nur dem Zahlungsdienstleister.",
+   "quelle": "DD17 2.5",
+   "tags": [
+    "uml",
+    "sequenzdiagramm"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-SEQ-003",
+   "typ": "sequenz",
+   "stufe": 1,
+   "titel": "Sequenzdiagramm: Lieferbar oder nicht?",
+   "szenario": "Der Webshop fragt den Bestand beim Lager ab. **Je nach Ergebnis** wird entweder die Bestellung bestätigt oder der Kunde auf die Warteliste gesetzt. Für jede Position einer Bestellung wiederholt sich die Abfrage.\n\nSetze die Fragmente ein.",
+   "breite": 640,
+   "hoehe": 400,
+   "knoten": [
+    {
+     "id": "k",
+     "x": 20,
+     "y": 10,
+     "w": 150,
+     "h": 380,
+     "form": "lebenslinie",
+     "text": "Kunde"
+    },
+    {
+     "id": "w",
+     "x": 245,
+     "y": 10,
+     "w": 150,
+     "h": 380,
+     "form": "lebenslinie",
+     "text": "Webshop"
+    },
+    {
+     "id": "l",
+     "x": 470,
+     "y": 10,
+     "w": 150,
+     "h": 380,
+     "form": "lebenslinie",
+     "text": "Lager"
+    },
+    {
+     "id": "fr1",
+     "x": 160,
+     "y": 75,
+     "w": 470,
+     "h": 90,
+     "slot": "s1"
+    },
+    {
+     "id": "fr2",
+     "x": 20,
+     "y": 210,
+     "w": 600,
+     "h": 150,
+     "slot": "s2"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "w",
+     "nach": "l",
+     "art": "sync",
+     "text": "bestandPruefen(position)",
+     "y": 110
+    },
+    {
+     "von": "l",
+     "nach": "w",
+     "art": "antwort",
+     "text": "Bestand",
+     "y": 150
+    },
+    {
+     "von": "w",
+     "nach": "k",
+     "art": "async",
+     "text": "bestaetigen()",
+     "y": 260
+    },
+    {
+     "von": "w",
+     "nach": "k",
+     "art": "async",
+     "text": "wartelisteMelden()",
+     "y": 330
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "fragment",
+     "text": "loop [für jede Position]"
+    },
+    {
+     "id": "p2",
+     "form": "fragment",
+     "text": "alt [lieferbar] / [sonst]"
+    },
+    {
+     "id": "d1",
+     "form": "fragment",
+     "text": "opt [lieferbar]"
+    },
+    {
+     "id": "d2",
+     "form": "fragment",
+     "text": "par"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2"
+   },
+   "hinweise": [
+    "„Entweder – oder“ ist ein Fragment mit zwei Bereichen.",
+    "Wiederholung: loop."
+   ],
+   "erklaerung": "**Kombinierte Fragmente** rahmen Teile des Ablaufs ein: **alt** für Alternativen (entweder – oder, je Bereich eine Bedingung), **opt** für einen optionalen Teil ohne Alternative, **loop** für Wiederholungen, **par** für parallele Abläufe.",
+   "quelle": "DD17 2.5",
+   "tags": [
+    "uml",
+    "sequenzdiagramm",
+    "fragment"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-SEQ-004",
+   "typ": "sequenz",
+   "stufe": 2,
+   "titel": "Sequenzdiagramm ordnen: Passwort zurücksetzen",
+   "szenario": "Ein Kunde fordert im Webshop einen neuen Passwort-Link an. Der Webshop lässt den Mailserver eine E-Mail mit Link verschicken, der Kunde öffnet den Link und setzt im Webshop das neue Passwort.\n\nBringe die Nachrichten in die zeitliche Reihenfolge.",
+   "breite": 640,
+   "hoehe": 330,
+   "knoten": [
+    {
+     "id": "k",
+     "x": 20,
+     "y": 10,
+     "w": 150,
+     "h": 310,
+     "form": "lebenslinie",
+     "text": "Kunde"
+    },
+    {
+     "id": "w",
+     "x": 245,
+     "y": 10,
+     "w": 150,
+     "h": 310,
+     "form": "lebenslinie",
+     "text": "Webshop"
+    },
+    {
+     "id": "m",
+     "x": 470,
+     "y": 10,
+     "w": 150,
+     "h": 310,
+     "form": "lebenslinie",
+     "text": "Mailserver"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "k",
+     "nach": "w",
+     "art": "sync",
+     "slot": "s1",
+     "y": 100
+    },
+    {
+     "von": "w",
+     "nach": "m",
+     "art": "async",
+     "slot": "s2",
+     "y": 150
+    },
+    {
+     "von": "m",
+     "nach": "k",
+     "art": "async",
+     "slot": "s3",
+     "y": 200
+    },
+    {
+     "von": "k",
+     "nach": "w",
+     "art": "sync",
+     "slot": "s4",
+     "y": 250
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "sync",
+     "text": "linkAnfordern(email)"
+    },
+    {
+     "id": "p2",
+     "form": "async",
+     "text": "mailSenden(link)"
+    },
+    {
+     "id": "p3",
+     "form": "async",
+     "text": "E-Mail mit Link"
+    },
+    {
+     "id": "p4",
+     "form": "sync",
+     "text": "passwortSetzen(token, neu)"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Die Nachrichten verlaufen von oben nach unten in der Zeit.",
+    "Wer kann das neue Passwort erst setzen, wenn er den Link hat?"
+   ],
+   "erklaerung": "Die senkrechte Achse ist die Zeit. Jede Nachricht hat einen Sender und einen Empfänger – die Pfeilrichtung muss zum Inhalt passen: Den Link verschickt der Mailserver, das neue Passwort setzt der Kunde im Webshop.",
+   "quelle": "DD17 2.5",
+   "tags": [
+    "uml",
+    "sequenzdiagramm",
+    "reihenfolge"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-ZUS-001",
+   "typ": "zustand",
+   "stufe": 1,
+   "titel": "Zustandsdiagramm: Lebenslauf einer Bestellung",
+   "szenario": "Eine Bestellung ist zunächst **offen**. Geht die Zahlung ein, ist sie **bezahlt**. Sie wird nur versendet, wenn alle Artikel auf Lager sind; beim Versand wird eine Sendungsnummer vergeben. Bei der Zustellung ist sie **geliefert**.\n\nBeschrifte die Transitionen im Format Ereignis [Bedingung] / Aktion.",
+   "breite": 780,
+   "hoehe": 260,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 19,
+     "y": 109,
+     "w": 22,
+     "h": 22,
+     "form": "startpunkt"
+    },
+    {
+     "id": "z1",
+     "x": 65,
+     "y": 98,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "offen"
+    },
+    {
+     "id": "z2",
+     "x": 295,
+     "y": 98,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "bezahlt"
+    },
+    {
+     "id": "z3",
+     "x": 525,
+     "y": 98,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "versendet"
+    },
+    {
+     "id": "z4",
+     "x": 525,
+     "y": 203,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "geliefert"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "z1",
+     "art": "fluss"
+    },
+    {
+     "von": "z1",
+     "nach": "z2",
+     "art": "transition",
+     "label": [
+      245,
+      66
+     ],
+     "slot": "s1"
+    },
+    {
+     "von": "z2",
+     "nach": "z3",
+     "art": "transition",
+     "label": [
+      475,
+      56
+     ],
+     "slot": "s2"
+    },
+    {
+     "von": "z3",
+     "nach": "z4",
+     "art": "transition",
+     "label": [
+      690,
+      172
+     ],
+     "slot": "s3"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "transition",
+     "text": "zahlungEingegangen"
+    },
+    {
+     "id": "p2",
+     "form": "transition",
+     "text": "versenden [alle Artikel auf Lager] / Sendungsnummer vergeben"
+    },
+    {
+     "id": "p3",
+     "form": "transition",
+     "text": "zugestellt"
+    },
+    {
+     "id": "d1",
+     "form": "transition",
+     "text": "Sendungsnummer vergeben [versenden] / alle Artikel auf Lager"
+    },
+    {
+     "id": "d2",
+     "form": "transition",
+     "text": "bezahlt"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3"
+   },
+   "hinweise": [
+    "Reihenfolge der Beschriftung: Ereignis [Bedingung] / Aktion.",
+    "Zustände sind Adjektive oder Partizipien, Ereignisse lösen den Wechsel aus."
+   ],
+   "erklaerung": "Eine **Transition** wird mit **Ereignis [Bedingung] / Aktion** beschriftet: Das Ereignis löst sie aus, die Bedingung (Guard) muss wahr sein, die Aktion läuft beim Übergang. „bezahlt“ ist ein Zustand, kein Ereignis.",
+   "quelle": "DD17 2.6",
+   "tags": [
+    "uml",
+    "zustandsdiagramm",
+    "transition"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-ZUS-002",
+   "typ": "zustand",
+   "stufe": 1,
+   "titel": "Zustandsdiagramm: Reklamation",
+   "szenario": "Eine Reklamation wird **erfasst**. Nach der Prüfung ist sie entweder **anerkannt** oder **abgelehnt**. Eine anerkannte Reklamation wird nach der Gutschrift **abgeschlossen**; eine abgelehnte ebenso, sobald der Kunde informiert ist.\n\nSetze Start, Ende und die Zustände ein.",
+   "breite": 760,
+   "hoehe": 260,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 19,
+     "y": 119,
+     "w": 22,
+     "h": 22,
+     "slot": "s1"
+    },
+    {
+     "id": "z1",
+     "x": 75,
+     "y": 108,
+     "w": 130,
+     "h": 44,
+     "slot": "s2"
+    },
+    {
+     "id": "z2",
+     "x": 305,
+     "y": 38,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "anerkannt"
+    },
+    {
+     "id": "z3",
+     "x": 305,
+     "y": 178,
+     "w": 130,
+     "h": 44,
+     "slot": "s3"
+    },
+    {
+     "id": "z4",
+     "x": 525,
+     "y": 108,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "abgeschlossen"
+    },
+    {
+     "id": "en",
+     "x": 707,
+     "y": 117,
+     "w": 26,
+     "h": 26,
+     "slot": "s4"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "z1",
+     "art": "fluss"
+    },
+    {
+     "von": "z1",
+     "nach": "z2",
+     "art": "transition",
+     "label": [
+      230,
+      34
+     ],
+     "text": "geprüft [berechtigt]",
+     "punkte": [
+      [
+       140,
+       60
+      ]
+     ]
+    },
+    {
+     "von": "z1",
+     "nach": "z3",
+     "art": "transition",
+     "label": [
+      230,
+      230
+     ],
+     "text": "geprüft [nicht berechtigt]",
+     "punkte": [
+      [
+       140,
+       200
+      ]
+     ]
+    },
+    {
+     "von": "z2",
+     "nach": "z4",
+     "art": "transition",
+     "label": [
+      510,
+      34
+     ],
+     "text": "/ Gutschrift buchen",
+     "punkte": [
+      [
+       590,
+       60
+      ]
+     ]
+    },
+    {
+     "von": "z3",
+     "nach": "z4",
+     "art": "transition",
+     "label": [
+      510,
+      230
+     ],
+     "text": "kundeInformiert",
+     "punkte": [
+      [
+       590,
+       200
+      ]
+     ]
+    },
+    {
+     "von": "z4",
+     "nach": "en",
+     "art": "fluss"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "startpunkt",
+     "text": "Start"
+    },
+    {
+     "id": "p2",
+     "form": "zustand",
+     "text": "erfasst"
+    },
+    {
+     "id": "p3",
+     "form": "zustand",
+     "text": "abgelehnt"
+    },
+    {
+     "id": "p4",
+     "form": "endpunkt",
+     "text": "Ende"
+    },
+    {
+     "id": "d1",
+     "form": "zustand",
+     "text": "Reklamation prüfen"
+    },
+    {
+     "id": "d2",
+     "form": "endpunkt",
+     "text": "Start"
+    },
+    {
+     "id": "d3",
+     "form": "aktion",
+     "text": "abgelehnt"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4"
+   },
+   "hinweise": [
+    "Zustände beschreiben, wie etwas **ist** – keine Tätigkeiten."
+   ],
+   "erklaerung": "Ein **Zustand** (abgerundetes Rechteck) beschreibt eine Situation, in der das Objekt verweilt – „Reklamation prüfen“ wäre eine Tätigkeit und gehört als Aktion an eine Transition oder in ein Aktivitätsdiagramm. Startzustand: gefüllter Kreis, Endzustand: Kreis mit Punkt.",
+   "quelle": "DD17 2.6",
+   "tags": [
+    "uml",
+    "zustandsdiagramm"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-ZUS-003",
+   "typ": "zustand",
+   "stufe": 2,
+   "titel": "Zustandsdiagramm ordnen: Ticket im Support",
+   "szenario": "Ein Support-Ticket wird **angelegt**, einem Mitarbeiter **zugewiesen**, dann **in Bearbeitung** genommen, schließlich **gelöst** und nach Bestätigung durch den Kunden **geschlossen**.\n\nBringe die Zustände in die richtige Reihenfolge.",
+   "breite": 780,
+   "hoehe": 150,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 11,
+     "y": 64,
+     "w": 22,
+     "h": 22,
+     "form": "startpunkt"
+    },
+    {
+     "id": "z1",
+     "x": 50,
+     "y": 53,
+     "w": 120,
+     "h": 44,
+     "slot": "s1"
+    },
+    {
+     "id": "z2",
+     "x": 200,
+     "y": 53,
+     "w": 120,
+     "h": 44,
+     "slot": "s2"
+    },
+    {
+     "id": "z3",
+     "x": 350,
+     "y": 53,
+     "w": 120,
+     "h": 44,
+     "slot": "s3"
+    },
+    {
+     "id": "z4",
+     "x": 500,
+     "y": 53,
+     "w": 120,
+     "h": 44,
+     "slot": "s4"
+    },
+    {
+     "id": "z5",
+     "x": 645,
+     "y": 53,
+     "w": 110,
+     "h": 44,
+     "slot": "s5"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "z1",
+     "art": "fluss"
+    },
+    {
+     "von": "z1",
+     "nach": "z2",
+     "art": "transition"
+    },
+    {
+     "von": "z2",
+     "nach": "z3",
+     "art": "transition"
+    },
+    {
+     "von": "z3",
+     "nach": "z4",
+     "art": "transition"
+    },
+    {
+     "von": "z4",
+     "nach": "z5",
+     "art": "transition"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "zustand",
+     "text": "angelegt"
+    },
+    {
+     "id": "p2",
+     "form": "zustand",
+     "text": "zugewiesen"
+    },
+    {
+     "id": "p3",
+     "form": "zustand",
+     "text": "in Bearbeitung"
+    },
+    {
+     "id": "p4",
+     "form": "zustand",
+     "text": "gelöst"
+    },
+    {
+     "id": "p5",
+     "form": "zustand",
+     "text": "geschlossen"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2",
+    "s3": "p3",
+    "s4": "p4",
+    "s5": "p5"
+   },
+   "hinweise": [
+    "Gelöst ist nicht dasselbe wie geschlossen – wer schließt?"
+   ],
+   "erklaerung": "Das Zustandsdiagramm zeigt den **Lebenslauf eines einzelnen Objekts**. „gelöst“ und „geschlossen“ sind verschiedene Zustände: Erst bestätigt der Kunde die Lösung, dann wird das Ticket geschlossen – sonst geht es zurück in die Bearbeitung.",
+   "quelle": "DD17 2.6",
+   "tags": [
+    "uml",
+    "zustandsdiagramm",
+    "reihenfolge"
+   ],
+   "varianten": []
+  },
+  {
+   "id": "DG-ZUS-004",
+   "typ": "zustand",
+   "stufe": 2,
+   "titel": "Zustandsdiagramm ordnen: Transitionen der Retoure",
+   "szenario": "Eine Retoure ist zuerst **angekündigt**. Trifft das Paket ein, ist sie **eingegangen**. Ist die Ware in Ordnung, wird sie **erstattet**, wobei der Betrag zurückgebucht wird.\n\nOrdne die Beschriftungen den Transitionen zu.",
+   "breite": 660,
+   "hoehe": 150,
+   "knoten": [
+    {
+     "id": "st",
+     "x": 11,
+     "y": 94,
+     "w": 22,
+     "h": 22,
+     "form": "startpunkt"
+    },
+    {
+     "id": "z1",
+     "x": 55,
+     "y": 83,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "angekündigt"
+    },
+    {
+     "id": "z2",
+     "x": 285,
+     "y": 83,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "eingegangen"
+    },
+    {
+     "id": "z3",
+     "x": 515,
+     "y": 83,
+     "w": 130,
+     "h": 44,
+     "form": "zustand",
+     "text": "erstattet"
+    }
+   ],
+   "kanten": [
+    {
+     "von": "st",
+     "nach": "z1",
+     "art": "fluss"
+    },
+    {
+     "von": "z1",
+     "nach": "z2",
+     "art": "transition",
+     "label": [
+      235,
+      50
+     ],
+     "slot": "s1"
+    },
+    {
+     "von": "z2",
+     "nach": "z3",
+     "art": "transition",
+     "label": [
+      465,
+      44
+     ],
+     "slot": "s2"
+    }
+   ],
+   "palette": [
+    {
+     "id": "p1",
+     "form": "transition",
+     "text": "paketEingetroffen"
+    },
+    {
+     "id": "p2",
+     "form": "transition",
+     "text": "geprüft [Ware in Ordnung] / Betrag zurückbuchen"
+    },
+    {
+     "id": "d1",
+     "form": "transition",
+     "text": "Betrag zurückbuchen / geprüft [Ware in Ordnung]"
+    },
+    {
+     "id": "d2",
+     "form": "transition",
+     "text": "[eingegangen]"
+    }
+   ],
+   "loesung": {
+    "s1": "p1",
+    "s2": "p2"
+   },
+   "hinweise": [
+    "Ereignis zuerst, dann [Bedingung], dann / Aktion."
+   ],
+   "erklaerung": "Die Reihenfolge der Beschriftung ist fest: **Ereignis [Bedingung] / Aktion**. Eine Bedingung allein („[eingegangen]“) ohne Ereignis beschreibt hier keinen Auslöser – der Zustandswechsel braucht das Eintreffen des Pakets.",
+   "quelle": "DD17 2.6",
+   "tags": [
+    "uml",
+    "zustandsdiagramm",
+    "transition"
+   ],
+   "varianten": []
+  }
+ ]
+}

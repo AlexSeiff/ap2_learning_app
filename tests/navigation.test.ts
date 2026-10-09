@@ -86,15 +86,15 @@ describe('Bereiche', () => {
     const e = bereich('einstellungen');
     expect(sichtbareZiele(e, true).map((z) => z.to)).not.toContain('/generator');
     expect(sichtbareZiele(e, false).map((z) => z.to)).toContain('/generator');
-    const badges = { sql: 2, rechnen: 3, journal: 4 };
-    expect(badgeSumme(bereich('lernen').unter, badges)).toBe(7);
+    const badges = { sql: 2, rechnen: 3, diagramme: 5, journal: 4 };
+    expect(badgeSumme(bereich('lernen').unter, badges)).toBe(12);
     expect(badgeSumme(bereich('sql').unter, badges)).toBe(2);
     expect(badgeSumme(bereich('glossar').unter, badges)).toBe(0);
   });
 });
 
 describe('Komponenten', () => {
-  const badges = { sql: 2, rechnen: 0, journal: 1 };
+  const badges = { sql: 2, rechnen: 0, diagramme: 0, journal: 1 };
 
   it('Tab-Bar: Übersicht und vier Bereiche, aktiver Tab mit aria-current, Badges', () => {
     const html = ohneTrenner(

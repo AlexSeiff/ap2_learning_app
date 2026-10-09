@@ -46,15 +46,15 @@ describe('Markierungen – Format Version 7', () => {
   it('Version 6 → 7: ergänzt leere Markierungen, alles andere bleibt', () => {
     const raw = JSON.parse(roh('fortschritt-v6-2026-10-01.json'));
     const migrated = migrateProgress(raw);
-    expect(PROGRESS_VERSION).toBe(7);
-    expect(migrated).toEqual({ ...raw, version: 7, markiert: {} });
-    expect(checkProgressPut(migrated, raw)).toMatchObject({ ok: true, progress: { version: 7, revision: 35 } });
+    expect(PROGRESS_VERSION).toBeGreaterThanOrEqual(7);
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, markiert: {}, diagramme: {}, diagrammDays: {} });
+    expect(checkProgressPut(migrated, raw)).toMatchObject({ ok: true, progress: { version: PROGRESS_VERSION, revision: 35 } });
   });
 
   it('Version 7 lädt unverändert, auch entmarkierte Einträge und markierte Karten ohne Lernstand', () => {
     const raw = JSON.parse(roh('fortschritt-v7-2026-10-09.json'));
     const migrated = migrateProgress(raw);
-    expect(migrated).toEqual(raw);
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, diagramme: {}, diagrammDays: {} });
     expect(ProgressSchema.safeParse(raw).success).toBe(true);
     expect([...markierteIds(migrated)].sort()).toEqual(['01-pf1', 'FB-normalisierung']);
     expect(migrated.cards['FB-normalisierung']).toBeUndefined();
@@ -64,7 +64,7 @@ describe('Markierungen – Format Version 7', () => {
   it('alte Sicherungen bleiben importierbar (parseBackup), ohne Markierungen', () => {
     for (const name of ['fortschritt-v1-2026-09-22.json', 'fortschritt-v5-2026-09-30.json', 'fortschritt-v6-2026-10-01.json']) {
       const p = parseBackup(roh(name));
-      expect(p.version, name).toBe(7);
+      expect(p.version, name).toBe(PROGRESS_VERSION);
       expect(p.markiert, name).toEqual({});
     }
     expect(Object.keys(parseBackup(roh('fortschritt-v7-2026-10-09.json')).markiert)).toHaveLength(3);

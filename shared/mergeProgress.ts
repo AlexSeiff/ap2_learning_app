@@ -104,11 +104,11 @@ function mergeDays(a: Record<string, number>, b: Record<string, number>): Record
  * - activeExam: die laufende Klausur dieses Browsers; nur wenn hier keine läuft, die aus der Sicherung.
  *   Ist sie in der Historie schon abgeschlossen, entfällt sie.
  * - cards: je Karte der Stand mit mehr Wiederholungen (dann späteres due).
- * - sql, rechnen: je Übung der Stand mit dem neueren lastCheckedAt; solvedAt bleibt, wenn eine Seite gelöst hat.
+ * - sql, rechnen, diagramme: je Übung der Stand mit dem neueren lastCheckedAt; solvedAt bleibt, wenn eine Seite gelöst hat.
  * - journal: je Aufgabe der Eintrag der Seite mit dem neueren Versuch zu dieser Aufgabe (dann höhere Stufe, dann späteres due).
  * - lernziele: abgehakt, wenn auf einer Seite abgehakt.
  * - markiert: je Karte die neuere Aktion (`am`), auch ein Entmarkieren – so taucht eine entfernte Markierung nicht wieder auf.
- * - cardReviewDays / sqlDays / rechnenDays: je Tag das Maximum.
+ * - cardReviewDays / sqlDays / rechnenDays / diagrammDays: je Tag das Maximum.
  * - settings, revision und unbekannte Felder: vom aktuellen Stand (Einstellungen gehören zu diesem Browser;
  *   die Revision muss zum Gespeicherten passen, sonst lehnt checkProgressPut das Speichern als veraltet ab).
  * Bei gleichen Ständen kommt der aktuelle Stand heraus (mergeProgress(p, p) ≈ p).
@@ -154,6 +154,8 @@ export function mergeProgress(current: Progress, incoming: Progress): Progress {
     rechnen: mergeRecord(current.rechnen, incoming.rechnen, newerUebung),
     rechnenDays: mergeDays(current.rechnenDays, incoming.rechnenDays),
     markiert: mergeRecord(current.markiert, incoming.markiert, newerMarkierung),
+    diagramme: mergeRecord(current.diagramme, incoming.diagramme, newerUebung),
+    diagrammDays: mergeDays(current.diagrammDays, incoming.diagrammDays),
     settings: current.settings,
   };
 }

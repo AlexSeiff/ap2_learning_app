@@ -121,8 +121,8 @@ export function BegriffsSeiteAnsicht({ seite }: { seite: BegriffsSeite }) {
 
 function Ueben({ seite, uebungen }: { seite: BegriffsSeite; uebungen: ReturnType<typeof uebungenZuBegriff> }) {
   const { content } = useStore();
-  const { karten, aufgaben, rechnen, sql } = uebungen;
-  if (!karten.length && !aufgaben.length && !rechnen.length && !sql.length) return null;
+  const { karten, aufgaben, rechnen, sql, diagramme } = uebungen;
+  if (!karten.length && !aufgaben.length && !rechnen.length && !sql.length && !diagramme.length) return null;
   const kartenLink = (ids: string[]) => `/karteikarten?karten=${ids.map(encodeURIComponent).join(',')}&von=begriff`;
   const topicTitel = (id?: string) => content.topics.find((t) => t.id === id)?.title;
   return (
@@ -154,6 +154,13 @@ function Ueben({ seite, uebungen }: { seite: BegriffsSeite; uebungen: ReturnType
           icon="calculator"
           titel={`${rechnen.length} ${rechnen.length === 1 ? 'Rechenübung' : 'Rechenübungen'}`}
           eintraege={rechnen.map((u) => ({ key: u.id, to: `/rechnen/${u.id}`, text: u.titel }))}
+        />
+      )}
+      {diagramme.length > 0 && (
+        <UebenGruppe
+          icon="workflow"
+          titel={`${diagramme.length} ${diagramme.length === 1 ? 'Diagramm-Übung' : 'Diagramm-Übungen'}`}
+          eintraege={diagramme.map((u) => ({ key: u.id, to: `/diagramme/${u.id}`, text: u.titel }))}
         />
       )}
       {sql.length > 0 && (

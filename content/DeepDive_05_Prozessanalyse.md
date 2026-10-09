@@ -131,6 +131,8 @@ Zu erkennen: ein **XOR** nach der Kostenvoranschlagsprüfung (genau ein Pfad), e
 
 Legende: (○) Startereignis (hier ausgelöst durch die Nachricht des Kunden), ((●)) Endereignis, ◇X XOR-Gateway, ◇+ AND-Gateway (Aufspalten und Zusammenführen), ┆ Nachrichtenfluss. Aus Platzgründen fehlen die Nachrichtenflüsse für Kostenvoranschlag, Kundenantwort und Absage – in einer Prüfungslösung sollten sie eingezeichnet sein.
 
+Üben: [Diagramm-Übungen BPMN](#/diagramme?typ=bpmn) – Elemente einsetzen und Abläufe ordnen.
+
 ## 2.3 EPK – die Alternative
 
 Die **ereignisgesteuerte Prozesskette** stammt aus dem ARIS-Umfeld und ist in Prüfungen ebenfalls verbreitet.
@@ -163,6 +165,8 @@ Zusatzobjekte hängen immer an einer **Funktion**, nie an einem Ereignis.
 | Organisationen darstellen | Pools/Lanes, mehrere Beteiligte | nur über Zusatzobjekte |
 | Ausführbarkeit | technisch ausführbar (Workflow-Engines) | rein beschreibend |
 | Lesbarkeit für Fachbereiche | mittel (viele Symbole) | hoch (einfaches Grundprinzip) |
+
+Üben: [Diagramm-Übungen EPK und eEPK](#/diagramme?typ=epk) – Elemente einsetzen und Abläufe ordnen.
 
 ---
 

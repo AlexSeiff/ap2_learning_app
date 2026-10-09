@@ -109,6 +109,8 @@ Alle Beispiele spielen bei der **Möbelhaus Nordholz GmbH**, die Zahlen stammen 
 
 Prüfungsfallen: Sequenzfluss über eine Poolgrenze (verboten), Nachrichtenfluss zwischen Lanes desselben Pools (verboten), unbeschriftete XOR-Pfade, ein Pfad ohne Endereignis, XOR öffnen und mit AND schließen (der AND wartet auf einen Pfad, der nie kommt – Deadlock).
 
+Üben: [Diagramm-Übungen BPMN](#/diagramme?typ=bpmn) – Elemente einsetzen und Abläufe ordnen.
+
 ## 1.2 EPK und eEPK
 
 **Ereignisgesteuerte Prozesskette (EPK)** – Prozessdarstellung aus dem ARIS-Konzept, in der sich passive Ereignisse und aktive Funktionen abwechseln. Die **erweiterte EPK (eEPK)** ergänzt Organisationseinheiten, Informationsobjekte und Anwendungssysteme.
@@ -163,6 +165,8 @@ Prüfungsfallen: Sequenzfluss über eine Poolgrenze (verboten), Nachrichtenfluss
 | **Informationsobjekt** | Rechteck – welche Daten gelesen oder geschrieben werden |
 
 Regeln: Die EPK beginnt und endet mit einem Ereignis; Ereignis und Funktion wechseln sich ab; nach einem einzelnen Ereignis darf kein XOR- oder OR-Split folgen (ein Ereignis kann nicht entscheiden – die Entscheidung trifft die Funktion davor); ein geöffneter Konnektor wird mit demselben Typ geschlossen.
+
+Üben: [Diagramm-Übungen EPK und eEPK](#/diagramme?typ=epk) – Elemente einsetzen und Abläufe ordnen.
 
 ## 1.3 Wertstromdiagramm
 
@@ -479,6 +483,8 @@ Prüfungsfalle: die Pfeilrichtung bei «extend». Merkhilfe: Der Pfeil zeigt imm
 | **Vereinigung (Join)** | Balken – wartet, bis alle Zweige fertig sind |
 | **Endknoten** | Kreis mit gefülltem Kreis innen |
 
+Üben: [Diagramm-Übungen Aktivitätsdiagramm](#/diagramme?typ=aktivitaet) – Elemente einsetzen und Abläufe ordnen.
+
 ## 2.5 Sequenzdiagramm
 
 **Sequenzdiagramm** – zeigt den zeitlichen Nachrichtenaustausch zwischen Beteiligten; die Zeit läuft von oben nach unten.
@@ -534,6 +540,8 @@ Prüfungsfalle: die Pfeilrichtung bei «extend». Merkhilfe: Der Pfeil zeigt imm
 | **Asynchrone Nachricht** | durchgezogener Pfeil mit offener Spitze – der Sender wartet nicht |
 | **Kombiniertes Fragment** | Rahmen mit Operator: alt (Alternativen), opt (optional), loop (Wiederholung), par (parallel) |
 
+Üben: [Diagramm-Übungen Sequenzdiagramm](#/diagramme?typ=sequenz) – Elemente einsetzen und Abläufe ordnen.
+
 ## 2.6 Zustandsdiagramm
 
 **Zustandsdiagramm** – zeigt die Zustände eines einzelnen Objekts und die Übergänge dazwischen (Zustandsautomat).
@@ -576,6 +584,8 @@ Für Datenanalysten wichtig: Das Zustandsdiagramm liefert die erlaubten Werte ei
 
 > ❓ **Prüferfrage:** Aktivitäts-, Sequenz- oder Zustandsdiagramm – welches wählen Sie, um den Ablauf eines API-Aufrufs zwischen Webshop und Lagersystem zu dokumentieren?
 > *Das Sequenzdiagramm: Es zeigt, wer wem in welcher Reihenfolge welche Nachricht schickt und wer auf eine Antwort wartet. Das Aktivitätsdiagramm zeigt Tätigkeiten ohne Nachrichten, das Zustandsdiagramm den Lebenszyklus eines einzelnen Objekts.*
+
+Üben: [Diagramm-Übungen Zustandsdiagramm](#/diagramme?typ=zustand) – Elemente einsetzen und Abläufe ordnen.
 
 ---
 

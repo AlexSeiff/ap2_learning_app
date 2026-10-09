@@ -514,6 +514,8 @@ button.history-item .mono { overflow: hidden; text-overflow: ellipsis; white-spa
 .diagramm text.dg-gross { font-size: 15px; }
 .diagramm text.dg-fett { font-weight: 600; }
 .diagramm text.dg-kursiv { font-style: italic; }
+.diagramm .dg-flaeche { fill: var(--surface); stroke: none; }
+.diagramm text.dg-kantentext { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
 .sql-block { position: relative; margin: 1em 0; }
 .sql-block pre { margin: 0; }
 .sql-open { display: inline-block; font-size: 0.82rem; margin-top: 4px; }
@@ -875,4 +877,51 @@ button.stern.nur-icon { padding: 4px 6px; flex: none; }
   .bewertungsbogen .punkte-tabelle { font-size: 9pt; }
   .bewertungsbogen .punkte-tabelle th, .bewertungsbogen .punkte-tabelle td { padding: 2pt 6pt; }
   .write-space { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+
+/* Diagramm-Übungen (Umsetzungsplan Phase 7): Gerüst mit Lücken als Knöpfe über dem SVG, Palette, Ziehen */
+.diagramm-arbeit { display: grid; gap: 14px; margin: 14px 0; }
+.diagramm-scroll { overflow-x: auto; padding: 8px 0; -webkit-overflow-scrolling: touch; }
+.diagramm-flaeche { position: relative; max-width: none; margin: 0 auto; }
+.diagramm-flaeche { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-sizing: content-box; }
+/* Die Fläche trägt Rahmen und Hintergrund; das SVG füllt sie ohne Abstand, sonst passen die Lücken-Knöpfe nicht über die Formen. */
+.diagramm-flaeche > svg.diagramm { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; background: none; overflow: visible; }
+svg.diagramm.form-symbol { margin: 0; padding: 0; border: 0; background: none; overflow: visible; }
+.diagramm-slot {
+  position: absolute; padding: 0; min-height: 0 !important; background: transparent; border: 2px solid transparent; border-radius: 8px;
+  color: inherit; cursor: pointer; transition: border-color 0.12s, background-color 0.12s;
+}
+.diagramm-slot:hover, .diagramm-slot.ziel { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); filter: none; }
+.diagramm-slot.waehlbar:not(.belegt) { border-color: color-mix(in srgb, var(--accent) 55%, transparent); border-style: dashed; }
+.diagramm-slot.richtig { border-color: var(--good); }
+.diagramm-slot.falsch { border-color: var(--low); background: color-mix(in srgb, var(--low) 10%, transparent); }
+.diagramm-slot:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 1px; }
+.diagramm-palette h2 { margin: 0 0 8px; font-size: 0.95rem; }
+.palette-liste { display: flex; flex-wrap: wrap; gap: 8px; }
+.palette-element {
+  display: inline-flex; align-items: center; gap: 8px; background: var(--surface); color: var(--text); border: 1px solid var(--border);
+  font-weight: 500; padding: 6px 12px 6px 8px; touch-action: none; user-select: none; -webkit-user-select: none; text-align: left;
+}
+.palette-element:hover { background: var(--fill); filter: none; }
+.palette-element.gewaehlt { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent); }
+.palette-element.wird-gezogen { opacity: 0.45; }
+.form-symbol { width: 40px; height: 28px; flex: none; }
+.zieh-element {
+  position: fixed; z-index: 60; pointer-events: none; transform: translate(-50%, -120%); padding: 6px 12px; border-radius: 10px;
+  background: var(--accent-fill); color: var(--accent-text); font-weight: 600; font-size: 0.9rem; box-shadow: var(--shadow-hoch); white-space: nowrap;
+}
+.diagramm-regeln { margin: 8px 0 0; padding-left: 0; list-style: none; }
+.diagramm-regeln li { margin: 4px 0; }
+.diagramm-regeln .icon { color: var(--mid); }
+@media (max-width: 600px) {
+  /* iPhone: Palette bleibt über der Tab-Bar sichtbar, damit man in eine sichtbare Lücke ziehen kann. */
+  .diagramm-palette {
+    position: sticky; bottom: calc(58px + env(safe-area-inset-bottom, 0px)); z-index: 20; margin: 0 -16px; padding: 8px 16px;
+    max-height: 34vh; overflow-y: auto; background: var(--glas); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    border-top: 0.5px solid var(--border);
+  }
+  .diagramm-palette h2 { font-size: 0.82rem; }
+  .palette-liste { gap: 6px; }
+  .palette-element { font-size: 0.85rem; padding: 4px 10px 4px 6px; min-height: 40px !important; gap: 6px; }
+  .form-symbol { width: 30px; height: 21px; }
 }

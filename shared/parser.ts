@@ -4,6 +4,7 @@
 import type { Content, Exam, ExamBlock, Flashcard, ImportIssue, MaterialDoc, Section, Solution, Task, Topic } from './types';
 import { parseLernkarten } from './lernkarten';
 import { readPrueferfrage } from './prueferfragen';
+import { parseDiagrammUebungen } from './diagrammUebungen';
 import { parseRechenUebungen, type RechenUebungPruefer } from './rechenUebungen';
 import { parseSqlUebungen } from './sqlUebungen';
 import { pruefeSvg, svgBloecke, svgIds } from './svgDiagramm';
@@ -420,6 +421,7 @@ export function buildContent(files: SourceFile[], options: BuildOptions = {}): C
     sqlDatasets: [],
     sqlExercises: [],
     rechenUebungen: [],
+    diagrammUebungen: [],
     issues: [],
   };
 
@@ -479,6 +481,13 @@ export function buildContent(files: SourceFile[], options: BuildOptions = {}): C
   for (const f of files.filter((x) => /Rechen_Uebungen.*\.json$/i.test(x.name))) {
     const parsed = parseRechenUebungen(f.name, f.text, topicTitles, options.pruefeRechenUebung);
     content.rechenUebungen.push(...parsed.exercises);
+    content.issues.push(...parsed.issues);
+  }
+
+  // Diagramm-Übungen (Umsetzungsplan Phase 7)
+  for (const f of files.filter((x) => /Diagramm_Uebungen.*\.json$/i.test(x.name))) {
+    const parsed = parseDiagrammUebungen(f.name, f.text);
+    content.diagrammUebungen!.push(...parsed.uebungen);
     content.issues.push(...parsed.issues);
   }
 

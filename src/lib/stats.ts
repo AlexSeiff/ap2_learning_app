@@ -90,6 +90,7 @@ export function activityDays(progress: Progress): Set<string> {
   for (const [day, count] of Object.entries(progress.cardReviewDays)) if (count > 0) add(day);
   for (const [day, count] of Object.entries(progress.sqlDays)) if (count > 0) add(day);
   for (const [day, count] of Object.entries(progress.rechnenDays)) if (count > 0) add(day);
+  for (const [day, count] of Object.entries(progress.diagrammDays ?? {})) if (count > 0) add(day);
   return days;
 }
 

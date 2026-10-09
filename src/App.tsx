@@ -11,6 +11,7 @@ import { IS_STATIC } from './lib/api';
 import type { NavBadge } from './lib/navigation';
 import { isDue } from './lib/progress';
 import { rechenSummary } from './lib/rechnen';
+import { diagrammSummary, diagrammUebungen } from './lib/diagramme';
 import { sqlSummary } from './lib/sql';
 import { useStore } from './lib/store';
 import { Aufgabe } from './pages/Aufgabe';
@@ -33,6 +34,8 @@ const SqlUebung = lazy(() => import('./pages/SqlUebung').then((m) => ({ default:
 // Rechenübungen lazy: Vorlagen, Prüfung und (beim Rechenweg) KaTeX bleiben aus dem Hauptbundle.
 const RechenUebungen = lazy(() => import('./pages/RechenUebungen').then((m) => ({ default: m.RechenUebungen })));
 const RechenUebung = lazy(() => import('./pages/RechenUebung').then((m) => ({ default: m.RechenUebung })));
+const DiagrammUebungen = lazy(() => import('./pages/DiagrammUebungen').then((m) => ({ default: m.DiagrammUebungen })));
+const DiagrammUebung = lazy(() => import('./pages/DiagrammUebung').then((m) => ({ default: m.DiagrammUebung })));
 // „Heute lernen“ lazy: der Planer braucht nur diese Seite.
 const Heute = lazy(() => import('./pages/Heute').then((m) => ({ default: m.Heute })));
 // Operatoren-Trainer lazy: Quiz und Tabelle braucht nur diese Seite.
@@ -85,6 +88,10 @@ function useNavBadges(): Record<NavBadge, number> {
     rechnen: rechenSummary(
       progress,
       content.rechenUebungen.map((u) => u.id),
+    ).due,
+    diagramme: diagrammSummary(
+      progress,
+      diagrammUebungen(content).map((u) => u.id),
     ).due,
   };
 }
@@ -190,6 +197,8 @@ function Layout() {
                       <Route path="/sql/uebung/:id" element={<SqlUebung />} />
                       <Route path="/rechnen" element={<RechenUebungen />} />
                       <Route path="/rechnen/:id" element={<RechenUebung />} />
+                      <Route path="/diagramme" element={<DiagrammUebungen />} />
+                      <Route path="/diagramme/:id" element={<DiagrammUebung />} />
                       <Route path="/fehlerjournal" element={<Fehlerjournal />} />
                       <Route path="/generator" element={IS_STATIC ? <Navigate to="/" replace /> : <Generator />} />
                       <Route path="/material" element={<Material />} />

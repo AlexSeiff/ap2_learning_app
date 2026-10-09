@@ -86,6 +86,7 @@ Hinweis „Neu laden“ klicken (oder in den Entwicklertools *Application → Se
 | **Fehlerjournal** | Jede Aufgabe unter voller Punktzahl kommt nach 1, 3 und 7 Tagen wieder |
 | **KI-Aufgaben** | Neue IHK-Aufgaben (MC, Lückentext, Zuordnung, Rechnen, offen) mit Musterlösung – nur mit API-Schlüssel |
 | **Material** | Lernzettel Kernthemen, Themenliste |
+| **Diagramm-Übungen** | 21 Übungen zu EPK/eEPK, BPMN, Aktivitäts-, Sequenz- und Zustandsdiagramm: Elemente in ein Diagramm-Gerüst ziehen oder antippen (Lücken füllen, Abläufe ordnen), Prüfen je Lücke mit Hinweisen zu Formregeln (z. B. kein XOR nach einem Ereignis); Wiederholung wie bei den Rechenübungen, verlinkt aus den Begriffsseiten und den Lernblättern |
 | **Rechenübungen** | 109 Rechenaufgaben aus den Lernblättern mit automatischer Prüfung, typischen Fehlern, Hinweisen, Rechenweg und „Neue Zahlen“; im Leicht-Modus „Ergebnis auswählen“ (gelöst zählt nur Eintippen) |
 | **SQL-Belegsatz** | Kompakte SQL-Syntax im Stil des IHK-Belegsatzes (SELECT in Ausführungsreihenfolge, JOINs, Aggregate, Unterabfragen, DML, DDL, Constraints, Datentypen, Views, Indizes, Datums- und Textfunktionen mit SQLite-Hinweisen) – unter Glossar, im SQL-Editor als Seitenpanel, druckbar auf zwei Seiten A4 |
 | **Klausur drucken** | Jede Übungsklausur und die gemischte Probeklausur als Aufgabenblatt mit Deckblatt (Name, Datum, Zeit, Hilfsmittel, Punkte je Block), jeder Block auf neuer Seite, Seitenzahlen; Lösungsblatt mit Bewertungsbogen. „Drucken“ auf der Klausurauswahl mischt eine neue Probeklausur |
@@ -236,8 +237,8 @@ lesen `ANTHROPIC_MODEL` und `LERN_QUELLE` beim Import. Der Pages-Build liest die
 `AP-2` – so bauen GitHub Actions und dein Rechner dasselbe.
 
 **Gespeicherter Fortschritt** (`shared/progress.ts`): Typen, zod-Schema, `checkProgressPut` (Server lehnt ungültige Daten, einen starken
-Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 7
-(1 → 2: `revision`, 2 → 3: `cardReviewDays`, 3 → 4: SQL-Übungen, 4 → 5: `settings`, 5 → 6: Rechenübungen, 6 → 7: `markiert`). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
+Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 8
+(1 → 2: `revision`, 2 → 3: `cardReviewDays`, 3 → 4: SQL-Übungen, 4 → 5: `settings`, 5 → 6: Rechenübungen, 6 → 7: `markiert`, 7 → 8: Diagramm-Übungen). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
 ergänzen und die Migrationstests in `tests/progress.test.ts` anpassen – sie laden unter anderem eine Kopie der echten Datei aus
 `tests/fixtures/`. Geschrieben wird atomar (Temp-Datei + Umbenennen, mit Wiederholung, falls OneDrive die Datei sperrt), vorher entsteht
 die Tagessicherung in `data/backups/`.
