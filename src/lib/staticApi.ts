@@ -4,7 +4,7 @@
 
 import type { SaveProgressRequest } from '../../shared/api';
 import { checkProgressPut } from '../../shared/progress';
-import type { Content } from '../../shared/types';
+import type { BegriffsSeite, Content } from '../../shared/types';
 import type { DataSource } from './api';
 import { ApiError } from './apiError';
 import { createBrowserBackups, openIndexedDbBackups, type BrowserBackups } from './browserBackups';
@@ -79,6 +79,11 @@ export function createStaticApi(
       const res = await fetch(`${import.meta.env.BASE_URL}content.json`);
       if (!res.ok) throw new ApiError(res.status, `Die Lernblätter konnten nicht geladen werden (Fehler ${res.status}).`);
       return (await res.json()) as Content;
+    },
+    begriffe: async () => {
+      const res = await fetch(`${import.meta.env.BASE_URL}begriffe.json`);
+      if (!res.ok) throw new ApiError(res.status, `Die Begriffsseiten konnten nicht geladen werden (Fehler ${res.status}).`);
+      return (await res.json()) as BegriffsSeite[];
     },
     progress: async () => store.read(),
     saveProgress: async (p) => {

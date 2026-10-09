@@ -53,12 +53,12 @@ export const BEREICHE: Bereich[] = [
   },
   {
     id: 'glossar',
-    to: '/material/glossar',
+    to: '/glossar',
     icon: 'book-bookmark',
     label: 'Glossar',
     kurz: 'Glossar',
     unter: [
-      { to: '/material/glossar', icon: 'library', label: 'Begriffe A–Z' },
+      { to: '/glossar', icon: 'library', label: 'Begriffe A–Z' },
       { to: GLOSSAR_PFAD, icon: 'book-bookmark', label: 'Diagramme' },
       { to: '/material/formeln', icon: 'sigma', label: 'Formelsammlung' },
       { to: '/material/operatoren', icon: 'message-square-quote', label: 'Operatoren' },
@@ -98,7 +98,7 @@ export function passtZuZiel(to: string, pathname: string): boolean {
   return pathname === to || pathname.startsWith(`${to}/`);
 }
 
-/** Seiten des Materials, die zum Glossar gehören (Nachschlagen); alles andere unter /material gehört zu den Einstellungen. */
+/** Seiten unter /material, die zum Glossar gehören (Nachschlagen); alles andere unter /material gehört zu den Einstellungen. */
 const GLOSSAR_MATERIAL = ['/material/glossar', '/material/formeln', '/material/operatoren'];
 const LERNEN = ['/heute', '/lernen', '/karteikarten', '/aufgaben', '/rechnen', '/klausur', '/fehlerjournal'];
 const EINSTELLUNGEN = ['/material', '/einstellungen', '/daten', '/generator'];
@@ -106,7 +106,7 @@ const EINSTELLUNGEN = ['/material', '/einstellungen', '/daten', '/generator'];
 /** Zu welchem Bereich gehört der Pfad? Die Übersicht (`/`) und unbekannte Pfade gehören zu keinem. */
 export function aktiverBereich(pathname: string): BereichId | undefined {
   if (pathname === '/') return undefined;
-  if (passtZuZiel(GLOSSAR_PFAD, pathname) || GLOSSAR_MATERIAL.some((to) => passtZuZiel(to, pathname))) return 'glossar';
+  if ([GLOSSAR_PFAD, '/glossar', ...GLOSSAR_MATERIAL].some((to) => passtZuZiel(to, pathname))) return 'glossar';
   if (EINSTELLUNGEN.some((to) => passtZuZiel(to, pathname))) return 'einstellungen';
   if (passtZuZiel('/sql', pathname)) return 'sql';
   if (LERNEN.some((to) => passtZuZiel(to, pathname))) return 'lernen';

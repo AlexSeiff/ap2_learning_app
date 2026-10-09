@@ -1,0 +1,104 @@
+// Begriffsseiten im Client (Umsetzungsplan Phase 3): Laden (getrennt von content.json), Verweise auflösen und die passenden Übungen
+// eines Begriffs finden. Rein bis auf ladeBegriffe(); getestet in tests/begriffe.test.ts.
+
+import { namensSchluessel, seitenNachName } from '../../shared/begriffsseiten';
+import type { BegriffKurz, BegriffsSeite, Content, Flashcard, RechenUebung, SqlExercise, Task } from '../../shared/types';
+import { api } from './api';
+import { glossarSchluessel, ueberschriftKern, type GlossarEintrag } from './glossar';
+import { normalisiere } from './normalisiere';
+
+let laden: Promise<BegriffsSeite[]> | undefined;
+
+/** Alle Begriffsseiten mit Text – einmal je Sitzung geladen (Pages: begriffe.json, offline aus dem Service-Worker-Cache). */
+export function ladeBegriffe(): Promise<BegriffsSeite[]> {
+  laden ??= api.begriffe().catch((e: unknown) => {
+    laden = undefined; // beim nächsten Versuch neu laden
+    throw e;
+  });
+  return laden;
+}
+
+export const begriffPfad = (id: string) => `/glossar/${encodeURIComponent(id)}`;
+
+export interface Verweis {
+  text: string;
+  link?: string;
+  /** Begriffsseite, Glossareintrag ohne Seite oder Abschnitt eines Lernblatts. */
+  art?: 'seite' | 'glossar' | 'abschnitt';
+}
+
+/**
+ * Löst Namen aus „Siehe auch“ auf: zuerst eine Begriffsseite (auch über „Auch“-Varianten), dann ein Glossareintrag ohne Seite,
+ * zuletzt ein Lernblatt-Abschnitt mit genau dieser Überschrift. Sonst bleibt der Name ohne Link.
+ */
+export function verweisAufloeser(
+  begriffe: Pick<BegriffKurz, 'id' | 'begriff' | 'auch'>[],
+  glossar: Pick<GlossarEintrag, 'id' | 'begriff'>[],
+  content: Pick<Content, 'topics'>,
+): (name: string) => Verweis {
+  const seiten = seitenNachName(begriffe);
+  const eintraege = new Map(glossar.map((e) => [namensSchluessel(e.begriff), e.id]));
+  const abschnitte = new Map<string, string>();
+  for (const t of content.topics)
+    for (const s of t.sections) {
+      const k = namensSchluessel(ueberschriftKern(s.title));
+      if (k && !s.generiert && !abschnitte.has(k)) abschnitte.set(k, `/lernen/${t.id}?stelle=${encodeURIComponent(s.id)}`);
+    }
+  return (name) => {
+    const k = namensSchluessel(name);
+    const seite = seiten.get(k);
+    if (seite) return { text: name, link: begriffPfad(seite), art: 'seite' };
+    const eintrag = eintraege.get(k);
+    if (eintrag) return { text: name, link: `/glossar?stelle=g-${eintrag}`, art: 'glossar' };
+    const abschnitt = abschnitte.get(k);
+    if (abschnitt) return { text: name, link: abschnitt, art: 'abschnitt' };
+    return { text: name };
+  };
+}
+
+/**
+ * Begriffsseite zu einem Glossareintrag: gleiche id oder ein Name, der Begriff bzw. „Auch“-Variante einer Seite ist
+ * („Akteure“ → Seite „Akteur“). Liefert die id der Seite oder undefined.
+ */
+export function seitenFinder(
+  begriffe: Pick<BegriffKurz, 'id' | 'begriff' | 'auch'>[],
+): (e: Pick<GlossarEintrag, 'id' | 'begriff'>) => string | undefined {
+  const ids = new Set(begriffe.map((b) => b.id));
+  const namen = seitenNachName(begriffe);
+  return (e) => (ids.has(e.id) ? e.id : namen.get(namensSchluessel(e.begriff)));
+}
+
+/** Suchwörter eines Begriffs: Begriff ohne Klammerzusatz, die Abkürzung in Klammern und die „Auch“-Varianten (normalisiert). */
+export function begriffsWoerter(b: Pick<BegriffKurz, 'begriff' | 'auch'>): string[] {
+  const roh = [b.begriff, b.begriff.replace(/\s*\([^)]*\)/g, ''), /\(([^)]+)\)/.exec(b.begriff)?.[1] ?? '', ...(b.auch ?? [])];
+  return [...new Set(roh.map(normalisiere).filter((w) => w.length >= 2))];
+}
+
+/** Kommt eines der Wörter als ganzes Wort (bzw. Wortfolge) im normalisierten Text vor? */
+const enthaelt = (textN: string, woerter: string[]) => woerter.some((w) => ` ${textN} `.includes(` ${w} `));
+
+export interface Uebungen {
+  karten: Flashcard[];
+  aufgaben: Task[];
+  rechnen: RechenUebung[];
+  sql: SqlExercise[];
+}
+
+/**
+ * Übungen zu einem Begriff (für „Üben“ auf der Begriffsseite): Karten, deren Frage den Begriff nennt (die Begriffskarte zuerst), dann
+ * Karten, deren Antwort ihn nennt; Einzelaufgaben, Rechen- und SQL-Übungen, deren Text ihn nennt. Ganze Wörter, Groß-/Kleinschreibung
+ * und Umlaut-Schreibweisen egal. `cards` = die Karten, die der Nutzer sieht (cardPool).
+ */
+export function uebungenZuBegriff(b: Pick<BegriffKurz, 'begriff' | 'auch'>, content: Content, cards: Flashcard[]): Uebungen {
+  const woerter = begriffsWoerter(b);
+  const schluessel = glossarSchluessel(b.begriff);
+  const begriffskarte = (c: Flashcard) => c.typ === 'begriff' && glossarSchluessel(c.question) === schluessel;
+  const inFrage = cards.filter((c) => !begriffskarte(c) && enthaelt(normalisiere(c.question), woerter));
+  const inAntwort = cards.filter((c) => !begriffskarte(c) && !inFrage.includes(c) && c.answer && enthaelt(normalisiere(c.answer), woerter));
+  return {
+    karten: [...cards.filter(begriffskarte), ...inFrage, ...inAntwort],
+    aufgaben: Object.values(content.tasks).filter((t) => !t.generated && enthaelt(normalisiere(t.markdown), woerter)),
+    rechnen: content.rechenUebungen.filter((u) => enthaelt(normalisiere(`${u.titel} ${u.aufgabe}`), woerter)),
+    sql: content.sqlExercises.filter((u) => enthaelt(normalisiere(`${u.titel} ${u.aufgabe}`), woerter)),
+  };
+}

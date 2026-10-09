@@ -56,7 +56,7 @@ describe('isContentSource', () => {
   const dir = join('C:', 'AP-2');
 
   it('erkennt Lernblätter und Lernkarten direkt im Quellordner', () => {
-    expect(isContentSource(join(dir, '01_Thema.md'), dir)).toBe(true);
+    expect(isContentSource(join(dir, 'DeepDive_01_SQL.md'), dir)).toBe(true);
     expect(isContentSource(join(dir, 'AP2_FIDPA_Lernkarten.json'), dir)).toBe(true);
   });
 
@@ -68,7 +68,14 @@ describe('isContentSource', () => {
   });
 
   it('isContentFile entspricht dem Filter von loadContent()', () => {
-    expect(isContentFile('Lernblatt.MD')).toBe(true);
+    expect(isContentFile('DeepDive_03_Statistik_I.md')).toBe(true);
+    expect(isContentFile('DeepDive_03_Statistik_I_Loesungen.md')).toBe(true);
+    expect(isContentFile('Lernzettel_Kernthemen.md')).toBe(true);
+    expect(isContentFile('Begriffsseiten_A.md')).toBe(true);
+    expect(isContentFile('Begriffsseiten_0-9.md')).toBe(true);
+    // Arbeitsnotizen im Ordner AP-2 gehören nicht in die App
+    for (const n of ['Begriffsseiten_Hinweise.md', 'Ideen.md', 'Umsetzungsplan_Ideen.md', 'Fortsetzung_Umsetzung.md', 'Prompt_Lern_App.md'])
+      expect(isContentFile(n), n).toBe(false);
     expect(isContentFile('lernkarten-extra.json')).toBe(true);
     expect(isContentFile('AP2_SQL_Uebungen.json')).toBe(true);
     expect(isContentFile('AP2_Rechen_Uebungen.json')).toBe(true);

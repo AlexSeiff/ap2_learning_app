@@ -1,5 +1,5 @@
 // Glossar (ROADMAP 8.9): Fachbegriffe aus den Begriffskarten (typ „begriff“), den Wissenskarten (typ „wissen“) und den fett
-// gesetzten Begriffen der Lernblätter, mit Definition, wo es eine gibt. Rein, ohne React; Seite /material/glossar und die globale
+// gesetzten Begriffen der Lernblätter, mit Definition, wo es eine gibt. Rein, ohne React; Seite /glossar und die globale
 // Suche nutzen es.
 //
 // - Begriffskarten (AP2_Fachbegriffe_Lernkarten.json): Vorderseite = Begriff, Rückseite = Definition. Sie gehen allen anderen vor.
@@ -366,7 +366,7 @@ export function glossarSuchEintraege(eintraege: GlossarEintrag[], content?: Cont
       titel: e.begriff,
       kontext: `Glossar${e.definition ? '' : ' · ohne Definition'}${thema ? ` · ${thema}` : ''}`,
       text: (e.definition ?? '').replace(/[*_`$>|]/g, ' ').replace(/\s+/g, ' '),
-      link: `/material/glossar?stelle=g-${e.id}`,
+      link: `/glossar?stelle=g-${e.id}`,
     };
   });
 }

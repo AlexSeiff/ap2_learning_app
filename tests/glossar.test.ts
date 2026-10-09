@@ -35,7 +35,7 @@ function render(path: string): string {
   const routes = createElement(
     Routes,
     null,
-    createElement(Route, { path: '/material/glossar', element: createElement(Glossar) }),
+    createElement(Route, { path: '/glossar', element: createElement(Glossar) }),
     createElement(Route, { path: '/material', element: createElement(Material) }),
   );
   const app = createElement(MemoryRouter, { initialEntries: [path] }, routes);
@@ -199,7 +199,7 @@ describe('Glossar aus content/', () => {
     expect(begriffe.length).toBeGreaterThan(500);
     const nachSchluessel = new Map(glossar.map((e) => [glossarSchluessel(e.begriff), e]));
     for (const c of begriffe) expect(nachSchluessel.get(glossarSchluessel(c.question))?.definition, c.question).toBeTruthy();
-    expect(render('/material/glossar')).toContain('href="/karteikarten?typ=begriff"');
+    expect(render('/glossar')).toContain('href="/karteikarten?typ=begriff"');
   });
 
   it('Buchstabenleiste A–Z mit Anzahl', () => {
@@ -214,7 +214,7 @@ describe('Suche und Seiten', () => {
     const index = baueSuchIndex(content, defaultSettings(), glossarSuchEintraege(glossar));
     const acid = suche(index, 'ACID')[0];
     expect(acid.eintrag.art).toBe('glossar');
-    expect(acid.eintrag.link).toMatch(/^\/material\/glossar\?stelle=g-/);
+    expect(acid.eintrag.link).toMatch(/^\/glossar\?stelle=g-/);
   });
 
   it('Begriff gesucht: zuerst der Glossar-Eintrag mit seinem Thema, dann der Abschnitt mit dieser Überschrift, kein Begriffskarten-Doppel', () => {
@@ -239,12 +239,12 @@ describe('Suche und Seiten', () => {
   });
 
   it('Seite mit Sprungleiste, Ankern und Fundstellen; Kachel unter Material', () => {
-    const html = render('/material/glossar');
+    const html = render('/glossar');
     expect(html).toContain('Glossar');
     expect(html).toContain('aria-label="Buchstaben"');
     expect(html).toContain('id="buchstabe-A"');
     for (const e of glossar.slice(0, 20)) expect(html).toContain(`id="g-${e.id}"`);
     expect(html).toContain('/lernen/');
-    expect(render('/material')).toContain('href="/material/glossar"');
+    expect(render('/material')).toContain('href="/glossar"');
   });
 });

@@ -3,16 +3,18 @@
 // KI-Aufgaben aus data/ kommen bewusst nicht hinein (data/ ist privat).
 
 import type { Plugin } from 'vite';
-import { CONTENT_DIR, loadContent } from './loadContent';
+import { CONTENT_DIR, ladeInhalt } from './loadContent';
 
 export function contentJsonPlugin(): Plugin {
   return {
     name: 'ap2-content-json',
     apply: 'build',
     generateBundle() {
-      const content = loadContent(CONTENT_DIR);
+      const { content, seiten } = ladeInhalt(CONTENT_DIR);
       if (content.topics.length === 0) this.error(`Keine Lernblätter in ${CONTENT_DIR} – zuerst \`npm run sync-content\` ausführen.`);
       this.emitFile({ type: 'asset', fileName: 'content.json', source: JSON.stringify(content) });
+      // Begriffsseiten getrennt (etwa 1,6 MB): Die App lädt sie erst, wenn eine Begriffsseite oder die Suche sie braucht.
+      this.emitFile({ type: 'asset', fileName: 'begriffe.json', source: JSON.stringify(seiten) });
     },
   };
 }

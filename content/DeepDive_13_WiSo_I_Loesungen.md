@@ -81,7 +81,7 @@
 
 ## Block E – Tarifrecht und Arbeitskampf (12 P)
 
-**E1 (4 P):** **(5)** – Tarifverträge gelten unmittelbar für **Mitglieder beider Tarifparteien** (§ 3 TVG); darüber hinaus nur bei Allgemeinverbindlicherklärung oder Bezugnahme im Arbeitsvertrag.
+**E1 (4 P):** **(5)** – Tarifverträge gelten unmittelbar für **Mitglieder beider Tarifparteien** (§ 3 TVG, Tarifbindung); darüber hinaus werden sie nur angewendet – bei Allgemeinverbindlicherklärung (§ 5 TVG) für die ganze Branche oder durch Bezugnahme im Arbeitsvertrag.
 
 **E2 (4 P):** **b – d – a – c – f – e** – Tarifverhandlungen → Scheitern → Urabstimmung über den Streik → Streik → Schlichtung bzw. neue Verhandlungen → Urabstimmung über das Ergebnis.
 

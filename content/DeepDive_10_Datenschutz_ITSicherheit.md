@@ -227,7 +227,7 @@ Ein **ISMS** (Informationssicherheits-Managementsystem) nach **ISO/IEC 27001** (
 - Technisch: Firewall, Netzsegmentierung (Produktions- und Büronetz trennen), **Patchmanagement**, Virenschutz, **Härtung** (unnötige Dienste und Konten abschalten), Verschlüsselung, **VPN** – ein verschlüsselter **Tunnel** durch das Internet, z. B. für mobiles Arbeiten oder die Anbindung von Filialen.
 - Organisatorisch: Sicherheitsrichtlinie, Schulung und Sensibilisierung, Rechtevergabe und regelmäßige Rechteprüfung, Vier-Augen-Prinzip.
 - **Security by Design:** Sicherheit von Anfang an in den Entwurf einbauen statt nachträglich ergänzen – das Gegenstück zu Privacy by Design aus Art. 25 DSGVO.
-- **Penetrationstest:** ein **beauftragter**, simulierter Angriff, um Schwachstellen zu finden, bevor es Angreifer tun – als Black-Box-Test (ohne Vorwissen, wie ein externer Angreifer) oder White-Box-Test (mit Zugang zu Dokumentation und Code). Ein **Schwachstellenscan** prüft dagegen automatisiert auf bekannte Lücken. Ohne **schriftliche Beauftragung** ist ein Pentest eine Straftat (§ 202a ff. StGB).
+- **Penetrationstest:** ein **beauftragter**, simulierter Angriff, um Schwachstellen zu finden, bevor es Angreifer tun – als Black-Box-Test (ohne Vorwissen, wie ein externer Angreifer) oder White-Box-Test (mit Zugang zu Dokumentation und Code). Ein **Schwachstellenscan** prüft dagegen automatisiert auf bekannte Lücken. Ohne **Befugnis** des Systemeigentümers ist ein Pentest eine Straftat (§§ 202a ff. StGB) – die **schriftliche Beauftragung** mit festgelegtem Umfang dient als Nachweis dieser Befugnis.
 
 ## 5.4 Incident- und Notfallmanagement
 
@@ -258,14 +258,14 @@ Die EU-Richtlinie **NIS2** ist in Deutschland mit dem **NIS2-Umsetzungsgesetz** 
 | Wer? | Unternehmen in den Sektoren der Anlagen 1 und 2 des BSIG (z. B. Energie, Gesundheit, Verkehr, digitale Infrastruktur, Abfall, Lebensmittel, verarbeitendes Gewerbe). **Wichtige Einrichtung** ab 50 Beschäftigten oder über 10 Mio. € Umsatz und Bilanzsumme; **besonders wichtige Einrichtung** ab 250 Beschäftigten oder über 50 Mio. € Umsatz und über 43 Mio. € Bilanzsumme (§ 28 BSIG) |
 | Registrierung | beim BSI innerhalb von drei Monaten, nachdem die Einrichtung erstmals unter das Gesetz fällt |
 | Risikomanagement | angemessene technische und organisatorische Maßnahmen, u. a. Backup und Notfallmanagement, Zugriffskontrolle, MFA, Kryptografie, Sicherheit der Lieferkette, Schulungen |
-| Meldepflicht (§ 32 BSIG) | erhebliche Sicherheitsvorfälle an das BSI: **Erstmeldung nach 24 Stunden**, Meldung mit erster Bewertung **nach 72 Stunden**, **Abschlussmeldung nach einem Monat** |
+| Meldepflicht (§ 32 BSIG) | erhebliche Sicherheitsvorfälle an das BSI: **Erstmeldung nach 24 Stunden**, Meldung mit erster Bewertung **nach 72 Stunden**, **Abschlussmeldung einen Monat nach der 72-Stunden-Meldung** |
 | Geschäftsleitung | muss die Maßnahmen billigen und überwachen, regelmäßig an Schulungen teilnehmen und haftet bei Pflichtverletzung |
 | Bußgelder | besonders wichtige Einrichtungen bis 10 Mio. € oder 2 %, wichtige bis 7 Mio. € oder 1,4 % des weltweiten Jahresumsatzes |
 
 ⚠️ *Nicht verwechseln:* Die NIS2-Meldung geht an das **BSI** und betrifft jeden erheblichen Sicherheitsvorfall; die DSGVO-Meldung nach Art. 33 geht an die **Datenschutz-Aufsichtsbehörde** und betrifft nur Vorfälle mit personenbezogenen Daten. Ein Ransomware-Angriff auf Kundendaten kann **beide** Pflichten auslösen.
 
 > ❓ **Prüferfrage:** Bei einem Ransomware-Angriff auf ein NIS2-pflichtiges Unternehmen werden auch Kundendaten verschlüsselt und abgezogen. Wer muss wann informiert werden?
-> *Nach NIS2 (§ 32 BSIG) das BSI: Erstmeldung innerhalb von 24 Stunden, Folgemeldung nach 72 Stunden, Abschlussmeldung nach einem Monat. Nach Art. 33 DSGVO zusätzlich die Datenschutz-Aufsichtsbehörde innerhalb von 72 Stunden nach Bekanntwerden. Da die Daten abgeflossen sind, besteht voraussichtlich ein hohes Risiko – die betroffenen Kunden sind nach Art. 34 unverzüglich zu benachrichtigen. Alles wird intern dokumentiert.*
+> *Nach NIS2 (§ 32 BSIG) das BSI: Erstmeldung innerhalb von 24 Stunden, Folgemeldung nach 72 Stunden, Abschlussmeldung einen Monat nach dieser Meldung. Nach Art. 33 DSGVO zusätzlich die Datenschutz-Aufsichtsbehörde innerhalb von 72 Stunden nach Bekanntwerden. Da die Daten abgeflossen sind, besteht voraussichtlich ein hohes Risiko – die betroffenen Kunden sind nach Art. 34 unverzüglich zu benachrichtigen. Alles wird intern dokumentiert.*
 
 ---
 

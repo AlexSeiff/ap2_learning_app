@@ -225,6 +225,32 @@ export interface ImportIssue {
   message: string;
 }
 
+/** Begriffsseite (AP-2/Begriffsseiten_<Buchstabe>.md, Umsetzungsplan Phase 3): ausführliche Seite zu einem Glossarbegriff. */
+export interface BegriffsSeite {
+  /** = id des Glossareintrags (src/lib/glossar.ts). */
+  id: string;
+  begriff: string;
+  /** Andere Schreibweisen („Auch: …“). */
+  auch?: string[];
+  /** Seiteninhalt (Markdown) ohne id-Kommentar und ohne die Zeilen „Auch:“, „Siehe auch:“, „Mehr:“. */
+  markdown: string;
+  /** Namen aus „Siehe auch:“. */
+  siehe: string[];
+  /** Verweise aus „Mehr:“ wie „Deep Dive 5, 6.5“. */
+  mehr: string[];
+  /** Fundstellen laut id-Kommentar (Text). */
+  quellen: string;
+  stand?: string;
+  datei: string;
+}
+
+/** Kurzform einer Begriffsseite im Inhalt (content.json); die ganzen Seiten lädt die App erst bei Bedarf (begriffe.json). */
+export interface BegriffKurz {
+  id: string;
+  begriff: string;
+  auch?: string[];
+}
+
 export interface Content {
   importedAt: string;
   topics: Topic[];
@@ -239,5 +265,7 @@ export interface Content {
   sqlExercises: SqlExercise[];
   /** Rechenübungen (AP2_Rechen_Uebungen.json). */
   rechenUebungen: RechenUebung[];
+  /** Verzeichnis der Begriffsseiten (ohne Seitentext); fehlt in älteren Ständen. */
+  begriffe?: BegriffKurz[];
   issues: ImportIssue[];
 }

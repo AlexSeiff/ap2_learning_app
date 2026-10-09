@@ -150,7 +150,7 @@ Was **nach einem Ereignis** erlaubt ist: eine AND-Verzweigung (der Zustand löst
 
 | Objekt | Symbol | Beispiel |
 |---|---|---|
-| **Organisationseinheit** | Ellipse, mit der Funktion verbunden | Serviceannahme, Werkstatt |
+| **Organisationseinheit** | Ellipse (in ARIS mit senkrechtem Strich am linken Rand), mit der Funktion verbunden | Serviceannahme, Werkstatt |
 | **Informationsobjekt** | Rechteck | Auftragsdaten, Kostenvoranschlag |
 | **Anwendungssystem** | Rechteck mit seitlichen Doppellinien | ERP-System, Werkstatt-App |
 | **Prozesswegweiser** | Funktionssymbol vor einem Sechseck | Sprung in die EPK „Rechnungsstellung" |

@@ -41,6 +41,8 @@ const Operatoren = lazy(() => import('./pages/Operatoren').then((m) => ({ defaul
 const Formelsammlung = lazy(() => import('./pages/Formelsammlung').then((m) => ({ default: m.Formelsammlung })));
 // Glossar lazy: baut den Index der Begriffe erst beim Öffnen.
 const Glossar = lazy(() => import('./pages/Glossar').then((m) => ({ default: m.Glossar })));
+// Begriffsseiten lazy (Umsetzungsplan Phase 3): Seite und Seitentexte (begriffe.json) laden erst beim Öffnen.
+const Begriff = lazy(() => import('./pages/Begriff').then((m) => ({ default: m.Begriff })));
 // Globale Suche lazy: Index und Dialog laden erst beim ersten Öffnen (Strg+K oder Lupe in der Kopfleiste).
 const SucheDialog = lazy(() => import('./components/SucheDialog').then((m) => ({ default: m.SucheDialog })));
 
@@ -135,6 +137,12 @@ function SaveErrorBanner() {
   ) : null;
 }
 
+/** Das Glossar lag früher unter /material/glossar – Lesezeichen und alte Links (mit ?stelle=…) führen weiter. */
+function AlteGlossarAdresse() {
+  const { search } = useLocation();
+  return <Navigate to={`/glossar${search}`} replace />;
+}
+
 // Neuer key pro Route: nach einem Absturz reicht ein Klick in der Navigation, um weiterzulernen.
 function PageErrorBoundary({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -186,7 +194,9 @@ function Layout() {
                       <Route path="/material" element={<Material />} />
                       <Route path="/material/formeln" element={<Formelsammlung />} />
                       <Route path="/material/operatoren" element={<Operatoren />} />
-                      <Route path="/material/glossar" element={<Glossar />} />
+                      <Route path="/glossar" element={<Glossar />} />
+                      <Route path="/glossar/:id" element={<Begriff />} />
+                      <Route path="/material/glossar" element={<AlteGlossarAdresse />} />
                       <Route path="/material/:docId" element={<Material />} />
                       <Route path="/einstellungen" element={<Einstellungen />} />
                       <Route path="/daten" element={<Daten />} />

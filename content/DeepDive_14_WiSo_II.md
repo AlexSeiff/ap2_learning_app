@@ -149,21 +149,21 @@ Ein Vertrag entsteht durch zwei übereinstimmende Willenserklärungen: **Antrag 
 **Mangelhafte Lieferung**
 - **Sachmangel** (falsche Beschaffenheit, Montagefehler, Falsch- oder Zuweniglieferung) und **Rechtsmangel**.
 - Rechte des Käufers: **vorrangig Nacherfüllung** (Nachbesserung oder Ersatzlieferung, Wahl des Käufers); erst danach **Rücktritt oder Minderung**, zusätzlich ggf. Schadensersatz.
-- **Gewährleistung 2 Jahre** bei neuen Sachen; **Beweislastumkehr** beim Verbrauchsgüterkauf: Zeigt sich ein Mangel **innerhalb eines Jahres**, wird vermutet, dass er schon bei Übergabe vorlag.
+- **Gewährleistung 2 Jahre** bei neuen Sachen; **Beweislastumkehr** beim Verbrauchsgüterkauf: Zeigt sich ein Mangel **innerhalb eines Jahres**, wird vermutet, dass er schon beim **Gefahrübergang** vorlag (§ 477 BGB; beim Verbrauchsgüterkauf in der Regel die Übergabe).
 - **Garantie** ist ein freiwilliges Zusatzversprechen, meist des Herstellers.
 - Beim zweiseitigen Handelskauf muss der Käufer **unverzüglich rügen** (§ 377 HGB), sonst gilt die Ware als genehmigt.
 
-**Lieferungsverzug:** Fälligkeit + Mahnung (entbehrlich bei kalendermäßig bestimmtem Termin). Rechte: Erfüllung plus Verzugsschaden; nach erfolgloser angemessener **Nachfrist** Rücktritt und/oder Schadensersatz statt der Leistung.
+**Lieferungsverzug:** Fälligkeit + Mahnung (entbehrlich bei kalendermäßig bestimmtem Termin) + Verschulden – der Verkäufer muss die Verspätung zu vertreten haben (§ 286 Abs. 4 BGB). Rechte: Erfüllung plus Verzugsschaden; nach erfolgloser angemessener **Nachfrist** Rücktritt und/oder Schadensersatz statt der Leistung.
 
-**Zahlungsverzug:** durch Mahnung nach Fälligkeit, bei kalendermäßig bestimmtem Termin ohne Mahnung, spätestens **30 Tage** nach Fälligkeit und Rechnungszugang (bei Verbrauchern nur mit Hinweis darauf). Verzugszinsen: **5 Prozentpunkte** über dem Basiszinssatz, ohne Verbraucherbeteiligung **9 Prozentpunkte** plus 40 € Pauschale.
+**Zahlungsverzug:** durch Mahnung nach Fälligkeit, bei kalendermäßig bestimmtem Termin ohne Mahnung, spätestens **30 Tage** nach Fälligkeit und Rechnungszugang (bei Verbrauchern nur mit Hinweis darauf). Verzugszinsen: **5 Prozentpunkte** über dem Basiszinssatz, ohne Verbraucherbeteiligung **9 Prozentpunkte** plus 40 € Pauschale. Der Basiszinssatz beträgt seit 01.07.2026 1,52 % – also 6,52 % bzw. 10,52 % Verzugszins; er ändert sich zum 01.01. und 01.07. (vor der Prüfung prüfen).
 
-**Mahnverfahren:** außergerichtliche Mahnungen → Antrag auf **Mahnbescheid** → Widerspruch des Schuldners binnen 2 Wochen möglich → **Vollstreckungsbescheid** → Einspruch binnen 2 Wochen möglich → **Zwangsvollstreckung** durch den Gerichtsvollzieher.
+**Mahnverfahren:** außergerichtliche Mahnungen → Antrag auf **Mahnbescheid** → Widerspruch des Schuldners binnen 2 Wochen (auch danach noch, solange kein Vollstreckungsbescheid verfügt ist, § 694 ZPO) → **Vollstreckungsbescheid** → Einspruch binnen 2 Wochen möglich → **Zwangsvollstreckung** durch den Gerichtsvollzieher.
 
 **Verjährung:** regelmäßig **3 Jahre**, beginnend mit dem **Schluss des Jahres**, in dem der Anspruch entstanden ist. **Hemmung** (Frist ruht) z. B. durch Mahnbescheid oder Klage; **Neubeginn** (Frist startet neu) durch Anerkenntnis, etwa eine Abschlagszahlung.
 
 ## 2.6 Verbraucherschutz
 
-- **Widerrufsrecht** bei Fernabsatz (Onlineshop) und Verträgen außerhalb von Geschäftsräumen: **14 Tage ohne Angabe von Gründen**, bei Waren **ab Erhalt**; gilt nur für Verbraucher.
+- **Widerrufsrecht** bei Fernabsatz (Onlineshop) und Verträgen außerhalb von Geschäftsräumen: **14 Tage ohne Angabe von Gründen**, bei Waren **ab Erhalt**; gilt nur für Verbraucher. Seit 19.06.2026 müssen Onlineshops dafür eine gut sichtbare **Widerrufsschaltfläche** anbieten (§ 356a BGB).
 - **AGB:** Überraschende Klauseln werden nicht Vertragsbestandteil; individuelle Vereinbarungen gehen vor.
 
 ## 2.7 Urheberrecht, Lizenzen und Wettbewerbsrecht
@@ -322,7 +322,7 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 
 **Elektroschrott:** getrennte Rückgabe nach ElektroG; **Datenträger vorher nachweisbar löschen oder vernichten**.
 
-**Green IT:** effiziente Hardware, Virtualisierung, Abschalten ungenutzter Systeme, effiziente Kühlung, längere Nutzungsdauer. **PUE** = Gesamtenergie des Rechenzentrums / Energie der IT; ideal 1,0. Das **Energieeffizienzgesetz** (EnEfG) schreibt Rechenzentren Grenzwerte vor: neue Rechenzentren ab 01.07.2026 PUE höchstens 1,2, bestehende ab 2027 höchstens 1,5 und ab 2030 höchstens 1,3 – eine Novelle mit gelockerten Werten (1,3 für neue) hat das Kabinett im Juni 2026 beschlossen (Stand Oktober 2026).
+**Green IT:** effiziente Hardware, Virtualisierung, Abschalten ungenutzter Systeme, effiziente Kühlung, längere Nutzungsdauer. **PUE** = Gesamtenergie des Rechenzentrums / Energie der IT; ideal 1,0. Das **Energieeffizienzgesetz** (EnEfG) schreibt Rechenzentren Grenzwerte vor: neue Rechenzentren ab 01.07.2026 PUE höchstens 1,2, bestehende ab 2027 höchstens 1,5 und ab 2030 höchstens 1,3 – eine Novelle hat das Kabinett am 24.06.2026 beschlossen (1. Lesung im Bundestag am 24.09.2026, noch nicht verabschiedet, Stand Oktober 2026): Neue Rechenzentren bleiben bei höchstens 1,2 (aber 4 statt 2 Jahre Zeit), bestehende sollen ab 2027 höchstens 1,6 statt 1,5 und ab 2030 höchstens 1,4 statt 1,3 erreichen; gelten soll das erst ab 500 kW statt 200 kW Anschlussleistung.
 
 **Für deine Fachrichtung:** Datensparsamkeit ist doppelt sinnvoll – sie erfüllt die DSGVO und spart Speicher, Rechenleistung und Energie.
 
@@ -331,7 +331,7 @@ Am **Gleichgewichtspreis** (14 €) wird die größtmögliche Menge umgesetzt. N
 **ESG und Berichtspflichten (Stand Oktober 2026):**
 - **ESG** = Environmental, Social, Governance – Kriterien, nach denen Investoren und Banken die Nachhaltigkeit von Unternehmen bewerten.
 - **CSRD** (EU-Richtlinie zur Nachhaltigkeitsberichterstattung, Berichte nach den Standards ESRS): Durch die Omnibus-I-Richtlinie (EU) 2026/470 (in Kraft seit 18.03.2026) gilt die Pflicht nur noch für Unternehmen mit **mehr als 1.000 Beschäftigten und mehr als 450 Mio. € Umsatz**; die zweite Welle wurde vorher („Stop-the-Clock“) um zwei Jahre verschoben. Das deutsche Umsetzungsgesetz war 2026 noch im Bundestag – bis dahin gilt die alte Pflicht zur nichtfinanziellen Erklärung (§ 289b HGB) für große kapitalmarktorientierte Unternehmen.
-- **Lieferkettengesetz** (LkSG, seit 2024 ab 1.000 Beschäftigten): Sorgfaltspflichten für Menschenrechte und Umwelt in der Lieferkette – Risikomanagement, Risikoanalyse, Prävention, Abhilfe, Beschwerdeverfahren. Eine Änderung schafft die jährliche Berichtspflicht (rückwirkend) ab und beschränkt Bußgelder auf schwere Verstöße; das BAFA prüft Berichte schon seit 2025 nicht mehr. Abgelöst werden soll das LkSG durch die Umsetzung der EU-Lieferkettenrichtlinie **CSDDD** (nach Omnibus I nur noch ab 5.000 Beschäftigten und 1,5 Mrd. € Umsatz, anzuwenden ab Juli 2029).
+- **Lieferkettengesetz** (LkSG, seit 2024 ab 1.000 Beschäftigten): Sorgfaltspflichten für Menschenrechte und Umwelt in der Lieferkette – Risikomanagement, Risikoanalyse, Prävention, Abhilfe, Beschwerdeverfahren. Ein Regierungsentwurf (Kabinett 03.09.2025, Verabschiedung vor der Prüfung prüfen) soll die jährliche Berichtspflicht (rückwirkend) abschaffen und Bußgelder auf schwere Verstöße beschränken; das BAFA prüft Berichte schon seit 2025 nicht mehr. Abgelöst werden soll das LkSG durch die Umsetzung der EU-Lieferkettenrichtlinie **CSDDD** (nach Omnibus I nur noch ab 5.000 Beschäftigten und 1,5 Mrd. € Umsatz, anzuwenden ab Juli 2029).
 
 ---
 

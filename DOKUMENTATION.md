@@ -81,7 +81,7 @@ lern-app/
 │  │                    (Rechenübungen are checked against their template here → ImportIssues; content.json for Pages is built the same way)
 │  ├─ ai.ts             Claude: generateTasks(), gradeAnswer() with structured output
 │  ├─ mcWerkzeug.ts     pure logic of npm run mc-entwurf / mc-uebernehmen (mcEntwurf.ts, mcUebernehmen.ts, mcEntwurfPfade.ts, ladeEnv.ts)
-│  ├─ pagesPlugin.ts    emits content.json for the Pages build
+│  ├─ pagesPlugin.ts    emits content.json and begriffe.json (term pages) for the Pages build
 │  ├─ pwaPlugin.ts      vite-plugin-pwa options (manifest, precache) for the Pages build (PWA_OPTIONS, tested)
 │  ├─ report.ts         npm run import-report
 │  └─ syncContent.ts    npm run sync-content (AP-2 → content/)
@@ -121,7 +121,8 @@ lern-app/
 | `DeepDive_17_Glossar_Diagramme.md` | reference topic **without** Übungsklausur and Lösungsdatei: every diagram type as an SVG example (Teil 1–6) and the placeholder `<!-- glossar-a-z -->` (Teil 7), which `loadContent` replaces with the whole glossary (see Glossar below). Edit it like any sheet; the SVG code sits directly in the file |
 | `Deep_Dive_SQL_KW28_29.md` | extra topic (id `00`), solutions inside the sheet; keep the file name (SQL links depend on it) |
 | `Lernzettel_Kernthemen.md`, `AP2_Themenliste_und_Beispielfragen.md` | `MaterialDoc` (Material page) |
-| `Lernplan_*.md`, `Prompt_*.md` | **not read** (`isContentFile`), not synced – the personal study plan is not part of the app |
+| `Begriffsseiten_<A–Z>.md`, `Begriffsseiten_0-9.md` | `BegriffsSeite[]` (term pages, plan phase 3): **not** in `content.json`, but in `begriffe.json` (Pages) or `GET /api/begriffe`; `content.begriffe` holds only the index (id, term, variants) |
+| everything else (`Lernplan_*.md`, `Prompt_*.md`, `Ideen.md`, `Begriffsseiten_Hinweise.md`, plan/measurement notes …) | **not read**, not synced: `isContentFile` is an **allow-list** (`INHALT_MD` in `server/loadContent.ts`: `DeepDive_NN_*.md`, `Deep_Dive_SQL*.md`, `Lernzettel_Kernthemen.md`, `AP2_Themenliste*.md`, `Begriffsseiten_<Buchstabe>.md` + the JSON patterns) – notes in `AP-2/` never end up in the app |
 
 - **Prüferfragen**: `> ❓ **Prüferfrage:** Frage` with the italic answer in the next quote line → `Flashcard{kind:'prueferfrage'}`.
   They also remain inside the section Markdown, so they show up in the Lernen view. `shared/prueferfragen.ts` reads the block
@@ -333,7 +334,8 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/generator` | KI-Aufgaben | Claude generates IHK-style tasks (mc, lueckentext, zuordnung, rechnen, offen) with model solution; local app only (Pages: no nav item, the route redirects to `/`) |
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list, tiles "📏 Formelsammlung" and "🗣️ Operatoren-Trainer" |
 | `/material/operatoren` | Operatoren-Trainer | lazy page: quiz "Was verlangt der Operator hier?" with real tasks, table of all operators (§ 5 phase 8.4) |
-| `/material/glossar` | Glossar | lazy page: terms A–Z from `begriff` and `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources (§ 5 phase 8.9) |
+| `/glossar` (old `/material/glossar` redirects, keeps `?stelle=`) | Glossar | lazy page: terms A–Z from `begriff` and `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources; terms with a term page link to it (§ 5 phase 8.9, plan phase 3) |
+| `/glossar/:id` | Begriff | lazy term page (plan phase 3): definition, Erklärung, Beispiel, Abgrenzung, Prüfungsfalle, Merksatz, diagrams; „Siehe auch“, „Üben“ (cards, tasks, Rechen- and SQL-Übungen), „Nachlesen“ |
 | (dialog) | Suche | `Strg+K` / `⌘K`, search button in the header (Kopfleiste): global search, lazy (§ 5 phase 8.8) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
@@ -588,6 +590,12 @@ only in `useCardSession` state and is cleared for the next card – **not persis
 - **Glossary hits** (`glossarSuchEintraege(eintraege, content)`): context „Glossar · Deep Dive 17 · 2.5 Sequenzdiagramm“ – the term's topic
   (`glossarThema`: the section whose heading is the term, else one starting with it, else the first sheet source). Term cards (`typ: begriff`)
   whose term is already a glossary hit are left out of the index (same definition twice).
+- **Term pages first (plan phase 3, owner decision E1)**: `begriffSuchEintraege(seiten)` adds every term page (kind `begriff`, title = term,
+  „Auch“ variants count as title, `namenN`; text = page text; link `/glossar/<id>`). Glossary entries that have a page (also via a variant,
+  `seitenFinder`) are left out; the others stay as kind `glossar`. `sucheBegriffe(index, query, alle)` returns **only terms** (pages and glossary
+  entries) when at least one matches – the dialog offers „n weitere in Lernblättern, Karten und Aufgaben“ (`alle`); if no term matches, the
+  other hits come directly (`rueckfall`, with a note). A page whose name matches shows the start of its definition as snippet. The dialog loads
+  the term pages with `ladeBegriffe()`; until they are there, the glossary entries are searched.
 - **Dialog** `components/SucheDialog.tsx` is a lazy chunk together with the index, formulas, operators and glossary; it loads on the first
   `Strg+K`/`⌘K` (listener in `App.tsx`, `useSuche`) or click on the search button in the header. Combobox pattern
   (`role=combobox` + `listbox`/`option`, `aria-activedescendant`), ↑/↓/Home, Enter opens, Esc or a click outside closes, focus returns.
@@ -608,15 +616,35 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
   - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); term card before `wissen` card before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
     normalised letter (Ä → A), `#` otherwise. Today **1.135 terms, 1.064 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
-- **Page** `/material/glossar` (lazy `pages/Glossar.tsx`, tile under Material): sticky letter bar A–Z (letters without terms greyed), filter field,
-  `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links. The global search contains every
-  term (`glossarSuchEintraege`, link `/material/glossar?stelle=g-<id>`). It belongs to the area „Glossar“ (sub-target „Begriffe A–Z“).
+- **Page** `/glossar` (lazy `pages/Glossar.tsx`; `/material/glossar` redirects): sticky letter bar A–Z (letters without terms greyed), filter field,
+  `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links; a term with a term page is a
+  link to it („›“). Glossary search hits link to `/glossar?stelle=g-<id>`. It belongs to the area „Glossar“ (sub-target „Begriffe A–Z“).
 - **Navigation to Deep Dive 17**: sub-target „Diagramme“ of the area „Glossar“ (`GLOSSAR_PFAD = '/lernen/17'` in `navigation.ts`; „Themen“ is
   not highlighted at the same time).
 - **Topic list A–Z** (Deep Dive 17, `src/lib/glossarThema.ts`, `ergaenzeGlossarThema`, called in `loadContent` – so local app, Pages build and
   tests are identical): the section with `<!-- glossar-a-z -->` gets a count sentence, and one section per letter (`17-begriffe-a` …, `generiert: true`)
-  is inserted after it, one line per entry `- Begriff – Definition *(DD n)*`. The lines contain no bold, so `baueGlossar` (which only reads bold
+  is inserted after it, one line per entry `- Begriff – Definition *(DD n)*`; terms with a term page are a Markdown link `[Begriff](#/glossar/<id>)`
+  (internal `#/…` links render as router `<Link>`, `markdownComponents.tsx`). The lines contain no bold, so `baueGlossar` (which only reads bold
   terms) is unchanged by them; the search skips `generiert` sections because the glossary entries are already indexed.
+
+### Begriffsseiten (plan phase 3)
+
+- **Content**: `AP-2/Begriffsseiten_<A–Z>.md` and `Begriffsseiten_0-9.md` (written by agents from `AP-2/Prompt_Glossar_Begriffsseiten.md`, part A).
+  One page per `## Begriff`, first line `<!-- id: <glossary id> · quellen: … · stand: JJJJ-MM -->`, then the definition paragraph, optional
+  `Auch: …`, `### Erklärung/Beispiel/Abgrenzung/Prüfungsfalle/Merksatz`, `Siehe auch: A · B`, `Mehr: Deep Dive 5, 6.5 · …`; `## Ausgelassen`
+  at the end of each file lists skipped labels and is ignored. Today **1,003 pages** for 1,135 glossary terms.
+- **Parser/check** `shared/begriffsseiten.ts` (pure, `tests/begriffe.test.ts`): `parseBegriffsseiten` (page without id comment → ImportIssue),
+  `pruefeBegriffsseiten` (id must exist in the glossary, ids unique, every „Siehe auch“ name must lead to a page, a glossary term or a section
+  heading), `mehrZiel` („Deep Dive 5, 6.5“ → section, „Teil 3“ → part, „A3“ → section „A3 …“ or else task `NN-A3`, „SQL-Zusatz 1.2“ → topic 00).
+  `ladeInhalt(dir)` in `server/loadContent.ts` returns `{ content, seiten }`; `loadContent` = `ladeInhalt().content`.
+- **Delivery**: pages are about 1.5 MB, so they are **not** part of `content.json` (only the index `content.begriffe`). Pages build: `begriffe.json`
+  next to `content.json` (precached by the service worker like all JSON); local app: `GET /api/begriffe` (same cache as `/api/content`).
+  Client: `ladeBegriffe()` in `src/lib/begriffe.ts` (once per session, `api.begriffe()`).
+- **Page** `pages/Begriff.tsx` (`/glossar/:id`, lazy): crumbs Glossar / letter, title, „Auch“, the page Markdown (`###` shown as `h2` for a
+  gapless heading order), „Siehe auch“ as chips (`verweisAufloeser`: page → glossary entry → section), **Üben** (`uebungenZuBegriff`: term card
+  first, cards whose question or answer names the term or a variant as whole words, tasks, Rechen- and SQL-Übungen; 6 per kind, „n weitere
+  anzeigen“; „Alle lernen“ → `/karteikarten?karten=…&von=begriff`, shown as „Zum Begriff: n Karten“), **Nachlesen** (`Mehr` targets + glossary
+  sources). An id without a page redirects to the page of the same term under another spelling (`seitenFinder`) or to the glossary entry.
 
 **Other**: theme switch (system/light/dark) in **Einstellungen → Design** (`src/lib/theme.ts`, `hooks/useTheme.ts`; localStorage key `theme`,
 applied in `main.tsx` before the first render), error boundary per route, own confirm dialog (`useConfirm`), print CSS (no navigation).
@@ -676,7 +704,7 @@ applied in `main.tsx` before the first render), error boundary per route, own co
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
 - **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
   (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every
-  current browser uses woff2). Today **54 entries, about 3.6 MB** (incl. the lazy search and glossary chunks). `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~0.9 MB).
+  current browser uses woff2), `begriffe.json`. Today **56 entries, about 6 MB** (incl. the lazy search and glossary chunks). `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~1.8 MB, begriffe.json ~1.5 MB).
   Navigations fall back to the cached `index.html`, so the app starts offline after the first visit (SQL editor and formulas included).
 - **Updates** (`registerType: 'prompt'`, no `skipWaiting`/`clientsClaim`): every precached file has a revision hash in `sw.js`, so any change
   (also only `content.json` after `npm run sync-content`) changes `sw.js`. The browser installs the new worker, which then **waits**.

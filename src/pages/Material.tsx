@@ -31,7 +31,7 @@ export function Material() {
           </span>
           <span className="tile-meta">alle Formeln der Rechenübungen, nach Thema – druckbar</span>
         </Link>
-        <Link to="/material/glossar" className="tile">
+        <Link to="/glossar" className="tile">
           <span className="tile-title">
             <Icon name="library" /> Glossar
           </span>

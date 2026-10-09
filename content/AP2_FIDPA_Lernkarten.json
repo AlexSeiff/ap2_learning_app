@@ -3358,7 +3358,7 @@
         {
           "id": "ITS-020",
           "frage": "Penetrationstest oder Schwachstellenscan?",
-          "antwort": "Der Schwachstellenscan prüft automatisiert auf bekannte Lücken. Der Penetrationstest ist ein beauftragter, simulierter Angriff, der Lücken auch ausnutzt und verkettet – ohne schriftliche Beauftragung strafbar.",
+          "antwort": "Der Schwachstellenscan prüft automatisiert auf bekannte Lücken. Der Penetrationstest ist ein beauftragter, simulierter Angriff, der Lücken auch ausnutzt und verkettet – ohne Befugnis strafbar (§§ 202a ff. StGB); die schriftliche Beauftragung weist die Befugnis nach.",
           "typ": "abgrenzung",
           "schwierigkeit": 2,
           "tags": [
@@ -3378,7 +3378,7 @@
         {
           "id": "ITS-022",
           "frage": "Welche Pflichten bringt NIS2 in Deutschland, und wie unterscheidet sich die Meldung von der DSGVO-Meldung?",
-          "antwort": "NIS2-Umsetzungsgesetz, in Kraft seit 06.12.2025 (neues BSIG): Registrierung beim BSI binnen drei Monaten, Risikomanagementmaßnahmen, Haftung und Schulungspflicht der Geschäftsleitung, Meldung erheblicher Vorfälle an das BSI nach 24 h (Erstmeldung), 72 h (Bewertung) und einem Monat (Abschluss). Die DSGVO-Meldung (72 h) geht an die Datenschutz-Aufsicht und betrifft nur personenbezogene Daten – beide können parallel gelten.",
+          "antwort": "NIS2-Umsetzungsgesetz, in Kraft seit 06.12.2025 (neues BSIG): Registrierung beim BSI binnen drei Monaten, Risikomanagementmaßnahmen, Haftung und Schulungspflicht der Geschäftsleitung, Meldung erheblicher Vorfälle an das BSI nach 24 h (Erstmeldung), 72 h (Bewertung) und einen Monat nach der 72-Stunden-Meldung (Abschluss). Die DSGVO-Meldung (72 h) geht an die Datenschutz-Aufsicht und betrifft nur personenbezogene Daten – beide können parallel gelten.",
           "typ": "abgrenzung",
           "schwierigkeit": 2,
           "tags": [
@@ -5492,7 +5492,7 @@
         {
           "id": "WS4-011",
           "frage": "Was bedeutet die Beweislastumkehr beim Verbrauchsgüterkauf?",
-          "antwort": "Zeigt sich ein Mangel innerhalb eines Jahres nach Übergabe, wird vermutet, dass er schon bei Übergabe vorlag – der Verkäufer muss das Gegenteil beweisen (§ 477 BGB).",
+          "antwort": "Zeigt sich ein Mangel innerhalb eines Jahres seit Gefahrübergang (in der Regel die Übergabe), wird vermutet, dass er schon beim Gefahrübergang vorlag – der Verkäufer muss das Gegenteil beweisen (§ 477 BGB).",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [
@@ -5854,7 +5854,7 @@
         {
           "id": "WS6-006",
           "frage": "Welche Green-IT-Maßnahmen kennst du, und was misst der PUE-Wert?",
-          "antwort": "Energieeffiziente Hardware, Virtualisierung und Serverkonsolidierung, Abschalten ungenutzter Systeme, effiziente Kühlung, Abwärmenutzung, längere Nutzungsdauer. PUE = Gesamtenergie des Rechenzentrums / Energie der IT-Geräte; ideal ist 1,0. Das Energieeffizienzgesetz schreibt Grenzwerte vor (neue Rechenzentren ab 07/2026: 1,2; Novelle mit Lockerung im Verfahren, Stand 2026).",
+          "antwort": "Energieeffiziente Hardware, Virtualisierung und Serverkonsolidierung, Abschalten ungenutzter Systeme, effiziente Kühlung, Abwärmenutzung, längere Nutzungsdauer. PUE = Gesamtenergie des Rechenzentrums / Energie der IT-Geräte; ideal ist 1,0. Das Energieeffizienzgesetz schreibt Grenzwerte vor (neue Rechenzentren ab 07/2026: 1,2; eine Novelle im Gesetzgebungsverfahren lockert die Werte für bestehende Rechenzentren, neue bleiben bei 1,2 – Stand Oktober 2026).",
           "typ": "wissen",
           "schwierigkeit": 2,
           "tags": [

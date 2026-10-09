@@ -3,14 +3,14 @@
 
 import type { Content, Task } from '../shared/types';
 
-export interface ContentCache {
+export interface ContentCache<T = Content> {
   /** Geparste Inhalte; beim ersten Aufruf (bzw. nach invalidate) wird `load` ausgeführt. Nicht verändern! */
-  get(): Content;
+  get(): T;
   invalidate(): void;
 }
 
-export function createContentCache(load: () => Content): ContentCache {
-  let cached: Content | undefined;
+export function createContentCache<T = Content>(load: () => T): ContentCache<T> {
+  let cached: T | undefined;
   return {
     get: () => (cached ??= load()),
     invalidate: () => {

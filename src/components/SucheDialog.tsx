@@ -1,24 +1,46 @@
-// Suchdialog (ROADMAP 8.8): lazy geladen, sobald jemand Strg+K drückt oder auf „🔎 Suchen“ klickt.
+// Suchdialog (ROADMAP 8.8): lazy geladen, sobald jemand Strg+K drückt oder die Lupe anklickt.
 // Der Index entsteht hier (einmal je Inhalt und Einstellung), die Logik steht in src/lib/suche.ts.
+// Umsetzungsplan Phase 3 (Entscheidung E1): Ergebnis sind Begriffsseiten (und Glossar-Einträge ohne Seite); die übrigen Treffer gibt es
+// auf Wunsch oder automatisch, wenn kein Begriff passt.
 
 import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { BegriffsSeite } from '../../shared/types';
+import { ladeBegriffe, seitenFinder } from '../lib/begriffe';
 import { baueGlossar, glossarSuchEintraege } from '../lib/glossar';
 import { useStore } from '../lib/store';
-import { baueSuchIndex, suche, SUCH_ART } from '../lib/suche';
+import { baueSuchIndex, begriffSuchEintraege, SUCH_ART, sucheBegriffe } from '../lib/suche';
 import { Icon } from './Icon';
 
 export function SucheDialog({ onClose }: { onClose: () => void }) {
   const { content, progress } = useStore();
   const navigate = useNavigate();
   const { prueferfragen, fachgespraech } = progress.settings;
-  const index = useMemo(
-    () => baueSuchIndex(content, { prueferfragen, fachgespraech }, glossarSuchEintraege(baueGlossar(content), content)),
-    [content, prueferfragen, fachgespraech],
-  );
+  // Begriffsseiten nachladen; bis dahin führt die Suche zu den Glossar-Einträgen.
+  const [seiten, setSeiten] = useState<BegriffsSeite[]>([]);
+  useEffect(() => {
+    let aktiv = true;
+    ladeBegriffe().then(
+      (s) => aktiv && setSeiten(s),
+      () => {},
+    );
+    return () => {
+      aktiv = false;
+    };
+  }, []);
+  const index = useMemo(() => {
+    // Glossar-Einträge, die eine Begriffsseite haben (auch über eine andere Schreibweise), stehen als Seite im Index.
+    const seiteZu = seitenFinder(seiten);
+    const glossar = glossarSuchEintraege(
+      baueGlossar(content).filter((e) => !seiteZu(e)),
+      content,
+    );
+    return baueSuchIndex(content, { prueferfragen, fachgespraech }, [...begriffSuchEintraege(seiten), ...glossar]);
+  }, [content, prueferfragen, fachgespraech, seiten]);
   const [anfrage, setAnfrage] = useState('');
   const [aktiv, setAktiv] = useState(0);
-  const treffer = useMemo(() => suche(index, anfrage), [index, anfrage]);
+  const [alle, setAlle] = useState(false);
+  const { treffer, weitere, rueckfall } = useMemo(() => sucheBegriffe(index, anfrage, alle), [index, anfrage, alle]);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const id = useId();
@@ -81,6 +103,7 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
             onChange={(e) => {
               setAnfrage(e.target.value);
               setAktiv(0);
+              setAlle(false);
             }}
             onKeyDown={onKeyDown}
           />
@@ -91,10 +114,11 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
         {anfrage.trim().length >= 2 && !treffer.length && <p className="muted suche-leer">Keine Treffer für „{anfrage.trim()}“.</p>}
         {anfrage.trim().length < 2 && (
           <p className="muted suche-leer">
-            Durchsucht Lernblätter, Glossar, Karteikarten, Aufgaben, SQL- und Rechenübungen, Formeln und Operatoren. Umlaute egal:
-            „Pruefung“ findet „Prüfung“.
+            Findet die Begriffsseite zu deinem Suchwort – dort stehen Erklärung, Beispiel und die passenden Übungen. Auf Wunsch auch
+            Lernblätter, Karten, Aufgaben, Formeln und Operatoren. Umlaute egal: „Pruefung“ findet „Prüfung“.
           </p>
         )}
+        {rueckfall && <p className="muted suche-leer small">Kein Begriff gefunden – Treffer in Lernblättern, Karten und Aufgaben:</p>}
         <ul className="suche-liste" role="listbox" id={listId} ref={listRef} aria-label="Treffer">
           {treffer.map((t, i) => {
             const art = SUCH_ART[t.eintrag.art];
@@ -127,6 +151,14 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
         <p className="suche-fuss small muted">
           <kbd>↑</kbd> <kbd>↓</kbd> wählen · <kbd>Enter</kbd> öffnen · <kbd>Esc</kbd> schließen
           {treffer.length > 0 && ` · ${treffer.length}${treffer.length === 40 ? '+' : ''} Treffer`}
+          {weitere > 0 && (
+            <>
+              {' · '}
+              <button type="button" className="ghost small" onClick={() => setAlle(true)}>
+                {weitere} weitere in Lernblättern, Karten und Aufgaben
+              </button>
+            </>
+          )}
         </p>
       </div>
     </div>

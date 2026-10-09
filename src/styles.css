@@ -783,3 +783,24 @@ h1 .icon, h2 .icon { color: var(--accent); }
 .filter-box[open] > summary .icon { transform: rotate(90deg); }
 @media (min-width: 600px) { .filter-box > summary { display: none; } }
 @media print { .bottom-nav, .kopf, .unterleiste { display: none !important; } }
+
+/* Begriffsseiten (/glossar/:id, Umsetzungsplan Phase 3) */
+.begriff-seite h1 { margin-bottom: 0.2em; }
+.begriff-auch { margin: 0 0 1em; font-size: 0.95rem; }
+.begriff-text > p:first-child { font-size: 1.12rem; line-height: 1.55; }
+.begriff-text h2 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 1.8em 0 0.4em; }
+.begriff-block { margin: 2em 0 1em; }
+.begriff-block h2, .begriff-ueben h2 { font-size: 1.15rem; }
+.begriff-chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.begriff-chips a, .begriff-chips span { display: inline-block; padding: 6px 14px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); color: var(--accent); font-weight: 500; }
+.begriff-chips a:hover { text-decoration: none; background: var(--accent-soft); }
+.begriff-liste { list-style: none; padding: 0; margin: 0; }
+.begriff-liste li { padding: 7px 0; border-bottom: 1px solid var(--border); }
+.begriff-liste li:last-child { border-bottom: none; }
+.ueben-gruppe { margin: 14px 0 6px; }
+.ueben-gruppe h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 0 4px; font-size: 1rem; }
+.ueben-gruppe h3 .icon { color: var(--accent); }
+.ueben-gruppe h3 .button { margin-left: auto; }
+.glossar-seite-link { display: inline-flex; align-items: center; gap: 2px; font-weight: 700; }
+.glossar-seite-link .icon { width: 1em; height: 1em; }
+.suche-fuss button.ghost { padding: 0 4px; color: var(--accent); font-weight: 600; min-height: 0; }

@@ -159,7 +159,7 @@ Prüfungsfallen: Sequenzfluss über eine Poolgrenze (verboten), Nachrichtenfluss
 | **Ereignis** | Sechseck, Zustand im Partizip: „Bestellung ist eingegangen“ |
 | **Funktion** | abgerundetes Rechteck, Tätigkeit als Verb: „Bestellung prüfen“ |
 | **Konnektor** | Kreis mit XOR, ∧ (AND) oder ∨ (OR) zum Verzweigen und Zusammenführen |
-| **Organisationseinheit** | Ellipse mit senkrechtem Strich – wer führt die Funktion aus |
+| **Organisationseinheit** | Ellipse (in ARIS mit senkrechtem Strich am linken Rand, im Unterricht oft ohne) – wer führt die Funktion aus |
 | **Informationsobjekt** | Rechteck – welche Daten gelesen oder geschrieben werden |
 
 Regeln: Die EPK beginnt und endet mit einem Ereignis; Ereignis und Funktion wechseln sich ab; nach einem einzelnen Ereignis darf kein XOR- oder OR-Split folgen (ein Ereignis kann nicht entscheiden – die Entscheidung trifft die Funktion davor); ein geöffneter Konnektor wird mit demselben Typ geschlossen.
@@ -210,7 +210,7 @@ Lesen: Die Bearbeitungszeit beträgt nur 50 min, die Durchlaufzeit 410 min – d
 
 **SIPOC** – Tabelle zur Abgrenzung eines Prozesses (Six Sigma, Phase Define): Supplier, Input, Process, Output, Customer.
 
-| Supplier | Input | Process (5–7 Schritte) | Output | Customer |
+| Supplier | Input | Process (4–7 Schritte) | Output | Customer |
 |---|---|---|---|---|
 | Kunde, Webshop | Bestellung | Bestellung prüfen → kommissionieren → verpacken → versenden → Rechnung stellen | Lieferung, Rechnung | Kunde, Buchhaltung |
 | Lieferant | Ware | | Lagerbewegung | Lager |
@@ -1627,7 +1627,7 @@ Je näher die Kurve an der linken oberen Ecke liegt, desto besser. Die Diagonale
 
 # Teil 7 – Fachbegriffe A–Z
 
-Alle Fachbegriffe aus den Begriffskarten, den Wissenskarten und den fett gesetzten Begriffen der Lernblätter, jeweils mit Erklärung, wo es eine gibt (Begriffskarte vor Wissenskarte vor Lernblatt). Zum gezielten Suchen ist die Seite Glossar (Material) mit Filterfeld praktischer; hier lässt sich die Liste am Stück lesen oder drucken.
+Alle Fachbegriffe aus den Begriffskarten, den Wissenskarten und den fett gesetzten Begriffen der Lernblätter, jeweils mit Erklärung, wo es eine gibt (Begriffskarte vor Wissenskarte vor Lernblatt). Zum gezielten Suchen ist die Seite Glossar (Begriffe A–Z) mit Filterfeld praktischer; hier lässt sich die Liste am Stück lesen oder drucken. Begriffe mit eigener Begriffsseite sind verlinkt.
 
 <!-- glossar-a-z -->
 

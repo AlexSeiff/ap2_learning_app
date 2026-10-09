@@ -49,7 +49,7 @@ describe('Normalisierung', () => {
 describe('Index', () => {
   it('enthält jede Art und jedes Ziel gibt es', () => {
     const arten = new Set(index.map((e) => e.art));
-    for (const a of Object.keys(SUCH_ART) as SuchArt[]) if (a !== 'glossar') expect(arten.has(a), a).toBe(true);
+    for (const a of Object.keys(SUCH_ART) as SuchArt[]) if (a !== 'glossar' && a !== 'begriff') expect(arten.has(a), a).toBe(true);
     const sektionen = new Set(content.topics.flatMap((t) => t.sections.map((s) => `/lernen/${t.id}?stelle=${encodeURIComponent(s.id)}`)));
     for (const e of index.filter((x) => x.art === 'abschnitt')) expect(sektionen.has(e.link), e.link).toBe(true);
     expect(index.filter((e) => e.art === 'formel')).toHaveLength(FORMELN.length);

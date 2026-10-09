@@ -16,6 +16,8 @@ export const IS_STATIC = import.meta.env.MODE === 'pages';
 /** Woher die App Inhalte und Fortschritt bekommt: lokaler Server (/api/…) oder Browser (staticApi.ts). */
 export interface DataSource {
   content(): Promise<ApiResponses['GET /api/content']>;
+  /** Begriffsseiten mit Text – getrennt geladen, erst wenn sie gebraucht werden (lib/begriffe.ts). */
+  begriffe(): Promise<ApiResponses['GET /api/begriffe']>;
   progress(): Promise<ApiResponses['GET /api/progress']>;
   saveProgress(p: SaveProgressRequest): Promise<ApiResponses['PUT /api/progress']>;
   /** Letztes Speichern beim Schließen des Tabs – muss das Entladen der Seite überleben. */
@@ -45,6 +47,7 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
 // Antworttypen je Route: shared/api.ts (ApiResponses) – dieselben Typen nutzt der Server.
 const serverApi: DataSource = {
   content: () => request('GET', '/api/content'),
+  begriffe: () => request('GET', '/api/begriffe'),
   progress: () => request('GET', '/api/progress'),
   saveProgress: (p) => request('PUT', '/api/progress', p),
   // keepalive überlebt das Entladen der Seite.

@@ -10,7 +10,7 @@
 
 import { stripPrueferfragen } from '../../shared/prueferfragen';
 import type { Settings } from '../../shared/progress';
-import type { Content } from '../../shared/types';
+import type { BegriffsSeite, Content } from '../../shared/types';
 import { FORMELN, THEMA_NAMEN } from '../rechnen/formeln';
 import { cardPool } from './cards';
 import { ueberschriftKern } from './glossar';
@@ -20,9 +20,11 @@ import { OPERATOREN } from './operatoren';
 
 export { normalisiere };
 
-export type SuchArt = 'glossar' | 'abschnitt' | 'formel' | 'operator' | 'material' | 'karte' | 'aufgabe' | 'loesung' | 'sql' | 'rechnen';
+export type SuchArt =
+  'begriff' | 'glossar' | 'abschnitt' | 'formel' | 'operator' | 'material' | 'karte' | 'aufgabe' | 'loesung' | 'sql' | 'rechnen';
 
 export const SUCH_ART: Record<SuchArt, { icon: IconName; name: string; bonus: number }> = {
+  begriff: { icon: 'book-bookmark', name: 'Begriffsseite', bonus: 4 },
   glossar: { icon: 'library', name: 'Glossar', bonus: 3 },
   abschnitt: { icon: 'book-open', name: 'Lernblatt', bonus: 2 },
   formel: { icon: 'sigma', name: 'Formel', bonus: 2 },
@@ -46,6 +48,8 @@ export interface SuchEintrag {
   link: string;
   titelN: string;
   textN: string;
+  /** Titel und andere Schreibweisen, normalisiert (für „genau dieser Begriff“). */
+  namenN: string[];
 }
 
 export interface SuchTreffer {
@@ -74,14 +78,16 @@ export function klartext(md: string): string {
 const zusammen = (s: string) =>
   (s.match(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu) ?? []).map((w) => normalisiere(w).replace(/ /g, '')).join(' ');
 
-const eintrag = (art: SuchArt, titel: string, kontext: string, text: string, link: string): SuchEintrag => ({
+/** `auch`: weitere Namen, die wie der Titel zählen (andere Schreibweisen einer Begriffsseite). */
+const eintrag = (art: SuchArt, titel: string, kontext: string, text: string, link: string, auch: string[] = []): SuchEintrag => ({
   art,
   titel,
   kontext,
   text,
   link,
-  titelN: ` ${normalisiere(titel)} ${zusammen(titel)} `,
+  titelN: ` ${[titel, ...auch].map((t) => `${normalisiere(t)} ${zusammen(t)}`).join(' | ')} `,
   textN: ` ${normalisiere(text)} ${zusammen(text)} `,
+  namenN: [titel, ...auch].map(normalisiere),
 });
 
 /** Kurztext für Titel aus einem längeren Text (erste Zeile, gekürzt). */
@@ -96,8 +102,8 @@ const ddName = (content: Content, topicId: string | undefined) => {
   return t.id === '00' ? `SQL-Zusatz · ${t.title}` : `Deep Dive ${t.number} · ${t.title}`;
 };
 
-/** Zusätzliche Einträge (z. B. das Glossar aus 8.9), die der Index übernimmt. */
-export type ZusatzEintrag = { art: SuchArt; titel: string; kontext: string; text: string; link: string };
+/** Zusätzliche Einträge (Begriffsseiten, Glossar aus 8.9), die der Index übernimmt. */
+export type ZusatzEintrag = { art: SuchArt; titel: string; kontext: string; text: string; link: string; auch?: string[] };
 
 /**
  * Baut den Suchindex. `settings`: ausgeschaltete Prüferfragen/Fachgespräch-Karten fehlen (cardPool), ausgeschaltete Prüferfragen
@@ -109,9 +115,9 @@ export function baueSuchIndex(
   zusatz: ZusatzEintrag[] = [],
 ): SuchEintrag[] {
   const out: SuchEintrag[] = [];
-  for (const z of zusatz) out.push(eintrag(z.art, z.titel, z.kontext, z.text, z.link));
-  // Begriffskarten, deren Begriff schon als Glossar-Eintrag im Index steht, wären nur ein Doppel mit derselben Erklärung.
-  const imGlossar = new Set(zusatz.filter((z) => z.art === 'glossar').map((z) => normalisiere(z.titel)));
+  for (const z of zusatz) out.push(eintrag(z.art, z.titel, z.kontext, z.text, z.link, z.auch));
+  // Begriffskarten, deren Begriff schon als Begriffsseite oder Glossar-Eintrag im Index steht, wären nur ein Doppel mit derselben Erklärung.
+  const imGlossar = new Set(zusatz.filter((z) => z.art === 'glossar' || z.art === 'begriff').map((z) => normalisiere(z.titel)));
 
   for (const t of content.topics) {
     const kontext = ddName(content, t.id);
@@ -216,9 +222,10 @@ export function bewerte(e: SuchEintrag, woerter: string[], ganz: string): number
   // Abschnitte ohne Nummerierung vergleichen („2.5 Sequenzdiagramm“, „Teil 5 – Boxplot“): Die Überschrift zum Begriff soll weit oben stehen.
   const titel = e.art === 'abschnitt' ? e.titelN.replace(/^ (?:teil \d+ )?(?:\d+ )*/, ' ') : e.titelN;
   if (titel.startsWith(` ${ganz}`)) punkte += 6;
-  // Genau der gesuchte Begriff: zuerst der Glossar-Eintrag, dann der Abschnitt mit dieser Überschrift (vor Karten mit dem Begriff im Titel).
-  if ((e.art === 'glossar' || e.art === 'abschnitt') && normalisiere(e.art === 'abschnitt' ? ueberschriftKern(e.titel) : e.titel) === ganz)
-    punkte += e.art === 'glossar' ? 8 : 4;
+  // Genau der gesuchte Begriff: zuerst Begriffsseite bzw. Glossar-Eintrag (auch über eine andere Schreibweise), dann der Abschnitt mit
+  // dieser Überschrift (vor Karten mit dem Begriff im Titel).
+  if ((e.art === 'begriff' || e.art === 'glossar') && e.namenN.includes(ganz)) punkte += 8;
+  else if (e.art === 'abschnitt' && normalisiere(ueberschriftKern(e.titel)) === ganz) punkte += 4;
   return punkte + SUCH_ART[e.art].bonus;
 }
 
@@ -243,6 +250,9 @@ export function ausschnitt(text: string, woerter: string[], laenge = 160): strin
   return `${start > 0 ? '… ' : ''}${anfang}${start + laenge < text.length ? ' …' : ''}`;
 }
 
+/** Die ersten etwa 160 Zeichen, an einer Wortgrenze gekürzt. */
+const textAnfang = (text: string, laenge = 160) => (text.length <= laenge ? text : `${text.slice(0, laenge).replace(/\s+\S*$/, '')} …`);
+
 /** Sucht im Index; höchstens `max` Treffer, beste zuerst. Suchtext kürzer als 2 Zeichen → keine Treffer. */
 export function suche(index: SuchEintrag[], anfrage: string, max = 40): SuchTreffer[] {
   const ganz = normalisiere(anfrage);
@@ -254,5 +264,42 @@ export function suche(index: SuchEintrag[], anfrage: string, max = 40): SuchTref
     if (punkte > 0) treffer.push({ e, punkte, i });
   });
   treffer.sort((a, b) => b.punkte - a.punkte || a.e.titel.length - b.e.titel.length || a.i - b.i);
-  return treffer.slice(0, max).map(({ e, punkte }) => ({ eintrag: e, punkte, ausschnitt: ausschnitt(e.text, woerter) }));
+  return treffer.slice(0, max).map(({ e, punkte }) => ({
+    eintrag: e,
+    punkte,
+    // Begriffsseite, deren Name passt: der Anfang der Definition sagt mehr als eine Stelle mitten im Text.
+    ausschnitt: e.art === 'begriff' && woerter.every((w) => e.titelN.includes(w)) ? textAnfang(e.text) : ausschnitt(e.text, woerter),
+  }));
+}
+
+/** Begriffsseiten als Sucheinträge (Umsetzungsplan Phase 3): Begriff und andere Schreibweisen zählen wie der Titel, der Seitentext als Text. */
+export function begriffSuchEintraege(seiten: BegriffsSeite[]): ZusatzEintrag[] {
+  return seiten.map((s) => ({
+    art: 'begriff' as const,
+    titel: s.begriff,
+    kontext: s.auch ? `auch: ${s.auch.join(', ')}` : '',
+    text: klartext(s.markdown),
+    link: `/glossar/${encodeURIComponent(s.id)}`,
+    ...(s.auch ? { auch: s.auch } : {}),
+  }));
+}
+
+/** Ist der Treffer ein Begriff (Begriffsseite oder Glossar-Eintrag ohne Seite)? */
+export const istBegriff = (t: SuchTreffer) => t.eintrag.art === 'begriff' || t.eintrag.art === 'glossar';
+
+/**
+ * Suche, die immer zuerst auf Begriffe führt (Entscheidung E1): Gibt es Begriffe, sind nur sie das Ergebnis – die übrigen Treffer
+ * (Lernblätter, Karten, Aufgaben …) gibt es auf Wunsch (`alle`). Passt kein Begriff, kommen die übrigen Treffer direkt (Rückfall).
+ */
+export function sucheBegriffe(
+  index: SuchEintrag[],
+  anfrage: string,
+  alle = false,
+  max = 40,
+): { treffer: SuchTreffer[]; weitere: number; rueckfall: boolean } {
+  const gesamt = suche(index, anfrage, 400);
+  const begriffe = gesamt.filter(istBegriff);
+  if (!begriffe.length) return { treffer: gesamt.slice(0, max), weitere: 0, rueckfall: gesamt.length > 0 };
+  if (alle) return { treffer: gesamt.slice(0, max), weitere: 0, rueckfall: false };
+  return { treffer: begriffe.slice(0, max), weitere: gesamt.length - begriffe.length, rueckfall: false };
 }

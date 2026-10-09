@@ -155,7 +155,7 @@ Das **Testprotokoll** dokumentiert jede Durchführung: Datum, Tester, Version de
 - Grundlage sind die vorab vereinbarten **Abnahmekriterien** (messbar, aus dem Lasten-/Pflichtenheft).
 - Das **Abnahmeprotokoll** enthält: Projekt und Version, Datum, Beteiligte, geprüfte Kriterien mit Ergebnis, festgestellte **Mängel** mit Frist zur Behebung, die **Entscheidung** (Abnahme, Abnahme unter Vorbehalt, Ablehnung) und die Unterschriften.
 - Rechtsfolgen der Abnahme beim Werkvertrag (§ 640 BGB): Die **Vergütung wird fällig** (§ 641 BGB), die **Gewährleistungsfrist beginnt** (Verjährung der Mängelansprüche, § 634a Abs. 2 BGB), die **Gefahr geht über** (§ 644 BGB) und die **Beweislast kehrt sich um** – nach der Abnahme muss der Auftraggeber einen Mangel nachweisen.
-- Weitere Regeln aus § 640 BGB: Wegen unwesentlicher Mängel darf die Abnahme nicht verweigert werden (Abs. 1). Setzt der Auftragnehmer nach Fertigstellung eine angemessene Frist und verweigert der Auftraggeber die Abnahme nicht unter Angabe mindestens eines Mangels, gilt das Werk als abgenommen (**fiktive Abnahme**, Abs. 2). Wer einen bekannten Mangel nicht ausdrücklich vorbehält, verliert die Rechte auf Nacherfüllung, Selbstvornahme, Rücktritt und Minderung wegen dieses Mangels (Abs. 3) – deshalb gehören bekannte Mängel ins Abnahmeprotokoll.
+- Weitere Regeln aus § 640 BGB: Wegen unwesentlicher Mängel darf die Abnahme nicht verweigert werden (Abs. 1). Setzt der Auftragnehmer nach Fertigstellung eine angemessene Frist und verweigert der Auftraggeber die Abnahme nicht unter Angabe mindestens eines Mangels, gilt das Werk als abgenommen (**fiktive Abnahme**, Abs. 2). Ist der Besteller ein Verbraucher, gilt das nur, wenn der Unternehmer ihn zusammen mit der Aufforderung in Textform auf diese Folge hingewiesen hat (Abs. 2 Satz 2). Wer einen bekannten Mangel nicht ausdrücklich vorbehält, verliert die Rechte auf Nacherfüllung, Selbstvornahme, Rücktritt und Minderung wegen dieses Mangels (Abs. 3) – deshalb gehören bekannte Mängel ins Abnahmeprotokoll.
 
 ---
 
@@ -177,7 +177,7 @@ Erlaubte Ausfallzeit bei einer Zielverfügbarkeit: $\text{Ausfall}_{max} = \text
 
 Jede weitere „Neun“ verkürzt die erlaubte Ausfallzeit auf ein Zehntel – und kostet deutlich mehr Redundanz.
 
-Das BSI ordnet Systeme im Hochverfügbarkeitskompendium in **Verfügbarkeitsklassen** ein: VK 0 (ohne zugesicherte Verfügbarkeit), VK 1 (normale Verfügbarkeit, 99 %), VK 2 (hohe, 99,9 %), VK 3 (sehr hohe, 99,99 %), VK 4 (höchste, 99,999 %) und VK 5 (desastertolerant, auch bei Katastrophen). Ab wie vielen Neunen man von **Hochverfügbarkeit** spricht, ist nicht einheitlich festgelegt – je nach Quelle ab 99,99 % oder erst ab 99,999 %.
+Das BSI ordnet Systeme im Hochverfügbarkeitskompendium in **Verfügbarkeitsklassen** ein: VK 0 (ohne zugesicherte Verfügbarkeit), VK 1 (normale Verfügbarkeit, 99 %), VK 2 (erhöhte Verfügbarkeit, 99,9 %), VK 3 (Hochverfügbarkeit, 99,99 %), VK 4 (Höchstverfügbarkeit, 99,999 %) und VK 5 (desastertolerant, auch bei Katastrophen). Beim BSI beginnt **Hochverfügbarkeit** also mit VK 3 (99,99 %); andere Quellen sprechen erst ab 99,999 % davon.
 
 ## 4.2 MTBF und MTTR
 

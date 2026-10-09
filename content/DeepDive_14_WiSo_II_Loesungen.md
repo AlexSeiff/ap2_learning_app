@@ -68,7 +68,7 @@ Häufiger Fehler: Kirchensteuer vom Bruttolohn statt von der Lohnsteuer berechne
 
 **B6 (4 P):** **(3)** – Vorrang hat die **Nacherfüllung** – Nachbesserung oder Ersatzlieferung. Rücktritt, Minderung oder Schadensersatz statt der Leistung kommen erst in Betracht, wenn sie fehlschlägt, verweigert wird oder unzumutbar ist.
 
-**B7 (4 P):** **(2)** – Beim Verbrauchsgüterkauf wird bei Mängeln, die sich **innerhalb eines Jahres** zeigen, vermutet, dass sie bereits bei Übergabe vorlagen (**Beweislastumkehr**). Die Gewährleistung beträgt zwei Jahre (3), und sie besteht unabhängig von einer Garantie (4, 5).
+**B7 (4 P):** **(2)** – Beim Verbrauchsgüterkauf wird bei Mängeln, die sich **innerhalb eines Jahres** zeigen, vermutet, dass sie bereits bei Übergabe vorlagen (**Beweislastumkehr**, § 477 BGB: genau genommen beim Gefahrübergang – beim Verbrauchsgüterkauf ist das die Übergabe). Die Gewährleistung beträgt zwei Jahre (3), und sie besteht unabhängig von einer Garantie (4, 5).
 
 **B8 (4 P):** **(4) 31.12.2029** – Der Anspruch entsteht 2026. Die dreijährige Frist beginnt mit dem **Schluss dieses Jahres**, also am 31.12.2026, und endet mit Ablauf des 31.12.2029. Häufiger Fehler: ab dem Fälligkeitstag gerechnet (3).
 

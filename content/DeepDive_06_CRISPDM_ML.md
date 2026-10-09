@@ -217,7 +217,7 @@ Diese Phase entscheidet über die Qualität des Ergebnisses – „Garbage in, g
 | Aufgabe | Vorgehen |
 |---|---|
 | **Fehlende Werte** | löschen, ersetzen (Median/Modus) oder als eigene Kategorie kennzeichnen (→ Deep Dive 3) |
-| **Kategorien kodieren** | One-Hot-Encoding: Aus der Spalte „Kategorie" mit den Werten Möbel/Elektronik/Zubehör werden drei 0/1-Spalten. Nötig, weil Verfahren nur mit Zahlen rechnen |
+| **Kategorien kodieren** | One-Hot-Encoding: Aus der Spalte „Kategorie" mit den Werten Möbel/Elektronik/Zubehör werden drei 0/1-Spalten. Nötig, weil die meisten Verfahren nur mit Zahlen rechnen (k-NN, k-Means, Regression, neuronale Netze); Entscheidungsbäume wie ID3 arbeiten auch direkt mit Kategorien |
 | **Skalieren** | **Min-Max-Normalisierung** bringt alle Werte auf 0–1; **Standardisierung** auf Mittelwert 0 und Standardabweichung 1. Pflicht bei k-Means und k-NN |
 | **Ausreißer** | prüfen, nicht blind löschen (→ Deep Dive 3) |
 | **Merkmale bilden** | Aus Start- und Endzeitstempel die Bearbeitungsdauer berechnen; aus dem Geburtsdatum das Alter |

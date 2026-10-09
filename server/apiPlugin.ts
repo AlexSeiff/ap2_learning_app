@@ -10,20 +10,21 @@ import { checkProgressPut } from '../shared/progress';
 import type { Content } from '../shared/types';
 import { aiEnabled, generateTasks, gradeAnswer, MODEL } from './ai';
 import { createContentCache, withGenerated } from './contentCache';
-import { isContentSource, loadContent, SOURCE_DIR } from './loadContent';
+import { isContentSource, ladeInhalt, SOURCE_DIR } from './loadContent';
 import { defineRoute, HttpError, matchRoute, parseBody, readBody, send, type Route } from './router';
 import { backupInfo, readGenerated, readProgress, writeGenerated, writeProgress } from './store';
 
-const contentCache = createContentCache(() => loadContent());
+const contentCache = createContentCache(() => ladeInhalt());
 
 /** Generierte Aufgaben werden bei jedem Request frisch aus data/ gelesen, nur die Lernblätter kommen aus dem Cache. */
 function contentWithGenerated(): Content {
-  return withGenerated(contentCache.get(), readGenerated());
+  return withGenerated(contentCache.get().content, readGenerated());
 }
 
 // Antworttypen je Route stehen in shared/api.ts (ApiResponses) und werden von defineRoute erzwungen.
 const routes: Route[] = [
   defineRoute('GET /api/content', () => contentWithGenerated()),
+  defineRoute('GET /api/begriffe', () => contentCache.get().seiten),
   defineRoute('GET /api/progress', () => readProgress()),
   defineRoute('GET /api/progress/backups', () => backupInfo()),
   defineRoute('PUT /api/progress', async ({ req }) => {

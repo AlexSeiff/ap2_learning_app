@@ -20,14 +20,15 @@ function fundstellen(e: GlossarEintrag): string {
   return [...dd].join(', ');
 }
 
-/** Eine Listenzeile: Begriff – Definition (einzeilig, ohne Fettdruck) *(Fundstellen)*. */
-export function glossarZeile(e: GlossarEintrag): string {
+/** Eine Listenzeile: Begriff – Definition (einzeilig, ohne Fettdruck) *(Fundstellen)*; mit Begriffsseite ist der Begriff ein Link darauf. */
+export function glossarZeile(e: GlossarEintrag, mitSeite = false): string {
   const def = e.definition
     ?.replace(/\*\*|__/g, '')
     .replace(/\s*\n\s*(?:[-*]\s+)?/g, ' ')
     .trim();
   const wo = fundstellen(e);
-  return `- ${e.begriff}${def ? ` – ${def}` : ''}${wo ? ` *(${wo})*` : ''}`;
+  const name = mitSeite ? `[${e.begriff.replace(/[[\]]/g, (k) => `\\${k}`)}](#/glossar/${encodeURIComponent(e.id)})` : e.begriff;
+  return `- ${name}${def ? ` – ${def}` : ''}${wo ? ` *(${wo})*` : ''}`;
 }
 
 /** Setzt das Glossar an die Stelle des Platzhalters (verändert `content`). */
@@ -36,6 +37,7 @@ export function ergaenzeGlossarThema(content: Content): void {
     const idx = topic.sections.findIndex((s) => s.markdown.includes(GLOSSAR_PLATZHALTER));
     if (idx < 0) continue;
     const eintraege = baueGlossar(content);
+    const seiten = new Set((content.begriffe ?? []).map((b) => b.id));
     const basis = topic.sections[idx];
     const mitDefinition = eintraege.filter((e) => e.definition).length;
     basis.markdown = basis.markdown.replace(
@@ -51,7 +53,7 @@ export function ergaenzeGlossarThema(content: Content): void {
         generiert: true as const,
         markdown: eintraege
           .filter((e) => e.buchstabe === buchstabe)
-          .map(glossarZeile)
+          .map((e) => glossarZeile(e, seiten.has(e.id)))
           .join('\n'),
       }));
     topic.sections.splice(idx + 1, 0, ...neu);

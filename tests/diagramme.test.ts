@@ -118,7 +118,9 @@ describe('Begriffe A–Z', () => {
     expect(generiert.map((s) => s.title)).toContain('Begriffe A');
     const zeilen = generiert.flatMap((s) => s.markdown.split('\n'));
     expect(zeilen.length).toBe(glossar.length);
-    expect(zeilen.some((z) => z.startsWith('- Sequenzdiagramm – '))).toBe(true);
+    // Begriffe mit Begriffsseite sind verlinkt (Umsetzungsplan Phase 3)
+    expect(zeilen.some((z) => z.startsWith('- [Sequenzdiagramm](#/glossar/sequnzdiagramm) – '))).toBe(true);
+    expect(zeilen.filter((z) => z.startsWith('- [')).length).toBe(content.begriffe!.length);
   });
 
   it('die Liste enthält keinen Fettdruck und verändert das Glossar daher nicht', () => {
@@ -128,6 +130,12 @@ describe('Begriffe A–Z', () => {
       topics: content.topics.map((t) => (t.id === '17' ? { ...t, sections: t.sections.filter((s) => !s.generiert) } : t)),
     };
     expect(baueGlossar(ohne).map((e) => e.begriff)).toEqual(glossar.map((e) => e.begriff));
+  });
+
+  it('mit Begriffsseite: Begriff als Link, eckige Klammern maskiert', () => {
+    const e = { id: 'a-b', begriff: 'Wert [x]', quellen: [], buchstabe: 'W' };
+    expect(glossarZeile(e, true)).toBe(String.raw`- [Wert \[x\]](#/glossar/a-b)`);
+    expect(glossarZeile(e)).toBe('- Wert [x]');
   });
 
   it('Zeilenformat: Begriff – Definition (einzeilig) *(Fundstellen)*', () => {

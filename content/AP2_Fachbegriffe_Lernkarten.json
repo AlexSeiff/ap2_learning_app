@@ -3928,7 +3928,7 @@
         {
           "id": "FB-penetrationstest",
           "frage": "Penetrationstest",
-          "antwort": "Beauftragter, simulierter Angriff, um Schwachstellen zu finden – als Black-Box- oder White-Box-Test; ohne schriftliche Beauftragung strafbar.",
+          "antwort": "Beauftragter, simulierter Angriff, um Schwachstellen zu finden – als Black-Box- oder White-Box-Test; ohne Befugnis strafbar, die schriftliche Beauftragung weist sie nach.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -4088,7 +4088,7 @@
         {
           "id": "FB-nis2",
           "frage": "NIS2",
-          "antwort": "EU-Richtlinie zur Cybersicherheit; in Deutschland seit 06.12.2025 im BSIG umgesetzt: Registrierung, Risikomanagement und Meldung erheblicher Vorfälle an das BSI (24 h / 72 h / 1 Monat).",
+          "antwort": "EU-Richtlinie zur Cybersicherheit; in Deutschland seit 06.12.2025 im BSIG umgesetzt: Registrierung, Risikomanagement und Meldung erheblicher Vorfälle an das BSI (24 h / 72 h / Abschluss einen Monat nach der 72-Stunden-Meldung).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5448,7 +5448,7 @@
         {
           "id": "FB-arbeitszeugnis",
           "frage": "Arbeitszeugnis",
-          "antwort": "Einfaches Zeugnis (Art und Dauer) ist Pflicht; das qualifizierte Zeugnis enthält zusätzlich Leistung und Verhalten und wird auf Verlangen ausgestellt.",
+          "antwort": "Einfaches Zeugnis (Art und Dauer) ist Pflicht; das qualifizierte Zeugnis enthält zusätzlich Leistung und Verhalten und wird auf Verlangen ausgestellt; elektronisch nur mit Einwilligung des Arbeitnehmers (§ 109 GewO).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -5598,7 +5598,7 @@
         {
           "id": "FB-tarifbindung",
           "frage": "Tarifbindung",
-          "antwort": "Ein Tarifvertrag gilt unmittelbar für Mitglieder beider Tarifparteien, darüber hinaus durch Allgemeinverbindlicherklärung oder Bezugnahme im Arbeitsvertrag.",
+          "antwort": "Ein Tarifvertrag bindet unmittelbar nur Mitglieder beider Tarifparteien (§ 3 TVG); Allgemeinverbindlicherklärung oder Bezugnahme im Arbeitsvertrag führen nur zu seiner Anwendung.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -6148,7 +6148,7 @@
         {
           "id": "FB-widerrufsrecht",
           "frage": "Widerrufsrecht",
-          "antwort": "Verbraucher können Fernabsatzverträge 14 Tage ohne Angabe von Gründen widerrufen, bei Waren ab Erhalt.",
+          "antwort": "Verbraucher können Fernabsatzverträge 14 Tage ohne Angabe von Gründen widerrufen, bei Waren ab Erhalt; Onlineshops brauchen seit 19.06.2026 eine Widerrufsschaltfläche (§ 356a BGB).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -6158,7 +6158,7 @@
         {
           "id": "FB-agb",
           "frage": "AGB",
-          "antwort": "Allgemeine Geschäftsbedingungen: vorformulierte Vertragsbedingungen; überraschende oder unangemessen benachteiligende Klauseln sind unwirksam.",
+          "antwort": "Allgemeine Geschäftsbedingungen: vorformulierte Vertragsbedingungen; überraschende Klauseln werden gar nicht Vertragsbestandteil (§ 305c BGB), unangemessen benachteiligende sind unwirksam (§ 307 BGB).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -6618,7 +6618,7 @@
         {
           "id": "FB-abfallhierarchie",
           "frage": "Abfallhierarchie",
-          "antwort": "Rangfolge nach Kreislaufwirtschaftsgesetz: Vermeidung → Wiederverwendung → Recycling → sonstige Verwertung → Beseitigung.",
+          "antwort": "Rangfolge nach Kreislaufwirtschaftsgesetz: Vermeidung → Vorbereitung zur Wiederverwendung → Recycling → sonstige Verwertung → Beseitigung (§ 6 KrWG).",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -8038,7 +8038,7 @@
         {
           "id": "FB-verfugbarkeitsklassen",
           "frage": "Verfügbarkeitsklassen",
-          "antwort": "Einteilung des BSI (Hochverfügbarkeitskompendium): VK 0 ohne Zusage, VK 1 99 %, VK 2 99,9 %, VK 3 99,99 %, VK 4 99,999 %, VK 5 desastertolerant.",
+          "antwort": "Einteilung des BSI (Hochverfügbarkeitskompendium): VK 0 ohne Zusage, VK 1 normal 99 %, VK 2 erhöhte Verfügbarkeit 99,9 %, VK 3 Hochverfügbarkeit 99,99 %, VK 4 Höchstverfügbarkeit 99,999 %, VK 5 desastertolerant.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [
@@ -8048,7 +8048,7 @@
         {
           "id": "FB-fiktive-abnahme",
           "frage": "Fiktive Abnahme",
-          "antwort": "§ 640 Abs. 2 BGB: Das Werk gilt als abgenommen, wenn der Besteller eine angemessene Abnahmefrist verstreichen lässt, ohne die Abnahme unter Angabe mindestens eines Mangels zu verweigern.",
+          "antwort": "§ 640 Abs. 2 BGB: Das Werk gilt als abgenommen, wenn der Besteller eine angemessene Abnahmefrist verstreichen lässt, ohne die Abnahme unter Angabe mindestens eines Mangels zu verweigern; bei Verbrauchern nur nach einem Hinweis auf diese Folge in Textform.",
           "typ": "begriff",
           "schwierigkeit": 1,
           "tags": [

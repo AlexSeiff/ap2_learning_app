@@ -1,10 +1,11 @@
-// Glossar (/material/glossar, ROADMAP 8.9): Fachbegriffe aus Begriffs- und Wissenskarten und fetten Begriffen der Lernblätter,
+// Glossar (/glossar, ROADMAP 8.9; früher /material/glossar): Fachbegriffe aus Begriffs- und Wissenskarten und fetten Begriffen der Lernblätter,
 // alphabetisch mit Buchstaben-Sprungleiste und Filter. Lazy geladen; Logik in src/lib/glossar.ts.
 
 import { type MouseEvent, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { useStelle } from '../hooks/useStelle';
+import { begriffPfad, seitenFinder } from '../lib/begriffe';
 import { baueGlossar, glossarBuchstaben, type GlossarEintrag } from '../lib/glossar';
 import { normalisiere } from '../lib/normalisiere';
 import { useStore } from '../lib/store';
@@ -25,6 +26,8 @@ export function Glossar() {
   const buchstaben = glossarBuchstaben(sichtbar);
   const mitDefinition = eintraege.filter((e) => e.definition).length;
   const begriffskarten = content.flashcards.filter((c) => c.typ === 'begriff').length;
+  const seiteZu = useMemo(() => seitenFinder(content.begriffe ?? []), [content]);
+  const seitenZahl = content.begriffe?.length ?? 0;
 
   return (
     <div className="page glossar">
@@ -33,7 +36,9 @@ export function Glossar() {
       </h1>
       <p className="lead">
         {eintraege.length} Fachbegriffe aus den Begriffs- und Wissenskarten und den fett gedruckten Begriffen der Lernblätter,{' '}
-        {mitDefinition} davon mit Erklärung. Jeder Begriff führt zur Stelle im Lernblatt oder zur Karte.
+        {mitDefinition} davon mit Erklärung
+        {seitenZahl > 0 && `, ${seitenZahl} mit eigener Begriffsseite (Erklärung, Beispiel, Abgrenzung, Prüfungsfalle, Übungen)`}. Jeder
+        Begriff führt zur Stelle im Lernblatt oder zur Karte.
       </p>
       {begriffskarten > 0 && (
         <p>
@@ -84,7 +89,7 @@ export function Glossar() {
               {sichtbar
                 .filter((e) => e.buchstabe === buchstabe)
                 .map((e) => (
-                  <GlossarZeile key={e.id} e={e} />
+                  <GlossarZeile key={e.id} e={e} seite={seiteZu(e)} />
                 ))}
             </dl>
           </section>
@@ -93,10 +98,18 @@ export function Glossar() {
   );
 }
 
-function GlossarZeile({ e }: { e: GlossarEintrag }) {
+function GlossarZeile({ e, seite }: { e: GlossarEintrag; seite?: string }) {
   return (
     <div className="glossar-eintrag" id={`g-${e.id}`}>
-      <dt>{e.begriff}</dt>
+      <dt>
+        {seite ? (
+          <Link to={begriffPfad(seite)} className="glossar-seite-link">
+            {e.begriff} <Icon name="chevron-right" />
+          </Link>
+        ) : (
+          e.begriff
+        )}
+      </dt>
       <dd>
         {e.definition ? (
           <Markdown math={e.definition.includes('$')} source={false} className="glossar-def">

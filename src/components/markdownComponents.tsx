@@ -37,11 +37,15 @@ function makeComponents(source?: string | false): Components {
         <table>{children}</table>
       </div>
     ),
-    a: ({ href, children }) => (
-      <a href={href} target="_blank" rel="noreferrer">
-        {children}
-      </a>
-    ),
+    // Interne Links („#/glossar/…“, z. B. in Deep Dive 17 Teil 7) bleiben in der App, alle anderen öffnen sich in einem neuen Tab.
+    a: ({ href, children }) =>
+      href?.startsWith('#/') ? (
+        <Link to={href.slice(1)}>{children}</Link>
+      ) : (
+        <a href={href} target="_blank" rel="noreferrer">
+          {children}
+        </a>
+      ),
     // Operatoren in Aufgabentexten (rehypeOperatoren, nur mit `operatoren`): Tooltip mit dem, was der Operator verlangt.
     span: ({ node, children, ...rest }) => {
       const op = node?.properties.dataOperator;

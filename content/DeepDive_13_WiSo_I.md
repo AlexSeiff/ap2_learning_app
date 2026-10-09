@@ -75,7 +75,7 @@ Der **Ausbildungsnachweis** ist nicht nur Pflicht, sondern **Zulassungsvorausset
 - Streitigkeiten aus dem Ausbildungsverhältnis gehen zuerst an den **Schlichtungsausschuss der IHK** (sofern die Kammer einen eingerichtet hat, § 111 ArbGG), erst danach an das Arbeitsgericht.
 - Jede Kündigung des Ausbildungsverhältnisses ist **schriftlich** zu erklären, die **elektronische Form ist ausgeschlossen** (§ 22 Abs. 3). Eine fristlose Kündigung ist unwirksam, wenn der Kündigende die zugrunde liegenden Tatsachen schon **länger als zwei Wochen** kennt (§ 22 Abs. 4).
 
-**Zeugnis:** **einfaches Zeugnis** (Art, Dauer, Ziel, erworbene Fertigkeiten) ist Pflicht; das **qualifizierte Zeugnis** enthält zusätzlich **Verhalten und Leistung** und wird auf Verlangen ausgestellt. Krankheitstage gehören in kein Zeugnis. Seit 2024 darf das Ausbildungszeugnis mit **Einwilligung** des Azubis auch elektronisch ausgestellt werden (§ 16 Abs. 1 BBiG) – anders als das Arbeitszeugnis nach § 109 GewO.
+**Zeugnis:** **einfaches Zeugnis** (Art, Dauer, Ziel, erworbene Fertigkeiten) ist Pflicht; das **qualifizierte Zeugnis** enthält zusätzlich **Verhalten und Leistung** und wird auf Verlangen ausgestellt. Krankheitstage gehören in kein Zeugnis. Seit 2024 darf das Ausbildungszeugnis mit **Einwilligung** des Azubis auch elektronisch ausgestellt werden (§ 16 Abs. 1 BBiG) – seit 2025 gilt das auch für das Arbeitszeugnis (§ 109 Abs. 3 GewO).
 
 ## 1.5 Freistellung und Anrechnung (§ 15 BBiG)
 
@@ -97,7 +97,7 @@ Zusätzlich darf vor einem Berufsschulunterricht, der **vor 9 Uhr** beginnt, nic
 
 # Teil 2 – Schutzgesetze
 
-## 2.1 Jugendarbeitsschutzgesetz (gilt für Jugendliche von 15 bis 17)
+## 2.1 Jugendarbeitsschutzgesetz (gilt für alle unter 18)
 
 | Regel | Inhalt |
 |---|---|
@@ -117,6 +117,7 @@ Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (
 - Werktäglich höchstens **8 Stunden**, verlängerbar auf **10**, wenn im Durchschnitt von sechs Monaten bzw. 24 Wochen 8 Stunden nicht überschritten werden. Werktage sind **Montag bis Samstag**.
 - Ruhepausen: **30 min** bei mehr als 6 Stunden, **45 min** bei mehr als 9 Stunden; nie länger als 6 Stunden ohne Pause.
 - Ruhezeit mindestens **11 Stunden** zwischen zwei Arbeitstagen.
+- Ein Gesetzentwurf (Juni 2026) will eine wöchentliche statt einer täglichen Höchstarbeitszeit einführen – noch nicht verabschiedet (Stand Oktober 2026, vor der Prüfung prüfen). In der Prüfung gilt das obige Recht.
 
 ## 2.3 Bundesurlaubsgesetz
 
@@ -126,9 +127,9 @@ Stichtag für den Urlaub ist das **Alter zu Beginn des Kalenderjahres**. Jonas (
 
 ## 2.4 Weitere Schutzvorschriften
 
-- **Mutterschutz:** Schutzfrist **6 Wochen vor und 8 Wochen nach** der Entbindung (12 bei Früh- und Mehrlingsgeburten); Kündigungsverbot während der Schwangerschaft bis 4 Monate nach der Entbindung.
+- **Mutterschutz:** Schutzfrist **6 Wochen vor und 8 Wochen nach** der Entbindung (12 bei Früh- und Mehrlingsgeburten und – auf Antrag – bei einer in den ersten 8 Wochen festgestellten Behinderung des Kindes); seit 01.06.2025 auch nach einer **Fehlgeburt** ab der 13. Woche: 2 Wochen (ab 13.), 6 Wochen (ab 17.), 8 Wochen (ab 20. Schwangerschaftswoche), § 3 MuSchG. Kündigungsverbot während der Schwangerschaft bis 4 Monate nach der Entbindung.
 - **Elternzeit:** bis zu 3 Jahre je Kind bis zum 8. Geburtstag (davon bis zu 24 Monate zwischen 3. und 8. Geburtstag); Anmeldung beim Arbeitgeber spätestens **7 Wochen** vor Beginn (13 Wochen bei Elternzeit nach dem 3. Geburtstag). Kündigungsschutz ab der Anmeldung, frühestens **8 Wochen** vor Beginn (bzw. 14 Wochen), und während der gesamten Elternzeit (§ 18 BEEG).
-- **Schwerbehinderte Menschen:** Kündigung nur mit vorheriger Zustimmung des **Integrationsamts**; Zusatzurlaub von 5 Arbeitstagen bei Fünf-Tage-Woche.
+- **Schwerbehinderte Menschen:** Kündigung nur mit vorheriger Zustimmung des **Integrationsamts** (gilt, wenn das Arbeitsverhältnis länger als 6 Monate besteht, § 173 SGB IX); die Schwerbehindertenvertretung ist vorher zu beteiligen; Zusatzurlaub von 5 Arbeitstagen bei Fünf-Tage-Woche.
 - **Mindestlohn (Stand 2026): 13,90 € pro Stunde**, ab 01.01.2027 14,60 €. Ausgenommen sind u. a. Auszubildende (für sie gilt die Mindestausbildungsvergütung), Pflichtpraktikanten und Jugendliche ohne abgeschlossene Berufsausbildung.
 
 ---
@@ -190,7 +191,7 @@ Das KSchG gilt, wenn **beide** Voraussetzungen erfüllt sind: **mehr als 10 Arbe
 
 ## 3.5 Arbeitszeugnis
 
-Anspruch auf ein schriftliches Zeugnis bei Beendigung (§ 109 GewO): **einfaches Arbeitszeugnis** mit Art und Dauer der Tätigkeit, auf Verlangen **qualifiziertes Arbeitszeugnis** mit Leistung und Verhalten; die elektronische Form ist ausgeschlossen. Es muss **wahr und wohlwollend** formuliert sein – daher die codierte Zeugnissprache („stets zu unserer vollsten Zufriedenheit“ = sehr gut). **Unzulässig** sind Angaben zu Krankheiten, Betriebsratstätigkeit oder Gewerkschaftszugehörigkeit.
+Anspruch auf ein schriftliches Zeugnis bei Beendigung (§ 109 GewO): **einfaches Arbeitszeugnis** mit Art und Dauer der Tätigkeit, auf Verlangen **qualifiziertes Arbeitszeugnis** mit Leistung und Verhalten; in elektronischer Form nur mit Einwilligung des Arbeitnehmers (§ 109 Abs. 3 GewO, seit 2025). Es muss **wahr und wohlwollend** formuliert sein – daher die codierte Zeugnissprache („stets zu unserer vollsten Zufriedenheit“ = sehr gut). **Unzulässig** sind Angaben zu Krankheiten, Betriebsratstätigkeit oder Gewerkschaftszugehörigkeit.
 
 ---
 
@@ -254,7 +255,7 @@ Bei Streit in mitbestimmungspflichtigen Angelegenheiten entscheidet die **Einigu
 
 | Begriff | Bedeutung |
 |---|---|
-| **Tarifbindung** | unmittelbar für **Mitglieder beider Tarifparteien**; darüber hinaus durch Allgemeinverbindlicherklärung oder Bezugnahme im Arbeitsvertrag |
+| **Tarifbindung** | nur bei **Mitgliedschaft beider Seiten** in den Tarifparteien (§ 3 TVG); Allgemeinverbindlicherklärung und Bezugnahme im Arbeitsvertrag führen nur zur **Anwendung** des Tarifvertrags, nicht zur Tarifbindung |
 | **Allgemeinverbindlicherklärung** | das Bundesarbeitsministerium erstreckt den Tarifvertrag auf eine ganze Branche |
 | **Friedenspflicht** | während der Laufzeit keine Arbeitskämpfe über die geregelten Punkte |
 | **Nachwirkung** | nach Ablauf gelten die Regelungen weiter, bis eine neue Abmachung sie ersetzt |

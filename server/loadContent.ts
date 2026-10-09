@@ -1,7 +1,9 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
+import { namensSchluessel, parseBegriffsseiten, pruefeBegriffsseiten } from '../shared/begriffsseiten';
 import { buildContent } from '../shared/parser';
-import type { Content } from '../shared/types';
+import type { BegriffsSeite, Content } from '../shared/types';
+import { baueGlossar, ueberschriftKern } from '../src/lib/glossar';
 import { ergaenzeGlossarThema } from '../src/lib/glossarThema';
 import { pruefeRechenUebung } from '../src/rechnen/pruefen';
 
@@ -15,12 +17,22 @@ export const SOURCE_DIR = resolve(process.env.LERN_QUELLE ?? join(import.meta.di
 export const CONTENT_DIR = resolve(import.meta.dirname, '..', 'content');
 
 /**
- * Dateiname eines Lernblatts (*.md außer Prompt_* und Lernplan_*), einer Lernkarten-JSON, der SQL- oder der Rechenübungen-JSON?
- * Der persönliche Lernplan mit Kalenderwochen gehört nicht in die App (sie wird von mehreren Leuten genutzt).
+ * Markdown-Dateien, die die App liest (Positivliste): Lernblätter samt Lösungen, das alte SQL-Lernblatt, die beiden Materialien und die
+ * Begriffsseiten (eine Datei je Buchstabe). Alles andere im Ordner AP-2 – Prompts, der persönliche Lernplan, Arbeitsnotizen wie
+ * Ideen.md oder Begriffsseiten_Hinweise.md – gehört nicht in die App (sie wird von mehreren Leuten genutzt).
  */
+const INHALT_MD = [
+  /^DeepDive_\d+_.+\.md$/,
+  /^Deep_Dive_SQL.*\.md$/,
+  /^Lernzettel_Kernthemen\.md$/,
+  /^AP2_Themenliste.*\.md$/,
+  /^Begriffsseiten_(?:[A-Z]|0-9)\.md$/,
+];
+
+/** Dateiname eines Lernblatts (siehe INHALT_MD), einer Lernkarten-JSON, der SQL- oder der Rechenübungen-JSON? */
 export function isContentFile(name: string): boolean {
   return (
-    (name.toLowerCase().endsWith('.md') && !name.startsWith('Prompt_') && !name.startsWith('Lernplan_')) ||
+    INHALT_MD.some((re) => re.test(name)) ||
     /Lernkarten.*\.json$/i.test(name) ||
     /SQL_Uebungen.*\.json$/i.test(name) ||
     /Rechen_Uebungen.*\.json$/i.test(name)
@@ -39,11 +51,38 @@ export function listContentFiles(dir = SOURCE_DIR): string[] {
   return readdirSync(dir).filter(isContentFile).sort();
 }
 
-export function loadContent(dir = SOURCE_DIR): Content {
+export interface Inhalt {
+  content: Content;
+  /** Begriffsseiten mit ganzem Text – die App lädt sie getrennt (begriffe.json bzw. /api/begriffe), content.begriffe ist das Verzeichnis. */
+  seiten: BegriffsSeite[];
+}
+
+/** Lernblätter, Karten, Übungen und Begriffsseiten lesen, prüfen und zusammensetzen. */
+export function ladeInhalt(dir = SOURCE_DIR): Inhalt {
   const files = listContentFiles(dir).map((name) => ({ name, text: readFileSync(join(dir, name), 'utf8') }));
   // Rechenübungen werden gegen ihre Vorlage geprüft (unbekannte Vorlage, falsche Daten, fehlende Eingaben → Importhinweis).
   const content = buildContent(files, { pruefeRechenUebung });
+  // Begriffsseiten (Umsetzungsplan Phase 3): ids müssen zum Glossar passen, „Siehe auch“ zu einer Seite führen.
+  const seiten: BegriffsSeite[] = [];
+  for (const f of files.filter((x) => x.name.startsWith('Begriffsseiten_'))) {
+    const p = parseBegriffsseiten(f.name, f.text);
+    seiten.push(...p.seiten);
+    content.issues.push(...p.issues);
+  }
+  if (seiten.length) {
+    const glossar = baueGlossar(content);
+    const weitere = new Set([
+      ...glossar.map((e) => namensSchluessel(e.begriff)),
+      ...content.topics.flatMap((t) => t.sections.map((s) => namensSchluessel(ueberschriftKern(s.title)))),
+    ]);
+    content.issues.push(...pruefeBegriffsseiten(seiten, new Set(glossar.map((e) => e.id)), weitere));
+    content.begriffe = seiten.map((s) => ({ id: s.id, begriff: s.begriff, ...(s.auch ? { auch: s.auch } : {}) }));
+  }
   // Thema „Glossar & Diagramme“: Platzhalter durch das aktuelle Glossar A–Z ersetzen (src/lib/glossarThema.ts).
   ergaenzeGlossarThema(content);
-  return content;
+  return { content, seiten };
+}
+
+export function loadContent(dir = SOURCE_DIR): Content {
+  return ladeInhalt(dir).content;
 }

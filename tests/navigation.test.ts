@@ -37,6 +37,8 @@ describe('Bereiche', () => {
       '/fehlerjournal': 'lernen',
       [GLOSSAR_PFAD]: 'glossar',
       '/material/glossar': 'glossar',
+      '/glossar': 'glossar',
+      '/glossar/sequnzdiagramm': 'glossar',
       '/material/formeln': 'glossar',
       '/material/operatoren': 'glossar',
       '/sql': 'sql',
@@ -68,7 +70,8 @@ describe('Bereiche', () => {
     expect(ziel('/sql/uebung/SQL-MH-001')).toBe('Übungen');
     expect(ziel('/material')).toBe('Material');
     expect(ziel('/material/lernzettel')).toBe('Material');
-    expect(ziel('/material/glossar')).toBe('Begriffe A–Z');
+    expect(ziel('/glossar')).toBe('Begriffe A–Z');
+    expect(ziel('/glossar/sequnzdiagramm')).toBe('Begriffe A–Z');
     expect(ziel('/daten')).toBe('Daten & Import');
   });
 
