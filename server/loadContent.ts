@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { namensSchluessel, parseBegriffsseiten, pruefeBegriffsseiten } from '../shared/begriffsseiten';
 import { buildContent } from '../shared/parser';
+import { parseQuellen, pruefeQuellenZiele } from '../shared/quellen';
 import { ergaenzeVerwandte } from '../shared/verwandt';
 import type { BegriffsSeite, Content } from '../shared/types';
 import { baueGlossar, ueberschriftKern } from '../src/lib/glossar';
@@ -38,7 +39,8 @@ export function isContentFile(name: string): boolean {
     /Lernkarten.*\.json$/i.test(name) ||
     /SQL_Uebungen.*\.json$/i.test(name) ||
     /Rechen_Uebungen.*\.json$/i.test(name) ||
-    /Diagramm_Uebungen.*\.json$/i.test(name)
+    /Diagramm_Uebungen.*\.json$/i.test(name) ||
+    /^AP2_Quellen\.json$/.test(name)
   );
 }
 
@@ -85,6 +87,17 @@ export function ladeInhalt(dir = SOURCE_DIR): Inhalt {
   }
   // Thema „Glossar & Diagramme“: Platzhalter durch das aktuelle Glossar A–Z ersetzen (src/lib/glossarThema.ts).
   ergaenzeGlossarThema(content);
+  // Quellen und Lehrvideos (Umsetzungsplan Phase 8): Ziele müssen Abschnitte bzw. – wenn es Begriffsseiten gibt – Begriffe sein.
+  const quellenDatei = files.find((f) => f.name === 'AP2_Quellen.json');
+  if (quellenDatei) {
+    const q = parseQuellen(quellenDatei.name, quellenDatei.text);
+    content.issues.push(...q.issues);
+    const abschnitte = new Set(content.topics.flatMap((t) => t.sections.map((s) => s.id)));
+    const begriffe = new Set(seiten.map((s) => s.id));
+    const pruefbar = seiten.length ? q.quellen : q.quellen.filter((x) => x.ziel.startsWith('abschnitt:'));
+    content.issues.push(...pruefeQuellenZiele(quellenDatei.name, pruefbar, abschnitte, begriffe));
+    content.quellen = q.quellen;
+  }
   return { content, seiten };
 }
 

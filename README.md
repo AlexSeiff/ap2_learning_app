@@ -87,6 +87,7 @@ Hinweis „Neu laden“ klicken (oder in den Entwicklertools *Application → Se
 | **KI-Aufgaben** | Neue IHK-Aufgaben (MC, Lückentext, Zuordnung, Rechnen, offen) mit Musterlösung – nur mit API-Schlüssel |
 | **Material** | Lernzettel Kernthemen, Themenliste |
 | **Diagramm-Übungen** | 21 Übungen zu EPK/eEPK, BPMN, Aktivitäts-, Sequenz- und Zustandsdiagramm: Elemente in ein Diagramm-Gerüst ziehen oder antippen (Lücken füllen, Abläufe ordnen), Prüfen je Lücke mit Hinweisen zu Formregeln (z. B. kein XOR nach einem Ereignis); Wiederholung wie bei den Rechenübungen, verlinkt aus den Begriffsseiten und den Lernblättern |
+| **Weiterlesen und Videos** | Geprüfte Links zu fast jedem Lernblatt-Abschnitt und zu vielen Begriffsseiten: Studyflix-Artikel und -Videos, Wikipedia, Gesetzestexte (BBiG, JArbSchG, BetrVG, DSGVO …), BSI. Öffnen in neuem Tab; ein YouTube-Video würde erst nach Klick geladen (Zwei-Klick-Lösung über youtube-nocookie.com). Links neu prüfen: `npm run quellen-pruefen` |
 | **Rechenübungen** | 109 Rechenaufgaben aus den Lernblättern mit automatischer Prüfung, typischen Fehlern, Hinweisen, Rechenweg und „Neue Zahlen“; im Leicht-Modus „Ergebnis auswählen“ (gelöst zählt nur Eintippen) |
 | **SQL-Belegsatz** | Kompakte SQL-Syntax im Stil des IHK-Belegsatzes (SELECT in Ausführungsreihenfolge, JOINs, Aggregate, Unterabfragen, DML, DDL, Constraints, Datentypen, Views, Indizes, Datums- und Textfunktionen mit SQLite-Hinweisen) – unter Glossar, im SQL-Editor als Seitenpanel, druckbar auf zwei Seiten A4 |
 | **Klausur drucken** | Jede Übungsklausur und die gemischte Probeklausur als Aufgabenblatt mit Deckblatt (Name, Datum, Zeit, Hilfsmittel, Punkte je Block), jeder Block auf neuer Seite, Seitenzahlen; Lösungsblatt mit Bewertungsbogen. „Drucken“ auf der Klausurauswahl mischt eine neue Probeklausur |
@@ -211,6 +212,7 @@ npm run build         # Typecheck + Build der lokalen App nach dist/
 npm run build:pages   # statische Version für GitHub Pages nach dist/ (mit content.json)
 npm run import-report # Importbericht der Lernblätter im Terminal
 npm run sync-content  # Lernblätter aus AP-2 nach content/ kopieren (für Pages und Tests)
+npm run quellen-pruefen # alle Links aus AP2_Quellen.json neu abrufen, tote Links melden (braucht Internet)
 npm run mc-entwurf -- --deck <id>  # KI-Vorschläge für Auswahlantworten (Leicht-Modus) → data/mc-entwurf.json
 npm run mc-uebernehmen             # angenommene Vorschläge in AP2_FIDPA_Lernkarten.json eintragen
 ```

@@ -925,3 +925,16 @@ svg.diagramm.form-symbol { margin: 0; padding: 0; border: 0; background: none; o
   .palette-element { font-size: 0.85rem; padding: 4px 10px 4px 6px; min-height: 40px !important; gap: 6px; }
   .form-symbol { width: 30px; height: 21px; }
 }
+
+/* Quellen und Lehrvideos (Umsetzungsplan Phase 8) */
+.quellen-box { margin: 14px 0 6px; padding: 10px 14px; border-radius: var(--radius-klein); background: var(--surface-2); font-size: 0.92rem; }
+.begriff-block .quellen-box { background: transparent; padding: 0; }
+.quellen-titel { margin: 0 0 4px; font-weight: 600; color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.begriff-block .quellen-titel { display: none; }
+.quellen-liste { list-style: none; margin: 0; padding: 0; }
+.quellen-liste li { padding: 4px 0; }
+.quellen-liste .icon { width: 1em; height: 1em; }
+.video-hinweis { margin: 6px 0; padding: 10px 12px; border-radius: var(--radius-klein); background: var(--fill); }
+.video-hinweis p { margin: 0 0 8px; }
+.video-rahmen { position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; margin: 8px 0; }
+.video-rahmen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: var(--radius-klein); }

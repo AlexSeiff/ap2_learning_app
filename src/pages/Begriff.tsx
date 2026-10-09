@@ -8,6 +8,7 @@ import type { BegriffsSeite } from '../../shared/types';
 import { Icon, type IconName } from '../components/Icon';
 import { MarkierStern } from '../components/MarkierStern';
 import { Markdown } from '../components/Markdown';
+import { QuellenListe, useQuellen } from '../components/Quellen';
 import { begriffPfad, ladeBegriffe, seitenFinder, uebungenZuBegriff, verweisAufloeser } from '../lib/begriffe';
 import { cardPool } from '../lib/cards';
 import { baueGlossar } from '../lib/glossar';
@@ -72,6 +73,7 @@ export function BegriffsSeiteAnsicht({ seite }: { seite: BegriffsSeite }) {
       .map((q) => ({ text: q.titel, link: q.link })),
   ];
   const buchstabe = eintrag?.buchstabe ?? seite.begriff.charAt(0).toUpperCase();
+  const quellen = useQuellen(`begriff:${seite.id}`);
 
   return (
     <article className="page narrow begriff-seite">
@@ -112,6 +114,14 @@ export function BegriffsSeiteAnsicht({ seite }: { seite: BegriffsSeite }) {
               </li>
             ))}
           </ul>
+        </section>
+      )}
+      {quellen.length > 0 && (
+        <section className="begriff-block">
+          <h2>
+            <Icon name="external-link" /> Weiterlesen und Videos
+          </h2>
+          <QuellenListe quellen={quellen} titel="Externe Quellen" />
         </section>
       )}
       {seite.stand && <p className="hint">Stand der Seite: {seite.stand}</p>}

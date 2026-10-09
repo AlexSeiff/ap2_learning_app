@@ -1,0 +1,3157 @@
+{
+ "meta": {
+  "version": "1.0",
+  "geprueft": "2026-10",
+  "hinweise": [
+   "Quellen zum Nachlesen und Ansehen: je Eintrag ein Ziel (abschnitt:<Abschnitts-ID> oder begriff:<Begriffs-ID>), Titel, URL, Anbieter und Art.",
+   "Jeder Link wurde beim Eintragen abgerufen (HTTP 200, Titel passt zum Thema). Vor der Prüfung erneut prüfen: npm run quellen-pruefen.",
+   "Studyflix-Videos werden verlinkt, nicht eingebettet. youtubeId nur für Videos, die Studyflix selbst auf YouTube veröffentlicht hat (Zwei-Klick-Lösung)."
+  ]
+ },
+ "quellen": [
+  {
+   "ziel": "abschnitt:01-1-1-select-projektion-und-selektion",
+   "titel": "Structured Query Language",
+   "url": "https://studyflix.de/informatik/structured-query-language-606",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:01-2-2-joins-tabellen-verknuepfen",
+   "titel": "Join (SQL)",
+   "url": "https://de.wikipedia.org/wiki/Join_(SQL)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:01-2-5-ddl-constraints-und-referenzielle-integritaet",
+   "titel": "Relationale Datenbank",
+   "url": "https://studyflix.de/informatik/relationale-datenbanken-600",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:01-2-5-ddl-constraints-und-referenzielle-integritaet",
+   "titel": "Referentielle Integrität",
+   "url": "https://de.wikipedia.org/wiki/Referentielle_Integrität",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:01-3-4-views-sichten",
+   "titel": "Sicht (Datenbank)",
+   "url": "https://de.wikipedia.org/wiki/Sicht_(Datenbank)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:01-3-5-transaktionen-in-der-praxis",
+   "titel": "Transaktion (Informatik)",
+   "url": "https://de.wikipedia.org/wiki/Transaktion_(Informatik)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:01-3-6-indizes-gezielt-einsetzen",
+   "titel": "Datenbankindex",
+   "url": "https://de.wikipedia.org/wiki/Datenbankindex",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:00-2-1-select-spalten-auswaehlen",
+   "titel": "Structured Query Language",
+   "url": "https://studyflix.de/informatik/structured-query-language-606",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-1-1-die-drei-ebenen-der-datenmodellierung",
+   "titel": "Datenbank",
+   "url": "https://studyflix.de/informatik/datenbank-7460",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-1-2-bausteine-des-erm",
+   "titel": "ER-Modell",
+   "url": "https://studyflix.de/informatik/er-modell-7476",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-1-2-bausteine-des-erm",
+   "titel": "Entity-Relationship-Modell",
+   "url": "https://de.wikipedia.org/wiki/Entity-Relationship-Modell",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-1-5-ueberfuehrung-ins-relationenmodell-die-vier-transformationsregeln",
+   "titel": "Relationale Datenbank",
+   "url": "https://studyflix.de/informatik/relationale-datenbanken-600",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-2-1-funktionale-abhaengigkeit",
+   "titel": "Funktionale Abhängigkeit",
+   "url": "https://de.wikipedia.org/wiki/Funktionale_Abhängigkeit",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-2-2-die-drei-anomalien-folgen-fehlender-normalisierung",
+   "titel": "Anomalie (Informatik)",
+   "url": "https://de.wikipedia.org/wiki/Anomalie_(Informatik)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:02-teil-3-normalisierung-schritt-fuer-schritt",
+   "titel": "Normalisierung (Datenbank)",
+   "url": "https://de.wikipedia.org/wiki/Normalisierung_(Datenbank)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-teil-1-skalenniveaus",
+   "titel": "Skalenniveau: Nominal-, Ordinal- und Kardinalskala",
+   "url": "https://studyflix.de/statistik/skalenniveaus-1050",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-teil-2-haeufigkeitsverteilungen",
+   "titel": "Absolute und relative Häufigkeit",
+   "url": "https://studyflix.de/statistik/absolute-und-relative-haufigkeit-1507",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-teil-3-lagemasse",
+   "titel": "Mittelwert, Median & Modus",
+   "url": "https://studyflix.de/statistik/mittelwert-median-and-modus-1037",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-4-1-spannweite",
+   "titel": "Spannweite und Quartilsabstand: Berechnung mit Beispiel",
+   "url": "https://studyflix.de/statistik/spannweite-und-quartilsabstand-1041",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-4-2-quartile-und-interquartilsabstand",
+   "titel": "Quartil Definition und Berechnung",
+   "url": "https://studyflix.de/statistik/quartil-1628",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-4-3-varianz-und-standardabweichung",
+   "titel": "Varianz (Stochastik)",
+   "url": "https://studyflix.de/statistik/varianz-2014",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-4-3-varianz-und-standardabweichung",
+   "titel": "Standardabweichung einfach erklärt",
+   "url": "https://studyflix.de/statistik/standardabweichung-1042",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-4-4-variationskoeffizient",
+   "titel": "Variationskoeffizient: Berechnung mit Beispiel",
+   "url": "https://studyflix.de/statistik/variationskoeffizient-1043",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-teil-5-boxplot-und-ausreisser",
+   "titel": "Boxplot",
+   "url": "https://studyflix.de/statistik/boxplot-1044",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-7-1-wahrscheinlichkeit",
+   "titel": "Wahrscheinlichkeitsrechnung",
+   "url": "https://studyflix.de/statistik/wahrscheinlichkeitsrechnung-1106",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-7-1-wahrscheinlichkeit",
+   "titel": "Laplace Experiment: Definition und Aufgaben",
+   "url": "https://studyflix.de/statistik/laplace-experiment-1109",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-7-2-erwartungswert",
+   "titel": "Erwartungswert einfach erklärt mit Beispielaufgaben",
+   "url": "https://studyflix.de/mathematik/erwartungswert-1648",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-7-3-normalverteilung",
+   "titel": "Normalverteilung",
+   "url": "https://studyflix.de/mathematik/normalverteilung-1089",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:03-7-3-normalverteilung",
+   "titel": "Sigma Regeln Mathe",
+   "url": "https://studyflix.de/statistik/sigma-regeln-mathe-6301",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:04-1-2-der-korrelationskoeffizient-nach-pearson",
+   "titel": "Pearson Korrelation: Berechnung und Interpretation",
+   "url": "https://studyflix.de/statistik/pearson-korrelation-1051",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:04-1-3-korrelation-kausalitaet",
+   "titel": "Korrelation und Kausalität",
+   "url": "https://studyflix.de/statistik/korrelation-und-kausalitat-2216",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:04-2-1-die-regressionsgerade",
+   "titel": "Lineare Regression",
+   "url": "https://studyflix.de/statistik/lineare-regression-2147",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:04-2-3-bestimmtheitsmass-r",
+   "titel": "Bestimmtheitsmaß",
+   "url": "https://studyflix.de/statistik/bestimmtheitsmas-2146",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:04-3-1-gleitender-durchschnitt",
+   "titel": "Gleitender Durchschnitt",
+   "url": "https://studyflix.de/statistik/gleitender-durchschnitt-4971",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:04-3-2-wachstumsraten",
+   "titel": "Geometrisches Mittel",
+   "url": "https://studyflix.de/statistik/geometrisches-mittel-1038",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-1-1-was-ist-ein-geschaeftsprozess",
+   "titel": "Geschäftsprozess",
+   "url": "https://de.wikipedia.org/wiki/Geschäftsprozess",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-2-1-die-elemente",
+   "titel": "Business Process Model and Notation",
+   "url": "https://de.wikipedia.org/wiki/Business_Process_Model_and_Notation",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-2-3-epk-die-alternative",
+   "titel": "Ereignisgesteuerte Prozesskette",
+   "url": "https://de.wikipedia.org/wiki/Ereignisgesteuerte_Prozesskette",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-3-3-wirtschaftlichkeit-einer-optimierung",
+   "titel": "Amortisationsrechnung",
+   "url": "https://studyflix.de/wirtschaft/amortisationsrechnung-1031",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-3-3-wirtschaftlichkeit-einer-optimierung",
+   "titel": "Return on Investment (ROI)",
+   "url": "https://studyflix.de/wirtschaft/return-on-investment-roi-1702",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-5-1-das-event-log",
+   "titel": "Process-Mining",
+   "url": "https://de.wikipedia.org/wiki/Process_Mining",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-1-aufbau-und-ablauforganisation",
+   "titel": "Aufbauorganisation: Definition, Organigramme",
+   "url": "https://studyflix.de/wirtschaft/aufbauorganisation-1346",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-1-aufbau-und-ablauforganisation",
+   "titel": "Ablauforganisation: Definition, Beispiel",
+   "url": "https://studyflix.de/wirtschaft/ablauforganisation-1690",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-2-lean-management-und-kaizen",
+   "titel": "Lean Management",
+   "url": "https://de.wikipedia.org/wiki/Lean_Management",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-2-lean-management-und-kaizen",
+   "titel": "Kaizen",
+   "url": "https://de.wikipedia.org/wiki/Kaizen",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-3-six-sigma-und-total-quality-management",
+   "titel": "Six Sigma",
+   "url": "https://de.wikipedia.org/wiki/Six_Sigma",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-4-fmea-fehler-vorbeugen-bevor-sie-passieren",
+   "titel": "FMEA",
+   "url": "https://de.wikipedia.org/wiki/FMEA",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-5-strategische-analysemethoden",
+   "titel": "SWOT-Analyse",
+   "url": "https://studyflix.de/wirtschaft/swot-analyse-234",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-5-strategische-analysemethoden",
+   "titel": "Portfolioanalyse",
+   "url": "https://studyflix.de/wirtschaft/portfolioanalyse-5950",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:05-6-6-kennzahlensysteme-und-reifegrad",
+   "titel": "Balanced Scorecard",
+   "url": "https://studyflix.de/wirtschaft/balanced-scorecard-1911",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-1-1-die-sechs-phasen",
+   "titel": "CRISP DM",
+   "url": "https://studyflix.de/informatik/crisp-dm-4299",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-2-2-die-drei-lernarten",
+   "titel": "Überwachtes Lernen",
+   "url": "https://studyflix.de/informatik/ueberwachtes-lernen-8445",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-2-2-die-drei-lernarten",
+   "titel": "Was ist unüberwachtes Lernen?",
+   "url": "https://studyflix.de/informatik/unueberwachtes-lernen-8507",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-2-2-die-drei-lernarten",
+   "titel": "Reinforcement Learning",
+   "url": "https://studyflix.de/informatik/reinforcement-learning-8509",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-2-3-klassifikation-oder-regression",
+   "titel": "Machine Learning",
+   "url": "https://studyflix.de/informatik/machine-learning-4356",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-3-1-der-algorithmus-in-vier-schritten",
+   "titel": "k-Means-Algorithmus",
+   "url": "https://de.wikipedia.org/wiki/K-Means-Algorithmus",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-4-1-die-drei-kennzahlen",
+   "titel": "Assoziationsanalyse",
+   "url": "https://de.wikipedia.org/wiki/Assoziationsanalyse",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-6-2-rechtliche-anforderungen",
+   "titel": "Art. 22 DSGVO – Automatisierte Entscheidungen im Einzelfall einschließlich Profiling",
+   "url": "https://dsgvo-gesetz.de/art-22-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-7-1-k-naechste-nachbarn-k-nn",
+   "titel": "Was ist der K-Nearest-Neighbor-Algorithmus (KNN)?",
+   "url": "https://studyflix.de/informatik/knn-der-k-nearest-neighbor-algorithmus-8511",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-7-3-entscheidungsbaeume-mit-id3",
+   "titel": "Decision Tree",
+   "url": "https://studyflix.de/informatik/decision-tree-4481",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-8-1-ki-machine-learning-deep-learning",
+   "titel": "Was ist künstliche Intelligenz?",
+   "url": "https://studyflix.de/informatik/was-ist-kuenstliche-intelligenz-6919",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-8-1-ki-machine-learning-deep-learning",
+   "titel": "Deep Learning",
+   "url": "https://studyflix.de/informatik/deep-learning-8458",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-8-2-neuronale-netze",
+   "titel": "Neuronale Netze",
+   "url": "https://studyflix.de/informatik/neuronale-netze-4297",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-8-4-generative-ki-und-ki-verordnung",
+   "titel": "KI-Gesetz",
+   "url": "https://digital-strategy.ec.europa.eu/de/policies/regulatory-framework-ai",
+   "anbieter": "EU-Kommission",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:06-9-1-vom-biologischen-zum-kuenstlichen-neuron",
+   "titel": "Perzeptron",
+   "url": "https://de.wikipedia.org/wiki/Perzeptron",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:07-1-2-overfitting-und-underfitting",
+   "titel": "Überanpassung",
+   "url": "https://de.wikipedia.org/wiki/Überanpassung",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:07-1-3-kreuzvalidierung-k-fold-cross-validation",
+   "titel": "Kreuzvalidierungsverfahren",
+   "url": "https://de.wikipedia.org/wiki/Kreuzvalidierungsverfahren",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:07-2-1-aufbau",
+   "titel": "Beurteilung eines binären Klassifikators",
+   "url": "https://de.wikipedia.org/wiki/Konfusionsmatrix",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:07-4-4-roc-kurve-und-auc",
+   "titel": "ROC-Kurve",
+   "url": "https://de.wikipedia.org/wiki/Receiver_Operating_Characteristic",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-teil-1-oltp-und-olap",
+   "titel": "Online Analytical Processing",
+   "url": "https://de.wikipedia.org/wiki/Online_Analytical_Processing",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-teil-2-architektur-eines-data-warehouse",
+   "titel": "Data Warehouse",
+   "url": "https://de.wikipedia.org/wiki/Data-Warehouse",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-teil-3-etl-und-elt",
+   "titel": "ETL-Prozess",
+   "url": "https://de.wikipedia.org/wiki/ETL-Prozess",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-4-2-star-schema",
+   "titel": "Sternschema",
+   "url": "https://de.wikipedia.org/wiki/Sternschema",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-4-3-snowflake-schema",
+   "titel": "Schneeflockenschema",
+   "url": "https://de.wikipedia.org/wiki/Schneeflockenschema",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-4-4-historisierung-slowly-changing-dimensions",
+   "titel": "Slowly changing dimension",
+   "url": "https://en.wikipedia.org/wiki/Slowly_changing_dimension",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-5-1-data-lake-vs-data-warehouse",
+   "titel": "Data Lake",
+   "url": "https://studyflix.de/informatik/data-lake-4364",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:08-5-2-die-5-v-von-big-data",
+   "titel": "Big Data",
+   "url": "https://studyflix.de/informatik/big-data-4250",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:09-teil-1-die-dimensionen-der-datenqualitaet",
+   "titel": "Informationsqualität",
+   "url": "https://de.wikipedia.org/wiki/Datenqualität",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:09-4-2-dubletten",
+   "titel": "Dublette (Datenbank)",
+   "url": "https://de.wikipedia.org/wiki/Dublette_(Datenbank)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:09-5-4-master-data-management-stammdatenmanagement",
+   "titel": "Stammdatenmanagement",
+   "url": "https://de.wikipedia.org/wiki/Stammdatenmanagement",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-teil-1-grundbegriffe-der-dsgvo",
+   "titel": "Art. 4 DSGVO – Begriffsbestimmungen",
+   "url": "https://dsgvo-gesetz.de/art-4-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-1-art-5-grundsaetze-der-verarbeitung",
+   "titel": "Art. 5 DSGVO – Grundsätze für die Verarbeitung personenbezogener Daten",
+   "url": "https://dsgvo-gesetz.de/art-5-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-2-art-6-rechtsgrundlagen",
+   "titel": "Art. 6 DSGVO – Rechtmäßigkeit der Verarbeitung",
+   "url": "https://dsgvo-gesetz.de/art-6-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-3-betroffenenrechte",
+   "titel": "Art. 15 DSGVO – Auskunftsrecht der betroffenen Person",
+   "url": "https://dsgvo-gesetz.de/art-15-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-3-betroffenenrechte",
+   "titel": "Art. 17 DSGVO – Recht auf Löschung (\"Recht auf Vergessenwerden\")",
+   "url": "https://dsgvo-gesetz.de/art-17-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-4-weitere-pruefungsrelevante-pflichten",
+   "titel": "Art. 30 DSGVO – Verzeichnis von Verarbeitungstätigkeiten",
+   "url": "https://dsgvo-gesetz.de/art-30-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-4-weitere-pruefungsrelevante-pflichten",
+   "titel": "Art. 33 DSGVO – Meldung von Verletzungen des Schutzes personenbezogener Daten an die Aufsichtsbehörde",
+   "url": "https://dsgvo-gesetz.de/art-33-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-2-4-weitere-pruefungsrelevante-pflichten",
+   "titel": "Art. 35 DSGVO – Datenschutz-Folgenabschätzung",
+   "url": "https://dsgvo-gesetz.de/art-35-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-teil-3-anonymisierung-und-pseudonymisierung",
+   "titel": "Anonymisierung und Pseudonymisierung",
+   "url": "https://de.wikipedia.org/wiki/Pseudonymisierung",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-4-1-schutzziele",
+   "titel": "Informationssicherheit",
+   "url": "https://de.wikipedia.org/wiki/Informationssicherheit",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-4-2-verschluesselung-und-hashing",
+   "titel": "Symmetrische Verschlüsselung: Erklärung, Beispiel",
+   "url": "https://studyflix.de/informatik/symmetrische-verschlusselung-1610",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-4-2-verschluesselung-und-hashing",
+   "titel": "Asymmetrische Verschlüsselung/Public Key Verfahren",
+   "url": "https://studyflix.de/informatik/asymmetrische-verschlusselung-1609",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-4-2-verschluesselung-und-hashing",
+   "titel": "Kryptographische Hashfunktion",
+   "url": "https://de.wikipedia.org/wiki/Kryptographische_Hashfunktion",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-4-4-datensicherung",
+   "titel": "Datensicherung",
+   "url": "https://de.wikipedia.org/wiki/Datensicherung",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-4-5-typische-angriffsarten",
+   "titel": "Phishing",
+   "url": "https://studyflix.de/allgemeinwissen/phishing-7523",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-5-1-it-grundschutz-und-informationssicherheitsmanagement",
+   "titel": "IT-Grundschutz",
+   "url": "https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/it-grundschutz_node.html",
+   "anbieter": "BSI",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:10-5-5-nis2-und-it-sicherheitsrecht-stand-2026",
+   "titel": "NIS-2-regulierte Unternehmen",
+   "url": "https://www.bsi.bund.de/DE/Themen/Regulierte-Wirtschaft/NIS-2-regulierte-Unternehmen/nis-2-regulierte-unternehmen_node.html",
+   "anbieter": "BSI",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-a1-den-richtigen-diagrammtyp-waehlen",
+   "titel": "Diagramm",
+   "url": "https://studyflix.de/statistik/diagramm-4869",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-b1-die-drei-kontrollstrukturen",
+   "titel": "Algorithmen und Programmstruktur",
+   "url": "https://studyflix.de/informatik/algorithmen-und-programmstruktur-622",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-b2-struktogramm-nassi-shneiderman",
+   "titel": "Struktogramm",
+   "url": "https://studyflix.de/informatik/struktogramm-5715",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-b3-programmablaufplan-pap-die-symbole",
+   "titel": "Programmablaufpläne – einfach erklärt für dein Studium",
+   "url": "https://studyflix.de/informatik/programmablaufplane-828",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-b4-pseudocode-konventionen",
+   "titel": "Was ist Pseudocode in der Informatik?",
+   "url": "https://studyflix.de/informatik/was-ist-pseudocode-in-der-informatik-9397",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-b7-suchen-sortieren-und-rekursion",
+   "titel": "Sortieralgorithmen: Begriffe, Laufzeit und Vergleich",
+   "url": "https://studyflix.de/informatik/sortieralgorithmen-1337",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:11-b7-suchen-sortieren-und-rekursion",
+   "titel": "Bubblesort: Beispiel, Algorithmus, Laufzeit, Java & C",
+   "url": "https://studyflix.de/informatik/bubblesort-1325",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-1-1-was-ein-projekt-ausmacht",
+   "titel": "Was ist ein Projekt?",
+   "url": "https://studyflix.de/wirtschaft/was-ist-ein-projekt-6826",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-1-2-ziele-und-anforderungen",
+   "titel": "SMART Ziele",
+   "url": "https://studyflix.de/wirtschaft/smart-ziele-1464",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-1-3-lastenheft-und-pflichtenheft",
+   "titel": "Lastenheft",
+   "url": "https://de.wikipedia.org/wiki/Lastenheft",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-1-3-lastenheft-und-pflichtenheft",
+   "titel": "Pflichtenheft",
+   "url": "https://de.wikipedia.org/wiki/Pflichtenheft",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-1-4-stakeholder-und-risiken",
+   "titel": "Stakeholderanalyse",
+   "url": "https://studyflix.de/wirtschaft/stakeholderanalyse-6474",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-3-2-netzplantechnik-der-rechenteil",
+   "titel": "Netzplan: einfach erklärt mit Beispiel",
+   "url": "https://studyflix.de/wirtschaft/netzplan-658",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-3-3-gantt-diagramm",
+   "titel": "Gantt-Diagramm",
+   "url": "https://studyflix.de/wirtschaft/gantt-diagramm-659",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-4-1-kostenarten",
+   "titel": "Fixkosten",
+   "url": "https://studyflix.de/wirtschaft/fixkosten-1493",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-4-1-kostenarten",
+   "titel": "Was sind variable Kosten?",
+   "url": "https://studyflix.de/wirtschaft/variable-kosten-1512",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-4-2-die-vier-rechnungen",
+   "titel": "Break-even-Point",
+   "url": "https://studyflix.de/wirtschaft/break-even-point-1142",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-4-2-die-vier-rechnungen",
+   "titel": "Amortisationsrechnung",
+   "url": "https://studyflix.de/wirtschaft/amortisationsrechnung-1031",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-4-2-die-vier-rechnungen",
+   "titel": "Return on Investment (ROI)",
+   "url": "https://studyflix.de/wirtschaft/return-on-investment-roi-1702",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:12-4-3-make-or-buy",
+   "titel": "Make or Buy",
+   "url": "https://studyflix.de/wirtschaft/make-or-buy-4718",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-1-1-beteiligte-und-rechtsgrundlagen",
+   "titel": "BBiG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/bbig_2005/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-1-4-probezeit-kuendigung-und-ende",
+   "titel": "§ 22 BBiG",
+   "url": "https://www.gesetze-im-internet.de/bbig_2005/__22.html",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-1-4-probezeit-kuendigung-und-ende",
+   "titel": "Kündigung Ausbildung",
+   "url": "https://studyflix.de/ausbildung/karriere-ausbildung/kuendigung-ausbildung-4804",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-1-5-freistellung-und-anrechnung-15-bbig",
+   "titel": "§ 15 BBiG",
+   "url": "https://www.gesetze-im-internet.de/bbig_2005/__15.html",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-2-1-jugendarbeitsschutzgesetz-gilt-fuer-alle-unter-18",
+   "titel": "JArbSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/jarbschg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-2-2-arbeitszeitgesetz-erwachsene",
+   "titel": "ArbZG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/arbzg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-2-3-bundesurlaubsgesetz",
+   "titel": "BUrlG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/burlg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-3-3-kuendigungsfristen-622-bgb",
+   "titel": "§ 622 BGB",
+   "url": "https://www.gesetze-im-internet.de/bgb/__622.html",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-3-4-kuendigungsschutzgesetz",
+   "titel": "KSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/kschg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-3-5-arbeitszeugnis",
+   "titel": "§ 109 GewO",
+   "url": "https://www.gesetze-im-internet.de/gewo/__109.html",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-4-1-der-betriebsrat",
+   "titel": "BetrVG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/betrvg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-4-2-beteiligungsrechte-vom-schwachen-zum-starken-recht",
+   "titel": "§ 87 BetrVG",
+   "url": "https://www.gesetze-im-internet.de/betrvg/__87.html",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-5-1-grundlagen",
+   "titel": "Tarifautonomie",
+   "url": "https://studyflix.de/wirtschaft/tarifautonomie-6651",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-5-1-grundlagen",
+   "titel": "TVG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/tvg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:13-6-1-allgemeines-gleichbehandlungsgesetz-agg",
+   "titel": "AGG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/agg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-1-1-prinzipien",
+   "titel": "Prinzipien der Sozialversicherung",
+   "url": "https://studyflix.de/wirtschaft/prinzipien-der-sozialversicherung-5984",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-1-2-die-fuenf-zweige",
+   "titel": "Die 5 Säulen der Sozialversicherung",
+   "url": "https://studyflix.de/wirtschaft/5-saeulen-der-sozialversicherung-3595",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-1-4-vom-brutto-zum-netto",
+   "titel": "Netto und Brutto",
+   "url": "https://studyflix.de/ausbildung/karriere-ausbildung/netto-und-brutto-6950",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-1-personen-und-geschaeftsfaehigkeit",
+   "titel": "Geschäftsfähigkeit",
+   "url": "https://studyflix.de/wirtschaft/geschaeftsfaehigkeit-4991",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-1-personen-und-geschaeftsfaehigkeit",
+   "titel": "Rechtsfähigkeit",
+   "url": "https://studyflix.de/wirtschaft/rechtsfaehigkeit-5108",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-2-willenserklaerung-und-vertrag",
+   "titel": "Willenserklärung",
+   "url": "https://studyflix.de/wirtschaft/willenserklaerung-4588",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-2-willenserklaerung-und-vertrag",
+   "titel": "Wie kommt ein Kaufvertrag zustande?",
+   "url": "https://studyflix.de/wirtschaft/wie-kommt-ein-kaufvertrag-zustande-4491",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-4-vertragsarten",
+   "titel": "Kaufvertragsarten",
+   "url": "https://studyflix.de/wirtschaft/kaufvertragsarten-8499",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-5-stoerungen-des-kaufvertrags",
+   "titel": "Kaufvertragsstörungen",
+   "url": "https://studyflix.de/wirtschaft/kaufvertragsstorungen-6087",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-2-5-stoerungen-des-kaufvertrags",
+   "titel": "Sachmangel",
+   "url": "https://studyflix.de/wirtschaft/sachmangel-6737",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-3-1-kaufmann-und-handelsregister",
+   "titel": "Istkaufmann",
+   "url": "https://studyflix.de/wirtschaft/istkaufmann-8485",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-3-1-kaufmann-und-handelsregister",
+   "titel": "Handelsregister",
+   "url": "https://studyflix.de/wirtschaft/handelsregister-7760",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-3-3-vollmachten",
+   "titel": "Prokura",
+   "url": "https://studyflix.de/wirtschaft/prokura-4807",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-3-3-vollmachten",
+   "titel": "Handlungsvollmacht",
+   "url": "https://studyflix.de/wirtschaft/handlungsvollmacht-5512",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-1-grundbegriffe",
+   "titel": "Ökonomisches Prinzip: Definition |",
+   "url": "https://studyflix.de/wirtschaft/okonomisches-prinzip-1613",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-2-markt-und-preisbildung",
+   "titel": "Angebot und Nachfrage: Einfach erklärt, Gleichgewichtspreis",
+   "url": "https://studyflix.de/wirtschaft/angebot-und-nachfrage-1796",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-2-markt-und-preisbildung",
+   "titel": "Gleichgewichtspreis",
+   "url": "https://studyflix.de/wirtschaft/gleichgewichtspreis-1895",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-2-markt-und-preisbildung",
+   "titel": "Marktformen",
+   "url": "https://studyflix.de/wirtschaft/marktformen-1492",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-3-wirtschaftsordnungen",
+   "titel": "Soziale Marktwirtschaft",
+   "url": "https://studyflix.de/wirtschaft/soziale-marktwirtschaft-1857",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-4-konjunktur-und-wirtschaftspolitik",
+   "titel": "Konjunkturphasen: einfach erklärt",
+   "url": "https://studyflix.de/wirtschaft/konjunkturphasen-1795",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-4-konjunktur-und-wirtschaftspolitik",
+   "titel": "Das magische Viereck",
+   "url": "https://studyflix.de/wirtschaft/magisches-viereck-897",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-5-inflation-und-bip",
+   "titel": "Was ist Inflation",
+   "url": "https://studyflix.de/wirtschaft/was-ist-inflation-4806",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-4-5-inflation-und-bip",
+   "titel": "Bruttoinlandsprodukt (BIP)",
+   "url": "https://studyflix.de/wirtschaft/bruttoinlandsprodukt-bip-6673",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-5-1-arbeitsschutz",
+   "titel": "ArbSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/arbschg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:14-5-2-nachhaltigkeit-und-umweltschutz",
+   "titel": "3 Säulen der Nachhaltigkeit",
+   "url": "https://studyflix.de/wirtschaft/3-saulen-der-nachhaltigkeit-6117",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-2-1-csv",
+   "titel": "CSV (Dateiformat)",
+   "url": "https://de.wikipedia.org/wiki/CSV_(Dateiformat)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-2-2-json",
+   "titel": "JSON",
+   "url": "https://de.wikipedia.org/wiki/JavaScript_Object_Notation",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-2-3-xml",
+   "titel": "Extensible Markup Language",
+   "url": "https://de.wikipedia.org/wiki/Extensible_Markup_Language",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-2-5-zeichenkodierung",
+   "titel": "UTF-8",
+   "url": "https://de.wikipedia.org/wiki/UTF-8",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-3-2-rest-prinzipien",
+   "titel": "Representational State Transfer",
+   "url": "https://de.wikipedia.org/wiki/Representational_State_Transfer",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-4-1-nosql-datenbanken",
+   "titel": "NoSQL",
+   "url": "https://de.wikipedia.org/wiki/NoSQL",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-5-1-use-case-diagramm",
+   "titel": "Unified Modeling Language",
+   "url": "https://studyflix.de/informatik/unified-modeling-language-470",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-5-1-use-case-diagramm",
+   "titel": "Anwendungsfalldiagramm",
+   "url": "https://de.wikipedia.org/wiki/Anwendungsfalldiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:15-5-3-klassendiagramm-und-die-bruecke-zum-erm",
+   "titel": "Klassendiagramm",
+   "url": "https://de.wikipedia.org/wiki/Klassendiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-2-1-die-vier-teststufen-v-modell",
+   "titel": "V-Modell",
+   "url": "https://studyflix.de/wirtschaft/v-modell-6716",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-2-2-black-box-und-white-box",
+   "titel": "Black-Box-Test",
+   "url": "https://de.wikipedia.org/wiki/Black-Box-Test",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-2-2-black-box-und-white-box",
+   "titel": "White-Box-Test",
+   "url": "https://de.wikipedia.org/wiki/White-Box-Test",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-2-3-durchgerechnetes-beispiel-aequivalenzklassen-und-grenzwerte",
+   "titel": "Äquivalenzklassentest",
+   "url": "https://de.wikipedia.org/wiki/Äquivalenzklassentest",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-4-1-verfuegbarkeit-berechnen",
+   "titel": "Verfügbarkeit",
+   "url": "https://de.wikipedia.org/wiki/Verfügbarkeit",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-4-2-mtbf-und-mttr",
+   "titel": "Mean Time Between Failures",
+   "url": "https://de.wikipedia.org/wiki/Mean_Time_Between_Failures",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-4-4-das-service-level-agreement-sla",
+   "titel": "Service-Level-Agreement",
+   "url": "https://de.wikipedia.org/wiki/Service-Level-Agreement",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-4-5-redundanz-und-hochverfuegbarkeit",
+   "titel": "RAID",
+   "url": "https://studyflix.de/informatik/raid-8057",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:16-4-5-redundanz-und-hochverfuegbarkeit",
+   "titel": "Hochverfügbarkeit",
+   "url": "https://de.wikipedia.org/wiki/Hochverfügbarkeit",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-1-1-bpmn-2-0",
+   "titel": "Business Process Model and Notation",
+   "url": "https://de.wikipedia.org/wiki/Business_Process_Model_and_Notation",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-1-2-epk-und-eepk",
+   "titel": "Ereignisgesteuerte Prozesskette",
+   "url": "https://de.wikipedia.org/wiki/Ereignisgesteuerte_Prozesskette",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-1-3-wertstromdiagramm",
+   "titel": "Wertstromdesign",
+   "url": "https://de.wikipedia.org/wiki/Wertstromdesign",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-1-4-sipoc",
+   "titel": "SIPOC",
+   "url": "https://de.wikipedia.org/wiki/SIPOC",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-1-6-ishikawa-diagramm",
+   "titel": "Ursache-Wirkungs-Diagramm",
+   "url": "https://de.wikipedia.org/wiki/Ishikawa-Diagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-2-1-ueberblick",
+   "titel": "Unified Modeling Language",
+   "url": "https://studyflix.de/informatik/unified-modeling-language-470",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-2-2-use-case-diagramm",
+   "titel": "Anwendungsfalldiagramm",
+   "url": "https://de.wikipedia.org/wiki/Anwendungsfalldiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-2-3-klassendiagramm",
+   "titel": "Klassendiagramm",
+   "url": "https://de.wikipedia.org/wiki/Klassendiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-2-4-aktivitaetsdiagramm",
+   "titel": "Aktivitätsdiagramm",
+   "url": "https://de.wikipedia.org/wiki/Aktivitätsdiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-2-5-sequenzdiagramm",
+   "titel": "Sequenzdiagramm",
+   "url": "https://de.wikipedia.org/wiki/Sequenzdiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-2-6-zustandsdiagramm",
+   "titel": "Zustandsdiagramm (UML)",
+   "url": "https://de.wikipedia.org/wiki/Zustandsdiagramm_(UML)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-3-1-er-diagramm-in-chen-notation",
+   "titel": "ER-Modell",
+   "url": "https://studyflix.de/informatik/er-modell-7476",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-3-4-star-schema",
+   "titel": "Sternschema",
+   "url": "https://de.wikipedia.org/wiki/Sternschema",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-3-5-snowflake-schema",
+   "titel": "Schneeflockenschema",
+   "url": "https://de.wikipedia.org/wiki/Schneeflockenschema",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-4-1-programmablaufplan-pap",
+   "titel": "Programmablaufpläne – einfach erklärt für dein Studium",
+   "url": "https://studyflix.de/informatik/programmablaufplane-828",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-4-2-struktogramm",
+   "titel": "Struktogramm",
+   "url": "https://studyflix.de/informatik/struktogramm-5715",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-5-1-netzplan",
+   "titel": "Netzplan: einfach erklärt mit Beispiel",
+   "url": "https://studyflix.de/wirtschaft/netzplan-658",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-5-2-gantt-diagramm",
+   "titel": "Gantt-Diagramm",
+   "url": "https://studyflix.de/wirtschaft/gantt-diagramm-659",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-5-4-kanban-board-und-burndown-chart",
+   "titel": "Kanban Board",
+   "url": "https://studyflix.de/wirtschaft/kanban-board-3486",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-6-2-saeulen-und-balkendiagramm",
+   "titel": "Balkendiagramm / Säulendiagramm",
+   "url": "https://studyflix.de/statistik/balkendiagramm-saulendiagramm-1890",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-6-4-kreisdiagramm",
+   "titel": "Kreisdiagramme berechnen und zeichnen",
+   "url": "https://studyflix.de/statistik/kreisdiagramm-1873",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-6-6-histogramm",
+   "titel": "Histogramm",
+   "url": "https://studyflix.de/statistik/histogramm-1711",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-6-7-boxplot",
+   "titel": "Boxplot",
+   "url": "https://studyflix.de/statistik/boxplot-1044",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-6-8-pareto-diagramm",
+   "titel": "Pareto Prinzip",
+   "url": "https://studyflix.de/wirtschaft/pareto-prinzip-3898",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "abschnitt:17-6-10-konfusionsmatrix-und-roc-kurve",
+   "titel": "Beurteilung eines binären Klassifikators",
+   "url": "https://de.wikipedia.org/wiki/Konfusionsmatrix",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:uml",
+   "titel": "Unified Modeling Language",
+   "url": "https://studyflix.de/informatik/unified-modeling-language-470",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:k-nachste-nachbarn",
+   "titel": "Was ist der K-Nearest-Neighbor-Algorithmus (KNN)?",
+   "url": "https://studyflix.de/informatik/knn-der-k-nearest-neighbor-algorithmus-8511",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:entscheidungsbaum",
+   "titel": "Decision Tree",
+   "url": "https://studyflix.de/informatik/decision-tree-4481",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kunstliche-intelligenz",
+   "titel": "Was ist künstliche Intelligenz?",
+   "url": "https://studyflix.de/informatik/was-ist-kuenstliche-intelligenz-6919",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:programmablaufplan",
+   "titel": "Programmablaufpläne – einfach erklärt für dein Studium",
+   "url": "https://studyflix.de/informatik/programmablaufplane-828",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:pseudocode",
+   "titel": "Was ist Pseudocode in der Informatik?",
+   "url": "https://studyflix.de/informatik/was-ist-pseudocode-in-der-informatik-9397",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:korrelation",
+   "titel": "Korrelationskoeffizient",
+   "url": "https://studyflix.de/statistik/korrelationskoeffizient-2290",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:regressionsgerade",
+   "titel": "Lineare Regression",
+   "url": "https://studyflix.de/statistik/lineare-regression-2147",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:bestimmtheitsmass",
+   "titel": "Bestimmtheitsmaß",
+   "url": "https://studyflix.de/statistik/bestimmtheitsmas-2146",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:korrelationskoffizient-nach-pearson",
+   "titel": "Pearson Korrelation: Berechnung und Interpretation",
+   "url": "https://studyflix.de/statistik/pearson-korrelation-1051",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:residuum",
+   "titel": "Residuen",
+   "url": "https://studyflix.de/statistik/residuen-2145",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:interquartilsabstand",
+   "titel": "Spannweite und Quartilsabstand: Berechnung mit Beispiel",
+   "url": "https://studyflix.de/statistik/spannweite-und-quartilsabstand-1041",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:spannweite",
+   "titel": "Spannweite und Quartilsabstand: Berechnung mit Beispiel",
+   "url": "https://studyflix.de/statistik/spannweite-und-quartilsabstand-1041",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:skalenniveau",
+   "titel": "Skalenniveau: Nominal-, Ordinal- und Kardinalskala",
+   "url": "https://studyflix.de/statistik/skalenniveaus-1050",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:modus",
+   "titel": "Modalwert",
+   "url": "https://studyflix.de/statistik/modalwert-6132",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:laplace-wahrscheinlichkeit",
+   "titel": "Laplace Experiment: Definition und Aufgaben",
+   "url": "https://studyflix.de/statistik/laplace-experiment-1109",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:z-wert",
+   "titel": "z Standardisierung",
+   "url": "https://studyflix.de/statistik/z-standardisierung-4818",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:standardisierung",
+   "titel": "z Standardisierung",
+   "url": "https://studyflix.de/statistik/z-standardisierung-4818",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:scrum",
+   "titel": "Scrum Methode",
+   "url": "https://studyflix.de/wirtschaft/scrum-methode-3426",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:break-even-menge",
+   "titel": "Break-even-Point",
+   "url": "https://studyflix.de/wirtschaft/break-even-point-1142",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:amortisationszeit",
+   "titel": "Amortisationsrechnung",
+   "url": "https://studyflix.de/wirtschaft/amortisationsrechnung-1031",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:return-on-investment",
+   "titel": "Return on Investment (ROI)",
+   "url": "https://studyflix.de/wirtschaft/return-on-investment-roi-1702",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:deckungsbeitrag",
+   "titel": "Deckungsbeitragsrechnung",
+   "url": "https://studyflix.de/wirtschaft/deckungsbeitragsrechnung-5971",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kapitalwert",
+   "titel": "Kapitalwertmethode",
+   "url": "https://studyflix.de/wirtschaft/kapitalwertmethode-71",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:inflation",
+   "titel": "Was ist Inflation",
+   "url": "https://studyflix.de/wirtschaft/was-ist-inflation-4806",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:bruttoinlandsprodukt",
+   "titel": "Bruttoinlandsprodukt (BIP)",
+   "url": "https://studyflix.de/wirtschaft/bruttoinlandsprodukt-bip-6673",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kaufvertrag",
+   "titel": "Wie kommt ein Kaufvertrag zustande?",
+   "url": "https://studyflix.de/wirtschaft/wie-kommt-ein-kaufvertrag-zustande-4491",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:sozialversicherung",
+   "titel": "Die 5 Säulen der Sozialversicherung",
+   "url": "https://studyflix.de/wirtschaft/5-saeulen-der-sozialversicherung-3595",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:nachhaltigkeit",
+   "titel": "3 Säulen der Nachhaltigkeit",
+   "url": "https://studyflix.de/wirtschaft/3-saulen-der-nachhaltigkeit-6117",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:signifikanz",
+   "titel": "Signifikanzniveau",
+   "url": "https://studyflix.de/statistik/signifikanzniveau-1587",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:duale-ausbildung",
+   "titel": "Duale Ausbildung einfach erkärt",
+   "url": "https://studyflix.de/ausbildung/karriere-ausbildung/duale-ausbildung-4787",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:dsgvo",
+   "titel": "Datenschutz-Grundverordnung: Finaler Text der DSGVO",
+   "url": "https://dsgvo-gesetz.de/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:personenbezogene-daten",
+   "titel": "Art. 4 DSGVO – Begriffsbestimmungen",
+   "url": "https://dsgvo-gesetz.de/art-4-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:einwilligung",
+   "titel": "Art. 7 DSGVO – Bedingungen für die Einwilligung",
+   "url": "https://dsgvo-gesetz.de/art-7-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:betroffenenrechte",
+   "titel": "Art. 15 DSGVO – Auskunftsrecht der betroffenen Person",
+   "url": "https://dsgvo-gesetz.de/art-15-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:betroffenenrechte",
+   "titel": "Art. 17 DSGVO – Recht auf Löschung (\"Recht auf Vergessenwerden\")",
+   "url": "https://dsgvo-gesetz.de/art-17-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:betroffenenrechte",
+   "titel": "Art. 20 DSGVO – Recht auf Datenübertragbarkeit",
+   "url": "https://dsgvo-gesetz.de/art-20-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:privacy-by-design",
+   "titel": "Art. 25 DSGVO – Datenschutz durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen",
+   "url": "https://dsgvo-gesetz.de/art-25-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:auftragsverarbeiter",
+   "titel": "Art. 28 DSGVO – Auftragsverarbeiter",
+   "url": "https://dsgvo-gesetz.de/art-28-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:verzeichnis-von-verarbeitungstatigkeiten",
+   "titel": "Art. 30 DSGVO – Verzeichnis von Verarbeitungstätigkeiten",
+   "url": "https://dsgvo-gesetz.de/art-30-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:datenschutz-folgenabschatzung",
+   "titel": "Art. 35 DSGVO – Datenschutz-Folgenabschätzung",
+   "url": "https://dsgvo-gesetz.de/art-35-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:datenschutzbeauftragter",
+   "titel": "Art. 37 DSGVO – Benennung eines Datenschutzbeauftragten",
+   "url": "https://dsgvo-gesetz.de/art-37-dsgvo/",
+   "anbieter": "DSGVO-Text",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:bbig",
+   "titel": "BBiG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/bbig_2005/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:jarbschg",
+   "titel": "JArbSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/jarbschg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:arbeitszeitgesetz",
+   "titel": "ArbZG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/arbzg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kundigungsschutzgesetz",
+   "titel": "KSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/kschg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:betrvg",
+   "titel": "BetrVG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/betrvg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:agg",
+   "titel": "AGG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/agg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:arbeitsschutz",
+   "titel": "ArbSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/arbschg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:mutterschutz",
+   "titel": "MuSchG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/muschg_2018/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:tarifvertrag",
+   "titel": "TVG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/tvg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:betriebsrat",
+   "titel": "BetrVG (Gesetzestext)",
+   "url": "https://www.gesetze-im-internet.de/betrvg/",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:arbeitszeugnis",
+   "titel": "§ 109 GewO",
+   "url": "https://www.gesetze-im-internet.de/gewo/__109.html",
+   "anbieter": "Gesetze im Internet",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:ki-verordnung",
+   "titel": "KI-Gesetz",
+   "url": "https://digital-strategy.ec.europa.eu/de/policies/regulatory-framework-ai",
+   "anbieter": "EU-Kommission",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:it-grundschutz",
+   "titel": "IT-Grundschutz",
+   "url": "https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/it-grundschutz_node.html",
+   "anbieter": "BSI",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:nis2",
+   "titel": "NIS-2-regulierte Unternehmen",
+   "url": "https://www.bsi.bund.de/DE/Themen/Regulierte-Wirtschaft/NIS-2-regulierte-Unternehmen/nis-2-regulierte-unternehmen_node.html",
+   "anbieter": "BSI",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:bpmn",
+   "titel": "Business Process Model and Notation",
+   "url": "https://de.wikipedia.org/wiki/Business_Process_Model_and_Notation",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:epk",
+   "titel": "Ereignisgesteuerte Prozesskette",
+   "url": "https://de.wikipedia.org/wiki/Ereignisgesteuerte_Prozesskette",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:normalisierung",
+   "titel": "Normalisierung (Datenbank)",
+   "url": "https://de.wikipedia.org/wiki/Normalisierung_(Datenbank)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:funktionale-abhangigkeit",
+   "titel": "Funktionale Abhängigkeit",
+   "url": "https://de.wikipedia.org/wiki/Funktionale_Abhängigkeit",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:referenzielle-integritat",
+   "titel": "Referentielle Integrität",
+   "url": "https://de.wikipedia.org/wiki/Referentielle_Integrität",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:etl",
+   "titel": "ETL-Prozess",
+   "url": "https://de.wikipedia.org/wiki/ETL-Prozess",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:data-warehouse",
+   "titel": "Data Warehouse",
+   "url": "https://de.wikipedia.org/wiki/Data-Warehouse",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:olap",
+   "titel": "Online Analytical Processing",
+   "url": "https://de.wikipedia.org/wiki/Online_Analytical_Processing",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:star-schema",
+   "titel": "Sternschema",
+   "url": "https://de.wikipedia.org/wiki/Sternschema",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:snowflake-schema",
+   "titel": "Schneeflockenschema",
+   "url": "https://de.wikipedia.org/wiki/Schneeflockenschema",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:process-mining",
+   "titel": "Process-Mining",
+   "url": "https://de.wikipedia.org/wiki/Process_Mining",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:six-sigma",
+   "titel": "Six Sigma",
+   "url": "https://de.wikipedia.org/wiki/Six_Sigma",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kaizen",
+   "titel": "Kaizen",
+   "url": "https://de.wikipedia.org/wiki/Kaizen",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:fmea",
+   "titel": "FMEA",
+   "url": "https://de.wikipedia.org/wiki/FMEA",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:ishikawa-diagramm",
+   "titel": "Ursache-Wirkungs-Diagramm",
+   "url": "https://de.wikipedia.org/wiki/Ishikawa-Diagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:sipoc",
+   "titel": "SIPOC",
+   "url": "https://de.wikipedia.org/wiki/SIPOC",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:k-means",
+   "titel": "k-Means-Algorithmus",
+   "url": "https://de.wikipedia.org/wiki/K-Means-Algorithmus",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:perzeptron",
+   "titel": "Perzeptron",
+   "url": "https://de.wikipedia.org/wiki/Perzeptron",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:overfitting",
+   "titel": "Überanpassung",
+   "url": "https://de.wikipedia.org/wiki/Überanpassung",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kreuzvalidierung",
+   "titel": "Kreuzvalidierungsverfahren",
+   "url": "https://de.wikipedia.org/wiki/Kreuzvalidierungsverfahren",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:konfusionsmatrix",
+   "titel": "Beurteilung eines binären Klassifikators",
+   "url": "https://de.wikipedia.org/wiki/Konfusionsmatrix",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:roc-kurve",
+   "titel": "ROC-Kurve",
+   "url": "https://de.wikipedia.org/wiki/Receiver_Operating_Characteristic",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:lastenheft",
+   "titel": "Lastenheft",
+   "url": "https://de.wikipedia.org/wiki/Lastenheft",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:pflichtenheft",
+   "titel": "Pflichtenheft",
+   "url": "https://de.wikipedia.org/wiki/Pflichtenheft",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:black-box-test",
+   "titel": "Black-Box-Test",
+   "url": "https://de.wikipedia.org/wiki/Black-Box-Test",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:white-box-test",
+   "titel": "White-Box-Test",
+   "url": "https://de.wikipedia.org/wiki/White-Box-Test",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:aquivalenzklasse",
+   "titel": "Äquivalenzklassentest",
+   "url": "https://de.wikipedia.org/wiki/Äquivalenzklassentest",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:mtbf",
+   "titel": "Mean Time Between Failures",
+   "url": "https://de.wikipedia.org/wiki/Mean_Time_Between_Failures",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:sla",
+   "titel": "Service-Level-Agreement",
+   "url": "https://de.wikipedia.org/wiki/Service-Level-Agreement",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:hochverfugbarkeit",
+   "titel": "Hochverfügbarkeit",
+   "url": "https://de.wikipedia.org/wiki/Hochverfügbarkeit",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:json",
+   "titel": "JSON",
+   "url": "https://de.wikipedia.org/wiki/JavaScript_Object_Notation",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:xml",
+   "titel": "Extensible Markup Language",
+   "url": "https://de.wikipedia.org/wiki/Extensible_Markup_Language",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:csv",
+   "titel": "CSV (Dateiformat)",
+   "url": "https://de.wikipedia.org/wiki/CSV_(Dateiformat)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:utf-8",
+   "titel": "UTF-8",
+   "url": "https://de.wikipedia.org/wiki/UTF-8",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:rest-api",
+   "titel": "Representational State Transfer",
+   "url": "https://de.wikipedia.org/wiki/Representational_State_Transfer",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:nosql",
+   "titel": "NoSQL",
+   "url": "https://de.wikipedia.org/wiki/NoSQL",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:use-case-diagramm",
+   "titel": "Anwendungsfalldiagramm",
+   "url": "https://de.wikipedia.org/wiki/Anwendungsfalldiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:klassendiagramm",
+   "titel": "Klassendiagramm",
+   "url": "https://de.wikipedia.org/wiki/Klassendiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:aktivitatsdiagramm",
+   "titel": "Aktivitätsdiagramm",
+   "url": "https://de.wikipedia.org/wiki/Aktivitätsdiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:sequnzdiagramm",
+   "titel": "Sequenzdiagramm",
+   "url": "https://de.wikipedia.org/wiki/Sequenzdiagramm",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:zustandsdiagramm",
+   "titel": "Zustandsdiagramm (UML)",
+   "url": "https://de.wikipedia.org/wiki/Zustandsdiagramm_(UML)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:transaktion",
+   "titel": "Transaktion (Informatik)",
+   "url": "https://de.wikipedia.org/wiki/Transaktion_(Informatik)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:acid",
+   "titel": "ACID",
+   "url": "https://de.wikipedia.org/wiki/ACID",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:index",
+   "titel": "Datenbankindex",
+   "url": "https://de.wikipedia.org/wiki/Datenbankindex",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:view",
+   "titel": "Sicht (Datenbank)",
+   "url": "https://de.wikipedia.org/wiki/Sicht_(Datenbank)",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:pseudonymisierung",
+   "titel": "Anonymisierung und Pseudonymisierung",
+   "url": "https://de.wikipedia.org/wiki/Pseudonymisierung",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:anonymisierung",
+   "titel": "Anonymisierung und Pseudonymisierung",
+   "url": "https://de.wikipedia.org/wiki/Anonymisierung_und_Pseudonymisierung",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:hashing",
+   "titel": "Kryptographische Hashfunktion",
+   "url": "https://de.wikipedia.org/wiki/Kryptographische_Hashfunktion",
+   "anbieter": "Wikipedia",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:abc-analyse",
+   "titel": "ABC Analyse",
+   "url": "https://studyflix.de/wirtschaft/abc-analyse-2316",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:ablauforganisation",
+   "titel": "Ablauforganisation: Definition, Beispiel",
+   "url": "https://studyflix.de/wirtschaft/ablauforganisation-1690",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:algorithmus",
+   "titel": "Algorithmus",
+   "url": "https://studyflix.de/informatik/algorithmus-4244",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:arithmetisches-mittel",
+   "titel": "Arithmetisches Mittel",
+   "url": "https://studyflix.de/statistik/arithmetisches-mittel-1508",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:asymmetrische-verschlusselung",
+   "titel": "Asymmetrische Verschlüsselung/Public Key Verfahren",
+   "url": "https://studyflix.de/informatik/asymmetrische-verschlusselung-1609",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:aufbauorganisation",
+   "titel": "Aufbauorganisation: Definition, Organigramme",
+   "url": "https://studyflix.de/wirtschaft/aufbauorganisation-1346",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:balanced-scorecard",
+   "titel": "Balanced Scorecard",
+   "url": "https://studyflix.de/wirtschaft/balanced-scorecard-1911",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:big-data",
+   "titel": "Big Data",
+   "url": "https://studyflix.de/informatik/big-data-4250",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:boxplot",
+   "titel": "Boxplot",
+   "url": "https://studyflix.de/statistik/boxplot-1044",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:crisp-dm",
+   "titel": "CRISP DM",
+   "url": "https://studyflix.de/informatik/crisp-dm-4299",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:data-lake",
+   "titel": "Data Lake",
+   "url": "https://studyflix.de/informatik/data-lake-4364",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:deep-learning",
+   "titel": "Deep Learning",
+   "url": "https://studyflix.de/informatik/deep-learning-8458",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:deflation",
+   "titel": "Deflation",
+   "url": "https://studyflix.de/wirtschaft/deflation-6006",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:eigentum",
+   "titel": "Eigentum",
+   "url": "https://studyflix.de/wirtschaft/eigentum-6601",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:einliniensystem",
+   "titel": "Einliniensystem: Definition, Aufbau und Beispiel",
+   "url": "https://studyflix.de/wirtschaft/einliniensystem-1344",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:erwartungswert",
+   "titel": "Erwartungswert einfach erklärt mit Beispielaufgaben",
+   "url": "https://studyflix.de/mathematik/erwartungswert-1648",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:firma",
+   "titel": "Firma",
+   "url": "https://studyflix.de/wirtschaft/firma-4769",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:fiskalpolitik",
+   "titel": "Fiskalpolitik einfach erklärt",
+   "url": "https://studyflix.de/wirtschaft/fiskalpolitik-7181",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:fixkosten",
+   "titel": "Fixkosten",
+   "url": "https://studyflix.de/wirtschaft/fixkosten-1493",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:formkaufmann",
+   "titel": "Formkaufmann",
+   "url": "https://studyflix.de/wirtschaft/formkaufmann-8484",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:gantt-diagramm",
+   "titel": "Gantt-Diagramm",
+   "url": "https://studyflix.de/wirtschaft/gantt-diagramm-659",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:garantie",
+   "titel": "Garantie",
+   "url": "https://studyflix.de/wirtschaft/garantie-7403",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:geometrisches-mittel",
+   "titel": "Geometrisches Mittel",
+   "url": "https://studyflix.de/statistik/geometrisches-mittel-1038",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:geschaftsfahigkeit",
+   "titel": "Geschäftsfähigkeit",
+   "url": "https://studyflix.de/wirtschaft/geschaeftsfaehigkeit-4991",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:gleichgewichtspreis",
+   "titel": "Gleichgewichtspreis",
+   "url": "https://studyflix.de/wirtschaft/gleichgewichtspreis-1895",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:gleitender-durchschnitt",
+   "titel": "Gleitender Durchschnitt",
+   "url": "https://studyflix.de/statistik/gleitender-durchschnitt-4971",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:handelsregister",
+   "titel": "Handelsregister",
+   "url": "https://studyflix.de/wirtschaft/handelsregister-7760",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:handlungsvollmacht",
+   "titel": "Handlungsvollmacht",
+   "url": "https://studyflix.de/wirtschaft/handlungsvollmacht-5512",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:histogramm",
+   "titel": "Histogramm",
+   "url": "https://studyflix.de/statistik/histogramm-1711",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:intervallskala",
+   "titel": "Intervallskala: Definition und Beispiele",
+   "url": "https://studyflix.de/statistik/intervallskala-1414",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:istkaufmann",
+   "titel": "Istkaufmann",
+   "url": "https://studyflix.de/wirtschaft/istkaufmann-8485",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:juristische-person",
+   "titel": "Juristische Person",
+   "url": "https://studyflix.de/wirtschaft/juristische-person-4531",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kanban-board",
+   "titel": "Kanban Board",
+   "url": "https://studyflix.de/wirtschaft/kanban-board-3486",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kannkaufmann",
+   "titel": "Kannkaufmann",
+   "url": "https://studyflix.de/wirtschaft/kannkaufmann-6154",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:konjunkturphasen",
+   "titel": "Konjunkturphasen: einfach erklärt",
+   "url": "https://studyflix.de/wirtschaft/konjunkturphasen-1795",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kreisdiagramm",
+   "titel": "Kreisdiagramme berechnen und zeichnen",
+   "url": "https://studyflix.de/statistik/kreisdiagramm-1873",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:kritische-menge",
+   "titel": "Kritische Menge",
+   "url": "https://studyflix.de/wirtschaft/kritische-menge-1954",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:logistische-regression",
+   "titel": "Logistische Regression",
+   "url": "https://studyflix.de/statistik/logistische-regression-2150",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:machine-learning",
+   "titel": "Machine Learning",
+   "url": "https://studyflix.de/informatik/machine-learning-4356",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:magisches-viereck",
+   "titel": "Das magische Viereck",
+   "url": "https://studyflix.de/wirtschaft/magisches-viereck-897",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:make-or-buy",
+   "titel": "Make or Buy",
+   "url": "https://studyflix.de/wirtschaft/make-or-buy-4718",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:marktformen",
+   "titel": "Marktformen",
+   "url": "https://studyflix.de/wirtschaft/marktformen-1492",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:matrixorganisation",
+   "titel": "Matrixorganisation: Definition, Aufbau und Beispiel",
+   "url": "https://studyflix.de/wirtschaft/matrixorganisation-1331",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:median",
+   "titel": "Median",
+   "url": "https://studyflix.de/statistik/median-2215",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:mehrliniensystem",
+   "titel": "Mehrliniensystem: Erklärung & Organigramme",
+   "url": "https://studyflix.de/wirtschaft/mehrliniensystem-1345",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:mittelwert",
+   "titel": "Mittelwert",
+   "url": "https://studyflix.de/statistik/mittelwert-6133",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:netzplan",
+   "titel": "Netzplan: einfach erklärt mit Beispiel",
+   "url": "https://studyflix.de/wirtschaft/netzplan-658",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:neuronale-netze",
+   "titel": "Neuronale Netze",
+   "url": "https://studyflix.de/informatik/neuronale-netze-4297",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:nominalskala",
+   "titel": "Nominalskala: Definition, Erklärung und Beispiele",
+   "url": "https://studyflix.de/statistik/nominalskala-1359",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:normalverteilung",
+   "titel": "Normalverteilung",
+   "url": "https://studyflix.de/mathematik/normalverteilung-1089",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:nullhypothese",
+   "titel": "Nullhypothese",
+   "url": "https://studyflix.de/statistik/nullhypothese-1586",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:nutzwertanalyse",
+   "titel": "Nutzwertanalyse: Erklärung und Beispiel",
+   "url": "https://studyflix.de/wirtschaft/nutzwertanalyse-315",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:o-notation",
+   "titel": "O-Notation",
+   "url": "https://studyflix.de/informatik/o-notation-6800",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:okonomisches-prinzip",
+   "titel": "Ökonomisches Prinzip: Definition |",
+   "url": "https://studyflix.de/wirtschaft/okonomisches-prinzip-1613",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:ordinalskala",
+   "titel": "Ordinalskala: Definition und Beispiele",
+   "url": "https://studyflix.de/statistik/ordinalskala-1327",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:p-wert",
+   "titel": "p Wert",
+   "url": "https://studyflix.de/statistik/p-wert-1585",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:pareto-prinzip",
+   "titel": "Pareto Prinzip",
+   "url": "https://studyflix.de/wirtschaft/pareto-prinzip-3898",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:phishing",
+   "titel": "Phishing",
+   "url": "https://studyflix.de/allgemeinwissen/phishing-7523",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:portfolioanalyse",
+   "titel": "Portfolioanalyse",
+   "url": "https://studyflix.de/wirtschaft/portfolioanalyse-5950",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:produktionsfaktoren",
+   "titel": "Produktionsfaktoren: einfache Erklärung",
+   "url": "https://studyflix.de/wirtschaft/produktionsfaktoren-1699",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:prokura",
+   "titel": "Prokura",
+   "url": "https://studyflix.de/wirtschaft/prokura-4807",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:prozentpunkte",
+   "titel": "Prozentpunkte",
+   "url": "https://studyflix.de/mathematik/prozentpunkte-5699",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:quartil",
+   "titel": "Quartil Definition und Berechnung",
+   "url": "https://studyflix.de/statistik/quartil-1628",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:quicksort",
+   "titel": "Quicksort",
+   "url": "https://studyflix.de/informatik/quicksort-1322",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:raid",
+   "titel": "RAID",
+   "url": "https://studyflix.de/informatik/raid-8057",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:rechtsfahigkeit",
+   "titel": "Rechtsfähigkeit",
+   "url": "https://studyflix.de/wirtschaft/rechtsfaehigkeit-5108",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:regression",
+   "titel": "Regression",
+   "url": "https://studyflix.de/statistik/regression-4814",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:relative-haufigkeit",
+   "titel": "Relative Häufigkeit",
+   "url": "https://studyflix.de/statistik/relative-haeufigkeit-4155",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:sachmangel",
+   "titel": "Sachmangel",
+   "url": "https://studyflix.de/wirtschaft/sachmangel-6737",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:smart-ziele",
+   "titel": "SMART Ziele",
+   "url": "https://studyflix.de/wirtschaft/smart-ziele-1464",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:soziale-marktwirtschaft",
+   "titel": "Soziale Marktwirtschaft",
+   "url": "https://studyflix.de/wirtschaft/soziale-marktwirtschaft-1857",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:stabliniensystem",
+   "titel": "Stabliniensystem",
+   "url": "https://studyflix.de/wirtschaft/stabliniensystem-8530",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:stakeholder",
+   "titel": "Stakeholder",
+   "url": "https://studyflix.de/wirtschaft/stakeholder-1617",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:stakeholderanalyse",
+   "titel": "Stakeholderanalyse",
+   "url": "https://studyflix.de/wirtschaft/stakeholderanalyse-6474",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:standardabweichung",
+   "titel": "Standardabweichung einfach erklärt",
+   "url": "https://studyflix.de/statistik/standardabweichung-1042",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:stichprobe",
+   "titel": "Stichprobe",
+   "url": "https://studyflix.de/statistik/stichprobe-4389",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:struktogramm",
+   "titel": "Struktogramm",
+   "url": "https://studyflix.de/informatik/struktogramm-5715",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:swot-analyse",
+   "titel": "SWOT-Analyse",
+   "url": "https://studyflix.de/wirtschaft/swot-analyse-234",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:symmetrische-verschlusselung",
+   "titel": "Symmetrische Verschlüsselung: Erklärung, Beispiel",
+   "url": "https://studyflix.de/informatik/symmetrische-verschlusselung-1610",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:tarifautonomie",
+   "titel": "Tarifautonomie",
+   "url": "https://studyflix.de/wirtschaft/tarifautonomie-6651",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:uberwachtes-lernen",
+   "titel": "Überwachtes Lernen",
+   "url": "https://studyflix.de/informatik/ueberwachtes-lernen-8445",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:unuberwachtes-lernen",
+   "titel": "Was ist unüberwachtes Lernen?",
+   "url": "https://studyflix.de/informatik/unueberwachtes-lernen-8507",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:v-modell",
+   "titel": "V-Modell",
+   "url": "https://studyflix.de/wirtschaft/v-modell-6716",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:variable-kosten",
+   "titel": "Was sind variable Kosten?",
+   "url": "https://studyflix.de/wirtschaft/variable-kosten-1512",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:varianz",
+   "titel": "Varianz (Stochastik)",
+   "url": "https://studyflix.de/statistik/varianz-2014",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:variationskoffizient",
+   "titel": "Variationskoeffizient: Berechnung mit Beispiel",
+   "url": "https://studyflix.de/statistik/variationskoeffizient-1043",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:verjahrung",
+   "titel": "Verjährung",
+   "url": "https://studyflix.de/wirtschaft/verjahrung-6477",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:wasserfallmodell",
+   "titel": "Wasserfallmodell",
+   "url": "https://studyflix.de/wirtschaft/wasserfallmodell-6748",
+   "anbieter": "Studyflix",
+   "art": "video",
+   "geprueft": "2026-10"
+  },
+  {
+   "ziel": "begriff:wirtschaftskreislauf",
+   "titel": "Wirtschaftskreislauf",
+   "url": "https://studyflix.de/wirtschaft/wirtschaftskreislauf-1755",
+   "anbieter": "Studyflix",
+   "art": "artikel",
+   "geprueft": "2026-10"
+  }
+ ]
+}

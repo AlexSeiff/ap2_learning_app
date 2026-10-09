@@ -1,4 +1,7 @@
+import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { quellenNachZiel } from '../../shared/quellen';
+import { QuellenListe } from '../components/Quellen';
 import { Markdown } from '../components/Markdown';
 import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
@@ -37,6 +40,7 @@ export function Themen() {
 export function Thema() {
   const { topicId } = useParams();
   const { content, progress, update } = useStore();
+  const quellen = useMemo(() => quellenNachZiel(content.quellen), [content.quellen]);
   const topic = content.topics.find((t) => t.id === topicId);
   useStelle(!!topic);
   if (!topic)
@@ -104,6 +108,7 @@ export function Thema() {
           <section key={s.id} id={s.id} className="theory">
             {s.level <= 1 ? <h2 className="part">{s.title}</h2> : s.level === 2 ? <h2>{s.title}</h2> : <h3>{s.title}</h3>}
             <TheoryMarkdown source={topic.file} markdown={s.markdown} prueferfragen={progress.settings.prueferfragen} />
+            <QuellenListe quellen={quellen.get(`abschnitt:${s.id}`) ?? []} />
           </section>
         ))}
         {!!topic.lernziele.length && (

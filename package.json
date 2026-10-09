@@ -16,7 +16,8 @@
     "import-report": "tsx server/report.ts",
     "sync-content": "tsx server/syncContent.ts",
     "mc-entwurf": "tsx server/mcEntwurf.ts",
-    "mc-uebernehmen": "tsx server/mcUebernehmen.ts"
+    "mc-uebernehmen": "tsx server/mcUebernehmen.ts",
+    "quellen-pruefen": "tsx server/quellenPruefen.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

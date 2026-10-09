@@ -34,6 +34,11 @@ export function Datenschutz() {
             </li>
           </>
         )}
+        <li>
+          Links zu Quellen (z. B. Studyflix, Wikipedia, Gesetzestexte) öffnen die fremde Seite in einem neuen Tab – erst dann gelten deren
+          Datenschutzregeln. Eingebettete YouTube-Videos laden erst nach einem Klick auf „Video laden“ und dann über youtube-nocookie.com;
+          vorher wird keine Verbindung zu YouTube oder Google aufgebaut.
+        </li>
       </ul>
     </section>
   );
