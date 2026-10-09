@@ -82,15 +82,30 @@ export function Karteikarten() {
             {runde.karte.art === 'automatisch' && (
               <span
                 className="badge auto"
-                title="Die falschen Antworten stammen von anderen Karten dieses Decks – nicht von Hand geschrieben."
+                title="Die falschen Antworten stammen von verwandten Begriffen bzw. ähnlichen Karten – nicht von Hand geschrieben."
               >
                 <Icon name="sparkles" /> automatisch
               </span>
             )}
             <span className="muted small">{card.id}</span>
           </div>
-          <Markdown className="fc-question">{card.question}</Markdown>
-          <LeichtOptionen optionen={runde.optionen} gewaehlt={runde.gewaehlt} onWaehle={waehle} tasten label="Antworten" />
+          {runde.frage ? (
+            <>
+              <p className="leicht-richtung">
+                <Icon name="rotate-ccw" /> Umgekehrt: Welcher Begriff ist gemeint?
+              </p>
+              <Markdown className="fc-question umgekehrt">{runde.frage}</Markdown>
+            </>
+          ) : (
+            <Markdown className="fc-question">{card.question}</Markdown>
+          )}
+          <LeichtOptionen
+            optionen={runde.optionen}
+            gewaehlt={runde.gewaehlt}
+            onWaehle={waehle}
+            tasten
+            label={runde.frage ? 'Begriffe' : 'Antworten'}
+          />
           {fertig && (
             <div className="fc-answer leicht-feedback" role="status">
               <p className={`verdict ${richtig ? 'ok' : 'bad'}`}>
@@ -99,11 +114,18 @@ export function Karteikarten() {
                   ? `Richtig! Die Karte kommt höchstens in Fach ${LEICHT_MAX_BOX}.`
                   : 'Leider falsch – die Karte kommt in dieser Runde noch einmal.'}
               </p>
-              {card.answer && (
+              {runde.frage ? (
                 <>
-                  <h4>Ganze Antwort</h4>
-                  <Markdown>{card.answer}</Markdown>
+                  <h4>Gesucht war</h4>
+                  <Markdown>{`**${card.question}**`}</Markdown>
                 </>
+              ) : (
+                card.answer && (
+                  <>
+                    <h4>Ganze Antwort</h4>
+                    <Markdown>{card.answer}</Markdown>
+                  </>
+                )
               )}
               {runde.karte.erklaerung && (
                 <>
@@ -266,8 +288,8 @@ export function Karteikarten() {
       {leichtModus && (
         <p className="hint">
           <Icon name="list-checks" /> {lz.mc + lz.automatisch} von {lz.gesamt} Karten dieser Auswahl haben 4 Antworten
-          {lz.automatisch > 0 && ` (${lz.automatisch} davon automatisch aus anderen Karten des Decks)`}. Leicht-Modus ist zum Einstieg – für
-          die Prüfung frei antworten: Mit 4 Antworten kommt eine Karte höchstens in Fach {LEICHT_MAX_BOX}.
+          {lz.automatisch > 0 && ` (${lz.automatisch} davon automatisch aus verwandten Begriffen und ähnlichen Karten)`}. Leicht-Modus ist
+          zum Einstieg – für die Prüfung frei antworten: Mit 4 Antworten kommt eine Karte höchstens in Fach {LEICHT_MAX_BOX}.
         </p>
       )}
       <details className="filter-box" open={filterOffen} onToggle={(e) => setFilterOffen(e.currentTarget.open)}>

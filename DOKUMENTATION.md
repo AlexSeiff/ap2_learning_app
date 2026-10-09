@@ -419,16 +419,34 @@ mode is meant as an entry point; the Dashboard shows "🟢 Leicht-Modus ist zum 
 - **Which cards** (`src/lib/leicht.ts`, `leichtKarten`, pure): a card with an `mc` block (§ 4.2) always (except Fachgespräch questions);
   otherwise, if `settings.leichtAutomatisch` is not `false`, **automatic** answers: Lernkarten of typ wissen/abgrenzung/falle/rechnung and
   Prüferfragen whose answer as option text (`optionText`: one line, no code fences/bold) has at most **`LEICHT_AUTO_MAX` = 200 characters**.
-  The three wrong answers are answers of other cards of the same deck (Prüferfragen: same topic): same typ first, then closest length,
-  a pool of up to 6 from which each round draws 3; only same-typ cards if there are at least 3, otherwise other cards of the deck fill up.
-  Equal answers (`mcNorm`) count once and never as wrong answers; fewer than 3 distinct → the card is not offered. Never: Fachgespräch,
-  `anwendung` without `mc`.
-  - **Deviation from the roadmap (120 characters):** with 120 only 4 of 407 cards would qualify (median answer length ~200), with 200 it is
-    **193 cards**: wissen 109, falle 37, rechnung 24, abgrenzung 19, Prüferfragen 4 (content October 2026, no card has `mc` yet).
+  **Selection of the wrong answers (plan phase 5, replaces "same deck, closest length"):** candidates are answers of other cards of the same
+  *kind* – Begriffskarten only among Begriffskarten, Prüferfragen only among Prüferfragen, other Lernkarten among themselves – and ranked in tiers:
+  1. **Curated** (Begriffskarten): the terms from the Begriffsseite's „Abgrenzung“ section (`Flashcard.abgrenzung`), then from „Siehe auch“
+     (`Flashcard.siehe`), also from other decks. Filled in at load time by `ergaenzeVerwandte` (`shared/verwandt.ts`, called in
+     `ladeInhalt`): names = header row and first column of the Abgrenzung tables plus bold words in its text, and the „Siehe auch“ names,
+     resolved to Begriffskarten via `namensSchluessel` of the card question or the page's „Auch“ variants. Also `Flashcard.abschnitt` = the
+     page's first „Mehr:“ reference. About 99 KB extra in `content.json` (uncompressed).
+  2. **Similar**: same kind in the same topic (no topic: same deck). Score = TF-IDF cosine of question + answer (`woerter`: lower case, no
+     umlauts, no stop words, cut to 7 chars; `tfidf`, `kosinus`, computed once per `leichtKarten` call, ~100 ms for all cards)
+     + 0.15 per shared *rare* tag (on ≤ 8 cards or 5 %; „fachbegriff“ does not count) + 0.15 same `abschnitt` + 0.05 same typ.
+     Length only as a fine sort (−0.05 · |ln(length ratio)|).
+  3. **Threshold**: a non-curated candidate needs `MIN_AEHNLICHKEIT` = 0.1. Answers too similar to the right one are dropped
+     (answer-only cosine ≥ 0.8 for Begriffskarten, ≥ 0.35 for other cards – another card's answer is also a true statement, and on the same
+     point, e.g. SQL-003 WHERE vs HAVING ↔ SQL-004 „Warum ist WHERE COUNT(*) falsch?“ at 0.39, it would hardly be wrong). Equal answers
+     (`mcNorm`) count once. Pool = the best 4, each round draws 3. Fewer than 3 → the card is not offered in Leicht.
+  Never: Fachgespräch, `anwendung` without `mc`.
+  - **Numbers (content October 2026, no card has `mc` yet):** Begriffskarten 773 → **768** of 789, other Lernkarten 213 → **84** of 539,
+    Prüferfragen 5 → **1**. Dropping the FIDPA cards is intended (plan: rather no card than obviously wrong answers); good hand-checked
+    answers for them come from `npm run mc-entwurf` (owner's decision). Sample of 50 cards before/after: `AP-2/Messung/MC_Vergleich_Phase5.md`.
+  - **Reverse direction** (Begriffskarten): `LeichtKarte.umgekehrt` = { frage: the definition (Markdown), richtig: the term, falsch: the terms of
+    the pool cards }. `leichtAbfrage(l, rng)` picks the direction per round and position (50 %); the page shows „Umgekehrt: Welcher Begriff ist
+    gemeint?“, the definition as the question, the terms as options, and „Gesucht war“ after answering. Rating as usual (`rateCardLeicht`).
+  - **Deviation from the roadmap (120 characters):** with 120 only 4 of 407 cards would qualify (median answer length ~200), so 200 is used.
 - **Karteikarten**: mode switch "🃏 Aufdecken | 🟢 Leicht (4 Antworten)". In Leicht, `useCardFilters` restricts `deck` (and the trap button,
   deck table, due/new counts) to supported cards and the page shows "🟢 x von y Karten dieser Auswahl haben 4 Antworten (z davon 🤖 automatisch)";
   the kind filter drops Fachgespräch, the typ filter shows the count per typ. Round (`useCardSession` with a `LeichtKarte` map): options
-  `kartenOptionen` (correct + 3 wrong, Fisher–Yates; the rng is seeded per round and position so re-renders keep the order), keys 1–4 or click,
+  `leichtAbfrage` → `kartenOptionen` (correct + 3 wrong, Fisher–Yates; the rng is seeded per round and position so re-renders keep the order and
+  the direction), keys 1–4 or click,
   immediate feedback (correct green, chosen wrong red), then the full `antwort` and the `mc.erklaerung`; "Weiter →" / Enter. Automatic cards
   carry the badge "🤖 automatisch". A wrong card comes back in the same round. Component `components/LeichtOptionen.tsx`.
 - **Leitner boxes** (`rateCardLeicht` in `src/lib/progress.ts`, owner decision Q5): correct → one box up but at most to box

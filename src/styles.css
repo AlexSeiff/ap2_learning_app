@@ -819,3 +819,8 @@ button.stern.nur-icon { padding: 4px 6px; flex: none; }
 .session-head button.stern kbd { margin-left: 2px; }
 .kpi-label .icon { width: 1em; height: 1em; vertical-align: -0.12em; }
 @media print { button.stern { display: none; } }
+
+/* Leicht-Modus umgekehrt (Umsetzungsplan Phase 5): Erklärung gegeben, Begriff gesucht */
+.leicht-richtung { margin: 0 0 4px; color: var(--muted); font-size: 0.88rem; font-weight: 600; }
+.leicht-richtung .icon { color: var(--accent); }
+.fc-question.umgekehrt { font-size: 1.05rem; font-weight: 500; }

@@ -5,11 +5,15 @@ import type { Flashcard } from '../shared/types';
 import { cardPool } from '../src/lib/cards';
 import {
   kartenOptionen,
+  kosinus,
   LEICHT_AUTO_MAX,
+  leichtAbfrage,
   leichtAutomatischAn,
   leichtKarten,
   leichtZahlen,
   optionText,
+  tfidf,
+  woerter,
   type LeichtKarte,
 } from '../src/lib/leicht';
 
@@ -29,6 +33,7 @@ const karte = (id: string, answer: string, extra: Partial<Flashcard> = {}): Flas
   question: `Frage ${id}`,
   answer,
   deckId: 'd',
+  topicId: '01',
   typ: 'wissen',
   tags: [],
   ...extra,
@@ -42,66 +47,170 @@ describe('optionText', () => {
 });
 
 describe('leichtKarten', () => {
-  const deck = [
-    karte('A', 'Antwort A'),
-    karte('B', 'Antwort B ist etwas länger'),
-    karte('C', 'Antwort C'),
-    karte('D', 'Antwort D'),
-    karte('E', 'x'.repeat(LEICHT_AUTO_MAX + 1)),
-    karte('F', 'Anwendung kurz', { typ: 'anwendung' }),
-    karte('G', 'Andere Gruppe', { deckId: 'g' }),
-    karte('FG', 'Fachgespräch', { kind: 'fachgespraech', deckId: undefined, typ: undefined }),
+  // Antworten mit gemeinsamen Fachwörtern – ähnlich genug für die Qualitätsschwelle.
+  const sql = [
+    karte('A', 'Filtert einzelne Zeilen einer Tabelle.', { question: 'Was macht WHERE in einer SQL-Abfrage?' }),
+    karte('B', 'Filtert Gruppen anhand von Aggregaten.', { question: 'Was macht HAVING in einer SQL-Abfrage?' }),
+    karte('C', 'Bildet Gruppen gleicher Werte.', { question: 'Was macht GROUP BY in einer SQL-Abfrage?' }),
+    karte('D', 'Sortiert das Ergebnis auf- oder absteigend.', { question: 'Was macht ORDER BY in einer SQL-Abfrage?' }),
+  ];
+  const fremd = [
+    karte('X1', 'Kündigungsschutz gilt nach sechs Monaten Betriebszugehörigkeit.'),
+    karte('X2', 'Die Probezeit dauert mindestens einen Monat.'),
+    karte('X3', 'Der Betriebsrat wird für vier Jahre gewählt.'),
   ];
 
-  it('automatisch: kurze Antworten mit 3 anderen aus demselben Deck; lange, anwendung, Fachgespräch und Einzelgänger nicht', () => {
-    const m = leichtKarten(deck, { automatisch: true });
-    expect([...m.keys()].sort()).toEqual(['A', 'B', 'C', 'D']);
+  it('ähnliche Karten desselben Themas: 3–4 Kandidaten, die richtige nie darunter', () => {
+    const m = leichtKarten([...sql, ...fremd], { automatisch: true });
     const a = m.get('A')!;
     expect(a.art).toBe('automatisch');
-    expect(a.richtig).toBe('Antwort A');
-    // Gleicher Typ reicht (3 andere wissen-Karten) → anwendung und die zu lange Antwort kommen nicht dazu
-    expect([...a.falsch].sort()).toEqual(['Antwort B ist etwas länger', 'Antwort C', 'Antwort D']);
+    expect(a.richtig).toBe(sql[0].answer);
+    expect([...a.falsch].sort()).toEqual([sql[1].answer, sql[2].answer, sql[3].answer].sort());
   });
 
-  it('gleicher Typ hat Vorrang; reicht er nicht, kommen andere Typen des Decks dazu', () => {
-    const m = leichtKarten([karte('A', 'a1'), karte('B', 'b1'), karte('C', 'c1'), karte('D', 'd1'), karte('X', 'x1', { typ: 'falle' })], {
-      automatisch: true,
-    });
-    expect(m.get('A')!.falsch).not.toContain('x1');
-    expect([...m.get('X')!.falsch].sort()).toEqual(['a1', 'b1', 'c1', 'd1']);
+  it('Qualitätsschwelle: ohne ähnliche Antworten fällt die Karte weg – auch wenn es 3 andere im Deck gibt', () => {
+    const m = leichtKarten([...sql, ...fremd], { automatisch: true });
+    expect([...m.keys()].sort()).toEqual(['A', 'B', 'C', 'D']);
+    // Ohne Schwelle hätten die fremden Karten Antworten bekommen (Test-Hebel minAehnlichkeit)
+    expect(leichtKarten([...sql, ...fremd], { automatisch: true, minAehnlichkeit: 0 }).has('X1')).toBe(true);
   });
 
-  it('gleiche Antworten zählen nur einmal und nie als falsche', () => {
-    const m = leichtKarten([karte('A', 'Gleich.'), karte('B', 'gleich'), karte('C', 'c'), karte('D', 'd')], { automatisch: true });
-    // A: die eigene Antwort „gleich“ fällt weg → nur c, d; C: „Gleich.“ und „gleich“ zählen einmal → nur 2 verschiedene
-    expect(m.size).toBe(0);
-    const mehr = leichtKarten([karte('A', 'Gleich.'), karte('B', 'gleich'), karte('C', 'c'), karte('D', 'd'), karte('E', 'e')], {
-      automatisch: true,
+  it('seltene gemeinsame Schlagworte zählen als Ähnlichkeit', () => {
+    const tag = (id: string, question: string, answer: string) => karte(id, answer, { question, tags: ['betriebsrat'] });
+    const mitTag = [
+      tag('T1', 'Wie oft wird gewählt?', 'Alle vier Jahre.'),
+      tag('T2', 'Ab welcher Größe?', 'Ab fünf Beschäftigten.'),
+      tag('T3', 'Wobei mitbestimmen?', 'Bei der Arbeitszeit.'),
+      tag('T4', 'Was gilt vor einer Kündigung?', 'Anhörung.'),
+    ];
+    const ohne = mitTag.map((c) => ({ ...c, tags: [] }));
+    expect(leichtKarten([...mitTag, ...sql], { automatisch: true }).has('T1')).toBe(true);
+    expect(leichtKarten([...ohne, ...sql], { automatisch: true }).has('T1')).toBe(false);
+  });
+
+  it('lange Antworten, anwendung, Fachgespräch und andere Themen nicht', () => {
+    const cards = [
+      ...sql,
+      karte('L', `WHERE Gruppierung Aggregatfunktionen ${'x'.repeat(LEICHT_AUTO_MAX)}`),
+      karte('F', 'WHERE filtert Zeilen vor der Gruppierung, ohne Aggregatfunktionen.', { typ: 'anwendung' }),
+      karte('FG', 'HAVING filtert Gruppen.', { kind: 'fachgespraech', deckId: undefined, typ: undefined }),
+      karte('Z', 'HAVING filtert Gruppen nach der Gruppierung.', { topicId: '02', deckId: 'z' }),
+    ];
+    const m = leichtKarten(cards, { automatisch: true });
+    expect([...m.keys()].sort()).toEqual(['A', 'B', 'C', 'D']);
+    const alleFalschen = [...m.values()].flatMap((l) => l.falsch);
+    expect(alleFalschen.some((f) => f.includes('xxxx'))).toBe(false);
+    expect(alleFalschen).not.toContain('HAVING filtert Gruppen.');
+    expect(alleFalschen).not.toContain('HAVING filtert Gruppen nach der Gruppierung.');
+    // anwendung-Antworten dürfen als falsche Antwort vorkommen, nur die Karte selbst bekommt keine automatischen
+  });
+
+  it('gleiche und zu ähnliche Antworten zählen nie als falsche', () => {
+    const doppelt = [...sql, karte('E', sql[0].answer!.toUpperCase()), karte('G', `${sql[1].answer} Beispiel: HAVING COUNT(*) > 1.`)];
+    const m = leichtKarten(doppelt, { automatisch: true });
+    expect(m.get('A')!.falsch.map(mcNorm)).not.toContain(mcNorm(sql[0].answer!));
+    expect(m.get('B')!.falsch.some((f) => f.includes('Beispiel: HAVING'))).toBe(false);
+  });
+
+  it('Begriffskarten: zuerst Abgrenzung, dann Siehe auch – auch ohne Wortähnlichkeit, aus anderen Decks; nur Begriffe als Antworten', () => {
+    const begriff = (id: string, frage: string, answer: string, extra: Partial<Flashcard> = {}) =>
+      karte(id, answer, { question: frage, typ: 'begriff', ...extra });
+    const cards = [
+      begriff('FB-having', 'HAVING', 'Filtert Gruppen nach der Gruppierung.', {
+        abgrenzung: ['FB-where'],
+        siehe: ['FB-group', 'FB-fenster'],
+      }),
+      begriff('FB-where', 'WHERE', 'Filtert einzelne Zeilen vorab.'),
+      begriff('FB-group', 'GROUP BY', 'Bildet Gruppen gleicher Werte.', { deckId: 'anderes', topicId: '07' }),
+      begriff('FB-fenster', 'Fensterfunktion', 'Rechnet über ein Fenster mit OVER.'),
+      begriff('FB-mut', 'Mutterschutz', 'Beschäftigungsverbot sechs Wochen vor der Geburt.'),
+      karte('SQL-1', 'HAVING filtert Gruppen nach der Gruppierung mit COUNT.'),
+    ];
+    const l = leichtKarten(cards, { automatisch: true }).get('FB-having')!;
+    expect(l.falsch).toEqual(['Filtert einzelne Zeilen vorab.', 'Bildet Gruppen gleicher Werte.', 'Rechnet über ein Fenster mit OVER.']);
+    expect(l.umgekehrt).toEqual({
+      frage: 'Filtert Gruppen nach der Gruppierung.',
+      richtig: 'HAVING',
+      falsch: ['WHERE', 'GROUP BY', 'Fensterfunktion'],
     });
-    expect([...mehr.get('A')!.falsch].sort()).toEqual(['c', 'd', 'e']);
-    expect(mehr.get('C')!.falsch.filter((f) => mcNorm(f) === 'gleich')).toHaveLength(1);
+    // WHERE hat keine verwandten Karten und keine ähnlichen → fällt weg
+    expect(leichtKarten(cards, { automatisch: true }).has('FB-where')).toBe(false);
   });
 
   it('mc-Block hat Vorrang und gilt auch ohne Automatik und für anwendung; nie für Fachgespräch', () => {
     const mc = { richtig: 'r', falsch: ['f1', 'f2', 'f3'] as [string, string, string], erklaerung: 'weil' };
-    const cards = [...deck, karte('M', 'x'.repeat(500), { typ: 'anwendung', mc }), karte('M2', 'kurz', { kind: 'fachgespraech', mc })];
+    const cards = [...sql, karte('M', 'x'.repeat(500), { typ: 'anwendung', mc }), karte('M2', 'kurz', { kind: 'fachgespraech', mc })];
     const ohne = leichtKarten(cards, { automatisch: false });
     expect([...ohne.keys()]).toEqual(['M']);
     expect(ohne.get('M')).toEqual({ art: 'mc', richtig: 'r', falsch: ['f1', 'f2', 'f3'], erklaerung: 'weil' });
     expect(leichtKarten(cards, { automatisch: true }).get('M')!.art).toBe('mc');
   });
 
-  it('Prüferfragen: andere Prüferfragen desselben Themas', () => {
-    const pf = (id: string, topicId: string) =>
-      karte(id, `Antwort ${id}`, { kind: 'prueferfrage', deckId: undefined, typ: undefined, topicId });
-    const m = leichtKarten([pf('P1', '01'), pf('P2', '01'), pf('P3', '01'), pf('P4', '01'), pf('Q1', '02')], { automatisch: true });
-    expect([...m.keys()]).toEqual(['P1', 'P2', 'P3', 'P4']);
+  it('Prüferfragen: nur andere Prüferfragen desselben Themas', () => {
+    const pf = (id: string, topicId: string, answer: string) =>
+      karte(id, answer, { kind: 'prueferfrage', deckId: undefined, typ: undefined, topicId });
+    const cards = [...sql.map((c, i) => pf(`P${i + 1}`, '01', c.answer!)), pf('Q1', '02', sql[0].answer!), ...sql];
+    const m = leichtKarten(cards, { automatisch: true });
+    expect([...m.keys()].filter((id) => /^[PQ]/.test(id)).sort()).toEqual(['P1', 'P2', 'P3', 'P4']);
+    expect([...m.get('P1')!.falsch].sort()).toEqual([sql[1].answer, sql[2].answer, sql[3].answer].sort());
   });
 
   it('Einstellung: fehlt = an', () => {
     expect(leichtAutomatischAn({})).toBe(true);
     expect(leichtAutomatischAn({ leichtAutomatisch: true })).toBe(true);
     expect(leichtAutomatischAn({ leichtAutomatisch: false })).toBe(false);
+  });
+});
+
+describe('Wortähnlichkeit', () => {
+  it('woerter: klein, ohne Umlaute und Stoppwörter, auf 7 Zeichen gekürzt', () => {
+    expect(woerter('Die Gruppierung über Aggregatfunktionen – ist für WHERE verboten!')).toEqual([
+      'gruppie',
+      'aggrega',
+      'where',
+      'verbote',
+    ]);
+  });
+
+  it('tfidf + kosinus: gleiche Texte 1, ohne gemeinsame Wörter 0, Wörter in allen Texten zählen nicht', () => {
+    const [a, b, c, d] = tfidf([
+      woerter('Zeilen filtern Gruppen'),
+      woerter('Zeilen filtern Gruppen'),
+      woerter('Zeilen Probezeit Monat'),
+      woerter('Zeilen Betriebsrat Wahl'),
+    ]);
+    expect(kosinus(a, b)).toBeCloseTo(1);
+    expect(kosinus(a, d)).toBe(0); // „Zeilen“ steht überall
+    expect(kosinus(c, d)).toBe(0);
+  });
+});
+
+describe('leichtAbfrage (Richtung)', () => {
+  const l: LeichtKarte = {
+    art: 'automatisch',
+    richtig: 'Definition',
+    falsch: ['d1', 'd2', 'd3'],
+    umgekehrt: { frage: '**Definition**', richtig: 'Begriff', falsch: ['B1', 'B2', 'B3'] },
+  };
+
+  it('Begriffskarten kommen etwa zur Hälfte umgekehrt, dann mit Begriffen als Antworten', () => {
+    let umgekehrt = 0;
+    for (let s = 1; s <= 200; s++) {
+      const a = leichtAbfrage(l, seeded(s));
+      expect(a.optionen).toHaveLength(4);
+      if (a.frage) {
+        umgekehrt++;
+        expect(a.frage).toBe('**Definition**');
+        expect(a.optionen.find((o) => o.richtig)!.text).toBe('Begriff');
+      } else expect(a.optionen.find((o) => o.richtig)!.text).toBe('Definition');
+    }
+    expect(umgekehrt).toBeGreaterThan(60);
+    expect(umgekehrt).toBeLessThan(140);
+  });
+
+  it('ohne `umgekehrt` immer vorwärts', () => {
+    const { umgekehrt: _u, ...vor } = l;
+    for (let s = 1; s <= 50; s++) expect(leichtAbfrage(vor, seeded(s)).frage).toBeUndefined();
   });
 });
 
@@ -131,9 +240,24 @@ describe('kartenOptionen', () => {
   it('mit dem echten Inhalt: jede unterstützte Karte bekommt 4 verschiedene Antworten', () => {
     const c = loadContent(CONTENT_DIR);
     const m = leichtKarten(c.flashcards, { automatisch: true });
-    expect(m.size).toBeGreaterThan(150);
+    expect(m.size).toBeGreaterThan(700);
     let s = 1;
-    for (const l of m.values()) pruefe(l, s++);
+    for (const l of m.values()) {
+      pruefe(l, s++);
+      if (l.umgekehrt) pruefe({ art: 'automatisch', ...l.umgekehrt }, s++);
+    }
+  });
+
+  it('mit dem echten Inhalt: HAVING bekommt zuerst WHERE als falsche Antwort, Begriffskarten fast alle (Umsetzungsplan Phase 5)', () => {
+    const c = loadContent(CONTENT_DIR);
+    const m = leichtKarten(c.flashcards, { automatisch: true });
+    const def = (id: string) => optionText(c.flashcards.find((x) => x.id === id)!.answer!);
+    const having = m.get('FB-having')!;
+    expect(having.falsch[0]).toBe(def('FB-where'));
+    expect(having.umgekehrt?.falsch).toContain('WHERE');
+    expect(having.umgekehrt?.falsch).toContain('GROUP BY');
+    const begriffe = c.flashcards.filter((x) => x.typ === 'begriff');
+    expect(begriffe.filter((x) => m.has(x.id)).length).toBeGreaterThan(begriffe.length * 0.9);
   });
 });
 
@@ -147,9 +271,16 @@ describe('leichtZahlen (Filteranzeige)', () => {
   });
 
   it('ausgeschaltete Prüferfragen fallen auch im Leicht-Modus weg', () => {
-    const pf = (id: string) => karte(id, `Antwort ${id}`, { kind: 'prueferfrage', deckId: undefined, typ: undefined, topicId: '01' });
-    const cards = [pf('P1'), pf('P2'), pf('P3'), pf('P4'), karte('A', 'a'), karte('B', 'b'), karte('C', 'c'), karte('D', 'd')];
+    const sql = [
+      karte('A', 'Filtert einzelne Zeilen einer Tabelle.', { question: 'Was macht WHERE in einer SQL-Abfrage?' }),
+      karte('B', 'Filtert Gruppen anhand von Aggregaten.', { question: 'Was macht HAVING in einer SQL-Abfrage?' }),
+      karte('C', 'Bildet Gruppen gleicher Werte.', { question: 'Was macht GROUP BY in einer SQL-Abfrage?' }),
+      karte('D', 'Sortiert das Ergebnis auf- oder absteigend.', { question: 'Was macht ORDER BY in einer SQL-Abfrage?' }),
+    ];
+    const pf = (c: Flashcard, i: number): Flashcard => ({ ...c, id: `P${i + 1}`, kind: 'prueferfrage', deckId: undefined, typ: undefined });
+    const fremd = [karte('X1', 'Nach sechs Monaten.'), karte('X2', 'Mindestens einen Monat.'), karte('X3', 'Für vier Jahre.')];
+    const cards = [...sql.map(pf), ...sql, ...fremd];
     const pool = cardPool(cards, { prueferfragen: false, fachgespraech: true });
-    expect(leichtZahlen(pool, leichtKarten(pool, { automatisch: true }))).toEqual({ gesamt: 4, mc: 0, automatisch: 4 });
+    expect(leichtZahlen(pool, leichtKarten(pool, { automatisch: true }))).toEqual({ gesamt: 7, mc: 0, automatisch: 4 });
   });
 });

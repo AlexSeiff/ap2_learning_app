@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { namensSchluessel, parseBegriffsseiten, pruefeBegriffsseiten } from '../shared/begriffsseiten';
 import { buildContent } from '../shared/parser';
+import { ergaenzeVerwandte } from '../shared/verwandt';
 import type { BegriffsSeite, Content } from '../shared/types';
 import { baueGlossar, ueberschriftKern } from '../src/lib/glossar';
 import { ergaenzeGlossarThema } from '../src/lib/glossarThema';
@@ -77,6 +78,8 @@ export function ladeInhalt(dir = SOURCE_DIR): Inhalt {
     ]);
     content.issues.push(...pruefeBegriffsseiten(seiten, new Set(glossar.map((e) => e.id)), weitere));
     content.begriffe = seiten.map((s) => ({ id: s.id, begriff: s.begriff, ...(s.auch ? { auch: s.auch } : {}) }));
+    // Leicht-Modus (Umsetzungsplan Phase 5): verwechselbare Begriffe aus „Abgrenzung“ und „Siehe auch“ an die Begriffskarten.
+    content.flashcards = ergaenzeVerwandte(content.flashcards, seiten);
   }
   // Thema „Glossar & Diagramme“: Platzhalter durch das aktuelle Glossar A–Z ersetzen (src/lib/glossarThema.ts).
   ergaenzeGlossarThema(content);

@@ -33,6 +33,15 @@ export interface Flashcard {
   tags?: string[];
   /** Geprüfter Block „mc“ aus der Datei (Leicht-Modus); fehlt er, kann der Leicht-Modus automatische Antworten nutzen. */
   mc?: KartenMc;
+  /**
+   * Nur Begriffskarten mit Begriffsseite (beim Laden ergänzt, shared/verwandt.ts): ids der Begriffskarten, gegen die der Begriff im
+   * Abschnitt „Abgrenzung“ abgegrenzt wird – die besten falschen Antworten im Leicht-Modus (Umsetzungsplan Phase 5).
+   */
+  abgrenzung?: string[];
+  /** Wie `abgrenzung`, aber aus „Siehe auch“ (ohne die schon in `abgrenzung` genannten) – zweitbeste falsche Antworten. */
+  siehe?: string[];
+  /** Nur Begriffskarten mit Begriffsseite: erste „Mehr:“-Angabe der Seite (z. B. „Deep Dive 1, 2.1“). */
+  abschnitt?: string;
 }
 
 export interface Deck {

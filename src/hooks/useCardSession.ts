@@ -4,7 +4,7 @@ import type { Rating } from '../../shared/progress';
 import type { Flashcard } from '../../shared/types';
 import { cardPool, filterCards, isKindEnabled, readCardFilter, withCardFilter, type CardFilter } from '../lib/cards';
 import { markierteIds } from '../lib/markiert';
-import { kartenOptionen, leichtAutomatischAn, leichtKarten, type LeichtKarte, type LeichtOption } from '../lib/leicht';
+import { leichtAbfrage, leichtAutomatischAn, leichtKarten, type LeichtKarte, type LeichtOption } from '../lib/leicht';
 import { rateCard, rateCardLeicht } from '../lib/progress';
 import { shuffle } from '../lib/shuffle';
 import { useStore } from '../lib/store';
@@ -57,6 +57,8 @@ export function useCardFilters() {
 export interface LeichtRunde {
   karte: LeichtKarte;
   optionen: LeichtOption[];
+  /** Umgekehrte Abfrage einer Begriffskarte: die gegebene Erklärung (Markdown); gesucht ist dann der Begriff. */
+  frage?: string;
   gewaehlt: number | null;
 }
 
@@ -92,12 +94,17 @@ export function useCardSession() {
 
   const card = session?.[index];
   const leichtKarte = card && leicht?.get(card.id);
-  // Gemischt je Runde und Position (eine wiederholte Karte kommt anders gemischt), beim erneuten Rendern gleich.
-  const optionen = useMemo(
-    () => (leichtKarte ? kartenOptionen(leichtKarte, erzeugeZufall(rundenSeed + index).zahl) : null),
+  // Gemischt (und bei Begriffskarten die Richtung gewählt) je Runde und Position – eine wiederholte Karte kommt anders, beim erneuten
+  // Rendern gleich.
+  const abfrage = useMemo(
+    () => (leichtKarte ? leichtAbfrage(leichtKarte, erzeugeZufall(rundenSeed + index).zahl) : null),
     [leichtKarte, rundenSeed, index],
   );
-  const runde: LeichtRunde | null = leichtKarte && optionen ? { karte: leichtKarte, optionen, gewaehlt } : null;
+  const optionen = abfrage?.optionen ?? null;
+  const runde: LeichtRunde | null =
+    leichtKarte && abfrage
+      ? { karte: leichtKarte, optionen: abfrage.optionen, ...(abfrage.frage ? { frage: abfrage.frage } : {}), gewaehlt }
+      : null;
 
   const next = useCallback(() => {
     setIndex((i) => i + 1);

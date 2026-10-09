@@ -133,8 +133,10 @@ export function Einstellungen() {
             </b>
             <br />
             <span className="hint">
-              Karten ohne eigene Auswahlantworten bekommen Antworten anderer Karten desselben Decks als falsche Antworten (markiert mit
-              „automatisch“). Aus: nur Karten mit geprüften Auswahlantworten.
+              Karten ohne eigene Auswahlantworten bekommen Antworten anderer Karten als falsche Antworten (markiert mit „automatisch“): bei
+              Fachbegriffen die Begriffe, mit denen sie oft verwechselt werden (aus „Abgrenzung“ und „Siehe auch“ der Begriffsseite), sonst
+              ähnliche Karten zum selben Thema. Passt nichts gut genug, bleibt die Karte im Leicht-Modus weg. Fachbegriffe kommen auch
+              umgekehrt: Erklärung gegeben, welcher Begriff ist gemeint? Aus: nur Karten mit geprüften Auswahlantworten.
             </span>
           </span>
         </label>
