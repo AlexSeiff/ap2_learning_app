@@ -212,7 +212,10 @@ export function pruefeDiagrammUebung(u: DiagrammUebung): string[] {
     }
   }
   // Ablenker müssen nicht verwendet werden – aber jede Lösung muss sich ohne Doppelbelegung erreichen lassen.
-  const einfach = (b: Belegung) => Object.values(b).filter((e) => e.length === 1 && !palette.get(e[0])?.mehrfach).map((e) => e[0]);
+  const einfach = (b: Belegung) =>
+    Object.values(b)
+      .filter((e) => e.length === 1 && !palette.get(e[0])?.mehrfach)
+      .map((e) => e[0]);
   for (const b of [u.loesung, ...u.varianten]) {
     const eindeutig = einfach(b);
     if (new Set(eindeutig).size !== eindeutig.length) fehler.push('ein einfaches Element ist in der Lösung mehrfach eingeplant');
@@ -352,11 +355,17 @@ export function formregeln(u: DiagrammUebung, eingesetzt: Eingesetzt): string[] 
         for (const n of raus(k.id)) {
           const g = form.get(n);
           if ((g === 'xor' || g === 'or') && raus(n).length > 1) {
-            meldungen.add('Nach einem Ereignis darf kein XOR- oder OR-Split folgen – ein Ereignis kann nicht entscheiden, das tut die Funktion davor.');
+            meldungen.add(
+              'Nach einem Ereignis darf kein XOR- oder OR-Split folgen – ein Ereignis kann nicht entscheiden, das tut die Funktion davor.',
+            );
           }
         }
       }
-      if ((rein(k.id).length === 0 || raus(k.id).length === 0) && f === 'funktion' && fluss.some((e) => e.von === k.id || e.nach === k.id)) {
+      if (
+        (rein(k.id).length === 0 || raus(k.id).length === 0) &&
+        f === 'funktion' &&
+        fluss.some((e) => e.von === k.id || e.nach === k.id)
+      ) {
         meldungen.add('Eine EPK beginnt und endet mit einem Ereignis.');
       }
     }

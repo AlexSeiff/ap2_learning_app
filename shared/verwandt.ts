@@ -34,7 +34,10 @@ export function abgrenzungsNamen(markdown: string): string[] {
     }
     tabellenZeile++;
     if (/^\|[\s:|-]+\|$/.test(t)) continue; // Trennzeile |---|---|
-    const zellen = t.replace(/^\||\|$/g, '').split('|').map(klar);
+    const zellen = t
+      .replace(/^\||\|$/g, '')
+      .split('|')
+      .map(klar);
     if (tabellenZeile === 1) namen.push(...zellen);
     else if (zellen[0]) namen.push(zellen[0]);
   }

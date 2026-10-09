@@ -2,7 +2,15 @@
 // So lässt sich zwischen Handy und PC umziehen, ohne dass eine Seite verloren geht.
 // Beide Stände müssen schon migriert sein (migrateProgress bzw. parseBackup).
 
-import { PROGRESS_VERSION, type Attempt, type CardState, type ExamRun, type JournalEntry, type Markierung, type Progress } from './progress';
+import {
+  PROGRESS_VERSION,
+  type Attempt,
+  type CardState,
+  type ExamRun,
+  type JournalEntry,
+  type Markierung,
+  type Progress,
+} from './progress';
 
 /** Zeitpunkt als Zahl zum Vergleichen; fehlend oder ungültig = ganz früh. */
 const time = (v: string | undefined) => {
