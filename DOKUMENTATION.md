@@ -321,10 +321,10 @@ AI-generated tasks (`data/`) never go into the Pages build.
 
 | Route | Page | What it does |
 |---|---|---|
-| `/` | Dashboard | Button "▶ Heute lernen" (§ 5 "Heute lernen"). Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, Rechenübungen KPI ("x/y gelöst", due repetitions), average exam score + IHK grade, progress and exam trend per topic, weakest topics, "🎯 Selbsteinschätzung" (calibration, § 5 phase 8.3) |
+| `/` | Dashboard | Button "▶ Heute lernen" (§ 5 "Heute lernen"). Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, Rechenübungen KPI ("x/y gelöst", due repetitions), tile "Markiert (n)" → `/karteikarten?markiert=1` (plan phase 4), average exam score + IHK grade, progress and exam trend per topic, weakest topics, "🎯 Selbsteinschätzung" (calibration, § 5 phase 8.3) |
 | `/heute` | Heute lernen | lazy page: plan of today's mixed round, start, progress, skip, end (§ 5 "Heute lernen") |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
-| `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below); optional "✍️ Deine Antwort" field (8.2); `?karten=ID,ID,…` = exactly these cards (used by "Heute lernen"); "📖 Durchblättern" (`?blaettern=1`, `KartenBlaettern`): all filtered cards (`alle`, also in Leicht-Modus) one by one, ←/→ or swipe, Space flip, Esc end, options "gemischt" and "Antwort gleich zeigen", slider to jump – no rating, progress untouched (`tests/blaettern.test.ts`) |
+| `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below); optional "✍️ Deine Antwort" field (8.2); `?karten=ID,ID,…` = exactly these cards (used by "Heute lernen"); "📖 Durchblättern" (`?blaettern=1`, `KartenBlaettern`): all filtered cards (`alle`, also in Leicht-Modus) one by one, ←/→ or swipe, Space flip, Esc end, options "gemischt" and "Antwort gleich zeigen", slider to jump – no rating, progress untouched (`tests/blaettern.test.ts`); **marking** (plan phase 4): star button `MarkierStern` in the session head of all three card views (outside the clickable card, so no nested controls), key `M`, filter checkbox "Nur markierte (n)" (`?markiert=1`, combines with all other filters and Leicht) |
 | `/klausur`, `/klausur/:topicId` | Übungsklausur | 90-min timer (`aria-live` announcements), attachments, "Wie sicher bist du?" per task (8.3), operators marked (8.4), solutions locked until submission, self-assessment with criteria checkboxes, "Woran lag's?" below full points (8.7), IHK grade, auto-submit on timeout, resumable (`activeExam`). Card "🎲 Gemischte Probeklausur" on `/klausur`; `:topicId` can also be `mix-<bereich>-<seed>` (8.5) |
 | `/aufgaben`, `/aufgabe/:taskId` | Einzelaufgaben | filter by topic/block/difficulty/status/search; export a selection as task sheet/solution sheet; task page asks "Wie sicher bist du?" before submitting (8.3) and "Woran lag's?" below full points (8.7); operators in task texts are marked (8.4) |
 | `/druck` | Druck | print view (task sheet or solution sheet, same numbering) → "Als PDF speichern"; also Markdown download |
@@ -335,7 +335,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | `/material`, `/material/:docId` | Material | cheat sheet, topic list, tiles "📏 Formelsammlung" and "🗣️ Operatoren-Trainer" |
 | `/material/operatoren` | Operatoren-Trainer | lazy page: quiz "Was verlangt der Operator hier?" with real tasks, table of all operators (§ 5 phase 8.4) |
 | `/glossar` (old `/material/glossar` redirects, keeps `?stelle=`) | Glossar | lazy page: terms A–Z from `begriff` and `wissen` cards and bold terms of the sheets, letter jump bar, filter, links to the sources; terms with a term page link to it (§ 5 phase 8.9, plan phase 3) |
-| `/glossar/:id` | Begriff | lazy term page (plan phase 3): definition, Erklärung, Beispiel, Abgrenzung, Prüfungsfalle, Merksatz, diagrams; „Siehe auch“, „Üben“ (cards, tasks, Rechen- and SQL-Übungen), „Nachlesen“ |
+| `/glossar/:id` | Begriff | lazy term page (plan phase 3): definition, Erklärung, Beispiel, Abgrenzung, Prüfungsfalle, Merksatz, diagrams; „Siehe auch“, „Üben“ (cards, tasks, Rechen- and SQL-Übungen), „Nachlesen“; star "Karte markieren" next to the h1 for the term's own card (`uebungen.begriffskarte`) and an icon-only star before every card in „Üben“ |
 | (dialog) | Suche | `Strg+K` / `⌘K`, search button in the header (Kopfleiste): global search, lazy (§ 5 phase 8.8) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links) |
 | `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides) |
@@ -721,11 +721,11 @@ applied in `main.tsx` before the first render), error boundary per route, own co
 
 ## 6. Progress (persisted data)
 
-Defined in `shared/progress.ts`, **`PROGRESS_VERSION = 6`**.
+Defined in `shared/progress.ts`, **`PROGRESS_VERSION = 7`**.
 
 ```ts
 type Progress = {
-  version: 6;
+  version: 7;
   revision: number;                        // bumped on every save; stale tab → 409 (v2)
   attempts: Attempt[];                     // task attempts (taskId, points, max, date, mode, sicherheit?)
   exams: ExamRun[]; activeExam?: ExamRun;
@@ -738,7 +738,10 @@ type Progress = {
   rechnen: Record<string, RechenState>;    // Rechenübungen per exercise id (v6)
   rechnenDays: Record<string, number>;     // checked Rechenübungen per day, for the streak (v6)
   settings: Settings;                      // per-user settings, part of the backup (v5)
+  markiert: Record<string, Markierung>;    // marked flashcards by card id (v7)
 };
+
+type Markierung = { an: boolean; am: string }; // am = ISO timestamp of the last change; unmarking keeps the entry with an: false
 
 type Attempt = {
   taskId: string; date: string; points: number; max: number; mode: 'klausur' | 'einzel' | 'wiederholung';
@@ -774,7 +777,7 @@ type Settings = {
 **Safety rules (all implemented, keep them):**
 - `checkProgressPut` validates with zod, rejects a strong drop in `attempts` unless `reset: true` (reset button, backup restore),
   and rejects a stale `revision` with 409. Same rules on the server and in `staticApi.ts`.
-- `migrateProgress(raw)` runs versioned `MIGRATIONS` (1→2 revision, 2→3 cardReviewDays, 3→4 sql/sqlDays, 4→5 settings, 5→6 rechnen/rechnenDays) and fills missing fields.
+- `migrateProgress(raw)` runs versioned `MIGRATIONS` (1→2 revision, 2→3 cardReviewDays, 3→4 sql/sqlDays, 4→5 settings, 5→6 rechnen/rechnenDays, 6→7 markiert) and fills missing fields.
   `migrateSettings` fills defaults, drops an invalid `examDate`/`lastBackupDownloadAt` and keeps unknown fields.
   `lastBackupDownloadAt` was added without a version bump: it is optional, `SettingsSchema` is a loose object with all fields optional
   and `migrateSettings` already kept unknown fields, so every v5 file (old or new) is valid and nothing needs converting.
@@ -789,6 +792,11 @@ type Settings = {
   `checkProgressPut` (`z.enum`); `PROGRESS_VERSION` stays **6**. Tested with the v6 fixture (which has no `fehlergrund`). Phases 8.5, 8.6, 8.8 and
   8.9 need no format change (mixed exam id in `topicId`; example stage from `RechenState`; search and glossary are derived data).
   Adding a **required** field or changing a meaning still needs a version bump.
+  **Plan phase 4 (version 7):** `markiert` is a required collection, so it got a real bump (6→7, starts empty). It is deliberately **not** a
+  field of `CardState`: a `CardState` means "already learned" (`!progress.cards[id]` = new card in Karteikarten, Heute, Dashboard), and marking
+  must not change scheduling. `migrateMarkierung` drops entries without boolean `an` / string `am` and keeps unknown fields; `MarkierungSchema`
+  is a loose object. Pure helpers in `src/lib/markiert.ts` (`istMarkiert`, `setzeMarkierung`, `wechsleMarkierung`, `markierteIds`).
+  Fixture `tests/fixtures/fortschritt-v7-2026-10-09.json`; tests in `tests/markiert.test.ts` and `tests/markierenSeiten.test.ts`.
   Not in `Progress`: the "Heute lernen" session (`localStorage` `ap2-heute`, per day and device, § 5) and the "Deine Antwort" text (not stored).
   Backup files are read with `parseBackup` (`src/lib/backup.ts`, used by Daten & Import and the welcome screen).
   **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`, one per version).
@@ -817,6 +825,7 @@ type Settings = {
   - `cards`: `CardState` has no date → more `reviews` wins, then later `due`.
   - `sql`, `rechnen`: newer `lastCheckedAt` wins (then more attempts/hints); the earliest `solvedAt` of both sides is kept.
   - `journal`: entry of the side with the newer attempt for that task (from `attempts`); tie → higher `stage`, then later `due`.
+  - `markiert`: per card the newer action by `am` (marking or unmarking), tie → current state; so an unmarked card does not come back.
   - `lernziele`: true on either side wins. `cardReviewDays` / `sqlDays` / `rechnenDays`: max per day (not the sum – shared history would count twice).
   - `settings`, `revision`, unknown fields: from the current state. Keeping the current revision (the saver sends its own base revision anyway)
     and never dropping attempts means the following normal PUT (no `reset`) passes `checkProgressPut`.

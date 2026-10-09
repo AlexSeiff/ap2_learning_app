@@ -75,6 +75,7 @@ describe('Karteikarten-Filter', () => {
       art: 'alle',
       typ: 'falle',
       stufe: 'alle',
+      markiert: 'alle',
     });
   });
 
@@ -90,5 +91,17 @@ describe('Karteikarten-Filter', () => {
     expect(ids('thema=01&art=prueferfrage')).toEqual(['c']);
     expect(ids('stufe=2')).toEqual(['b']);
     expect(ids('deck=d1&typ=falle')).toEqual(['a']);
+  });
+
+  it('„Nur markierte“ (?markiert=1) lässt sich mit den anderen Filtern kombinieren', () => {
+    const markiert = new Set(['a', 'c']);
+    const ids = (q: string) => filterCards(cards, readCardFilter(new URLSearchParams(q)), markiert).map((c) => c.id);
+    expect(ids('markiert=1')).toEqual(['a', 'c']);
+    expect(ids('markiert=1&thema=01&art=prueferfrage')).toEqual(['c']);
+    expect(ids('markiert=1&typ=wissen')).toEqual([]);
+    // ohne die Menge der markierten Karten bleibt nichts übrig; andere Werte als 1 gelten als „alle“
+    expect(filterCards(cards, readCardFilter(new URLSearchParams('markiert=1'))).map((c) => c.id)).toEqual([]);
+    expect(ids('markiert=ja')).toEqual(['a', 'b', 'c']);
+    expect(withCardFilter(new URLSearchParams('markiert=1&typ=falle'), { markiert: 'alle' }).toString()).toBe('typ=falle');
   });
 });

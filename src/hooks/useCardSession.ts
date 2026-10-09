@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import type { Rating } from '../../shared/progress';
 import type { Flashcard } from '../../shared/types';
 import { cardPool, filterCards, isKindEnabled, readCardFilter, withCardFilter, type CardFilter } from '../lib/cards';
+import { markierteIds } from '../lib/markiert';
 import { kartenOptionen, leichtAutomatischAn, leichtKarten, type LeichtKarte, type LeichtOption } from '../lib/leicht';
 import { rateCard, rateCardLeicht } from '../lib/progress';
 import { shuffle } from '../lib/shuffle';
@@ -25,6 +26,7 @@ export function useCardFilters() {
   const set = (changes: Partial<CardFilter>) => setParams(withCardFilter(params, changes), { replace: true });
   const pool = useMemo(() => cardPool(content.flashcards, { prueferfragen, fachgespraech }), [content, prueferfragen, fachgespraech]);
   const leicht = useMemo(() => leichtKarten(pool, { automatisch }), [pool, automatisch]);
+  const markiert = useMemo(() => markierteIds(progress), [progress]);
   // ?karten=ID,ID,… (aus „Heute lernen“): genau diese Karten, die übrigen Filter gelten dann nicht.
   const auswahlParam = params.get('karten');
   const alle = useMemo(() => {
@@ -32,8 +34,8 @@ export function useCardFilters() {
       const ids = new Set(auswahlParam.split(',').filter(Boolean));
       return pool.filter((c) => ids.has(c.id));
     }
-    return filterCards(pool, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe });
-  }, [pool, auswahlParam, f.thema, f.deck, f.art, f.typ, f.stufe]);
+    return filterCards(pool, { thema: f.thema, deck: f.deck, art: f.art, typ: f.typ, stufe: f.stufe, markiert: f.markiert }, markiert);
+  }, [pool, auswahlParam, f.thema, f.deck, f.art, f.typ, f.stufe, f.markiert, markiert]);
   const deck = useMemo(() => (leichtModus ? alle.filter((c) => leicht.has(c.id)) : alle), [alle, leicht, leichtModus]);
   // ?von=suche: die Auswahl kommt aus der globalen Suche (ROADMAP 8.8), nicht aus „Heute lernen“.
   return {
@@ -44,6 +46,7 @@ export function useCardFilters() {
     pool,
     leicht,
     leichtModus,
+    markiert,
     auswahl: auswahlParam !== null,
     ausSuche: params.get('von') === 'suche',
     vonBegriff: params.get('von') === 'begriff',

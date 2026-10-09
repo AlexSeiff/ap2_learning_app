@@ -80,7 +80,7 @@ Hinweis „Neu laden“ klicken (oder in den Entwicklertools *Application → Se
 | **Übersicht** | Beim ersten Besuch eine kurze Willkommensseite; danach Countdown zu deinem Prüfungstermin (unter *Einstellungen* eintragen), Lernserie (Tage in Folge), fällige Wiederholungen, Fortschritt je Thema, Klausur-Trend je Thema, schwächste Themen |
 | **Lernen** | Theorie aller 16 Deep Dives mit Inhaltsverzeichnis und abhakbarem Lernziel-Check, dazu **Deep Dive 17 „Glossar & Diagramme“**: jeder Diagrammtyp (BPMN, EPK, UML, ER, Star-Schema, PAP, Struktogramm, Netzplan, Gantt, Boxplot, ROC …) als gezeichnetes Beispiel und alle Fachbegriffe von A bis Z |
 | **Glossar & Begriffsseiten** | Alle 1.135 Fachbegriffe von A bis Z; zu 1.003 Begriffen eine eigene **Begriffsseite** mit Definition, Erklärung, Beispiel, Abgrenzung, Prüfungsfalle, Merksatz und oft einer Grafik – dazu „Siehe auch“, die passenden Karteikarten, Aufgaben, Rechen- und SQL-Übungen und die Stelle im Lernblatt zum Nachlesen. Die **Suche** führt immer zuerst zur Begriffsseite |
-| **Karteikarten** | 539 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (25 Decks) und 789 **Begriffskarten** aus `AP2_Fachbegriffe_Lernkarten.json` (16 Decks, je Deep Dive; Vorderseite Fachbegriff, Rückseite kurze Erklärung; Filter Typ „Fachbegriff“) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; **Durchblättern** (Karten nur ansehen, ←/→ oder wischen, ohne Bewertung); Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten); **Leicht-Modus** mit 4 Antworten zum Einstieg (Tasten `1`–`4`, richtig bringt eine Karte höchstens in Fach 2) |
+| **Karteikarten** | 539 Lernkarten aus `AP2_FIDPA_Lernkarten.json` (25 Decks) und 789 **Begriffskarten** aus `AP2_Fachbegriffe_Lernkarten.json` (16 Decks, je Deep Dive; Vorderseite Fachbegriff, Rückseite kurze Erklärung; Filter Typ „Fachbegriff“) plus Prüfer- und Fachgespräch-Fragen aus den Lernblättern; Filter nach Deep Dive, Deck, Typ, Schwierigkeit; „Fallen wiederholen"; **Durchblättern** (Karten nur ansehen, ←/→ oder wischen, ohne Bewertung); Leitner-System (Tastatur: `Leertaste` umdrehen, `1`/`2`/`3` bewerten); **Markieren** mit dem Stern oder `M` (in der Runde, beim Durchblättern und auf der Begriffsseite), Filter „Nur markierte“ und Kachel „Markiert“ auf der Übersicht – ändert das Fach nicht; **Leicht-Modus** mit 4 Antworten zum Einstieg (Tasten `1`–`4`, richtig bringt eine Karte höchstens in Fach 2) |
 | **Übungsklausur** | 90-Minuten-Timer, 100 Punkte, Anlagen einblendbar; Lösungen erst nach Abgabe; Ergebnis mit IHK-Note |
 | **Einzelaufgaben** | Filter nach Thema, Block, Schwierigkeit, Status, Suche; Auswahl als Aufgaben-/Lösungsblatt exportieren |
 | **Fehlerjournal** | Jede Aufgabe unter voller Punktzahl kommt nach 1, 3 und 7 Tagen wieder |
@@ -182,7 +182,7 @@ Importbericht im Terminal: `npm run import-report`
 
 Alles bleibt lokal:
 
-- `lern-app/data/fortschritt.json` – Versuche, Klausuren, Karteikarten, Fehlerjournal, Lernziele, Karteikarten-Lerntage (für die Lernserie), SQL-Übungen und deine Einstellungen
+- `lern-app/data/fortschritt.json` – Versuche, Klausuren, Karteikarten, Fehlerjournal, Lernziele, Karteikarten-Lerntage (für die Lernserie), SQL- und Rechenübungen, markierte Karten und deine Einstellungen
 - `lern-app/data/generierte-aufgaben.json` – KI-Aufgaben
 
 Sicherung: *Daten & Import → Sicherung herunterladen*. Zusätzlich legt die App beim ersten Speichern eines Tages automatisch `lern-app/data/backups/fortschritt-JJJJ-MM-TT.json` an (die letzten 14 Tage bleiben erhalten; die Seite *Daten & Import* zeigt die neueste).
@@ -234,8 +234,8 @@ lesen `ANTHROPIC_MODEL` und `LERN_QUELLE` beim Import. Der Pages-Build liest die
 `AP-2` – so bauen GitHub Actions und dein Rechner dasselbe.
 
 **Gespeicherter Fortschritt** (`shared/progress.ts`): Typen, zod-Schema, `checkProgressPut` (Server lehnt ungültige Daten, einen starken
-Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 5
-(1 → 2: `revision`, 2 → 3: `cardReviewDays`, 3 → 4: SQL-Übungen, 4 → 5: `settings`). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
+Rückgang der Versuche ohne `reset: true` und veraltete Tabs per Revisionszähler ab) und `migrateProgress`. Aktuell ist Version 7
+(1 → 2: `revision`, 2 → 3: `cardReviewDays`, 3 → 4: SQL-Übungen, 4 → 5: `settings`, 5 → 6: Rechenübungen, 6 → 7: `markiert`). Bei jeder Formatänderung `PROGRESS_VERSION` erhöhen, einen Schritt in `MIGRATIONS`
 ergänzen und die Migrationstests in `tests/progress.test.ts` anpassen – sie laden unter anderem eine Kopie der echten Datei aus
 `tests/fixtures/`. Geschrieben wird atomar (Temp-Datei + Umbenennen, mit Wiederholung, falls OneDrive die Datei sperrt), vorher entsteht
 die Tagessicherung in `data/backups/`.

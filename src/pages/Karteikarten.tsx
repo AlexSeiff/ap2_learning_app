@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import type { CardType, Flashcard } from '../../shared/types';
 import { AntwortVergleich, EigeneAntwortFeld } from '../components/EigeneAntwort';
 import { LeichtOptionen } from '../components/LeichtOptionen';
+import { MarkierStern } from '../components/MarkierStern';
 import { Markdown } from '../components/Markdown';
 import { useCardFilters, useCardSession } from '../hooks/useCardSession';
 import { leichtZahlen } from '../lib/leicht';
@@ -32,7 +33,7 @@ const KIND_LABELS: Record<Flashcard['kind'], string> = {
 export function Karteikarten() {
   const { content, progress, update } = useStore();
   const { settings } = progress;
-  const { f, set, deck, alle, pool, leicht, leichtModus, auswahl, ausSuche, vonBegriff } = useCardFilters();
+  const { f, set, deck, alle, pool, leicht, leichtModus, markiert, auswahl, ausSuche, vonBegriff } = useCardFilters();
   const { session, index, card, flipped, done, start, end, flip, rate, runde, waehle, next, eigeneAntwort, setEigeneAntwort } =
     useCardSession();
   const startRunde = (cards: Flashcard[]) => start(cards, leichtModus ? leicht : null);
@@ -70,6 +71,7 @@ export function Karteikarten() {
           <span>
             <Icon name="list-checks" /> Leicht · Karte {index + 1} / {session.length}
           </span>
+          <MarkierStern cardId={card.id} taste />
         </div>
         <div className={`flashcard leicht ${card.typ === 'falle' ? 'trap' : ''}`}>
           <div className="fc-meta">
@@ -139,6 +141,7 @@ export function Karteikarten() {
           <span>
             Karte {index + 1} / {session.length}
           </span>
+          <MarkierStern cardId={card.id} taste />
         </div>
         {/* Kein <button>: die Karte enthält Markdown mit Absätzen, Listen und Codeblöcken – das ist in einem Button ungültig. */}
         <div
@@ -221,7 +224,8 @@ export function Karteikarten() {
   const typLeicht = (typ: string) => pool.filter((c) => c.typ === typ && leicht.has(c.id)).length;
   const setMode = (an: boolean) => update((p) => withSettings(p, { leichtModus: an }));
   const known = (ids: Flashcard[]) => ids.filter((c) => (progress.cards[c.id]?.box ?? 0) >= 3).length;
-  const aktiveFilter = [f.thema, f.deck, f.art, f.typ, f.stufe].filter((x) => x !== 'alle').length;
+  const aktiveFilter = [f.thema, f.deck, f.art, f.typ, f.stufe, f.markiert].filter((x) => x !== 'alle').length;
+  const anzahlMarkiert = pool.filter((c) => markiert.has(c.id)).length;
 
   return (
     <div className="page">
@@ -325,6 +329,10 @@ export function Karteikarten() {
                 </option>
               ))}
             </select>
+          </label>
+          <label className="check" title="Markieren mit dem Stern während einer Runde oder beim Durchblättern (Taste M)">
+            <input type="checkbox" checked={f.markiert === '1'} onChange={(e) => set({ markiert: e.target.checked ? '1' : 'alle' })} />
+            <Icon name="star" /> Nur markierte ({anzahlMarkiert})
           </label>
           <label className="check" title="Auch unter Einstellungen – ausgeblendete Karten behalten ihren Lernstand">
             <input
@@ -452,7 +460,10 @@ export function Karteikarten() {
         zurück in Fach 1. Tastatur: <kbd>Leertaste</kbd> umdrehen, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> bewerten. Im Leicht-Modus wählst
         du mit <kbd>1</kbd>–<kbd>4</kbd>; richtig bringt die Karte höchstens in Fach {LEICHT_MAX_BOX}, falsch zurück in Fach 1.{' '}
         <Icon name="book-open" />
-        Durchblättern zeigt die Karten nur an (<kbd>←</kbd> <kbd>→</kbd> blättern, auf dem Handy wischen) und ändert den Lernstand nicht.
+        Durchblättern zeigt die Karten nur an (<kbd>←</kbd> <kbd>→</kbd> blättern, auf dem Handy wischen) und ändert den Lernstand nicht.{' '}
+        <Icon name="star" />
+        Mit dem Stern oder <kbd>M</kbd> markierst du schwierige Karten; „Nur markierte“ im Filter holt sie zurück. Markieren ändert das Fach
+        nicht.
       </p>
     </div>
   );
@@ -506,6 +517,7 @@ export function KartenBlaettern({ cards, onEnde }: { cards: Flashcard[]; onEnde:
         <span>
           <Icon name="book-open" /> Karte {i + 1} / {reihe.length}
         </span>
+        <MarkierStern cardId={card.id} taste />
       </div>
       <div className="blaettern-optionen">
         <label className="check">

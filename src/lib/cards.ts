@@ -3,7 +3,8 @@
 import type { Settings } from '../../shared/progress';
 import type { Flashcard } from '../../shared/types';
 
-export type CardFilter = { thema: string; deck: string; art: string; typ: string; stufe: string };
+/** `markiert`: '1' = nur markierte Karten (Phase 4), sonst 'alle'. */
+export type CardFilter = { thema: string; deck: string; art: string; typ: string; stufe: string; markiert: string };
 
 /** Liest die Filter aus den URL-Parametern; fehlende Werte bedeuten „alle". */
 export function readCardFilter(params: URLSearchParams): CardFilter {
@@ -13,6 +14,7 @@ export function readCardFilter(params: URLSearchParams): CardFilter {
     art: params.get('art') ?? 'alle',
     typ: params.get('typ') ?? 'alle',
     stufe: params.get('stufe') ?? 'alle',
+    markiert: params.get('markiert') === '1' ? '1' : 'alle',
   };
 }
 
@@ -26,14 +28,16 @@ export function withCardFilter(params: URLSearchParams, changes: Partial<CardFil
   return next;
 }
 
-export function filterCards(cards: Flashcard[], f: CardFilter): Flashcard[] {
+/** `markiert`: die Ids der markierten Karten – nötig für den Filter „Nur markierte“ (ohne sie bleibt dabei nichts übrig). */
+export function filterCards(cards: Flashcard[], f: CardFilter, markiert: ReadonlySet<string> = new Set()): Flashcard[] {
   return cards.filter(
     (c) =>
       (f.thema === 'alle' || c.topicId === f.thema) &&
       (f.deck === 'alle' || c.deckId === f.deck) &&
       (f.art === 'alle' || c.kind === f.art) &&
       (f.typ === 'alle' || c.typ === f.typ) &&
-      (f.stufe === 'alle' || String(c.schwierigkeit) === f.stufe),
+      (f.stufe === 'alle' || String(c.schwierigkeit) === f.stufe) &&
+      (f.markiert !== '1' || markiert.has(c.id)),
   );
 }
 

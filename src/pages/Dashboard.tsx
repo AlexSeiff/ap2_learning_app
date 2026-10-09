@@ -10,6 +10,7 @@ import { formatPoints, ihkGrade } from '../lib/grading';
 import { cardPool } from '../lib/cards';
 import { istFertig } from '../lib/heuteSitzung';
 import { kalibrierung } from '../lib/kalibrierung';
+import { markierteIds } from '../lib/markiert';
 import { klausurName } from '../lib/mischKlausur';
 import { isDue } from '../lib/progress';
 import { rechenSummary } from '../lib/rechnen';
@@ -34,10 +35,13 @@ function Uebersicht() {
   const { examDate } = progress.settings;
   const days = daysUntilExam(examDate);
   const dueJournal = Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due)).length;
-  const dueCards = cardPool(content.flashcards, progress.settings).filter((c) => {
+  const pool = cardPool(content.flashcards, progress.settings);
+  const dueCards = pool.filter((c) => {
     const s = progress.cards[c.id];
     return !s || isDue(s.due);
   }).length;
+  const markiert = markierteIds(progress);
+  const markierteKarten = pool.filter((c) => markiert.has(c.id)).length;
   const sql = sqlSummary(
     progress,
     content.sqlExercises.map((e) => e.id),
@@ -93,6 +97,12 @@ function Uebersicht() {
         <Link to="/karteikarten" className="kpi">
           <span className="kpi-value">{dueCards}</span>
           <span className="kpi-label">Karteikarten fällig</span>
+        </Link>
+        <Link to="/karteikarten?markiert=1" className="kpi" title="Mit dem Stern markierte Karteikarten lernen">
+          <span className="kpi-value">{markierteKarten}</span>
+          <span className="kpi-label">
+            <Icon name="star" /> Markiert
+          </span>
         </Link>
         {sql.total > 0 && (
           <Link to="/sql/uebungen" className="kpi">

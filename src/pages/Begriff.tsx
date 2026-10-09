@@ -6,6 +6,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { mehrZiel } from '../../shared/begriffsseiten';
 import type { BegriffsSeite } from '../../shared/types';
 import { Icon, type IconName } from '../components/Icon';
+import { MarkierStern } from '../components/MarkierStern';
 import { Markdown } from '../components/Markdown';
 import { begriffPfad, ladeBegriffe, seitenFinder, uebungenZuBegriff, verweisAufloeser } from '../lib/begriffe';
 import { cardPool } from '../lib/cards';
@@ -77,7 +78,10 @@ export function BegriffsSeiteAnsicht({ seite }: { seite: BegriffsSeite }) {
       <p className="crumbs">
         <Link to="/glossar">Glossar</Link> / <Link to={`/glossar?stelle=buchstabe-${encodeURIComponent(buchstabe)}`}>{buchstabe}</Link>
       </p>
-      <h1>{seite.begriff}</h1>
+      <div className="begriff-kopf">
+        <h1>{seite.begriff}</h1>
+        {uebungen.begriffskarte && <MarkierStern cardId={uebungen.begriffskarte.id} text="Karte markieren" />}
+      </div>
       {seite.auch && <p className="begriff-auch muted">Auch: {seite.auch.join(' · ')}</p>}
       <Markdown math={seite.markdown.includes('$')} source={false} className="begriff-text">
         {abschnitteAlsH2(seite.markdown)}
@@ -131,7 +135,7 @@ function Ueben({ seite, uebungen }: { seite: BegriffsSeite; uebungen: ReturnType
           icon="layers"
           titel={`${karten.length} ${karten.length === 1 ? 'Karteikarte' : 'Karteikarten'}`}
           alle={{ to: kartenLink(karten.map((c) => c.id)), text: karten.length === 1 ? 'Karte lernen' : 'Alle lernen' }}
-          eintraege={karten.map((c) => ({ key: c.id, to: kartenLink([c.id]), text: c.question.replace(/\*\*|`/g, '') }))}
+          eintraege={karten.map((c) => ({ key: c.id, to: kartenLink([c.id]), text: c.question.replace(/\*\*|`/g, ''), karte: c.id }))}
         />
       )}
       {aufgaben.length > 0 && (
@@ -169,7 +173,8 @@ function Ueben({ seite, uebungen }: { seite: BegriffsSeite; uebungen: ReturnType
 function UebenGruppe(props: {
   icon: IconName;
   titel: string;
-  eintraege: { key: string; to: string; text: string }[];
+  /** `karte`: Karteikarten-Id – dann steht ein Stern zum Markieren vor dem Eintrag. */
+  eintraege: { key: string; to: string; text: string; karte?: string }[];
   alle?: { to: string; text: string };
 }) {
   const [offen, setOffen] = useState(false);
@@ -187,7 +192,8 @@ function UebenGruppe(props: {
       </h3>
       <ul className="begriff-liste">
         {sichtbar.map((e) => (
-          <li key={e.key}>
+          <li key={e.key} className={e.karte ? 'mit-stern' : undefined}>
+            {e.karte && <MarkierStern cardId={e.karte} nurIcon label={`Markieren: ${e.text.slice(0, 80)}`} />}
             <Link to={e.to}>{e.text}</Link>
           </li>
         ))}

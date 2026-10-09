@@ -79,6 +79,8 @@ const enthaelt = (textN: string, woerter: string[]) => woerter.some((w) => ` ${t
 
 export interface Uebungen {
   karten: Flashcard[];
+  /** Die Begriffskarte (typ „begriff“, Frage = der Begriff), falls es eine gibt – sie steht auch als erste in `karten`. */
+  begriffskarte?: Flashcard;
   aufgaben: Task[];
   rechnen: RechenUebung[];
   sql: SqlExercise[];
@@ -95,8 +97,10 @@ export function uebungenZuBegriff(b: Pick<BegriffKurz, 'begriff' | 'auch'>, cont
   const begriffskarte = (c: Flashcard) => c.typ === 'begriff' && glossarSchluessel(c.question) === schluessel;
   const inFrage = cards.filter((c) => !begriffskarte(c) && enthaelt(normalisiere(c.question), woerter));
   const inAntwort = cards.filter((c) => !begriffskarte(c) && !inFrage.includes(c) && c.answer && enthaelt(normalisiere(c.answer), woerter));
+  const eigene = cards.filter(begriffskarte);
   return {
-    karten: [...cards.filter(begriffskarte), ...inFrage, ...inAntwort],
+    karten: [...eigene, ...inFrage, ...inAntwort],
+    ...(eigene.length ? { begriffskarte: eigene[0] } : {}),
     aufgaben: Object.values(content.tasks).filter((t) => !t.generated && enthaelt(normalisiere(t.markdown), woerter)),
     rechnen: content.rechenUebungen.filter((u) => enthaelt(normalisiere(`${u.titel} ${u.aufgabe}`), woerter)),
     sql: content.sqlExercises.filter((u) => enthaelt(normalisiere(`${u.titel} ${u.aufgabe}`), woerter)),

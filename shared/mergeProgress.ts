@@ -2,7 +2,7 @@
 // So lässt sich zwischen Handy und PC umziehen, ohne dass eine Seite verloren geht.
 // Beide Stände müssen schon migriert sein (migrateProgress bzw. parseBackup).
 
-import { PROGRESS_VERSION, type Attempt, type CardState, type ExamRun, type JournalEntry, type Progress } from './progress';
+import { PROGRESS_VERSION, type Attempt, type CardState, type ExamRun, type JournalEntry, type Markierung, type Progress } from './progress';
 
 /** Zeitpunkt als Zahl zum Vergleichen; fehlend oder ungültig = ganz früh. */
 const time = (v: string | undefined) => {
@@ -72,6 +72,9 @@ function mergeRecord<T>(a: Record<string, T>, b: Record<string, T>, pick: (x: T,
 /** Karteikarte: CardState hat kein Datum – mehr Wiederholungen heißt neuerer Stand, bei Gleichstand das spätere `due`. */
 const newerCard = (x: CardState, y: CardState) => (y.reviews > x.reviews || (y.reviews === x.reviews && y.due > x.due) ? y : x);
 
+/** Markierung: die neuere Aktion gewinnt (markiert oder entmarkiert), bei Gleichstand der aktuelle Stand. */
+const newerMarkierung = (x: Markierung, y: Markierung) => (time(y.am) > time(x.am) ? y : x);
+
 /** Gemeinsame Felder von SQL- und Rechenübungen (SqlState, RechenState). */
 type UebungState = { attempts: number; hintsUsed: number; lastCheckedAt?: string; solvedAt?: string };
 
@@ -104,6 +107,7 @@ function mergeDays(a: Record<string, number>, b: Record<string, number>): Record
  * - sql, rechnen: je Übung der Stand mit dem neueren lastCheckedAt; solvedAt bleibt, wenn eine Seite gelöst hat.
  * - journal: je Aufgabe der Eintrag der Seite mit dem neueren Versuch zu dieser Aufgabe (dann höhere Stufe, dann späteres due).
  * - lernziele: abgehakt, wenn auf einer Seite abgehakt.
+ * - markiert: je Karte die neuere Aktion (`am`), auch ein Entmarkieren – so taucht eine entfernte Markierung nicht wieder auf.
  * - cardReviewDays / sqlDays / rechnenDays: je Tag das Maximum.
  * - settings, revision und unbekannte Felder: vom aktuellen Stand (Einstellungen gehören zu diesem Browser;
  *   die Revision muss zum Gespeicherten passen, sonst lehnt checkProgressPut das Speichern als veraltet ab).
@@ -149,6 +153,7 @@ export function mergeProgress(current: Progress, incoming: Progress): Progress {
     sqlDays: mergeDays(current.sqlDays, incoming.sqlDays),
     rechnen: mergeRecord(current.rechnen, incoming.rechnen, newerUebung),
     rechnenDays: mergeDays(current.rechnenDays, incoming.rechnenDays),
+    markiert: mergeRecord(current.markiert, incoming.markiert, newerMarkierung),
     settings: current.settings,
   };
 }

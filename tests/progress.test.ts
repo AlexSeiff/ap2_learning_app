@@ -129,7 +129,7 @@ describe('migrateProgress', () => {
     const raw = fixture('fortschritt-v1-2026-09-22.json');
     const migrated = migrateProgress(raw);
     // Einzige Änderungen: aktuelle Version, Revisionszähler 0 (Version 2), leere Karteikarten-Lerntage (Version 3),
-    // leere SQL-Übungen (Version 4), Standard-Einstellungen (Version 5) und leere Rechenübungen (Version 6).
+    // leere SQL-Übungen (Version 4), Standard-Einstellungen (Version 5), leere Rechenübungen (Version 6) und keine Markierungen (Version 7).
     expect(migrated).toEqual({
       ...raw,
       version: PROGRESS_VERSION,
@@ -140,6 +140,7 @@ describe('migrateProgress', () => {
       settings: defaultSettings(),
       rechnen: {},
       rechnenDays: {},
+      markiert: {},
     });
     expect(migrated.attempts).toHaveLength(16);
     expect(migrated.exams).toHaveLength(1);
@@ -185,6 +186,7 @@ describe('migrateProgress', () => {
       settings: defaultSettings(),
       rechnen: {},
       rechnenDays: {},
+      markiert: {},
     });
     expect(migrated.revision).toBe(7);
     expect(migrated.cardReviewDays).toEqual({ '2026-09-26': 4, '2026-09-27': 2 });
@@ -194,7 +196,14 @@ describe('migrateProgress', () => {
   it('Version 4 → 5: ergänzt Standard-Einstellungen, sonst bleibt alles gleich', () => {
     const raw = fixture('fortschritt-v4-2026-09-30.json');
     const migrated = migrateProgress(raw);
-    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, settings: defaultSettings(), rechnen: {}, rechnenDays: {} });
+    expect(migrated).toEqual({
+      ...raw,
+      version: PROGRESS_VERSION,
+      settings: defaultSettings(),
+      rechnen: {},
+      rechnenDays: {},
+      markiert: {},
+    });
     expect(migrated.settings).toEqual({ prueferfragen: true, fachgespraech: true, leichtModus: false, backupReminderDays: 7 });
     expect(migrated.settings).not.toHaveProperty('examDate');
     expect(migrated.revision).toBe(12);
@@ -208,25 +217,24 @@ describe('migrateProgress', () => {
   it('Version 5 → 6: ergänzt leere Rechenübungen und Rechen-Lerntage, Einstellungen und alles andere bleiben', () => {
     const raw = fixture('fortschritt-v5-2026-09-30.json');
     const migrated = migrateProgress(raw);
-    expect(PROGRESS_VERSION).toBe(6);
-    expect(migrated).toEqual({ ...raw, version: 6, rechnen: {}, rechnenDays: {} });
+    expect(migrated).toEqual({ ...raw, version: PROGRESS_VERSION, rechnen: {}, rechnenDays: {}, markiert: {} });
     expect(migrated.settings).toEqual(raw.settings);
     expect(migrated.revision).toBe(21);
     expect(ProgressSchema.safeParse(migrated).success).toBe(true);
     // Erstes Speichern nach dem Update: Revision passt, nichts geht verloren.
     const r = checkProgressPut(migrated, raw);
-    expect(r).toMatchObject({ ok: true, progress: { version: 6, revision: 22, rechnen: {}, rechnenDays: {} } });
+    expect(r).toMatchObject({ ok: true, progress: { version: PROGRESS_VERSION, revision: 22, rechnen: {}, rechnenDays: {} } });
     if (r.ok) expect(r.progress.attempts).toEqual(raw.attempts);
     expect(migrateProgress(migrated)).toEqual(migrated);
   });
 
-  it('Version 6 (vor der Selbsteinschätzung): lädt unverändert, Versuche ohne sicherheit bleiben gültig', () => {
+  it('Version 6 (vor der Selbsteinschätzung): lädt bis auf Version 7 und leere Markierungen unverändert, Versuche ohne sicherheit bleiben gültig', () => {
     const raw = fixture('fortschritt-v6-2026-10-01.json');
     const migrated = migrateProgress(raw);
-    expect(migrated).toEqual(raw);
+    expect(migrated).toEqual({ ...raw, version: 7, markiert: {} });
     expect(ProgressSchema.safeParse(raw).success).toBe(true);
     const r = checkProgressPut(migrated, raw);
-    expect(r).toMatchObject({ ok: true, progress: { version: 6, revision: 35 } });
+    expect(r).toMatchObject({ ok: true, progress: { version: 7, revision: 35, markiert: {} } });
   });
 
   it('Selbsteinschätzung (ROADMAP 8.3): optional ohne neue Version; gültige Werte bleiben, ungültige fallen weg', () => {
@@ -237,7 +245,6 @@ describe('migrateProgress', () => {
     raw.activeExam.sicherheit = { '04-A1': 2, '04-A2': 0, '04-A3': 'x' };
     raw.exams[0].sicherheit = { '03-C2': 1 };
     const migrated = migrateProgress(raw);
-    expect(PROGRESS_VERSION).toBe(6);
     expect(migrated.attempts.map((a) => a.sicherheit)).toEqual([3, undefined, undefined]);
     expect('sicherheit' in migrated.attempts[1]).toBe(false);
     expect(migrated.activeExam?.sicherheit).toEqual({ '04-A1': 2 });
@@ -258,7 +265,6 @@ describe('migrateProgress', () => {
     raw.activeExam.fehlergrund = { '04-A1': 'zeit', '04-A2': 'nix' };
     raw.exams[0].fehlergrund = { '03-C2': 'formel' };
     const migrated = migrateProgress(raw);
-    expect(PROGRESS_VERSION).toBe(6);
     expect(migrated.attempts.map((a) => a.fehlergrund)).toEqual(['operator', undefined, undefined]);
     expect('fehlergrund' in migrated.attempts[1]).toBe(false);
     expect(migrated.activeExam?.fehlergrund).toEqual({ '04-A1': 'zeit' });
@@ -280,6 +286,7 @@ describe('migrateProgress', () => {
       'fortschritt-v4-2026-09-30.json',
       'fortschritt-v5-2026-09-30.json',
       'fortschritt-v6-2026-10-01.json',
+      'fortschritt-v7-2026-10-09.json',
     ]) {
       const raw = fixture(name);
       const migrated = migrateProgress(raw);

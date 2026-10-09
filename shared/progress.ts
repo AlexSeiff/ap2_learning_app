@@ -64,6 +64,17 @@ export type CardState = {
   last?: Rating;
 };
 
+/**
+ * Markierung einer Karteikarte (seit Version 7, Umsetzungsplan Phase 4). Eigene Sammlung statt Feld im CardState: Ein CardState
+ * heißt „schon gelernt“ – eine nur markierte Karte soll neu bleiben, und Markieren ändert nichts an der Wiederholungsplanung.
+ * Beim Entfernen bleibt der Eintrag mit `an: false` stehen, damit das Zusammenführen zweier Stände die neuere Aktion erkennt.
+ */
+export type Markierung = {
+  an: boolean;
+  /** Zeitpunkt der letzten Änderung (ISO, mit Uhrzeit). */
+  am: string;
+};
+
 export type JournalEntry = {
   taskId: string;
   addedAt: string;
@@ -167,10 +178,12 @@ export type Progress = {
   rechnen: Record<string, RechenState>;
   /** Anzahl geprüfter Rechenübungen je lokalem Datum (YYYY-MM-DD), für die Lernserie (seit Version 6, ältere Dateien: leer). */
   rechnenDays: Record<string, number>;
+  /** Markierte (und wieder entmarkierte) Karteikarten je Karten-ID (seit Version 7, ältere Dateien: leer). */
+  markiert: Record<string, Markierung>;
 };
 
 /** Aktuelle Formatversion von data/fortschritt.json. Bei jeder Formatänderung erhöhen und in MIGRATIONS nachziehen. */
-export const PROGRESS_VERSION = 6;
+export const PROGRESS_VERSION = 7;
 
 export const emptyProgress = (): Progress => ({
   version: PROGRESS_VERSION,
@@ -186,6 +199,7 @@ export const emptyProgress = (): Progress => ({
   settings: defaultSettings(),
   rechnen: {},
   rechnenDays: {},
+  markiert: {},
 });
 
 type Raw = Record<string, unknown>;
@@ -308,6 +322,11 @@ function migrateRechenState(v: unknown): RechenState | undefined {
   };
 }
 
+function migrateMarkierung(v: unknown): Markierung | undefined {
+  if (!isObject(v) || typeof v.an !== 'boolean' || typeof v.am !== 'string') return undefined;
+  return { ...v, an: v.an, am: v.am };
+}
+
 /** Ist `v` ein gültiges Kalenderdatum im Format YYYY-MM-DD? */
 export function isIsoDate(v: unknown): v is string {
   if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
@@ -353,6 +372,8 @@ const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   4: (raw) => ({ ...raw, version: 5 }),
   // 5 → 6: Rechenübungen (rechnen) und ihre Lerntage (rechnenDays); starten leer, aufgefüllt wird unten in migrateProgress.
   5: (raw) => ({ ...raw, version: 6 }),
+  // 6 → 7: markierte Karteikarten (markiert); starten leer, aufgefüllt wird unten in migrateProgress.
+  6: (raw) => ({ ...raw, version: 7 }),
 };
 
 /**
@@ -383,6 +404,7 @@ export function migrateProgress(raw: unknown): Progress {
     settings: migrateSettings(data.settings),
     rechnen: filterRecord(data.rechnen, migrateRechenState),
     rechnenDays: filterRecord(data.rechnenDays, dayCount),
+    markiert: filterRecord(data.markiert, migrateMarkierung),
   };
 }
 
@@ -416,6 +438,11 @@ export const CardStateSchema = z.looseObject({
   due: z.string(),
   reviews: z.number(),
   last: z.string().optional(),
+});
+
+export const MarkierungSchema = z.looseObject({
+  an: z.boolean(),
+  am: z.string(),
 });
 
 export const JournalEntrySchema = z.looseObject({
@@ -477,6 +504,7 @@ export const ProgressSchema = z.looseObject({
   settings: SettingsSchema.optional(),
   rechnen: z.record(z.string(), RechenStateSchema).default({}),
   rechnenDays: z.record(z.string(), z.number()).default({}),
+  markiert: z.record(z.string(), MarkierungSchema).default({}),
 });
 
 export type ProgressData = z.infer<typeof ProgressSchema>;
