@@ -1,9 +1,9 @@
-import type { Content, Topic } from '../../shared/types';
 import { cardPool } from './cards';
 import { percent } from './grading';
 import { addDays, localDate } from './progress';
 import type { Progress } from '../../shared/progress';
 import { isIsoDate } from '../../shared/progress';
+import type { KernInhalt, KernTopic } from '../../shared/texte';
 
 /** Tage bis zum eigenen Prüfungstermin (YYYY-MM-DD); 0 = heute, negativ = vorbei, undefined = keiner eingetragen. */
 export function daysUntilExam(examDate: string | undefined, today = new Date()): number | undefined {
@@ -21,7 +21,7 @@ export function formatIsoDate(date: string): string {
 }
 
 export interface TopicStats {
-  topic: Topic;
+  topic: KernTopic;
   bestExam?: number;
   lastExam?: number;
   avgTaskPct?: number;
@@ -32,7 +32,7 @@ export interface TopicStats {
   openJournal: number;
 }
 
-export function topicStats(content: Content, progress: Progress): TopicStats[] {
+export function topicStats(content: KernInhalt, progress: Progress): TopicStats[] {
   const pool = cardPool(content.flashcards, progress.settings);
   return content.topics.map((topic) => {
     const exams = progress.exams.filter((e) => e.topicId === topic.id && e.total !== undefined);
@@ -121,7 +121,7 @@ export function studyStreak(progress: Progress, today = localDate()): StudyStrea
 }
 
 export interface ExamTrend {
-  topic: Topic;
+  topic: KernTopic;
   /** Abgeschlossene Klausuren zu diesem Thema, älteste zuerst. */
   runs: { date: string; pct: number }[];
   /** Ergebnis der letzten Klausur in Prozent. */
@@ -131,7 +131,7 @@ export interface ExamTrend {
 }
 
 /** Klausurergebnisse je Thema im Zeitverlauf – nur Themen mit mindestens einer abgeschlossenen Klausur. */
-export function examTrends(content: Content, progress: Progress): ExamTrend[] {
+export function examTrends(content: KernInhalt, progress: Progress): ExamTrend[] {
   const trends: ExamTrend[] = [];
   for (const topic of content.topics) {
     const runs = progress.exams

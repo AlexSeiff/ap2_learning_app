@@ -1,14 +1,15 @@
 // Glossar (/glossar, ROADMAP 8.9; früher /material/glossar): Fachbegriffe aus Begriffs- und Wissenskarten und fetten Begriffen der Lernblätter,
 // alphabetisch mit Buchstaben-Sprungleiste und Filter. Lazy geladen; Logik in src/lib/glossar.ts.
 
-import { type MouseEvent, useMemo, useState } from 'react';
+import { memo, type MouseEvent, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { useStelle } from '../hooks/useStelle';
 import { begriffPfad, seitenFinder } from '../lib/begriffe';
-import { baueGlossar, glossarBuchstaben, type GlossarEintrag } from '../lib/glossar';
+import { glossarBuchstaben, glossarVon, type GlossarEintrag } from '../lib/glossar';
 import { normalisiere } from '../lib/normalisiere';
-import { useStore } from '../lib/store';
+import { useVollerInhalt } from '../lib/texte';
+import type { Content } from '../../shared/types';
 import { Icon } from '../components/Icon';
 
 function springeZu(e: MouseEvent, id: string) {
@@ -17,8 +18,15 @@ function springeZu(e: MouseEvent, id: string) {
 }
 
 export function Glossar() {
-  const { content } = useStore();
-  const eintraege = useMemo(() => baueGlossar(content), [content]);
+  // Das Glossar sammelt auch die fetten Begriffe der Lernblätter – es braucht die nachgeladenen Abschnittstexte.
+  const { inhalt, fehler } = useVollerInhalt();
+  if (fehler) return <div className="page card warn">{fehler}</div>;
+  if (!inhalt) return <div className="page loading">Lädt …</div>;
+  return <GlossarSeite content={inhalt} />;
+}
+
+function GlossarSeite({ content }: { content: Content }) {
+  const eintraege = glossarVon(content);
   const [filter, setFilter] = useState('');
   useStelle();
   const f = normalisiere(filter);
@@ -98,7 +106,8 @@ export function Glossar() {
   );
 }
 
-function GlossarZeile({ e, seite }: { e: GlossarEintrag; seite?: string }) {
+// memo: Beim Tippen im Filter rendert nur die Liste neu, nicht jede der über 1000 Erklärungen (Markdown) erneut.
+const GlossarZeile = memo(function GlossarZeile({ e, seite }: { e: GlossarEintrag; seite?: string }) {
   return (
     <div className="glossar-eintrag" id={`g-${e.id}`}>
       <dt>
@@ -131,4 +140,4 @@ function GlossarZeile({ e, seite }: { e: GlossarEintrag; seite?: string }) {
       </dd>
     </div>
   );
-}
+});

@@ -11,8 +11,11 @@ import { Markdown } from '../components/Markdown';
 import { QuellenListe, useQuellen } from '../components/Quellen';
 import { begriffPfad, ladeBegriffe, seitenFinder, uebungenZuBegriff, verweisAufloeser } from '../lib/begriffe';
 import { cardPool } from '../lib/cards';
-import { baueGlossar } from '../lib/glossar';
+import { glossarVon, type GlossarEintrag } from '../lib/glossar';
 import { useStore } from '../lib/store';
+import { useVollerInhalt } from '../lib/texte';
+
+const KEIN_GLOSSAR: GlossarEintrag[] = [];
 
 /** „### Erklärung“ usw. folgen direkt auf die Seitenüberschrift (h1) – als h2 bleibt die Gliederung lückenlos (Barrierefreiheit). */
 const abschnitteAlsH2 = (md: string) => md.replace(/^### /gm, '## ');
@@ -40,8 +43,10 @@ export function Begriff() {
     window.scrollTo(0, 0);
   }, [id]);
 
-  if (fehler) return <div className="page card warn">{fehler}</div>;
-  if (!seiten) return <div className="page loading">Lädt …</div>;
+  // Glossar (Fundstellen, Verweise) braucht die nachgeladenen Abschnittstexte der Lernblätter.
+  const { inhalt, fehler: textFehler } = useVollerInhalt();
+  if (fehler || textFehler) return <div className="page card warn">{fehler ?? textFehler}</div>;
+  if (!seiten || !inhalt) return <div className="page loading">Lädt …</div>;
   const seite = seiten.find((s) => s.id === id);
   if (!seite) return <OhneSeite id={id} seiten={seiten} />;
   return <BegriffsSeiteAnsicht seite={seite} />;
@@ -49,15 +54,17 @@ export function Begriff() {
 
 /** Keine Seite mit dieser id: andere Schreibweise einer Seite → dorthin, sonst zum Eintrag im Glossar. */
 function OhneSeite({ id, seiten }: { id: string; seiten: BegriffsSeite[] }) {
-  const { content } = useStore();
-  const eintrag = baueGlossar(content).find((e) => e.id === id);
+  const { inhalt } = useVollerInhalt();
+  const eintrag = inhalt && glossarVon(inhalt).find((e) => e.id === id);
   const andere = eintrag && seitenFinder(seiten)(eintrag);
   return <Navigate to={andere ? begriffPfad(andere) : `/glossar?stelle=g-${encodeURIComponent(id)}`} replace />;
 }
 
 export function BegriffsSeiteAnsicht({ seite }: { seite: BegriffsSeite }) {
   const { content, progress } = useStore();
-  const glossar = useMemo(() => baueGlossar(content), [content]);
+  // Begriff() wartet auf den vollen Inhalt; das Glossar ist je Inhalt nur einmal gebaut (glossarVon).
+  const { inhalt } = useVollerInhalt();
+  const glossar = useMemo(() => (inhalt ? glossarVon(inhalt) : KEIN_GLOSSAR), [inhalt]);
   const eintrag = glossar.find((e) => e.id === seite.id);
   const verweis = useMemo(() => verweisAufloeser(content.begriffe ?? [], glossar, content), [content, glossar]);
   const uebungen = useMemo(

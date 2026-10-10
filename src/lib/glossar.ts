@@ -13,6 +13,7 @@
 
 import { stripPrueferfragen } from '../../shared/prueferfragen';
 import type { Content, Topic } from '../../shared/types';
+import type { KernInhalt } from '../../shared/texte';
 import { normalisiere } from './normalisiere';
 
 export interface GlossarQuelle {
@@ -152,7 +153,7 @@ export function begriffAusFrage(frage: string): string | undefined {
   return undefined;
 }
 
-const topicLabel = (t: Topic) => (t.id === '00' ? 'SQL-Zusatz' : `Deep Dive ${t.number}`);
+const topicLabel = (t: Pick<Topic, 'id' | 'number'>) => (t.id === '00' ? 'SQL-Zusatz' : `Deep Dive ${t.number}`);
 
 /** Definition auf eine handliche Länge kürzen (am Satzende, höchstens etwa `max` Zeichen). */
 function kuerzeDefinition(md: string, max = 320): string {
@@ -226,6 +227,18 @@ export function begriffeAusZeile(zeile: string): { begriff: string; definition?:
     if (b) out.push({ begriff: b, imSatz: true });
   }
   return out;
+}
+
+const glossarCache = new WeakMap<Content, GlossarEintrag[]>();
+
+/**
+ * baueGlossar() einmal je Inhalt: Glossar-Seite, Begriffsseiten und Suche teilen sich das Ergebnis (der volle Inhalt aus lib/texte.ts
+ * ist je Sitzung dasselbe Objekt). Nur für den Client – das Ergebnis nicht verändern.
+ */
+export function glossarVon(content: Content): GlossarEintrag[] {
+  let g = glossarCache.get(content);
+  if (!g) glossarCache.set(content, (g = baueGlossar(content)));
+  return g;
 }
 
 /** Baut das Glossar aus den Inhalten: alphabetisch (deutsch), ohne Doppelte. */
@@ -340,7 +353,7 @@ export const ueberschriftKern = (titel: string) => titel.replace(/^(?:Teil\s+\d+
  * Das „Thema“ eines Begriffs für die Suche: der Lernblatt-Abschnitt, dessen Überschrift genau der Begriff ist (sonst mit ihm beginnt),
  * ersatzweise die erste Fundstelle im Lernblatt. Ergebnis wie „Deep Dive 17 · 2.5 Sequenzdiagramm“.
  */
-export function glossarThema(e: GlossarEintrag, content?: Content): string | undefined {
+export function glossarThema(e: GlossarEintrag, content?: KernInhalt): string | undefined {
   const key = glossarSchluessel(e.begriff);
   if (content && key) {
     let beginnt: string | undefined;
@@ -358,7 +371,7 @@ export function glossarThema(e: GlossarEintrag, content?: Content): string | und
 }
 
 /** Einträge für die globale Suche (ROADMAP 8.8): Begriff + Definition, Ziel ist der Eintrag im Glossar; im Kontext das Thema des Begriffs. */
-export function glossarSuchEintraege(eintraege: GlossarEintrag[], content?: Content) {
+export function glossarSuchEintraege(eintraege: GlossarEintrag[], content?: KernInhalt) {
   return eintraege.map((e) => {
     const thema = glossarThema(e, content);
     return {

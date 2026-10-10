@@ -1,25 +1,32 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import type { Content } from '../../shared/types';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import type { KernInhalt } from '../../shared/texte';
 import { api, IS_STATIC } from './api';
 import { createProgressSaver, type SaveState } from './progressSaver';
 import { emptyProgress, migrateProgress, type Progress } from '../../shared/progress';
 
 interface Store {
-  content: Content;
+  /** Ohne Abschnittstexte – die brauchen nur wenige Seiten, sie holen sie mit useThemaTexte/useVollerInhalt (lib/texte.ts). */
+  content: KernInhalt;
   progress: Progress;
   aiEnabled: boolean;
   aiModel: string;
   update: (fn: (p: Progress) => Progress) => void;
   replaceProgress: (p: Progress) => void;
   reload: () => Promise<void>;
-  saveState: SaveState;
-  /** Meldung des Servers, wenn das Speichern abgelehnt wurde (z. B. HTTP 400). */
-  saveError: string | null;
   /** Erster Besuch: noch kein gespeicherter Fortschritt (bis zur ersten Änderung) – dann zeigt die Übersicht die Willkommensseite. */
   firstVisit: boolean;
 }
 
+interface SpeicherStand {
+  saveState: SaveState;
+  /** Meldung des Servers, wenn das Speichern abgelehnt wurde (z. B. HTTP 400). */
+  saveError: string | null;
+}
+
 const StoreContext = createContext<Store | null>(null);
+// Eigener Kontext (Umsetzungsplan Phase 10): Jedes Speichern wechselt den Stand zweimal (speichert → gespeichert). Steckte er im
+// Store, würde dabei jedes Mal die ganze Seite neu rendern – so nur die Kopfleiste und der Fehlerhinweis.
+const SpeicherContext = createContext<SpeicherStand>({ saveState: 'gespeichert', saveError: null });
 
 export function useStore(): Store {
   const s = useContext(StoreContext);
@@ -27,8 +34,11 @@ export function useStore(): Store {
   return s;
 }
 
+/** Speicherstand für Kopfleiste und Fehlerhinweis. */
+export const useSpeicherStand = () => useContext(SpeicherContext);
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<Content | null>(null);
+  const [content, setContent] = useState<KernInhalt | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [ai, setAi] = useState({ enabled: false, model: '' });
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +102,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const replaceProgress = useCallback((p: Progress) => commit(migrateProgress(p), true), [commit]);
 
+  // Gleiches Objekt, solange sich nichts ändert – sonst rendert jeder useStore()-Nutzer bei jedem Rendern des Providers neu.
+  const store = useMemo(
+    () => ({
+      content: content!,
+      progress: progress!,
+      aiEnabled: ai.enabled,
+      aiModel: ai.model,
+      update,
+      replaceProgress,
+      reload,
+      firstVisit,
+    }),
+    [content, progress, ai, update, replaceProgress, reload, firstVisit],
+  );
+  const speicher = useMemo(() => ({ saveState, saveError }), [saveState, saveError]);
+
   if (error) {
     return (
       <div className="page">
@@ -110,21 +136,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   if (!content || !progress) return <div className="page loading">Lade Lernblätter …</div>;
 
   return (
-    <StoreContext.Provider
-      value={{
-        content,
-        progress,
-        aiEnabled: ai.enabled,
-        aiModel: ai.model,
-        update,
-        replaceProgress,
-        reload,
-        saveState,
-        saveError,
-        firstVisit,
-      }}
-    >
-      {children}
+    <StoreContext.Provider value={store}>
+      <SpeicherContext.Provider value={speicher}>{children}</SpeicherContext.Provider>
     </StoreContext.Provider>
   );
 }

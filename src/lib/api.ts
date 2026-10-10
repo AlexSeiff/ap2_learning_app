@@ -18,6 +18,8 @@ export interface DataSource {
   content(): Promise<ApiResponses['GET /api/content']>;
   /** Begriffsseiten mit Text – getrennt geladen, erst wenn sie gebraucht werden (lib/begriffe.ts). */
   begriffe(): Promise<ApiResponses['GET /api/begriffe']>;
+  /** Abschnittstexte eines Themas – getrennt vom Kern, nachgeladen (lib/texte.ts). */
+  texte(topicId: string): Promise<ApiResponses['GET /api/texte/:id']>;
   progress(): Promise<ApiResponses['GET /api/progress']>;
   saveProgress(p: SaveProgressRequest): Promise<ApiResponses['PUT /api/progress']>;
   /** Letztes Speichern beim Schließen des Tabs – muss das Entladen der Seite überleben. */
@@ -48,6 +50,7 @@ async function request<T>(method: string, url: string, body?: unknown): Promise<
 const serverApi: DataSource = {
   content: () => request('GET', '/api/content'),
   begriffe: () => request('GET', '/api/begriffe'),
+  texte: (topicId) => request('GET', `/api/texte/${encodeURIComponent(topicId)}`),
   progress: () => request('GET', '/api/progress'),
   saveProgress: (p) => request('PUT', '/api/progress', p),
   // keepalive überlebt das Entladen der Seite.

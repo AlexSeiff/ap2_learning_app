@@ -6,13 +6,14 @@ import { Markdown } from '../components/Markdown';
 import { useLeseStelle } from '../hooks/useLeseStelle';
 import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
+import { useThemaTexte } from '../lib/texte';
 import { cardPool } from '../lib/cards';
 import { TheoryMarkdown } from '../components/TheoryMarkdown';
 import type { Topic } from '../../shared/types';
 import { Icon } from '../components/Icon';
 
 /** „Deep Dive 3“ oder „Zusatz“ für das ältere SQL-Blatt. */
-const topicLabel = (t: Topic) => (t.id === '00' ? 'Zusatz' : `Deep Dive ${t.number}`);
+const topicLabel = (t: Pick<Topic, 'id' | 'number'>) => (t.id === '00' ? 'Zusatz' : `Deep Dive ${t.number}`);
 
 export function Themen() {
   const { content, progress } = useStore();
@@ -43,8 +44,10 @@ export function Thema() {
   const { content, progress, update } = useStore();
   const quellen = useMemo(() => quellenNachZiel(content.quellen), [content.quellen]);
   const topic = content.topics.find((t) => t.id === topicId);
-  useStelle(!!topic);
-  useLeseStelle(topic?.id, topic?.sections.map((s) => s.id) ?? []);
+  // Abschnittstexte kommen nachgeladen (lib/texte.ts); Sprung und Lesestelle erst, wenn sie im Bild stehen.
+  const { topic: mitTexten, fehler } = useThemaTexte(topic);
+  useStelle(!!mitTexten);
+  useLeseStelle(mitTexten?.id, mitTexten?.sections.map((s) => s.id) ?? []);
   if (!topic)
     return (
       <div className="page">
@@ -106,14 +109,16 @@ export function Thema() {
             </Link>
           )}
         </div>
-        {topic.sections.map((s) => (
+        {fehler && <p className="card warn">{fehler}</p>}
+        {!mitTexten && !fehler && <p className="loading">Lädt …</p>}
+        {mitTexten?.sections.map((s) => (
           <section key={s.id} id={s.id} className="theory">
             {s.level <= 1 ? <h2 className="part">{s.title}</h2> : s.level === 2 ? <h2>{s.title}</h2> : <h3>{s.title}</h3>}
             <TheoryMarkdown source={topic.file} markdown={s.markdown} prueferfragen={progress.settings.prueferfragen} />
             <QuellenListe quellen={quellen.get(`abschnitt:${s.id}`) ?? []} />
           </section>
         ))}
-        {!!topic.lernziele.length && (
+        {mitTexten && !!topic.lernziele.length && (
           <section id="lernziele" className="card">
             <h2>Lernziel-Check</h2>
             {topic.lernziele.map((z, i) => {

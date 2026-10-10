@@ -20,7 +20,7 @@ export function createContentCache<T = Content>(load: () => T): ContentCache<T> 
 }
 
 /** Generierte Aufgaben dazumischen – als Kopie, das (gecachte) Original bleibt unverändert. */
-export function withGenerated(content: Content, generated: Task[]): Content {
+export function withGenerated<C extends Pick<Content, 'tasks'>>(content: C, generated: Task[]): C {
   if (generated.length === 0) return content;
   const tasks = { ...content.tasks };
   for (const task of generated) tasks[task.id] = task;

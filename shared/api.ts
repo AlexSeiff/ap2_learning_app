@@ -4,7 +4,8 @@
 
 import { z } from 'zod';
 import type { Progress } from './progress';
-import { TASK_TYPES, type BegriffsSeite, type Content, type Task } from './types';
+import type { KernInhalt, ThemaTexte } from './texte';
+import { TASK_TYPES, type BegriffsSeite, type Task } from './types';
 
 // ── Request-Schemas ─────────────────────────────────────────────────────────
 // Fehlermeldungen auf Deutsch, weil sie direkt in der Oberfläche landen.
@@ -91,7 +92,10 @@ export interface OkResponse {
 
 /** Antworttypen je Route. Fehler kommen immer als ErrorResponse mit passendem HTTP-Status. */
 export interface ApiResponses {
-  'GET /api/content': Content;
+  /** Kern ohne Abschnittstexte (Umsetzungsplan Phase 10, shared/texte.ts). */
+  'GET /api/content': KernInhalt;
+  /** Abschnittstexte eines Themas (Abschnitts-id → Markdown). */
+  'GET /api/texte/:id': ThemaTexte;
   /** Begriffsseiten mit ganzem Text (Umsetzungsplan Phase 3). */
   'GET /api/begriffe': BegriffsSeite[];
   /** Rohdaten aus data/fortschritt.json (oder null) – der Client migriert sie mit migrateProgress(). */

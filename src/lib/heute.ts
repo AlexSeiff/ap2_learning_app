@@ -4,15 +4,16 @@
 
 import { HEUTE_KARTEN_BLOCK, HEUTE_MINUTEN, HEUTE_ZEITEN, NEW_PER_SESSION } from '../../shared/config';
 import type { Progress } from '../../shared/progress';
-import type { Content, Flashcard, Task } from '../../shared/types';
-import { erzeugeZufall } from '../rechnen/zufall';
+import type { Flashcard, Task } from '../../shared/types';
+import { erzeugeZufall, seedAusText } from '../rechnen/zufall';
 import { cardPool } from './cards';
-import { leichtAutomatischAn, leichtKarten } from './leicht';
+import { leichtAutomatischAn, leichtKartenGemerkt } from './leicht';
 import { isDue, localDate } from './progress';
 import { rechenStatus } from './rechnen';
 import { sqlStatus } from './sql';
 import { topicStats } from './stats';
 import type { IconName } from './icons';
+import type { KernInhalt } from '../../shared/texte';
 
 export type HeuteArt = 'wiederholung' | 'aufgabe' | 'sql' | 'rechnen' | 'karten';
 
@@ -47,13 +48,6 @@ export const HEUTE_ICONS: Record<HeuteArt, IconName> = {
 
 /** Geschätzte Minuten für eine Aufgabe mit `punkte` Punkten (wie in der Prüfung, mindestens HEUTE_ZEITEN.aufgabeMin). */
 export const aufgabeMinuten = (punkte: number) => Math.max(HEUTE_ZEITEN.aufgabeMin, Math.round(punkte * HEUTE_ZEITEN.aufgabeProPunkt));
-
-/** Zahl aus einem Text (für den Tages-Seed): gleicher Tag → gleiche Auswahl. */
-export function textSeed(text: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 16777619);
-  return h >>> 0;
-}
 
 /**
  * Verschränkt die Elemente nach Thema: nie zweimal hintereinander dasselbe Thema, solange es sich vermeiden lässt.
@@ -98,9 +92,9 @@ const themaVon = (topicId: string | undefined, fallback: string) => topicId ?? f
  *    Einstellungen Prüferfragen/Fachgespräch; im Leicht-Modus nur Karten mit 4 Antworten. Je Thema Blöcke bis HEUTE_KARTEN_BLOCK.
  * 5. Alles nach Thema verschränkt (verschraenke).
  */
-export function planeHeute(content: Content, progress: Progress, opt: PlanOptionen = {}): HeutePlan {
+export function planeHeute(content: KernInhalt, progress: Progress, opt: PlanOptionen = {}): HeutePlan {
   const today = opt.today ?? localDate();
-  const zufall = opt.zufall ?? erzeugeZufall(textSeed(today)).zahl;
+  const zufall = opt.zufall ?? erzeugeZufall(seedAusText(today)).zahl;
   const ziel = opt.minuten ?? HEUTE_MINUTEN;
   const topicTitle = (id: string | undefined) => content.topics.find((t) => t.id === id)?.title;
   const items: HeuteItem[] = [];
@@ -200,7 +194,7 @@ export function planeHeute(content: Content, progress: Progress, opt: PlanOption
   const { settings } = progress;
   let pool: Flashcard[] = cardPool(content.flashcards, settings);
   if (settings.leichtModus) {
-    const leicht = leichtKarten(pool, { automatisch: leichtAutomatischAn(settings) });
+    const leicht = leichtKartenGemerkt(pool, { automatisch: leichtAutomatischAn(settings) });
     pool = pool.filter((c) => leicht.has(c.id));
   }
   const proKarte = settings.leichtModus ? HEUTE_ZEITEN.karteLeicht : HEUTE_ZEITEN.karte;

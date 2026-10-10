@@ -4,7 +4,7 @@ import type { Rating } from '../../shared/progress';
 import type { Flashcard } from '../../shared/types';
 import { cardPool, filterCards, isKindEnabled, readCardFilter, withCardFilter, type CardFilter } from '../lib/cards';
 import { markierteIds } from '../lib/markiert';
-import { leichtAbfrage, leichtAutomatischAn, leichtKarten, type LeichtKarte, type LeichtOption } from '../lib/leicht';
+import { leichtAbfrage, leichtAutomatischAn, leichtKartenGemerkt, type LeichtKarte, type LeichtOption } from '../lib/leicht';
 import { rateCard, rateCardLeicht } from '../lib/progress';
 import { shuffle } from '../lib/shuffle';
 import { useStore } from '../lib/store';
@@ -25,7 +25,7 @@ export function useCardFilters() {
   const f = kindOk ? read : { ...read, art: 'alle' };
   const set = (changes: Partial<CardFilter>) => setParams(withCardFilter(params, changes), { replace: true });
   const pool = useMemo(() => cardPool(content.flashcards, { prueferfragen, fachgespraech }), [content, prueferfragen, fachgespraech]);
-  const leicht = useMemo(() => leichtKarten(pool, { automatisch }), [pool, automatisch]);
+  const leicht = useMemo(() => leichtKartenGemerkt(pool, { automatisch }), [pool, automatisch]);
   const markiert = useMemo(() => markierteIds(progress), [progress]);
   // ?karten=ID,ID,… (aus „Heute lernen“): genau diese Karten, die übrigen Filter gelten dann nicht.
   const auswahlParam = params.get('karten');

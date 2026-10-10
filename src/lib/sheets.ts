@@ -1,9 +1,10 @@
 // Erzeugt getrennte Aufgaben- und Lösungsblätter (Markdown) aus einer Aufgabenauswahl.
 
-import type { Content, Section, Task } from '../../shared/types';
+import type { Section, Task } from '../../shared/types';
 import { formatPoints } from './grading';
 import { klausurFuer, type MischKlausur, parseMischId } from './mischKlausur';
 import { localDate } from './progress';
+import type { KernInhalt } from '../../shared/texte';
 
 export type SheetKind = 'aufgaben' | 'loesungen';
 
@@ -48,7 +49,7 @@ function safeName(s: string): string {
 }
 
 /** Blatt für eine komplette Übungsklausur eines Themas oder eine gemischte Probeklausur („mix-…“, ROADMAP 8.5). */
-export function examSheet(content: Content, topicId: string, kind: SheetKind): Sheet | null {
+export function examSheet(content: KernInhalt, topicId: string, kind: SheetKind): Sheet | null {
   const misch = parseMischId(topicId) && klausurFuer(content, topicId);
   if (misch) {
     const exam = misch.exam as MischKlausur;
@@ -94,7 +95,7 @@ export function examSheet(content: Content, topicId: string, kind: SheetKind): S
 }
 
 /** Blatt für eine freie Auswahl von Aufgaben (gruppiert nach Thema). */
-export function selectionSheet(content: Content, taskIds: string[], kind: SheetKind): Sheet {
+export function selectionSheet(content: KernInhalt, taskIds: string[], kind: SheetKind): Sheet {
   const tasks = taskIds.map((id) => content.tasks[id]).filter(Boolean);
   const topicIds = [...new Set(tasks.map((t) => t.topicId))];
   const topics = topicIds.map((id) => content.topics.find((t) => t.id === id)!).filter(Boolean);

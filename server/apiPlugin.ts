@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import type { Plugin } from 'vite';
 import { GenerateRequestSchema, GradeRequestSchema, type ErrorResponse } from '../shared/api';
 import { checkProgressPut } from '../shared/progress';
+import { teileInhalt } from '../shared/texte';
 import type { Content } from '../shared/types';
 import { aiEnabled, generateTasks, gradeAnswer, MODEL } from './ai';
 import { createContentCache, withGenerated } from './contentCache';
@@ -14,7 +15,11 @@ import { isContentSource, ladeInhalt, SOURCE_DIR } from './loadContent';
 import { defineRoute, HttpError, matchRoute, parseBody, readBody, send, type Route } from './router';
 import { backupInfo, readGenerated, readProgress, writeGenerated, writeProgress } from './store';
 
-const contentCache = createContentCache(() => ladeInhalt());
+// Mit Kern (ohne Abschnittstexte) und Texten je Thema, wie content.json und texte/<id>.json in der Pages-Version (shared/texte.ts).
+const contentCache = createContentCache(() => {
+  const inhalt = ladeInhalt();
+  return { ...inhalt, ...teileInhalt(inhalt.content) };
+});
 
 /** Generierte Aufgaben werden bei jedem Request frisch aus data/ gelesen, nur die Lernblätter kommen aus dem Cache. */
 function contentWithGenerated(): Content {
@@ -23,7 +28,16 @@ function contentWithGenerated(): Content {
 
 // Antworttypen je Route stehen in shared/api.ts (ApiResponses) und werden von defineRoute erzwungen.
 const routes: Route[] = [
-  defineRoute('GET /api/content', () => contentWithGenerated()),
+  defineRoute('GET /api/content', () => withGenerated(contentCache.get().kern, readGenerated())),
+  defineRoute(
+    'GET /api/texte/:id',
+    ({ params: [id] }) => {
+      const texte = contentCache.get().texte[id];
+      if (!texte) throw new HttpError(404, 'Thema nicht gefunden.');
+      return texte;
+    },
+    /^\/api\/texte\/(.+)$/,
+  ),
   defineRoute('GET /api/begriffe', () => contentCache.get().seiten),
   defineRoute('GET /api/progress', () => readProgress()),
   defineRoute('GET /api/progress/backups', () => backupInfo()),

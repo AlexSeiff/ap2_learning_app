@@ -38,7 +38,7 @@ One React UI, three ways to run it:
 | | `npm run dev` | `npm start` (vite preview) | `npm run build:pages` (GitHub Pages) |
 |---|---|---|---|
 | API `/api/…` | `server/apiPlugin.ts` via `configureServer` | same middleware via `configurePreviewServer` | none; `src/lib/staticApi.ts` |
-| Learning sheets | live from `AP-2/`, page reloads on change | from `AP-2/`, cache cleared on change (F5) | `content/` → `content.json` in the build |
+| Learning sheets | live from `AP-2/`, page reloads on change | from `AP-2/`, cache cleared on change (F5) | `content/` → `content.json` + `texte/<id>.json` in the build (§ 3.1) |
 | Progress | `data/fortschritt.json` + daily backups | like dev | `localStorage` of the browser + daily backups in IndexedDB |
 | AI (`.env.local`) | yes | yes | never read, the key can't end up in the build; no AI UI at all (§ 8) |
 | Service worker / PWA | no | no | yes (`server/pwaPlugin.ts`, § 5 "PWA") |
@@ -71,6 +71,7 @@ lern-app/
 │  ├─ progress.ts       persisted progress: types, zod schema, checkProgressPut, migrateProgress
 │  ├─ mergeProgress.ts  merge a backup into the current progress (Daten & Import → Zusammenführen)
 │  ├─ rechenweg.ts      RechenSchritt type + German number formatting for worked solutions (Rechenweg)
+│  ├─ texte.ts          content split (plan phase 10): KernInhalt (sections without text) + texts per topic; teileInhalt, inhaltMitTexten
 │  └─ api.ts            API contract: request schemas + response types per route
 ├─ server/            runs only inside Vite (dev/preview)
 │  ├─ apiPlugin.ts      route table + middleware for /api/*
@@ -81,7 +82,7 @@ lern-app/
 │  │                    (Rechenübungen are checked against their template here → ImportIssues; content.json for Pages is built the same way)
 │  ├─ ai.ts             Claude: generateTasks(), gradeAnswer() with structured output
 │  ├─ mcWerkzeug.ts     pure logic of npm run mc-entwurf / mc-uebernehmen (mcEntwurf.ts, mcUebernehmen.ts, mcEntwurfPfade.ts, ladeEnv.ts)
-│  ├─ pagesPlugin.ts    emits content.json and begriffe.json (term pages) for the Pages build
+│  ├─ pagesPlugin.ts    emits content.json (core), texte/<id>.json and begriffe.json (term pages) for the Pages build; preload tag for content.json
 │  ├─ pwaPlugin.ts      vite-plugin-pwa options (manifest, precache) for the Pages build (PWA_OPTIONS, tested)
 │  ├─ report.ts         npm run import-report
 │  ├─ quellenPruefen.ts npm run quellen-pruefen (re-check every link of AP2_Quellen.json)
@@ -101,7 +102,8 @@ lern-app/
 │  │                    + store.tsx (React context), progressSaver.ts, api.ts, staticApi.ts, apiError.ts,
 │  │                    backup.ts, browserBackups.ts (IndexedDB), backupReminder.ts, persistentStorage.ts, pwa.ts (service worker registration),
 │  │                    navigation.ts (bottom bar groups, pure), heute + heuteSitzung (8.1), kalibrierung (8.3), operatoren + operatorStil (8.4),
-│  │                    mischKlausur (8.5), fehlergruende (8.7), suche + normalisiere (8.8), glossar (8.9)
+│  │                    mischKlausur (8.5), fehlergruende (8.7), suche + normalisiere (8.8), glossar (8.9),
+│  │                    texte (load section texts, hooks), suchIndex (search index cache), markdownSchlicht (Markdown fast path) (plan phase 10)
 │  ├─ rechnen/          Rechenübungen (pure, no React): typen.ts, zufall.ts (seeded PRNG), hilfen.ts (statistics helpers, LoesungsBau,
 │  │                    vorlage()), vorlagen/*.ts (28 templates, index.ts = registry), instanz.ts (baueInstanz), pruefen.ts (import check),
 │  │                    checker.ts (input checking + Fehlerbilder), formeln.ts (Formelsammlung data, also used by the Rechenwege),
@@ -110,6 +112,44 @@ lern-app/
 ├─ tests/             Vitest; fixtures/ with old progress formats and a mini sheet set
 └─ data/              fortschritt.json, generierte-aufgaben.json, backups/ (gitignored, local app only)
 ```
+
+### 3.1 Loading and performance (plan phase 10)
+
+Rule of the phase: nothing visible changes (before/after screenshots in `AP-2/Messung/phase10/`, Lighthouse values in
+`AP-2/Messung_Ausgangslage.md`).
+
+- **Core and texts** (`shared/texte.ts`): `content.json` / `GET /api/content` is a `KernInhalt` – everything except the section texts
+  (`Section.markdown`, about a third of the content). The texts lie per topic in `texte/<id>.json` / `GET /api/texte/<id>` (section id →
+  Markdown; DD17 includes the generated glossary list). The store's `content` is typed `KernInhalt`, so the compiler shows every place that
+  needs texts. Only four do: the Lernblatt page (`useThemaTexte(topic)`), Glossar, Begriffsseite and search (`useVollerInhalt()`), all in
+  `src/lib/texte.ts` (once per session per topic, `startTransition` for the render, „Lädt …“ until then, error text if loading fails).
+  A complete `Content` (tests, fixtures) is used directly (`istVoll`). Missing texts for a section (core and texts of different versions) throw
+  instead of showing empty sections. `ladeTexteFuerAdresse` (main.tsx) requests the text of a directly opened `#/lernen/<id>` at start.
+- **Preload**: the Pages `index.html` gets `<link rel="preload" href="./content.json" as="fetch" crossorigin>` (pagesPlugin), so the core
+  downloads in parallel to the JavaScript.
+- **Lazy pages**: only the Übersicht (start page) is in the main bundle; Themen/Thema, Karteikarten, Klausur, Aufgaben, Aufgabe, Material,
+  Fehlerjournal, Einstellungen, Daten, Druck (and Generator) are lazy (`SEITEN` in `App.tsx`) – with them react-markdown/remark-gfm.
+- **Preloading in idle time** (`useVorladen` in `App.tsx`, `imLeerlauf` = `requestIdleCallback`, Safari: timeout): page chunks, all texts and
+  the search index (`bereiteSucheVor`, `src/lib/suchIndex.ts`) – **only** in the local app or when the service worker controls the page (data
+  from its cache). Not on the very first visit: the service worker downloads everything then, extra requests slow the start (Lighthouse's
+  slow-4G model showed +1 s LCP). On the first visit each page loads what it needs when opened.
+- **Caches**: `glossarVon(content)` (client: glossary built once per content object, shared by Glossar, Begriffsseite, search; the server
+  calls the uncached `baueGlossar`, it mutates content while loading), `suchIndex(inhalt, seiten, settings)` (once per session and setting),
+  `leichtKartenGemerkt` (Leicht-Modus distractors: the TF-IDF over all cards ran on every Karteikarten visit and after every rating on
+  `/heute`; same card objects → same result, the pure `leichtKarten` stays uncached for tests).
+- **Store contexts**: the store value is memoised; the save state (`saveState`, `saveError`) has its own context (`useSpeicherStand`), so the
+  two state changes per save re-render only the header and the error banner instead of the whole page.
+- **Markdown fast path** (`src/lib/markdownSchlicht.ts`, `components/Markdown.tsx`): a one-line text without any Markdown character
+  (`istSchlicht`) renders as `<p>` without the parser – identical HTML, checked for every such text in `content/`. Not with `loesung` or
+  `operatoren` styling. The Glossar's 1,000+ definitions mostly take this path (script time −40 % on a throttled phone); `GlossarZeile` is
+  `memo`, so typing in the filter does not re-render the rows.
+- **Search**: `zusammen` (hyphen words) splits into words first and anchors the regex at word starts – same result, about 6× faster (the
+  old regex retried every position inside every word).
+- **KaTeX** once: `overrides` in `package.json` forces rehype-katex and micromark-extension-math onto the app's KaTeX 0.18 (before, a second
+  KaTeX 0.16 was bundled – and rendered with the 0.18 CSS, so subscripts in sheet formulas sat on the baseline).
+- Checked and left: `lint-*.js` (395 KB) is CodeMirror + the SQL grammar, not duplicated. zod (in `store-*.js`, 32 KB gzip) stays in the start
+  path (progress schema). `content-visibility: auto` for long lists was not used: iOS Safari has no scroll anchoring, so the A–Z jump bar and
+  `?stelle=` jumps would land off; layout is only about a fifth of the Glossar's render time.
 
 ## 4. Content
 
@@ -357,7 +397,7 @@ Today **393 entries, 236 different URLs** (Studyflix 227, Wikipedia 115, Gesetze
 answers bots with 202 and an empty page, so the AI Act links to the EU-Kommission page instead.
 **Re-check:** `npm run quellen-pruefen` (`server/quellenPruefen.ts`) fetches every URL again (one at a time, 400 ms pause, 20 s timeout) and
 lists everything that doesn't answer 2xx (exit code 1). Replace or remove dead links in `AP-2/AP2_Quellen.json`, then `npm run sync-content`.
-Size: about 80 KB of `content.json` (now ~2.07 MB, ~586 KB gzip).
+Size: about 80 KB of `content.json` (core since plan phase 10: ~1.34 MB, ~351 KB gzip).
 
 ### 4.5 Updating content for Pages
 
@@ -662,7 +702,8 @@ only in `useCardSession` state and is cleared for the next card – **not persis
   `seitenFinder`) are left out; the others stay as kind `glossar`. `sucheBegriffe(index, query, alle)` returns **only terms** (pages and glossary
   entries) when at least one matches – the dialog offers „n weitere in Lernblättern, Karten und Aufgaben“ (`alle`); if no term matches, the
   other hits come directly (`rueckfall`, with a note). A page whose name matches shows the start of its definition as snippet. The dialog loads
-  the term pages with `ladeBegriffe()`; until they are there, the glossary entries are searched.
+  the section texts (`useVollerInhalt`) and the term pages (`ladeBegriffe()`; if that fails, the glossary entries are searched) and takes the
+  index from `suchIndex()` (`src/lib/suchIndex.ts`, built once per session and setting, usually already in idle time – § 3.1).
 - **Dialog** `components/SucheDialog.tsx` is a lazy chunk together with the index, formulas, operators and glossary; it loads on the first
   `Strg+K`/`⌘K` (listener in `App.tsx`, `useSuche`) or click on the search button in the header. Combobox pattern
   (`role=combobox` + `listbox`/`option`, `aria-activedescendant`), ↑/↓/Home, Enter opens, Esc or a click outside closes, focus returns.
@@ -683,7 +724,7 @@ only in `useCardSession` state and is cleared for the next card – **not persis
     (`guteDefinition`). A bold word inside running text without a definition only counts with two findings or as an abbreviation.
   - **Dedupe** by `glossarSchluessel` (normalised, bracket suffix ignored: "OLAP" = "OLAP (Online Analytical Processing)"); term card before `wissen` card before sheet definition; up to 4 sources (`📖 Deep Dive n · Abschnitt` or `🃏 Karte`). Sorted with `Intl.Collator('de')`, letter = first
     normalised letter (Ä → A), `#` otherwise. Today **1.135 terms, 1.064 with a definition**. The page links to `/karteikarten?typ=begriff`. Some noise remains (e.g. names from WiSo scenarios).
-- **Page** `/glossar` (lazy `pages/Glossar.tsx`; `/material/glossar` redirects): sticky letter bar A–Z (letters without terms greyed), filter field,
+- **Page** `/glossar` (lazy `pages/Glossar.tsx`; `/material/glossar` redirects; waits for the section texts and uses `glossarVon`, § 3.1): sticky letter bar A–Z (letters without terms greyed), filter field,
   `<dl>` per letter with anchors `g-<id>`, definitions as Markdown (KaTeX only if a `$` occurs), source links; a term with a term page is a
   link to it („›“). Glossary search hits link to `/glossar?stelle=g-<id>`. It belongs to the area „Glossar“ (sub-target „Begriffe A–Z“).
 - **Navigation to Deep Dive 17**: sub-target „Diagramme“ of the area „Glossar“ (`GLOSSAR_PFAD = '/lernen/17'` in `navigation.ts`; „Themen“ is
@@ -738,7 +779,7 @@ applied in `main.tsx` before the first render), error boundary per route, own co
   nowhere – each Deep Dive counts once, to the area most of its exam blocks belong to in `UNTERBEREICHE`), `bereichFortschritt` (cards in box ≥ 3;
   exercises = tasks whose last attempt reached `SICHER_RICHTIG_AB` + solved SQL, Rechen and Diagramm exercises; diagram exercises count to
   Prozessanalyse), `faellig` (journal, cards incl. new, SQL/Rechen/Diagramm repetitions), `begriffDesTages` (term page fixed per day via
-  `textSeed`, preferring terms with a Begriffskarte so the short definition is shown without loading `begriffe.json`), `klausurVerlauf`.
+  `seedAusText` (`src/rechnen/zufall.ts`), preferring terms with a Begriffskarte so the short definition is shown without loading `begriffe.json`), `klausurVerlauf`.
 - **Rings** `src/components/Ring.tsx`: `Ringe` (concentric inline-SVG circles with `pathLength=100`, `role="img"` + label; outer = cards,
   inner = exercises) and `MiniRing` (one ring in the IHK colour step + percent; replaces the `.bar` with `mix-blend-mode` on the dashboard –
   the plain `.bar.wide` progress bars of the exercise lists stay).
@@ -801,8 +842,9 @@ applied in `main.tsx` before the first render), error boundary per route, own co
   linked in `index.html`). They were generated once from the icon of the former desktop build (512 × 512) with Windows System.Drawing
   (high-quality bicubic) and committed – no image library in the project. `tests/pwa.test.ts` checks that every icon exists with the declared size.
 - **Precache** (`globPatterns` `**/*.{html,js,css,json,wasm,woff2}` + manifest + icons): index.html, all JS chunks including the lazy ones
-  (SQL, Rechnen, KaTeX, CodeMirror), CSS, `content.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf are not cached; every
-  current browser uses woff2), `begriffe.json`. Today **56 entries, about 6 MB** (incl. the lazy search and glossary chunks). `maximumFileSizeToCacheInBytes` is 8 MB (content.json ~2.1 MB, begriffe.json ~1.5 MB).
+  (SQL, Rechnen, KaTeX, CodeMirror, the lazy pages), CSS, `content.json`, `texte/*.json`, `sql-wasm.wasm`, the KaTeX **woff2** fonts (woff/ttf
+  are not cached; every current browser uses woff2), `begriffe.json`. Today **97 entries, about 6.1 MB**. `maximumFileSizeToCacheInBytes` is
+  8 MB (content.json ~1.3 MB, begriffe.json ~1.5 MB).
   Navigations fall back to the cached `index.html`, so the app starts offline after the first visit (SQL editor and formulas included).
 - **Updates** (`registerType: 'prompt'`, no `skipWaiting`/`clientsClaim`): every precached file has a revision hash in `sw.js`, so any change
   (also only `content.json` after `npm run sync-content`) changes `sw.js`. The browser installs the new worker, which then **waits**.
@@ -1027,6 +1069,10 @@ npm run build && npm run build:pages
 - Plan phase 9: `uebersicht.test.ts` (every Deep Dive in exactly one Prüfungsbereich and consistent with `UNTERBEREICHE`; ring counts:
   box 3 vs 2, 80 % vs 70 %, solved SQL and diagram; due counts; term of the day fixed per day and varying; exam history; reading position;
   rings and mini rings; page: all widgets, no `.bar`, every topic row with labels, countdown and exams with data).
+- Plan phase 10: `performance.test.ts` (core + texts give exactly the content again, section ids unique, core < 75 %, missing text throws,
+  Pages build emits core/texts/term pages and the preload; Lernblatt and Glossar show „Lädt …“ with the core and render normally with the full
+  content; text request from the address; glossary/search index/Leicht caches; hyphen words equal to the old regex on all texts; Markdown fast
+  path: detection and identical HTML for every plain text in `content/`).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)
@@ -1040,3 +1086,5 @@ npm run build && npm run build:pages
 4. Keep content read-only in the app; content changes go through `AP-2/` + `npm run sync-content`.
 5. Pure logic in `shared/` or `src/lib/` with tests; pages mostly render.
 6. German UI, existing tone and style (2 spaces, single quotes, printWidth ~140, trailing commas).
+7. **Section texts are not in the store** (§ 3.1): a page that needs `Section.markdown` uses `useThemaTexte` or `useVollerInhalt`; lib
+   functions that don't need texts take `KernInhalt`. Keep the main bundle small: new pages are lazy, and add them to `SEITEN` in `App.tsx`.

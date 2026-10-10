@@ -11,7 +11,8 @@
 //   Mehr: Deep Dive 5, 6.5 · Deep Dive 11, A3
 // Am Ende jeder Datei „## Ausgelassen“ mit Begriffen ohne Seite – wird übersprungen.
 
-import type { BegriffsSeite, Content, ImportIssue } from './types';
+import type { KernInhalt } from './texte';
+import type { BegriffsSeite, ImportIssue } from './types';
 
 const ID_KOMMENTAR = /^<!--\s*id:\s*([^·]+?)\s*(?:·\s*quellen:\s*([^·]*?)\s*)?(?:·\s*stand:\s*([^·]*?)\s*)?-->\s*$/;
 
@@ -137,7 +138,7 @@ export interface MehrZiel {
  * ohne solchen Abschnitt die Aufgabe 11-A3;
  * „Deep Dive 2, Denormalisierung“ → Abschnitt mit diesem Titel; „SQL-Zusatz 1.2“ → Zusatzmaterial SQL (Thema 00).
  */
-export function mehrZiel(ref: string, content: Pick<Content, 'topics' | 'tasks'>): MehrZiel {
+export function mehrZiel(ref: string, content: Pick<KernInhalt, 'topics' | 'tasks'>): MehrZiel {
   const m = /^(?:Deep Dive\s+(\d+)|SQL-Zusatz)\s*,?\s*(.+)$/.exec(ref.trim());
   if (!m) return { text: ref };
   const topicId = m[1] ? m[1].padStart(2, '0') : '00';

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { istSchlicht } from '../lib/markdownSchlicht';
 import { type MarkdownProps, stylePlugins, useMarkdownComponents } from './markdownComponents';
 
 // Formeln ($…$, $$…$$) mit KaTeX: eigener Chunk, damit remark-math, rehype-katex und KaTeX (samt CSS und Schriften)
@@ -24,6 +25,14 @@ export function Markdown({ math, ...props }: MarkdownProps & { math?: boolean })
 
 function PlainMarkdown({ children, className, source, loesung, operatoren }: MarkdownProps) {
   const components = useMarkdownComponents(source);
+  // Schlichter Text (kein Markdown-Zeichen): gleiche Ausgabe ohne Parser. Lösungs- und Operatoren-Stil verändern auch reinen Text.
+  if (!loesung && !operatoren && istSchlicht(children)) {
+    return (
+      <div className={`md ${className ?? ''}`}>
+        <p>{children}</p>
+      </div>
+    );
+  }
   return (
     <div className={`md ${className ?? ''}`}>
       <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={stylePlugins(loesung, operatoren)} components={components}>

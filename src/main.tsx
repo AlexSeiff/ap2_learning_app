@@ -5,11 +5,14 @@ import { ConfirmProvider } from './components/ConfirmDialog';
 import { IS_STATIC } from './lib/api';
 import { registriereServiceWorker } from './lib/pwa';
 import { StoreProvider } from './lib/store';
+import { ladeTexteFuerAdresse } from './lib/texte';
 import { leseTheme, wendeThemeAn } from './lib/theme';
 import './styles.css';
 
 // Farbschema vor dem ersten Zeichnen setzen (kein Aufblitzen im falschen Design).
 wendeThemeAn(leseTheme());
+// Direkt geöffnetes Lernblatt: seinen Text gleich mit dem Inhalt laden (lib/texte.ts).
+ladeTexteFuerAdresse(window.location.hash);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

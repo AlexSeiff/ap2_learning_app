@@ -3,7 +3,8 @@
 
 import { namensSchluessel, seitenNachName } from '../../shared/begriffsseiten';
 import { DIAGRAMM_TYP_NAMEN, type DiagrammTyp, type DiagrammUebung } from '../../shared/diagrammUebungen';
-import type { BegriffKurz, BegriffsSeite, Content, Flashcard, RechenUebung, SqlExercise, Task } from '../../shared/types';
+import type { KernInhalt } from '../../shared/texte';
+import type { BegriffKurz, BegriffsSeite, Flashcard, RechenUebung, SqlExercise, Task } from '../../shared/types';
 import { api } from './api';
 import { glossarSchluessel, ueberschriftKern, type GlossarEintrag } from './glossar';
 import { normalisiere } from './normalisiere';
@@ -35,7 +36,7 @@ export interface Verweis {
 export function verweisAufloeser(
   begriffe: Pick<BegriffKurz, 'id' | 'begriff' | 'auch'>[],
   glossar: Pick<GlossarEintrag, 'id' | 'begriff'>[],
-  content: Pick<Content, 'topics'>,
+  content: Pick<KernInhalt, 'topics'>,
 ): (name: string) => Verweis {
   const seiten = seitenNachName(begriffe);
   const eintraege = new Map(glossar.map((e) => [namensSchluessel(e.begriff), e.id]));
@@ -103,7 +104,7 @@ const TYP_BEGRIFFE: [DiagrammTyp, string[]][] = [
  * Karten, deren Antwort ihn nennt; Einzelaufgaben, Rechen- und SQL-Übungen, deren Text ihn nennt. Ganze Wörter, Groß-/Kleinschreibung
  * und Umlaut-Schreibweisen egal. `cards` = die Karten, die der Nutzer sieht (cardPool).
  */
-export function uebungenZuBegriff(b: Pick<BegriffKurz, 'begriff' | 'auch'>, content: Content, cards: Flashcard[]): Uebungen {
+export function uebungenZuBegriff(b: Pick<BegriffKurz, 'begriff' | 'auch'>, content: KernInhalt, cards: Flashcard[]): Uebungen {
   const woerter = begriffsWoerter(b);
   const schluessel = glossarSchluessel(b.begriff);
   const begriffskarte = (c: Flashcard) => c.typ === 'begriff' && glossarSchluessel(c.question) === schluessel;

@@ -14,8 +14,9 @@
 // 4. Bleiben insgesamt Punkte offen, füllt ein zweiter Durchgang mit weiteren Anfängen (erst im selben Unterbereich, dann in allen),
 //    bis 100 erreicht sind oder nichts mehr passt. Nie über 100 Punkte, keine Aufgabe doppelt.
 
-import type { Content, Exam, ExamBlock, MaterialDoc, Section, Task, Topic } from '../../shared/types';
+import type { Exam, ExamBlock, MaterialDoc, Section, Task, Topic } from '../../shared/types';
 import { erzeugeZufall } from '../rechnen/zufall';
+import type { KernInhalt, KernTopic } from '../../shared/texte';
 
 export type MischBereich = 'prozess' | 'qualitaet' | 'gemischt';
 
@@ -171,12 +172,12 @@ export interface MischKlausur extends Exam {
   ziele: Record<string, number>;
 }
 
-const topicLabel = (t: Topic) => (t.id === '00' ? 'SQL-Zusatz' : `Deep Dive ${t.number}`);
+const topicLabel = (t: Pick<Topic, 'id' | 'number'>) => (t.id === '00' ? 'SQL-Zusatz' : `Deep Dive ${t.number}`);
 
-type Kandidat = { topic: Topic; block: ExamBlock; tasks: Task[] };
+type Kandidat = { topic: KernTopic; block: ExamBlock; tasks: Task[] };
 
 /** Alle Blöcke der Übungsklausuren, aus denen ein Unterbereich schöpfen darf (ohne leere). */
-function kandidaten(content: Content, u: Unterbereich): Kandidat[] {
+function kandidaten(content: KernInhalt, u: Unterbereich): Kandidat[] {
   const out: Kandidat[] = [];
   for (const q of u.quellen) {
     const topic = content.topics.find((t) => t.id === q.topicId);
@@ -232,7 +233,7 @@ export const MISCH_VERSUCHE = 8;
  * Probiert bis zu MISCH_VERSUCHE Zusammenstellungen (aus dem Seed abgeleitet) und nimmt die erste mit genau 100 Punkten,
  * sonst die mit den meisten Punkten (nie mehr als 100).
  */
-export function baueMischKlausur(content: Content, bereich: MischBereich, seed: number): MischKlausur {
+export function baueMischKlausur(content: KernInhalt, bereich: MischBereich, seed: number): MischKlausur {
   let beste: MischKlausur | undefined;
   for (let v = 0; v < MISCH_VERSUCHE; v++) {
     const k = stelleZusammen(content, bereich, seed, (seed + Math.imul(v, 0x9e3779b1)) >>> 0);
@@ -242,7 +243,7 @@ export function baueMischKlausur(content: Content, bereich: MischBereich, seed: 
   return beste!;
 }
 
-function stelleZusammen(content: Content, bereich: MischBereich, seed: number, zufallsSeed: number): MischKlausur {
+function stelleZusammen(content: KernInhalt, bereich: MischBereich, seed: number, zufallsSeed: number): MischKlausur {
   const zufall = erzeugeZufall(zufallsSeed);
   const unter = UNTERBEREICHE.filter((u) => bereich === 'gemischt' || u.bereich === bereich);
   const gewichte = gewichteAusThemenliste(themenliste(content.materials)?.markdown);
@@ -361,13 +362,13 @@ export interface KlausurQuelle {
   id: string;
   exam: Exam | MischKlausur;
   /** Nur bei der Klausur eines Deep Dives. */
-  topic?: Topic;
+  topic?: KernTopic;
   /** Nur bei einer gemischten Klausur. */
   misch?: MischKlausur;
   untertitel: string;
 }
 
-export function klausurFuer(content: Content, id: string | undefined): KlausurQuelle | undefined {
+export function klausurFuer(content: KernInhalt, id: string | undefined): KlausurQuelle | undefined {
   const m = parseMischId(id);
   if (m) {
     const misch = baueMischKlausur(content, m.bereich, m.seed);
@@ -380,7 +381,7 @@ export function klausurFuer(content: Content, id: string | undefined): KlausurQu
 }
 
 /** Anzeigename einer Klausur aus der Historie (ExamRun.topicId) – ohne die gemischte Klausur aufzubauen. */
-export function klausurName(content: Content, id: string): string {
+export function klausurName(content: KernInhalt, id: string): string {
   const m = parseMischId(id);
   if (m) return `Gemischt (${MISCH_BEREICHE.find((b) => b.id === m.bereich)!.kurz})`;
   return content.topics.find((t) => t.id === id)?.title ?? id;

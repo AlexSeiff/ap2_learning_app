@@ -74,9 +74,19 @@ export function klartext(md: string): string {
     .trim();
 }
 
-/** Bindestrich-Wörter zusätzlich zusammengeschrieben („k-NN“ → „knn“, „E-Mail“ → „email“), damit auch „knn“ sie findet. */
-const zusammen = (s: string) =>
-  (s.match(/[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu) ?? []).map((w) => normalisiere(w).replace(/ /g, '')).join(' ');
+/** Bindestrich-Wort, nur ab Wortanfang (sonst probiert die Regex jede Stelle mitten im Wort erneut). */
+const BINDESTRICH_WORT = /(?<![\p{L}\p{N}])[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+/gu;
+
+/**
+ * Bindestrich-Wörter zusätzlich zusammengeschrieben („k-NN“ → „knn“, „E-Mail“ → „email“), damit auch „knn“ sie findet.
+ * Nur Wörter mit „-“ prüfen: ein Treffer enthält nie Leerraum, das Ergebnis ist dasselbe wie über den ganzen Text – aber etwa 6× schneller.
+ */
+export const zusammen = (s: string) =>
+  s
+    .split(/\s+/)
+    .flatMap((w) => (w.includes('-') ? (w.match(BINDESTRICH_WORT) ?? []) : []))
+    .map((w) => normalisiere(w).replace(/ /g, ''))
+    .join(' ');
 
 /** `auch`: weitere Namen, die wie der Titel zählen (andere Schreibweisen einer Begriffsseite). */
 const eintrag = (art: SuchArt, titel: string, kontext: string, text: string, link: string, auch: string[] = []): SuchEintrag => ({

@@ -141,6 +141,25 @@ function bereich(c: Flashcard): string | undefined {
 
 type Kurz = { card: Flashcard; text: string; norm: string; voll: Vektor; antwort: Vektor };
 
+/** Zuletzt berechnete Ergebnisse von leichtKartenGemerkt (Karten, Schalter, Ergebnis). */
+const gemerkt: { cards: Flashcard[]; automatisch: boolean; ergebnis: Map<string, LeichtKarte> }[] = [];
+
+/**
+ * leichtKarten() mit Gedächtnis (Umsetzungsplan Phase 10): Die Ähnlichkeitsrechnung über alle Karten kostet auf dem Handy einige
+ * hundert Millisekunden – bisher bei jedem Öffnen der Karteikarten und auf „Heute lernen“ nach jeder Bewertung. Gleiche Karten
+ * (dieselben Objekte in derselben Reihenfolge, der Inhalt ändert sich in der App nie) → dasselbe Ergebnis. Das Ergebnis nicht verändern.
+ */
+export function leichtKartenGemerkt(cards: Flashcard[], opts: { automatisch: boolean }): Map<string, LeichtKarte> {
+  const treffer = gemerkt.find(
+    (g) => g.automatisch === opts.automatisch && g.cards.length === cards.length && g.cards.every((c, i) => c === cards[i]),
+  );
+  if (treffer) return treffer.ergebnis;
+  const ergebnis = leichtKarten(cards, opts);
+  gemerkt.unshift({ cards, automatisch: opts.automatisch, ergebnis });
+  gemerkt.length = Math.min(gemerkt.length, 4);
+  return ergebnis;
+}
+
 /**
  * Alle Karten, die den Leicht-Modus unterstützen, mit ihrer Antwortquelle.
  * - Mit Block „mc“: immer (außer Fachgespräch-Fragen – die sind fürs freie Sprechen).

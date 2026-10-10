@@ -6,37 +6,37 @@
 import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { BegriffsSeite } from '../../shared/types';
-import { ladeBegriffe, seitenFinder } from '../lib/begriffe';
-import { baueGlossar, glossarSuchEintraege } from '../lib/glossar';
+import { ladeBegriffe } from '../lib/begriffe';
 import { useStore } from '../lib/store';
-import { baueSuchIndex, begriffSuchEintraege, SUCH_ART, sucheBegriffe } from '../lib/suche';
+import { SUCH_ART, sucheBegriffe } from '../lib/suche';
+import { suchIndex } from '../lib/suchIndex';
+import { useVollerInhalt } from '../lib/texte';
 import { Icon } from './Icon';
 
 export function SucheDialog({ onClose }: { onClose: () => void }) {
-  const { content, progress } = useStore();
+  const { progress } = useStore();
   const navigate = useNavigate();
   const { prueferfragen, fachgespraech } = progress.settings;
-  // Begriffsseiten nachladen; bis dahin führt die Suche zu den Glossar-Einträgen.
-  const [seiten, setSeiten] = useState<BegriffsSeite[]>([]);
+  // Lernblatt-Texte und Begriffsseiten nachladen (meist schon im Leerlauf geschehen, lib/suchIndex.ts); ohne Begriffsseiten
+  // (Ladefehler) führt die Suche zu den Glossar-Einträgen.
+  const { inhalt, fehler } = useVollerInhalt();
+  const [seiten, setSeiten] = useState<BegriffsSeite[] | null>(null);
   useEffect(() => {
     let aktiv = true;
     ladeBegriffe().then(
       (s) => aktiv && setSeiten(s),
-      () => {},
+      () => aktiv && setSeiten([]),
     );
     return () => {
       aktiv = false;
     };
   }, []);
-  const index = useMemo(() => {
-    // Glossar-Einträge, die eine Begriffsseite haben (auch über eine andere Schreibweise), stehen als Seite im Index.
-    const seiteZu = seitenFinder(seiten);
-    const glossar = glossarSuchEintraege(
-      baueGlossar(content).filter((e) => !seiteZu(e)),
-      content,
-    );
-    return baueSuchIndex(content, { prueferfragen, fachgespraech }, [...begriffSuchEintraege(seiten), ...glossar]);
-  }, [content, prueferfragen, fachgespraech, seiten]);
+  // Einmal je Sitzung gebaut und gemerkt (suchIndex), nicht bei jedem Öffnen.
+  const index = useMemo(
+    () => (inhalt && seiten ? suchIndex(inhalt, seiten, { prueferfragen, fachgespraech }) : []),
+    [inhalt, seiten, prueferfragen, fachgespraech],
+  );
+  const laedt = !fehler && (!inhalt || !seiten);
   const [anfrage, setAnfrage] = useState('');
   const [aktiv, setAktiv] = useState(0);
   const [alle, setAlle] = useState(false);
@@ -111,7 +111,11 @@ export function SucheDialog({ onClose }: { onClose: () => void }) {
             Esc
           </button>
         </div>
-        {anfrage.trim().length >= 2 && !treffer.length && <p className="muted suche-leer">Keine Treffer für „{anfrage.trim()}“.</p>}
+        {fehler && <p className="card warn">{fehler}</p>}
+        {laedt && anfrage.trim().length >= 2 && <p className="muted suche-leer">Lädt …</p>}
+        {!laedt && anfrage.trim().length >= 2 && !treffer.length && (
+          <p className="muted suche-leer">Keine Treffer für „{anfrage.trim()}“.</p>
+        )}
         {anfrage.trim().length < 2 && (
           <p className="muted suche-leer">
             Findet die Begriffsseite zu deinem Suchwort – dort stehen Erklärung, Beispiel und die passenden Übungen. Auf Wunsch auch

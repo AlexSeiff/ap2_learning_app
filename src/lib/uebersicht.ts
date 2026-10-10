@@ -7,12 +7,13 @@ import type { BegriffKurz, Content, Flashcard } from '../../shared/types';
 import { cardPool } from './cards';
 import { diagrammSummary, diagrammUebungen } from './diagramme';
 import { glossarSchluessel } from './glossar';
-import { textSeed } from './heute';
+import { seedAusText } from '../rechnen/zufall';
 import { klausurName } from './mischKlausur';
 import { isDue, localDate } from './progress';
 import { rechenSummary } from './rechnen';
 import { sqlSummary } from './sql';
 import { percent } from './grading';
+import type { KernInhalt } from '../../shared/texte';
 
 export type PruefungsbereichId = 'prozess' | 'qualitaet' | 'wiso';
 
@@ -54,7 +55,7 @@ export interface BereichFortschritt {
 export const quote = (a: Anteil) => (a.gesamt > 0 ? a.erreicht / a.gesamt : 0);
 
 /** Fortschritt je Prüfungsbereich für die Ringe. Es gelten die Einstellungen Prüferfragen/Fachgespräch (cardPool). */
-export function bereichFortschritt(content: Content, progress: Progress): BereichFortschritt[] {
+export function bereichFortschritt(content: KernInhalt, progress: Progress): BereichFortschritt[] {
   const pool = cardPool(content.flashcards, progress.settings);
   const letzter = new Map<string, number>();
   for (const a of progress.attempts) letzter.set(a.taskId, a.max > 0 ? a.points / a.max : 0);
@@ -89,7 +90,7 @@ export interface Faellig {
 }
 
 /** Was heute fällig ist: Fehlerjournal, Karteikarten (auch neue), SQL-, Rechen- und Diagramm-Wiederholungen. */
-export function faellig(content: Content, progress: Progress, today = localDate()): Faellig {
+export function faellig(content: KernInhalt, progress: Progress, today = localDate()): Faellig {
   const pool = cardPool(content.flashcards, progress.settings);
   return {
     journal: Object.values(progress.journal).filter((j) => !j.resolvedAt && isDue(j.due, today)).length,
@@ -134,7 +135,7 @@ export function begriffDesTages(content: Pick<Content, 'begriffe' | 'flashcards'
   const mitKarte = alle.filter((b) => karten.has(glossarSchluessel(b.begriff)));
   const auswahl = mitKarte.length ? mitKarte : alle;
   if (!auswahl.length) return undefined;
-  const begriff = auswahl[textSeed(`begriff:${today}`) % auswahl.length];
+  const begriff = auswahl[seedAusText(`begriff:${today}`) % auswahl.length];
   const karte = karten.get(glossarSchluessel(begriff.begriff));
   return { begriff, ...(karte ? { karte } : {}) };
 }
@@ -149,7 +150,7 @@ export interface KlausurLauf {
 }
 
 /** Alle abgeschlossenen Übungsklausuren (auch gemischte), älteste zuerst, und der Durchschnitt in Prozent. */
-export function klausurVerlauf(content: Content, progress: Progress): { laeufe: KlausurLauf[]; schnitt?: number } {
+export function klausurVerlauf(content: KernInhalt, progress: Progress): { laeufe: KlausurLauf[]; schnitt?: number } {
   const laeufe = progress.exams
     .filter((e) => typeof e.total === 'number' && e.max > 0)
     .map((e) => ({

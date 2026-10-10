@@ -13,19 +13,38 @@ import { isDue } from './lib/progress';
 import { rechenSummary } from './lib/rechnen';
 import { diagrammSummary, diagrammUebungen } from './lib/diagramme';
 import { sqlSummary } from './lib/sql';
-import { useStore } from './lib/store';
-import { Aufgabe } from './pages/Aufgabe';
-import { Aufgaben } from './pages/Aufgaben';
-import { Daten } from './pages/Daten';
+import { useSpeicherStand, useStore } from './lib/store';
+import { imLeerlauf, ladeTexteImLeerlauf } from './lib/texte';
 import { Dashboard } from './pages/Dashboard';
-import { Druck } from './pages/Druck';
-import { Einstellungen } from './pages/Einstellungen';
-import { Fehlerjournal } from './pages/Fehlerjournal';
-import { Generator } from './pages/Generator';
-import { Karteikarten } from './pages/Karteikarten';
-import { Klausur, KlausurAuswahl } from './pages/Klausur';
-import { Material } from './pages/Material';
-import { Thema, Themen } from './pages/Themen';
+
+// Umsetzungsplan Phase 10: Nur die Übersicht (Startseite) steckt im Hauptbundle. Die übrigen Seiten, die früher mit ihm kamen, sind
+// lazy – mit ihnen Markdown (react-markdown, remark-gfm). Damit der Seitenwechsel nicht erst lädt, holt useVorladen() sie im Leerlauf.
+const SEITEN = {
+  aufgabe: () => import('./pages/Aufgabe'),
+  aufgaben: () => import('./pages/Aufgaben'),
+  daten: () => import('./pages/Daten'),
+  druck: () => import('./pages/Druck'),
+  einstellungen: () => import('./pages/Einstellungen'),
+  fehlerjournal: () => import('./pages/Fehlerjournal'),
+  karteikarten: () => import('./pages/Karteikarten'),
+  klausur: () => import('./pages/Klausur'),
+  material: () => import('./pages/Material'),
+  themen: () => import('./pages/Themen'),
+};
+const Aufgabe = lazy(() => SEITEN.aufgabe().then((m) => ({ default: m.Aufgabe })));
+const Aufgaben = lazy(() => SEITEN.aufgaben().then((m) => ({ default: m.Aufgaben })));
+const Daten = lazy(() => SEITEN.daten().then((m) => ({ default: m.Daten })));
+const Druck = lazy(() => SEITEN.druck().then((m) => ({ default: m.Druck })));
+const Einstellungen = lazy(() => SEITEN.einstellungen().then((m) => ({ default: m.Einstellungen })));
+const Fehlerjournal = lazy(() => SEITEN.fehlerjournal().then((m) => ({ default: m.Fehlerjournal })));
+const Karteikarten = lazy(() => SEITEN.karteikarten().then((m) => ({ default: m.Karteikarten })));
+const Klausur = lazy(() => SEITEN.klausur().then((m) => ({ default: m.Klausur })));
+const KlausurAuswahl = lazy(() => SEITEN.klausur().then((m) => ({ default: m.KlausurAuswahl })));
+const Material = lazy(() => SEITEN.material().then((m) => ({ default: m.Material })));
+const Themen = lazy(() => SEITEN.themen().then((m) => ({ default: m.Themen })));
+const Thema = lazy(() => SEITEN.themen().then((m) => ({ default: m.Thema })));
+// KI-Aufgaben nur in der lokalen App.
+const Generator = lazy(() => import('./pages/Generator').then((m) => ({ default: m.Generator })));
 
 // SQL-Seiten lazy: sql.js (WASM) und CodeMirror landen so nicht im Hauptbundle.
 const SqlFrei = lazy(() => import('./pages/SqlFrei').then((m) => ({ default: m.SqlFrei })));
@@ -96,6 +115,31 @@ function useNavBadges(): Record<NavBadge, number> {
   };
 }
 
+/**
+ * Im Leerlauf vorladen (Umsetzungsplan Phase 10): Seiten, Lernblatt-Texte und Suchindex, damit Seitenwechsel, Glossar und Suche nicht
+ * warten. Nur wo die Daten nichts kosten – in der lokalen App oder wenn der Service Worker sie aus seinem Cache liefert. Beim
+ * allerersten Besuch nicht: Da lädt der Service Worker selbst gerade alles herunter, und jede weitere Anfrage bremst den Start
+ * (auf langsamen Verbindungen sichtbar, Lighthouse misst es mit). Dann lädt jede Seite, was sie braucht, beim Öffnen.
+ */
+function useVorladen() {
+  const { content, progress } = useStore();
+  const { prueferfragen, fachgespraech } = progress.settings;
+  useEffect(() => {
+    if (IS_STATIC && !navigator.serviceWorker?.controller) return;
+    const abbrechen = [
+      // Die Seiten, die früher im Hauptbundle steckten.
+      imLeerlauf(() => {
+        for (const laden of Object.values(SEITEN)) void laden().catch(() => {});
+      }, 3000),
+      ladeTexteImLeerlauf(content),
+      imLeerlauf(() => {
+        void import('./lib/suchIndex').then((m) => m.bereiteSucheVor(content, { prueferfragen, fachgespraech }));
+      }, 8000),
+    ];
+    return () => abbrechen.forEach((f) => f());
+  }, [content, prueferfragen, fachgespraech]);
+}
+
 const SAVE_TEXT: Record<string, string> = {
   gespeichert: 'Gespeichert',
   speichert: 'Speichert …',
@@ -104,8 +148,9 @@ const SAVE_TEXT: Record<string, string> = {
 };
 
 function Nav({ onSuche }: { onSuche: () => void }) {
-  const { saveState } = useStore();
+  const { saveState } = useSpeicherStand();
   const badges = useNavBadges();
+  useVorladen();
   return (
     <>
       <Kopfleiste onSuche={onSuche} badges={badges} saveText={SAVE_TEXT[saveState] ?? SAVE_TEXT.fehler} saveState={saveState} />
@@ -124,7 +169,7 @@ function SkipLink() {
 }
 
 function SaveErrorBanner() {
-  const { saveError, saveState } = useStore();
+  const { saveError, saveState } = useSpeicherStand();
   if (saveState === 'konflikt') {
     // Dieser Tab speichert nicht mehr, sonst würde er den Fortschritt aus dem anderen Tab überschreiben.
     return (
@@ -170,7 +215,14 @@ function Layout() {
   return (
     <>
       <Routes>
-        <Route path="/druck" element={<Druck />} />
+        <Route
+          path="/druck"
+          element={
+            <Suspense fallback={<div className="page loading">Lädt …</div>}>
+              <Druck />
+            </Suspense>
+          }
+        />
         <Route
           path="*"
           element={
