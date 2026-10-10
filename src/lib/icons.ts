@@ -60,6 +60,10 @@ export const ICONS = {
     ['path', { d: 'm15 9-6 6' }],
     ['path', { d: 'm9 9 6 6' }],
   ],
+  clock: [
+    ['circle', { cx: '12', cy: '12', r: '10' }],
+    ['path', { d: 'M12 6v6l4 2' }],
+  ],
   database: [
     ['ellipse', { cx: '12', cy: '5', rx: '9', ry: '3' }],
     ['path', { d: 'M3 5V19A9 3 0 0 0 21 19V5' }],
@@ -333,6 +337,10 @@ export const ICONS = {
     ['path', { d: 'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6' }],
     ['path', { d: 'M3 6h18' }],
     ['path', { d: 'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2' }],
+  ],
+  'trending-down': [
+    ['path', { d: 'M16 17h6v-6' }],
+    ['path', { d: 'm22 17-8.5-8.5-5 5L2 7' }],
   ],
   'triangle-alert': [
     ['path', { d: 'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3' }],

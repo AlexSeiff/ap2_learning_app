@@ -368,7 +368,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 
 | Route | Page | What it does |
 |---|---|---|
-| `/` | Dashboard | Button "▶ Heute lernen" (§ 5 "Heute lernen"). Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise: countdown to the user's `settings.examDate` (without one: KPI "Prüfungstermin eintragen →"), study streak, due journal items/cards, SQL KPI, Rechenübungen KPI ("x/y gelöst", due repetitions), tile "Markiert (n)" → `/karteikarten?markiert=1` (plan phase 4), average exam score + IHK grade, progress and exam trend per topic, weakest topics, "🎯 Selbsteinschätzung" (calibration, § 5 phase 8.3) |
+| `/` | Dashboard | Pages: backup reminder banner (see § 6). **First visit** (API returns no stored progress, `store.firstVisit`): welcome screen (`components/Welcome.tsx`: what the app is, progress stays in this browser → download backups, optional exam date; "Los geht's" / "Sicherung einspielen"), gone after the first change. Otherwise a **widget grid** (plan phase 9, see „Übersicht“ below): Weiterlernen ("▶ Heute lernen" + last reading position), countdown to `settings.examDate` (without one: "Prüfungstermin eintragen →"), study streak, rings per Prüfungsbereich, Fällig, Übungen (SQL/Rechen/Diagramm), Markiert → `/karteikarten?markiert=1`, Begriff des Tages, Übungsklausuren (average + IHK grade, trend, last 5), weakest topics, "Woran es meistens liegt", "🎯 Selbsteinschätzung" (§ 5 phase 8.3); below in full width "Fortschritt je Thema" and "Klausur-Trend je Thema" |
 | `/heute` | Heute lernen | lazy page: plan of today's mixed round, start, progress, skip, end (§ 5 "Heute lernen") |
 | `/lernen`, `/lernen/:topicId` | Themen / Thema | theory with table of contents, after each section a box „Weiterlesen und ansehen“ with its sources (plan phase 8, see Quellen below), Prüferfragen as a box "❓ Prüferfrage – erst selbst überlegen" with the answer behind "👁 Antwort zeigen" (`TheoryMarkdown`), ticking off learning goals |
 | `/karteikarten` | Karteikarten | filters (Deep Dive, deck, kind, typ, difficulty; kept in the URL), quick switches for Prüferfragen/Fachgespräch (same settings), Leitner boxes (`CARD_INTERVALS`), max `NEW_PER_SESSION` new cards per round, "⚠️ Fallen wiederholen", keyboard: Space flip, 1/2/3 rate; mode switch "🃏 Aufdecken \| 🟢 Leicht (4 Antworten)" (see Leicht-Modus below); optional "✍️ Deine Antwort" field (8.2); `?karten=ID,ID,…` = exactly these cards (used by "Heute lernen"); "📖 Durchblättern" (`?blaettern=1`, `KartenBlaettern`): all filtered cards (`alle`, also in Leicht-Modus) one by one, ←/→ or swipe, Space flip, Esc end, options "gemischt" and "Antwort gleich zeigen", slider to jump – no rating, progress untouched (`tests/blaettern.test.ts`); **marking** (plan phase 4): star button `MarkierStern` in the session head of all three card views (outside the clickable card, so no nested controls), key `M`, filter checkbox "Nur markierte (n)" (`?markiert=1`, combines with all other filters and Leicht) |
@@ -727,6 +727,26 @@ applied in `main.tsx` before the first render), error boundary per route, own co
   are only linked (no embedding of third-party players). The Datenschutz note names both (both modes).
 - Tests: `tests/quellen.test.ts`.
 
+### Übersicht (plan phase 9; replaces the KPI tiles and bars of the dashboard)
+
+- **Layout** (`pages/Dashboard.tsx`, CSS `.widgets`): iOS-style widgets in a grid with `grid-auto-flow: dense` – from 900 px 4 columns
+  (small widgets `.w-klein` = 1 column, all others 2), below 2 columns (small = half, others full width). Nothing of the old dashboard was
+  dropped; FehlergrundKarte and KalibrierungKarte are grid items too (they render nothing without data). "Fortschritt je Thema" is a list
+  (`.thema-fortschritt`) instead of a table: desktop aligned columns with a header row (`aria-hidden`, every value carries its own
+  `.tf-label`, visually hidden there), phones show "Label Wert" chips that wrap under the title – no column is hidden any more.
+- **Pure logic** `src/lib/uebersicht.ts`: `PRUEFUNGSBEREICHE` (prozess: DD5, 12, 16; qualitaet: DD0–4, 6–11, 15; wiso: DD13, 14; DD17
+  nowhere – each Deep Dive counts once, to the area most of its exam blocks belong to in `UNTERBEREICHE`), `bereichFortschritt` (cards in box ≥ 3;
+  exercises = tasks whose last attempt reached `SICHER_RICHTIG_AB` + solved SQL, Rechen and Diagramm exercises; diagram exercises count to
+  Prozessanalyse), `faellig` (journal, cards incl. new, SQL/Rechen/Diagramm repetitions), `begriffDesTages` (term page fixed per day via
+  `textSeed`, preferring terms with a Begriffskarte so the short definition is shown without loading `begriffe.json`), `klausurVerlauf`.
+- **Rings** `src/components/Ring.tsx`: `Ringe` (concentric inline-SVG circles with `pathLength=100`, `role="img"` + label; outer = cards,
+  inner = exercises) and `MiniRing` (one ring in the IHK colour step + percent; replaces the `.bar` with `mix-blend-mode` on the dashboard –
+  the plain `.bar.wide` progress bars of the exercise lists stay).
+- **Weiterlesen**: `hooks/useLeseStelle.ts` (in `Thema`) stores the section at the top of the viewport (on open, then throttled to 400 ms while
+  scrolling) in `localStorage` **`ap2-lesestelle`** (`src/lib/leseStelle.ts`, try/catch, read tolerantly). The dashboard links to
+  `/lernen/<id>?stelle=<section>`; per device, not part of progress or backups.
+- Tests: `tests/uebersicht.test.ts`.
+
 ### Navigation (plan phase 2; replaces the sidebar and the mobile „Üben“/„Mehr“ menus)
 
 - **Four areas** (`BEREICHE` in `src/lib/navigation.ts`, pure and tested), the logo leads to the Übersicht (`/`). No URL changed – the areas
@@ -878,7 +898,8 @@ type Settings = {
   must not change scheduling. `migrateMarkierung` drops entries without boolean `an` / string `am` and keeps unknown fields; `MarkierungSchema`
   is a loose object. Pure helpers in `src/lib/markiert.ts` (`istMarkiert`, `setzeMarkierung`, `wechsleMarkierung`, `markierteIds`).
   Fixture `tests/fixtures/fortschritt-v7-2026-10-09.json`; tests in `tests/markiert.test.ts` and `tests/markierenSeiten.test.ts`.
-  Not in `Progress`: the "Heute lernen" session (`localStorage` `ap2-heute`, per day and device, § 5) and the "Deine Antwort" text (not stored).
+  Not in `Progress`: the "Heute lernen" session (`localStorage` `ap2-heute`, per day and device, § 5), the last reading position
+  (`localStorage` `ap2-lesestelle`, § 5 „Übersicht“) and the "Deine Antwort" text (not stored).
   Backup files are read with `parseBackup` (`src/lib/backup.ts`, used by Daten & Import and the welcome screen).
   **Every schema change:** bump `PROGRESS_VERSION`, add a migration step, extend `tests/progress.test.ts` (fixtures in `tests/fixtures/`, one per version).
 - Settings are changed only through `withSettings` (`src/lib/settings.ts`). "Fortschritt zurücksetzen" keeps the settings. The theme stays in `localStorage` (per device).
@@ -1003,6 +1024,9 @@ npm run build && npm run build:pages
 - Plan phase 8: `quellen.test.ts` (import with skipped entries, unknown targets, real file: no issues, > 300 entries, every target exists, https
   only; sheet and term page show the links with `target="_blank"`; no iframe and no YouTube address before the click; Datenschutz; grouping).
   Links themselves are checked by `npm run quellen-pruefen` (network, not part of `npm test`).
+- Plan phase 9: `uebersicht.test.ts` (every Deep Dive in exactly one Prüfungsbereich and consistent with `UNTERBEREICHE`; ring counts:
+  box 3 vs 2, 80 % vs 70 %, solved SQL and diagram; due counts; term of the day fixed per day and varying; exam history; reading position;
+  rings and mini rings; page: all widgets, no `.bar`, every topic row with labels, countdown and exams with data).
 - One commit per logical change; formatting-only changes in their own commit.
 
 ## 10. Rules for future changes (for AI agents)

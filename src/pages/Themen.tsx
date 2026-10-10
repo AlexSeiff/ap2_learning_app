@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { quellenNachZiel } from '../../shared/quellen';
 import { QuellenListe } from '../components/Quellen';
 import { Markdown } from '../components/Markdown';
+import { useLeseStelle } from '../hooks/useLeseStelle';
 import { useStelle } from '../hooks/useStelle';
 import { useStore } from '../lib/store';
 import { cardPool } from '../lib/cards';
@@ -43,6 +44,7 @@ export function Thema() {
   const quellen = useMemo(() => quellenNachZiel(content.quellen), [content.quellen]);
   const topic = content.topics.find((t) => t.id === topicId);
   useStelle(!!topic);
+  useLeseStelle(topic?.id, topic?.sections.map((s) => s.id) ?? []);
   if (!topic)
     return (
       <div className="page">

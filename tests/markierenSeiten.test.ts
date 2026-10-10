@@ -54,9 +54,9 @@ describe('Karteikarten markieren', () => {
     expect(frei).toContain('aria-pressed="false"');
   });
 
-  it('Übersicht: Kachel „Markiert“ mit Anzahl führt zum Filter', () => {
+  it('Übersicht: Widget „Markiert“ mit Anzahl führt zum Filter', () => {
     const html = ohneKommentare(renderToString(createElement(MemoryRouter, null, createElement(Dashboard))));
-    expect(html).toMatch(/<a class="kpi"[^>]*href="\/karteikarten\?markiert=1"[^>]*><span class="kpi-value">3<\/span>/);
+    expect(html).toMatch(/<a class="kpi w-innen"[^>]*href="\/karteikarten\?markiert=1"[^>]*><span class="kpi-value">3<\/span>/);
   });
 
   it('Begriffsseite: Stern für die Begriffskarte neben der Überschrift und vor jeder Karte der Liste', () => {
