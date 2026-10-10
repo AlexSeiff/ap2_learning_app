@@ -1,7 +1,7 @@
 import { IS_STATIC } from '../lib/api';
 import { Icon } from './Icon';
 
-/** Kurzer Datenschutz-Hinweis (Einstellungen). Bewusst ohne Lizenzangabe – die legt der Betreiber fest. */
+/** Kurzer Datenschutz-Hinweis (Einstellungen), dazu die Lizenz der Lerninhalte (Frage Q4: CC BY-NC-SA 4.0, LIZENZ-INHALTE.txt). */
 export function Datenschutz() {
   return (
     <section className="card" id="datenschutz">
@@ -40,6 +40,14 @@ export function Datenschutz() {
           vorher wird keine Verbindung zu YouTube oder Google aufgebaut.
         </li>
       </ul>
+      <p className="muted">
+        Die Lerninhalte stehen unter{' '}
+        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank" rel="noopener noreferrer">
+          CC BY-NC-SA 4.0
+        </a>{' '}
+        – weitergeben und bearbeiten erlaubt, mit Namensnennung, nicht kommerziell, unter derselben Lizenz. Ausgenommen sind Inhalte Dritter
+        wie Zitate und verlinkte Quellen.
+      </p>
     </section>
   );
 }

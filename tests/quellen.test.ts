@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -101,6 +102,15 @@ describe('Anzeige', () => {
 
   it('Datenschutz nennt die Zwei-Klick-Lösung', () => {
     expect(renderToString(createElement(Datenschutz))).toMatch(/youtube-nocookie\.com|Links zu Quellen/);
+  });
+
+  it('Einstellungen nennen die Lizenz der Lerninhalte, wie in LIZENZ-INHALTE.txt', () => {
+    const html = renderToString(createElement(Datenschutz));
+    expect(html).toContain('CC BY-NC-SA 4.0');
+    expect(html).toContain('https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de');
+    expect(readFileSync(new URL('../LIZENZ-INHALTE.txt', import.meta.url), 'utf8')).toContain(
+      'Attribution-NonCommercial-ShareAlike 4.0 International',
+    );
   });
 
   it('quellenNachZiel gruppiert in Dateireihenfolge', () => {

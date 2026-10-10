@@ -42,7 +42,12 @@ Das ist dieselbe App als statische Seite – ohne Server:
 | Installieren, offline lernen | – | ✓ (App installierbar, läuft nach dem ersten Besuch auch ohne Internet) |
 
 Der API-Schlüssel und die KI-Aufgaben aus `data/` kommen nie in die Online-Version.
-Die Lernblätter (die Dateien in `content/`) sind damit öffentlich. Eine Lizenz für die Inhalte ist noch nicht festgelegt.
+Die Lernblätter (die Dateien in `content/`) sind damit öffentlich.
+
+**Lizenz der Inhalte:** Die Lerninhalte in `content/` stehen unter
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de) – weitergeben und bearbeiten erlaubt, mit Namensnennung,
+nicht kommerziell und nur unter derselben Lizenz. Ausgenommen sind Inhalte Dritter (Zitate, verlinkte Quellen, Gesetzestexte).
+Der Programmcode fällt nicht darunter. Einzelheiten und vollständiger Lizenztext: [`LIZENZ-INHALTE.txt`](LIZENZ-INHALTE.txt).
 
 **Datenschutz** (steht auch in der App unter *⚙️ Einstellungen*): kein Konto, kein Tracking, keine Cookies. Fortschritt und
 Einstellungen bleiben im Browser; von GitHub Pages werden nur die App und die Lerninhalte geladen, nichts von anderen Anbietern.
@@ -199,7 +204,7 @@ Mehrere Tabs: Jeder gespeicherte Stand trägt einen Revisionszähler. Hat ein an
 
 Technische Dokumentation (Aufbau, Datenmodell, Regeln für Änderungen): [`DOKUMENTATION.md`](DOKUMENTATION.md).
 Der Umsetzungsplan (`ROADMAP.md`, Phasen 0–8) ist erledigt und wurde gelöscht; Kommentare wie „ROADMAP 8.3“ beziehen sich darauf
-(nachlesen: `git show d21984e:ROADMAP.md`). Offen ist nur die Lizenz der Inhalte (siehe [Online-Version](#online-version-github-pages)).
+(nachlesen: `git show d21984e:ROADMAP.md`). Die Lizenz der Inhalte (Frage Q4) ist entschieden: CC BY-NC-SA 4.0 (siehe [Online-Version](#online-version-github-pages)).
 
 ```bash
 npm run dev           # Dev-Server mit lokaler API auf http://localhost:5178

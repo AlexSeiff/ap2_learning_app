@@ -4,7 +4,7 @@
 > (SQL editor, phases 1–4) and the original build prompt (`../Prompt_Lern_App.md`). Everything in them has been implemented;
 > this file describes **the app as it is** (state: all ROADMAP phases 0–8 done incl. 4.4/4.5, without 7.5 (decision Q3), October 2026).
 > `ROADMAP.md` was deleted after completion; comments like "ROADMAP 8.3" refer to it (`git show d21984e:ROADMAP.md`).
-> Only open question: the license of the content (Q4). How to install and start the app is in `README.md` (German).
+> Content license (Q4, decided 2026-10-10): CC BY-NC-SA 4.0 for `content/` only, see `LIZENZ-INHALTE.txt`; the code is not covered. How to install and start the app is in `README.md` (German).
 
 ---
 
@@ -427,7 +427,7 @@ AI-generated tasks (`data/`) never go into the Pages build.
 | (dialog) | Suche | `Strg+K` / `⌘K`, search button in the header (Kopfleiste): global search, lazy (§ 5 phase 8.8) |
 | `/material/sql-belegsatz` | SQL-Belegsatz | lazy page (`pages/SqlBelegsatz.tsx`) of `AP2_SQL_Belegsatz.md` with „Drucken“ (print CSS: two columns, small font → 2 pages A4); in the Glossar area. The same content as a side panel in the SQL editor (`components/Belegsatz.tsx`, `BelegsatzPanel`: button in the toolbar of `/sql` and on every exercise, fixed panel on the right, full width on phones, Esc/„Schließen“ close it and focus returns to the button) |
 | `/material/formeln` | Formelsammlung | lazy page (`pages/Formelsammlung.tsx`, KaTeX): all formulas of `src/rechnen/formeln.ts` grouped by Deep Dive, each with explanation, variables and a link "📐 n Rechenübungen →" to `/rechnen?vorlage=a,b`; jump bar, "🖨️ Drucken" (print CSS: one column, no links). Plan phase 6 added neuron formulas (gewichtete Summe, Stufe, Sigmoid, ReLU, Perzeptron-Lernregel) and formulas that only the sheets had (Laplace, Gegenereignis, mindestens einmal, Erwartungswert, z-Wert, Spearman, Wachstumsrate, Falsch-Positiv-Rate, kostenoptimale Schwelle, MAPE) – those have `vorlagen: []` and show no exercise link |
-| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; no license claimed – the owner decides; source links open in a new tab, YouTube only after a click via youtube-nocookie.com) |
+| `/einstellungen` | Einstellungen | per-user settings (`Progress.settings`, see § 6): own exam date; switches "❓ Prüferfragen einbeziehen" / "🎤 Fachgespräch-Fragen einbeziehen"; "🤖 Automatische Antworten erlauben" (Leicht-Modus, `leichtAutomatisch`); Datenschutz-Hinweis (`components/Datenschutz.tsx`: no account, no tracking, no cookies, data stays in the browser, only app + content loaded from GitHub Pages; content license line CC BY-NC-SA 4.0 with link to the deed; source links open in a new tab, YouTube only after a click via youtube-nocookie.com) |
 | `/daten` | Daten & Import | import report, re-import (local), backup download, backup import as **🔀 Zusammenführen** (merge) or **⬆ Einspielen (ersetzen)** (replace), reset; local: newest daily backup in `data/backups/`; Pages: "Speicher dauerhaft: ja/nein" and the list of browser daily backups with "↩ Wiederherstellen" |
 
 **Not affected by the Prüferfragen switch:** the *Prüferkommentar* in solutions (the scoring scheme; `Solution.kommentar`) is always shown
